@@ -963,3 +963,5 @@ Kotlin.PrimitiveHashSet = Kotlin.createClassNow(Kotlin.AbstractCollection, funct
   });
   Kotlin.ComplexHashSet = Kotlin.HashSet;
 })();
+
+module.exports = Kotlin;

@@ -44,5 +44,5 @@ var walk = function(dir, exports) {
     }
 };
 
-//walk("testData", exports);
-exports["0"] = generateTestFor("testData/topLevelMembers.d.ts");
+walk("testData", exports);
+//exports["0"] = generateTestFor("testData/topLevelMembers.d.ts");

@@ -17,6 +17,7 @@
 package ts2kt
 
 import js.debug.console
+import typescript.typescript
 
 [suppress("UNUSED_PARAMETER")]
 native
@@ -24,14 +25,13 @@ fun require(name: String): Any = noImpl
 
 //val Kotlin = require("./kotlin")
 //val SyntaxWalker = require("./SyntaxWalker");
+//val typescript = require("../../../script/typescript")
 
 val SRC_FILE_PATH_ARG_INDEX = 2;
 val OUT_FILE_PATH_ARG_INDEX = 3;
 val TYPESCRIPT_DEFINITION_FILE_EXT = ".d.ts";
 
 fun translate(srcPath: String): String {
-    val typescript = require("../../../script/typescript") as typescript.typescript;
-
     val compiler = typescript.TypeScriptCompiler(typescript.DiagnosticsLogger(typescript.IO));
     val batch = typescript.BatchCompiler(typescript.IO);
     val sourceFile = batch.getSourceFile(srcPath);
@@ -74,8 +74,3 @@ fun main(args: Array<String>) {
 
     translateToFile(srcPath, outPath);
 }
-
-/*
-var Kotlin = require("../../../script/kotlin");var SyntaxWalker = require("../../../script/SyntaxWalker");
-module.exports = Kotlin.modules.ts2kt.ts2kt;
-*/
