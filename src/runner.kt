@@ -18,6 +18,7 @@ package ts2kt
 
 import js.debug.console
 
+[suppress("UNUSED_PARAMETER")]
 native
 fun require(name: String): Any = noImpl
 
@@ -72,14 +73,6 @@ fun main(args: Array<String>) {
     if (srcPath == null || outPath == null) return
 
     translateToFile(srcPath, outPath);
-
-//    typescript.Bar
-//    typescript.Foo
-//
-//    typescript.A()
-//    typescript.B()
-//    typescript.C()
-//    typescript.D()
 }
 
 /*

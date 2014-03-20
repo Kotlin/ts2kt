@@ -16,6 +16,7 @@
 
 package typescript
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class SourceUnitSyntax(
         public val moduleElements: ISyntaxList,
@@ -28,11 +29,13 @@ abstract class SourceUnitSyntax(
     public fun withEndOfFileToken(endOfFileToken: ISyntaxToken): SourceUnitSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class ModuleReferenceSyntax(parsedInStrictMode: Boolean) : SyntaxNode(parsedInStrictMode), IModuleReferenceSyntax {
     public fun isModuleReference(): Boolean = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class ExternalModuleReferenceSyntax(
         public val moduleOrRequireKeyword: ISyntaxToken,
@@ -52,6 +55,7 @@ abstract class ExternalModuleReferenceSyntax(
     public fun withCloseParenToken(closeParenToken: ISyntaxToken): ExternalModuleReferenceSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class ModuleNameModuleReferenceSyntax(
         public val moduleName: INameSyntax,
@@ -61,6 +65,7 @@ abstract class ModuleNameModuleReferenceSyntax(
     public fun withModuleName(moduleName: INameSyntax): ModuleNameModuleReferenceSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class ImportDeclarationSyntax(
         public val modifiers: ISyntaxList,
@@ -87,6 +92,7 @@ abstract class ImportDeclarationSyntax(
     public fun withSemicolonToken(semicolonToken: ISyntaxToken): ImportDeclarationSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class ExportAssignmentSyntax(public val exportKeyword: ISyntaxToken,
                                       public val equalsToken: ISyntaxToken,
@@ -105,6 +111,7 @@ abstract class ExportAssignmentSyntax(public val exportKeyword: ISyntaxToken,
     public fun withSemicolonToken(semicolonToken: ISyntaxToken): ExportAssignmentSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class ClassDeclarationSyntax(public val modifiers: ISyntaxList,
                                       public val classKeyword: ISyntaxToken,
@@ -138,6 +145,7 @@ abstract class ClassDeclarationSyntax(public val modifiers: ISyntaxList,
     public fun withCloseBraceToken(closeBraceToken: ISyntaxToken): ClassDeclarationSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class InterfaceDeclarationSyntax(public val modifiers: ISyntaxList,
                                           public val interfaceKeyword: ISyntaxToken,
@@ -165,6 +173,7 @@ abstract class InterfaceDeclarationSyntax(public val modifiers: ISyntaxList,
 
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class HeritageClauseSyntax(public val extendsOrImplementsKeyword: ISyntaxToken,
                                     public val typeNames: ISeparatedSyntaxList,
@@ -176,6 +185,7 @@ abstract class HeritageClauseSyntax(public val extendsOrImplementsKeyword: ISynt
     public fun withTypeName(typeName: INameSyntax): HeritageClauseSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class ModuleDeclarationSyntax(public val modifiers: ISyntaxList,
                                        public val moduleKeyword: ISyntaxToken,
@@ -205,6 +215,7 @@ abstract class ModuleDeclarationSyntax(public val modifiers: ISyntaxList,
     public fun withCloseBraceToken(closeBraceToken: ISyntaxToken): ModuleDeclarationSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class FunctionDeclarationSyntax(public val modifiers: ISyntaxList,
                                          public val functionKeyword: ISyntaxToken,
@@ -230,6 +241,7 @@ abstract class FunctionDeclarationSyntax(public val modifiers: ISyntaxList,
     public fun withSemicolonToken(semicolonToken: ISyntaxToken): FunctionDeclarationSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class VariableStatementSyntax(public val modifiers: ISyntaxList,
                                        public val variableDeclaration: VariableDeclarationSyntax,
@@ -246,6 +258,7 @@ abstract class VariableStatementSyntax(public val modifiers: ISyntaxList,
     public fun withSemicolonToken(semicolonToken: ISyntaxToken): VariableStatementSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class VariableDeclarationSyntax(public val varKeyword: ISyntaxToken,
                                          public val variableDeclarators: ISeparatedSyntaxList,
@@ -257,6 +270,7 @@ abstract class VariableDeclarationSyntax(public val varKeyword: ISyntaxToken,
     public fun withVariableDeclarator(variableDeclarator: VariableDeclaratorSyntax): VariableDeclarationSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class VariableDeclaratorSyntax(public val identifier: ISyntaxToken,
                                         public val typeAnnotation: TypeAnnotationSyntax?,
@@ -272,6 +286,7 @@ abstract class VariableDeclaratorSyntax(public val identifier: ISyntaxToken,
     public fun withEqualsValueClause(equalsValueClause: EqualsValueClauseSyntax): VariableDeclaratorSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class EqualsValueClauseSyntax(public val equalsToken: ISyntaxToken,
                                        public val value: IExpressionSyntax,
@@ -283,6 +298,7 @@ abstract class EqualsValueClauseSyntax(public val equalsToken: ISyntaxToken,
     public fun withValue(value: IExpressionSyntax): EqualsValueClauseSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class PrefixUnaryExpressionSyntax(private val _kind: SyntaxKind,
                                            public val operatorToken: ISyntaxToken,
@@ -302,6 +318,7 @@ abstract class PrefixUnaryExpressionSyntax(private val _kind: SyntaxKind,
     public fun withOperand(operand: IUnaryExpressionSyntax): PrefixUnaryExpressionSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class ArrayLiteralExpressionSyntax(public val openBracketToken: ISyntaxToken,
                                             public val expressions: ISeparatedSyntaxList,
@@ -326,12 +343,14 @@ abstract class ArrayLiteralExpressionSyntax(public val openBracketToken: ISyntax
 
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class OmittedExpressionSyntax(parsedInStrictMode: Boolean) : SyntaxNode(parsedInStrictMode), IExpressionSyntax {
     public fun isExpression(): Boolean = noImpl
     public fun update(): OmittedExpressionSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class ParenthesizedExpressionSyntax(public val openParenToken: ISyntaxToken,
                                              public val expression: IExpressionSyntax,
@@ -349,6 +368,7 @@ abstract class ParenthesizedExpressionSyntax(public val openParenToken: ISyntaxT
     public fun withCloseParenToken(closeParenToken: ISyntaxToken): ParenthesizedExpressionSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class ArrowFunctionExpressionSyntax(public val equalsGreaterThanToken: ISyntaxToken,
                                              public val body: ISyntaxNodeOrToken,
@@ -358,6 +378,7 @@ abstract class ArrowFunctionExpressionSyntax(public val equalsGreaterThanToken: 
     public fun isExpression(): Boolean = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class SimpleArrowFunctionExpressionSyntax(public val identifier: ISyntaxToken,
                                                    equalsGreaterThanToken: ISyntaxToken,
@@ -373,6 +394,7 @@ abstract class SimpleArrowFunctionExpressionSyntax(public val identifier: ISynta
     public fun withBody(body: ISyntaxNodeOrToken): SimpleArrowFunctionExpressionSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class ParenthesizedArrowFunctionExpressionSyntax(public val callSignature: CallSignatureSyntax,
                                                           equalsGreaterThanToken: ISyntaxToken,
@@ -388,6 +410,7 @@ abstract class ParenthesizedArrowFunctionExpressionSyntax(public val callSignatu
     public fun withBody(body: ISyntaxNodeOrToken): ParenthesizedArrowFunctionExpressionSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class QualifiedNameSyntax(public val left: INameSyntax,
                                    public val dotToken: ISyntaxToken,
@@ -411,6 +434,7 @@ abstract class QualifiedNameSyntax(public val left: INameSyntax,
     public fun withRight(right: ISyntaxToken): QualifiedNameSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class TypeArgumentListSyntax(public val lessThanToken: ISyntaxToken,
                                       public val typeArguments: ISeparatedSyntaxList,
@@ -430,6 +454,7 @@ abstract class TypeArgumentListSyntax(public val lessThanToken: ISyntaxToken,
     public fun withGreaterThanToken(greaterThanToken: ISyntaxToken): TypeArgumentListSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class ConstructorTypeSyntax(public val newKeyword: ISyntaxToken,
                                      public val typeParameterList: TypeParameterListSyntax,
@@ -459,6 +484,7 @@ abstract class ConstructorTypeSyntax(public val newKeyword: ISyntaxToken,
     public fun withType(`type`: ITypeSyntax): ConstructorTypeSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class FunctionTypeSyntax(public val typeParameterList: TypeParameterListSyntax,
                                   public val parameterList: ParameterListSyntax,
@@ -483,6 +509,7 @@ abstract class FunctionTypeSyntax(public val typeParameterList: TypeParameterLis
     public fun withType(`type`: ITypeSyntax): FunctionTypeSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class ObjectTypeSyntax(public val openBraceToken: ISyntaxToken,
                                 public val typeMembers: ISeparatedSyntaxList,
@@ -505,6 +532,7 @@ abstract class ObjectTypeSyntax(public val openBraceToken: ISyntaxToken,
     public fun withCloseBraceToken(closeBraceToken: ISyntaxToken): ObjectTypeSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class ArrayTypeSyntax(public val `type`: ITypeSyntax,
                                public val openBracketToken: ISyntaxToken,
@@ -526,6 +554,7 @@ abstract class ArrayTypeSyntax(public val `type`: ITypeSyntax,
     public fun withCloseBracketToken(closeBracketToken: ISyntaxToken): ArrayTypeSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class GenericTypeSyntax(public val name: INameSyntax,
                                  public val typeArgumentList: TypeArgumentListSyntax,
@@ -544,6 +573,7 @@ abstract class GenericTypeSyntax(public val name: INameSyntax,
     public fun withTypeArgumentList(typeArgumentList: TypeArgumentListSyntax): GenericTypeSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class TypeQuerySyntax(public val typeOfKeyword: ISyntaxToken,
                                public val name: INameSyntax,
@@ -563,6 +593,7 @@ abstract class TypeQuerySyntax(public val typeOfKeyword: ISyntaxToken,
     public fun withName(name: INameSyntax): TypeQuerySyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class TypeAnnotationSyntax(public val colonToken: ISyntaxToken,
                                     public val `type`: ITypeSyntax,
@@ -578,6 +609,7 @@ abstract class TypeAnnotationSyntax(public val colonToken: ISyntaxToken,
     public fun withType(`type`: ITypeSyntax): TypeAnnotationSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class BlockSyntax(public val openBraceToken: ISyntaxToken,
                            public val statements: ISyntaxList,
@@ -597,6 +629,7 @@ abstract class BlockSyntax(public val openBraceToken: ISyntaxToken,
     public fun withCloseBraceToken(closeBraceToken: ISyntaxToken): BlockSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class ParameterSyntax(public val dotDotDotToken: ISyntaxToken,
                                public val publicOrPrivateKeyword: ISyntaxToken,
@@ -624,6 +657,7 @@ abstract class ParameterSyntax(public val dotDotDotToken: ISyntaxToken,
     public fun withEqualsValueClause(equalsValueClause: EqualsValueClauseSyntax): ParameterSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class MemberAccessExpressionSyntax(public val expression: IExpressionSyntax,
                                             public val dotToken: ISyntaxToken,
@@ -645,6 +679,7 @@ abstract class MemberAccessExpressionSyntax(public val expression: IExpressionSy
     public fun withName(name: ISyntaxToken): MemberAccessExpressionSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class PostfixUnaryExpressionSyntax(private val _kind: SyntaxKind,
                                             public val operand: IExpressionSyntax,
@@ -666,6 +701,7 @@ abstract class PostfixUnaryExpressionSyntax(private val _kind: SyntaxKind,
     public fun withOperatorToken(operatorToken: ISyntaxToken): PostfixUnaryExpressionSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class ElementAccessExpressionSyntax(public val expression: IExpressionSyntax,
                                              public val openBracketToken: ISyntaxToken,
@@ -690,6 +726,7 @@ abstract class ElementAccessExpressionSyntax(public val expression: IExpressionS
     public fun withCloseBracketToken(closeBracketToken: ISyntaxToken): ElementAccessExpressionSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class InvocationExpressionSyntax(public val expression: IExpressionSyntax,
                                           public val argumentList: ArgumentListSyntax,
@@ -707,6 +744,7 @@ abstract class InvocationExpressionSyntax(public val expression: IExpressionSynt
     public fun withArgumentList(argumentList: ArgumentListSyntax): InvocationExpressionSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class ArgumentListSyntax(public val typeArgumentList: TypeArgumentListSyntax,
                                   public val openParenToken: ISyntaxToken,
@@ -729,6 +767,7 @@ abstract class ArgumentListSyntax(public val typeArgumentList: TypeArgumentListS
     public fun withCloseParenToken(closeParenToken: ISyntaxToken): ArgumentListSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class BinaryExpressionSyntax(private val _kind: SyntaxKind,
                                       public val left: IExpressionSyntax,
@@ -752,6 +791,7 @@ abstract class BinaryExpressionSyntax(private val _kind: SyntaxKind,
     public fun withRight(right: IExpressionSyntax): BinaryExpressionSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class ConditionalExpressionSyntax(public val condition: IExpressionSyntax,
                                            public val questionToken: ISyntaxToken,
@@ -776,6 +816,7 @@ abstract class ConditionalExpressionSyntax(public val condition: IExpressionSynt
     public fun withWhenFalse(whenFalse: IExpressionSyntax): ConditionalExpressionSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class ConstructSignatureSyntax(public val newKeyword: ISyntaxToken,
                                         public val callSignature: CallSignatureSyntax,
@@ -791,6 +832,7 @@ abstract class ConstructSignatureSyntax(public val newKeyword: ISyntaxToken,
     public fun withCallSignature(callSignature: CallSignatureSyntax): ConstructSignatureSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class MethodSignatureSyntax(public val propertyName: ISyntaxToken,
                                      public val questionToken: ISyntaxToken,
@@ -808,6 +850,7 @@ abstract class MethodSignatureSyntax(public val propertyName: ISyntaxToken,
     public fun withCallSignature(callSignature: CallSignatureSyntax): MethodSignatureSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class IndexSignatureSyntax(public val openBracketToken: ISyntaxToken,
                                     public val parameter: ParameterSyntax,
@@ -829,6 +872,7 @@ abstract class IndexSignatureSyntax(public val openBracketToken: ISyntaxToken,
     public fun withTypeAnnotation(typeAnnotation: TypeAnnotationSyntax): IndexSignatureSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class PropertySignatureSyntax(public val propertyName: ISyntaxToken,
                                        public val questionToken: ISyntaxToken,
@@ -846,6 +890,7 @@ abstract class PropertySignatureSyntax(public val propertyName: ISyntaxToken,
     public fun withTypeAnnotation(typeAnnotation: TypeAnnotationSyntax): PropertySignatureSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class CallSignatureSyntax(public val typeParameterList: TypeParameterListSyntax,
                                    public val parameterList: ParameterListSyntax,
@@ -864,6 +909,7 @@ abstract class CallSignatureSyntax(public val typeParameterList: TypeParameterLi
     public fun withTypeAnnotation(typeAnnotation: TypeAnnotationSyntax): CallSignatureSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class ParameterListSyntax(public val openParenToken: ISyntaxToken,
                                    public val parameters: ISeparatedSyntaxList,
@@ -884,6 +930,7 @@ abstract class ParameterListSyntax(public val openParenToken: ISyntaxToken,
     public fun withCloseParenToken(closeParenToken: ISyntaxToken): ParameterListSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class TypeParameterListSyntax(public val lessThanToken: ISyntaxToken,
                                        public val typeParameters: ISeparatedSyntaxList,
@@ -902,6 +949,7 @@ abstract class TypeParameterListSyntax(public val lessThanToken: ISyntaxToken,
     public fun withGreaterThanToken(greaterThanToken: ISyntaxToken): TypeParameterListSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class TypeParameterSyntax(public val identifier: ISyntaxToken,
                                    public val constraint: ConstraintSyntax,
@@ -916,6 +964,7 @@ abstract class TypeParameterSyntax(public val identifier: ISyntaxToken,
     public fun withConstraint(constraint: ConstraintSyntax): TypeParameterSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class ConstraintSyntax(public val extendsKeyword: ISyntaxToken,
                                 public val `type`: ITypeSyntax,
@@ -929,6 +978,7 @@ abstract class ConstraintSyntax(public val extendsKeyword: ISyntaxToken,
     public fun withType(`type`: ITypeSyntax): ConstraintSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class ElseClauseSyntax(public val elseKeyword: ISyntaxToken,
                                 public val statement: IStatementSyntax,
@@ -943,6 +993,7 @@ abstract class ElseClauseSyntax(public val elseKeyword: ISyntaxToken,
     public fun withStatement(statement: IStatementSyntax): ElseClauseSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class IfStatementSyntax(public val ifKeyword: ISyntaxToken,
                                  public val openParenToken: ISyntaxToken,
@@ -969,6 +1020,7 @@ abstract class IfStatementSyntax(public val ifKeyword: ISyntaxToken,
     public fun withElseClause(elseClause: ElseClauseSyntax): IfStatementSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class ExpressionStatementSyntax(public val expression: IExpressionSyntax,
                                          public val semicolonToken: ISyntaxToken,
@@ -983,6 +1035,7 @@ abstract class ExpressionStatementSyntax(public val expression: IExpressionSynta
     public fun withSemicolonToken(semicolonToken: ISyntaxToken): ExpressionStatementSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class ConstructorDeclarationSyntax(public val constructorKeyword: ISyntaxToken,
                                             public val parameterList: ParameterListSyntax,
@@ -1003,6 +1056,7 @@ abstract class ConstructorDeclarationSyntax(public val constructorKeyword: ISynt
     public fun withSemicolonToken(semicolonToken: ISyntaxToken): ConstructorDeclarationSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class MemberFunctionDeclarationSyntax(public val modifiers: ISyntaxList,
                                                public val propertyName: ISyntaxToken,
@@ -1030,6 +1084,7 @@ abstract class MemberFunctionDeclarationSyntax(public val modifiers: ISyntaxList
 
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class MemberAccessorDeclarationSyntax(public val modifiers: ISyntaxList,
                                                public val propertyName: ISyntaxToken,
@@ -1043,6 +1098,7 @@ abstract class MemberAccessorDeclarationSyntax(public val modifiers: ISyntaxList
     public override fun withTrailingTrivia(trivia: ISyntaxTriviaList): MemberAccessorDeclarationSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class GetMemberAccessorDeclarationSyntax(modifiers: ISyntaxList,
                                                   public val getKeyword: ISyntaxToken,
@@ -1070,6 +1126,7 @@ abstract class GetMemberAccessorDeclarationSyntax(modifiers: ISyntaxList,
     public fun withBlock(block: BlockSyntax): GetMemberAccessorDeclarationSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class SetMemberAccessorDeclarationSyntax(modifiers: ISyntaxList,
                                                   public val setKeyword: ISyntaxToken,
@@ -1094,6 +1151,7 @@ abstract class SetMemberAccessorDeclarationSyntax(modifiers: ISyntaxList,
     public fun withBlock(block: BlockSyntax): SetMemberAccessorDeclarationSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class MemberVariableDeclarationSyntax(public val modifiers: ISyntaxList,
                                                public val variableDeclarator: VariableDeclaratorSyntax,
@@ -1114,6 +1172,7 @@ abstract class MemberVariableDeclarationSyntax(public val modifiers: ISyntaxList
     public fun withSemicolonToken(semicolonToken: ISyntaxToken): MemberVariableDeclarationSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class ThrowStatementSyntax(public val throwKeyword: ISyntaxToken,
                                     public val expression: IExpressionSyntax,
@@ -1131,6 +1190,7 @@ abstract class ThrowStatementSyntax(public val throwKeyword: ISyntaxToken,
     public fun withSemicolonToken(semicolonToken: ISyntaxToken): ThrowStatementSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class ReturnStatementSyntax(public val returnKeyword: ISyntaxToken,
                                      public val expression: IExpressionSyntax,
@@ -1148,6 +1208,7 @@ abstract class ReturnStatementSyntax(public val returnKeyword: ISyntaxToken,
     public fun withSemicolonToken(semicolonToken: ISyntaxToken): ReturnStatementSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class ObjectCreationExpressionSyntax(public val newKeyword: ISyntaxToken,
                                               public val expression: IExpressionSyntax,
@@ -1168,6 +1229,7 @@ abstract class ObjectCreationExpressionSyntax(public val newKeyword: ISyntaxToke
     public fun withArgumentList(argumentList: ArgumentListSyntax): ObjectCreationExpressionSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class SwitchStatementSyntax(public val switchKeyword: ISyntaxToken,
                                      public val openParenToken: ISyntaxToken,
@@ -1198,6 +1260,7 @@ abstract class SwitchStatementSyntax(public val switchKeyword: ISyntaxToken,
     public fun withCloseBraceToken(closeBraceToken: ISyntaxToken): SwitchStatementSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class SwitchClauseSyntax(public val colonToken: ISyntaxToken,
                                   public val statements: ISyntaxList,
@@ -1207,6 +1270,7 @@ abstract class SwitchClauseSyntax(public val colonToken: ISyntaxToken,
     public override fun withTrailingTrivia(trivia: ISyntaxTriviaList): SwitchClauseSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class CaseSwitchClauseSyntax(public val caseKeyword: ISyntaxToken,
                                       public val expression: IExpressionSyntax,
@@ -1229,6 +1293,7 @@ abstract class CaseSwitchClauseSyntax(public val caseKeyword: ISyntaxToken,
     public fun withStatement(statement: IStatementSyntax): CaseSwitchClauseSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class DefaultSwitchClauseSyntax(public val defaultKeyword: ISyntaxToken,
                                          colonToken: ISyntaxToken,
@@ -1248,6 +1313,7 @@ abstract class DefaultSwitchClauseSyntax(public val defaultKeyword: ISyntaxToken
     public fun withStatement(statement: IStatementSyntax): DefaultSwitchClauseSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class BreakStatementSyntax(public val breakKeyword: ISyntaxToken,
                                     public val identifier: ISyntaxToken,
@@ -1266,6 +1332,7 @@ abstract class BreakStatementSyntax(public val breakKeyword: ISyntaxToken,
     public fun withSemicolonToken(semicolonToken: ISyntaxToken): BreakStatementSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class ContinueStatementSyntax(public val continueKeyword: ISyntaxToken,
                                        public val identifier: ISyntaxToken,
@@ -1283,6 +1350,7 @@ abstract class ContinueStatementSyntax(public val continueKeyword: ISyntaxToken,
     public fun withSemicolonToken(semicolonToken: ISyntaxToken): ContinueStatementSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class IterationStatementSyntax(public val openParenToken: ISyntaxToken,
                                         public val closeParenToken: ISyntaxToken,
@@ -1293,6 +1361,7 @@ abstract class IterationStatementSyntax(public val openParenToken: ISyntaxToken,
     public override fun withTrailingTrivia(trivia: ISyntaxTriviaList): IterationStatementSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class BaseForStatementSyntax(public val forKeyword: ISyntaxToken,
                                       openParenToken: ISyntaxToken,
@@ -1305,6 +1374,7 @@ abstract class BaseForStatementSyntax(public val forKeyword: ISyntaxToken,
     public override fun withTrailingTrivia(trivia: ISyntaxTriviaList): BaseForStatementSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class ForStatementSyntax(forKeyword: ISyntaxToken,
                                   openParenToken: ISyntaxToken,
@@ -1344,6 +1414,7 @@ abstract class ForStatementSyntax(forKeyword: ISyntaxToken,
     public fun withStatement(statement: IStatementSyntax): ForStatementSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class ForInStatementSyntax(forKeyword: ISyntaxToken,
                                     openParenToken: ISyntaxToken,
@@ -1376,6 +1447,7 @@ abstract class ForInStatementSyntax(forKeyword: ISyntaxToken,
     public fun withStatement(statement: IStatementSyntax): ForInStatementSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class WhileStatementSyntax(public val whileKeyword: ISyntaxToken,
                                     openParenToken: ISyntaxToken,
@@ -1399,6 +1471,7 @@ abstract class WhileStatementSyntax(public val whileKeyword: ISyntaxToken,
     public fun withStatement(statement: IStatementSyntax): WhileStatementSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class WithStatementSyntax(public val withKeyword: ISyntaxToken,
                                    public val openParenToken: ISyntaxToken,
@@ -1422,6 +1495,7 @@ abstract class WithStatementSyntax(public val withKeyword: ISyntaxToken,
     public fun withStatement(statement: IStatementSyntax): WithStatementSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class EnumDeclarationSyntax(public val modifiers: ISyntaxList,
                                      public val enumKeyword: ISyntaxToken,
@@ -1450,6 +1524,7 @@ abstract class EnumDeclarationSyntax(public val modifiers: ISyntaxList,
     public fun withCloseBraceToken(closeBraceToken: ISyntaxToken): EnumDeclarationSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class EnumElementSyntax(public val propertyName: ISyntaxToken,
                                  public val equalsValueClause: EqualsValueClauseSyntax,
@@ -1464,6 +1539,7 @@ abstract class EnumElementSyntax(public val propertyName: ISyntaxToken,
     public fun withEqualsValueClause(equalsValueClause: EqualsValueClauseSyntax): EnumElementSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class CastExpressionSyntax(public val lessThanToken: ISyntaxToken,
                                     public val `type`: ITypeSyntax,
@@ -1487,6 +1563,7 @@ abstract class CastExpressionSyntax(public val lessThanToken: ISyntaxToken,
     public fun withExpression(expression: IUnaryExpressionSyntax): CastExpressionSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class ObjectLiteralExpressionSyntax(public val openBraceToken: ISyntaxToken,
                                              public val propertyAssignments: ISeparatedSyntaxList,
@@ -1508,6 +1585,7 @@ abstract class ObjectLiteralExpressionSyntax(public val openBraceToken: ISyntaxT
     public fun withCloseBraceToken(closeBraceToken: ISyntaxToken): ObjectLiteralExpressionSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class PropertyAssignmentSyntax(public val propertyName: ISyntaxToken,
                                         parsedInStrictMode: Boolean) : SyntaxNode(parsedInStrictMode)
@@ -1516,6 +1594,7 @@ abstract class PropertyAssignmentSyntax(public val propertyName: ISyntaxToken,
     public override fun withTrailingTrivia(trivia: ISyntaxTriviaList): PropertyAssignmentSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class SimplePropertyAssignmentSyntax(propertyName: ISyntaxToken,
                                               public val colonToken: ISyntaxToken,
@@ -1533,6 +1612,7 @@ abstract class SimplePropertyAssignmentSyntax(propertyName: ISyntaxToken,
     public fun withExpression(expression: IExpressionSyntax): SimplePropertyAssignmentSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class FunctionPropertyAssignmentSyntax(propertyName: ISyntaxToken,
                                                 public val callSignature: CallSignatureSyntax,
@@ -1550,6 +1630,7 @@ abstract class FunctionPropertyAssignmentSyntax(propertyName: ISyntaxToken,
     public fun withBlock(block: BlockSyntax): FunctionPropertyAssignmentSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class AccessorPropertyAssignmentSyntax(propertyName: ISyntaxToken,
                                                 public val openParenToken: ISyntaxToken,
@@ -1560,6 +1641,7 @@ abstract class AccessorPropertyAssignmentSyntax(propertyName: ISyntaxToken,
     public override fun withTrailingTrivia(trivia: ISyntaxTriviaList): AccessorPropertyAssignmentSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class GetAccessorPropertyAssignmentSyntax(public val getKeyword: ISyntaxToken,
                                                    propertyName: ISyntaxToken,
@@ -1586,6 +1668,7 @@ abstract class GetAccessorPropertyAssignmentSyntax(public val getKeyword: ISynta
     public fun withBlock(block: BlockSyntax): GetAccessorPropertyAssignmentSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class SetAccessorPropertyAssignmentSyntax(public val setKeyword: ISyntaxToken,
                                                    propertyName: ISyntaxToken,
@@ -1612,6 +1695,7 @@ abstract class SetAccessorPropertyAssignmentSyntax(public val setKeyword: ISynta
     public fun withBlock(block: BlockSyntax): SetAccessorPropertyAssignmentSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class FunctionExpressionSyntax(public val functionKeyword: ISyntaxToken,
                                         public val identifier: ISyntaxToken,
@@ -1635,6 +1719,7 @@ abstract class FunctionExpressionSyntax(public val functionKeyword: ISyntaxToken
     public fun withBlock(block: BlockSyntax): FunctionExpressionSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class EmptyStatementSyntax(public val semicolonToken: ISyntaxToken,
                                     parsedInStrictMode: Boolean) : SyntaxNode(parsedInStrictMode), IStatementSyntax {
@@ -1646,6 +1731,7 @@ abstract class EmptyStatementSyntax(public val semicolonToken: ISyntaxToken,
     public fun withSemicolonToken(semicolonToken: ISyntaxToken): EmptyStatementSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class TryStatementSyntax(public val tryKeyword: ISyntaxToken,
                                   public val block: BlockSyntax,
@@ -1666,6 +1752,7 @@ abstract class TryStatementSyntax(public val tryKeyword: ISyntaxToken,
     public fun withFinallyClause(finallyClause: FinallyClauseSyntax): TryStatementSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class CatchClauseSyntax(public val catchKeyword: ISyntaxToken,
                                  public val openParenToken: ISyntaxToken,
@@ -1692,6 +1779,7 @@ abstract class CatchClauseSyntax(public val catchKeyword: ISyntaxToken,
     public fun withBlock(block: BlockSyntax): CatchClauseSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class FinallyClauseSyntax(public val finallyKeyword: ISyntaxToken,
                                    public val block: BlockSyntax,
@@ -1706,6 +1794,7 @@ abstract class FinallyClauseSyntax(public val finallyKeyword: ISyntaxToken,
     public fun withBlock(block: BlockSyntax): FinallyClauseSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class LabeledStatementSyntax(public val identifier: ISyntaxToken,
                                       public val colonToken: ISyntaxToken,
@@ -1720,6 +1809,7 @@ abstract class LabeledStatementSyntax(public val identifier: ISyntaxToken,
     public fun withStatement(statement: IStatementSyntax): LabeledStatementSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class DoStatementSyntax(public val doKeyword: ISyntaxToken,
                                  statement: IStatementSyntax,
@@ -1747,6 +1837,7 @@ abstract class DoStatementSyntax(public val doKeyword: ISyntaxToken,
     public fun withSemicolonToken(semicolonToken: ISyntaxToken): DoStatementSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class TypeOfExpressionSyntax(public val typeOfKeyword: ISyntaxToken,
                                       public val expression: IExpressionSyntax,
@@ -1759,6 +1850,7 @@ abstract class TypeOfExpressionSyntax(public val typeOfKeyword: ISyntaxToken,
     public fun withExpression(expression: IExpressionSyntax): TypeOfExpressionSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class DeleteExpressionSyntax(public val deleteKeyword: ISyntaxToken,
                                       public val expression: IExpressionSyntax,
@@ -1771,6 +1863,7 @@ abstract class DeleteExpressionSyntax(public val deleteKeyword: ISyntaxToken,
     public fun withExpression(expression: IExpressionSyntax): DeleteExpressionSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class VoidExpressionSyntax(public val voidKeyword: ISyntaxToken,
                                     public val expression: IExpressionSyntax,
@@ -1783,6 +1876,7 @@ abstract class VoidExpressionSyntax(public val voidKeyword: ISyntaxToken,
     public fun withExpression(expression: IExpressionSyntax): VoidExpressionSyntax = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class DebuggerStatementSyntax(public val debuggerKeyword: ISyntaxToken,
                                        public val semicolonToken: ISyntaxToken,

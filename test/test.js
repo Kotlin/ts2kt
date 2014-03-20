@@ -19,7 +19,7 @@ function generateTestFor(srcPath) {
 
 var walk = function(dir, exports) {
 
-    var list = fs.readdirSync(dir)
+    var list = fs.readdirSync(dir);
 
     for (var i = 0; i < list.length; i++) {
         var file = list[i];

@@ -16,6 +16,7 @@
 
 package typescript
 
+[suppress("UNUSED_PARAMETER")]
 native
 open class SyntaxWalker : ISyntaxVisitor {
     override fun visitToken(token: ISyntaxToken): Unit = noImpl

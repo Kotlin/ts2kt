@@ -16,16 +16,19 @@
 
 package node
 
+[suppress("UNUSED_PARAMETER")]
 native
 class path private () {
     fun basename(path: String, postfix: String): String = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 class process private() {
     val argv: Array<String?> = noImpl
 }
 
+[suppress("UNUSED_PARAMETER")]
 native
 class fs private() {
     fun argv(index: Int): String = noImpl

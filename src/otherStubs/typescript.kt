@@ -16,6 +16,7 @@
 
 package typescript
 
+[suppress("UNUSED_PARAMETER")]
 native
 object typescript {
     object IO {}
@@ -46,17 +47,4 @@ object typescript {
 
     native("typescript.DiagnosticsLogger")
     class DiagnosticsLogger(io: typescript.IO)
-
-//    object Foo {
-//
-//    }
-//
-//    native object Bar {
-//
-//    }
-//
-//    class A
-//    native class B
-//    inner class C
-//    native inner class D
 }

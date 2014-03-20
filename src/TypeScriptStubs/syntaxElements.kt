@@ -79,8 +79,8 @@ trait ISyntaxElement {
 
 native
 trait ISyntaxNodeOrToken : ISyntaxElement {
-    fun withLeadingTrivia(leadingTrivia: ISyntaxTriviaList): ISyntaxNodeOrToken
-    fun withTrailingTrivia(trailingTrivia: ISyntaxTriviaList): ISyntaxNodeOrToken
+    fun withLeadingTrivia(trivia: ISyntaxTriviaList): ISyntaxNodeOrToken
+    fun withTrailingTrivia(trivia: ISyntaxTriviaList): ISyntaxNodeOrToken
 
     fun accept(visitor: ISyntaxVisitor): Any
 }

@@ -16,6 +16,7 @@
 
 package typescript
 
+[suppress("UNUSED_PARAMETER")]
 native
 abstract class SyntaxNode(parsedInStrictMode: Boolean) : ISyntaxNodeOrToken {
     fun toJSON(key: Any): Any = noImpl
