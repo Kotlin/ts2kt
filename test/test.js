@@ -1,6 +1,50 @@
 var ts2kt = require("../out/production/ts2kt/ts2kt")
-
 var fs = require('fs');
+
+var TEST_DATA_DIR = "testData";
+var fileToTest = "";
+
+var tests = exports;
+
+if (typeof fileToTest === "string" && fileToTest) {
+    collectSingleFile(fileToTest, tests);
+    tests = tests["other"] = {};
+}
+
+collectTestFiles(TEST_DATA_DIR, tests);
+
+// Helpers
+
+function collectSingleFile (testFile, tests) {
+    tests[testFile] = generateTestFor(TEST_DATA_DIR + "/" + testFile);
+}
+
+function collectTestFiles(dir, tests) {
+
+    var list = fs.readdirSync(dir);
+
+    for (var i = 0; i < list.length; i++) {
+        var file = list[i];
+
+        function process(dir, file) {
+            if (file === "out") return;
+
+            var path = dir + '/' + file;
+            var stat = fs.statSync(path);
+            if (stat && stat.isDirectory()) {
+                collectTestFiles(path, tests[file] = {});
+            }
+            else {
+                if (file.indexOf(".d.ts", file.length - 5) != -1) {
+                    tests[file] = generateTestFor(path);
+                }
+            }
+        }
+
+
+        process(dir, file);
+    }
+}
 
 function generateTestFor(srcPath) {
     return function(test) {
@@ -16,33 +60,3 @@ function generateTestFor(srcPath) {
         test.done()
     }
 }
-
-var walk = function(dir, exports) {
-
-    var list = fs.readdirSync(dir);
-
-    for (var i = 0; i < list.length; i++) {
-        var file = list[i];
-
-        function process(dir, file) {
-            if (file === "out") return;
-
-            var path = dir + '/' + file;
-            var stat = fs.statSync(path);
-            if (stat && stat.isDirectory()) {
-                walk(path, exports[file] = {});
-            }
-            else {
-                if (file.indexOf(".d.ts", file.length - 5) != -1) {
-                    exports[file] = generateTestFor(path);
-                }
-            }
-        }
-
-
-        process(dir, file);
-    }
-};
-
-walk("testData", exports);
-//exports["0"] = generateTestFor("testData/topLevelMembers.d.ts");
