@@ -1,6 +1,5 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="kendo" type="NodeJSConfigurationType" factoryName="Node.js" path-to-node="$USER_HOME$/local/bin/node" path-to-js-file="out/artifacts/ts2kt/ts2kt.js" application-parameters="$USER_HOME$/Downloads/kendo.web.d.ts out/kendo.web.kt" working-dir="$PROJECT_DIR$">
-    <browser start="false" url="" with-js-debugger="false" />
     <method />
   </configuration>
 </component>
