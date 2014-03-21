@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
   <artifact build-on-make="true" name="ts2kt">
-    <output-path>$PROJECT_DIR$/out/artifacts/ts2kt</output-path>
+    <output-path>$PROJECT_DIR$/compiled</output-path>
     <root id="root">
       <element id="module-output" name="ts2kt" />
     </root>

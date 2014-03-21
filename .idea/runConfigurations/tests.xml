@@ -11,6 +11,10 @@
     <RunnerSettings RunnerId="Nodeunit.run" />
     <ConfigurationWrapper RunnerId="Nodeunit.debug" />
     <ConfigurationWrapper RunnerId="Nodeunit.run" />
-    <method />
+    <method>
+      <option name="BuildArtifacts" enabled="true">
+        <artifact name="ts2kt" />
+      </option>
+    </method>
   </configuration>
 </component>

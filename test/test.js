@@ -1,4 +1,5 @@
-var ts2kt = require("../out/production/ts2kt/ts2kt")
+var WORKING_DIR = "../compiled/";
+var ts2kt = require(WORKING_DIR + "ts2kt");
 var fs = require('fs');
 
 var TEST_DATA_DIR = "testData";

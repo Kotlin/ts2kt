@@ -1,3 +1,5 @@
-var Kotlin = require("../../../script/kotlin");
-var SyntaxWalker = require("../../../script/SyntaxWalker");
-var typescript = require("../../../script/typescript");
+var SCRIPT_DIR = "../script/";
+
+var Kotlin = require(SCRIPT_DIR + "kotlin");
+var SyntaxWalker = require(SCRIPT_DIR + "SyntaxWalker");
+var typescript = require(SCRIPT_DIR + "typescript");
