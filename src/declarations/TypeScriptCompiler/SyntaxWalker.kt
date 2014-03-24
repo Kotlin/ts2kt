@@ -107,7 +107,8 @@ open class SyntaxWalker : ISyntaxVisitor {
     override fun visitVoidExpression(node: VoidExpressionSyntax): Unit = noImpl
     override fun visitDebuggerStatement(node: DebuggerStatementSyntax): Unit = noImpl
 
-    public fun visitSeparatedList(list: ISeparatedSyntaxList): Unit = noImpl
-    public fun visitOptionalNode(node: SyntaxNode?): Unit = noImpl
-    public fun visitOptionalNodeOrToken(nodeOrToken: ISyntaxNodeOrToken?): Unit = noImpl
+    public open fun visitNode(node: SyntaxNode): Unit = noImpl
+    public open fun visitSeparatedList(list: ISeparatedSyntaxList): Unit = noImpl
+    public open fun visitOptionalNode(node: SyntaxNode?): Unit = noImpl
+    public open fun visitOptionalNodeOrToken(nodeOrToken: ISyntaxNodeOrToken?): Unit = noImpl
 }
