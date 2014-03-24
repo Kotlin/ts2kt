@@ -2,4 +2,5 @@ out
 .idea/workspace.xml
 .DS_Store
 *.out
+tmp
 compiled
