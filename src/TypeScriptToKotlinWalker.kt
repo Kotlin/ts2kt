@@ -19,54 +19,52 @@ package ts2kt
 import typescript.*
 import ts2kt.utils.listOf
 
-fun tsTypeNameToKotlinTypeName(name: String) =
-        when (name) {
-            "any" -> "Any"
-            "number" -> "Number"
-            "string" -> "String"
-            "boolean" -> "Boolean"
-            "void" -> "Unit"
-//            "Function" -> "()->Unit"
-            else -> name
-        }
+fun ITypeSyntax?.toKotlinTypeName(): String {
+    if (this == null) return "Unit"
 
-fun TypeAnnotationSyntax?.toKotlinTypeName(): String {
-    if (this == null) return "Any"
-
-    return tsTypeNameToKotlinTypeName(this.`type`.fullText())
+    val name = this.fullText()
+    return when (name) {
+                "any" -> "Any"
+                "number" -> "Number"
+                "string" -> "String"
+                "boolean" -> "Boolean"
+                "void" -> "Unit"
+                else -> name
+            }
 }
 
-class ClassOrTraitRenderer : SyntaxWalker() {
-//    var out = ""
-//        private set
-//
-//    override fun visitToken(token: ISyntaxToken) {
-//            out += " ${token.text()} "
-//    }
-
-}
+fun TypeAnnotationSyntax?.toKotlinTypeName(): String = this?.`type`.toKotlinTypeName()
 
 class TypeScriptToKotlinWalker : SyntaxWalker() {
     var out = ""
         private set
 
-    private var indent = ""
+    private val INDENT = "    "
+    private val indents = listOf("") as MutableList<String>
+    private var indentIdx = 0
     private var isNewLine = true
 
     private val NATIVE = "native"
     private val PUBLIC = "public"
+    private val VAL = "val"
+    private val VAR = "var"
     private val FUN = "fun"
+    private val TRAIT = "trait"
     val OPEN_PAREN = "("
     val CLOSE_PAREN = ")"
     var spaceSuppressed = false
 
     val suppressSpaceBeforeNodes = listOf(CommaToken)
 
-    fun print(s: String, suppressSpace: Boolean = false, suppressNextSpace: Boolean = false) {
+//  Helpers
+
+    fun print(s: String?, suppressSpace: Boolean = false, suppressNextSpace: Boolean = false) {
+        if (s == null) return
+
         val spaces =
                 if (isNewLine) {
                     isNewLine = false
-                    indent
+                    indents[indentIdx]
                 }
                 else {
                     if (suppressSpace || spaceSuppressed) "" else " "
@@ -87,20 +85,16 @@ class TypeScriptToKotlinWalker : SyntaxWalker() {
         println()
     }
 
-    override fun visitToken(token: ISyntaxToken) {
-        print(token.text(), suppressSpaceBeforeNodes.contains(token.tokenKind))
+    fun enterBlock() {
+        indentIdx++
+        if (indents.size() <= indentIdx) {
+            indents.add(indents[indentIdx - 1] + INDENT)
+        }
     }
 
-//    override fun visitInterfaceDeclaration(node: InterfaceDeclarationSyntax) {
-//        super<SyntaxWalker>.visitInterfaceDeclaration(node)
-//        node.accept(ClassOrTraitRenderer())
-//        visitList(node.modifiers);
-//        visitToken(node.interfaceKeyword);
-//        visitToken(node.identifier);
-//        visitOptionalNode(node.typeParameterList);
-//        visitList(node.heritageClauses);
-//        visitNode(node.body);
-//    }
+    fun exitBlock() {
+        indentIdx--
+    }
 
     fun ISyntaxList.containsBy<T>(a: T, f: (ISyntaxNodeOrToken) -> T): Boolean {
         for (i in 0..childCount() - 1) {
@@ -111,6 +105,14 @@ class TypeScriptToKotlinWalker : SyntaxWalker() {
         return false
     }
 
+//  Translation
+
+    override fun visitToken(token: ISyntaxToken) {
+        print(token.text(), suppressSpaceBeforeNodes.contains(token.tokenKind))
+    }
+
+//  Variables
+
     override fun visitVariableStatement(node: VariableStatementSyntax) {
         // Skip if not declare
         if (!node.modifiers.containsBy(DeclareKeyword) { it.kind() } ) return
@@ -118,21 +120,23 @@ class TypeScriptToKotlinWalker : SyntaxWalker() {
         println(NATIVE)
         print(PUBLIC)
 //      TODO  node.modifiers
-        visitVariableDeclaration(node.variableDeclaration);
+        visitVariableDeclaration(node.variableDeclaration)
         println("= noImpl")
     }
 
     override fun visitVariableDeclaration(node: VariableDeclarationSyntax) {
-        visitToken(node.varKeyword);
-        visitSeparatedList(node.variableDeclarators);
+        print(VAR)
+        visitSeparatedList(node.variableDeclarators)
     }
 
+//  Type
+
     override fun visitTypeAnnotation(node: TypeAnnotationSyntax) {
-        print(":", suppressSpace = true);
-        val tsType = node.`type`.fullText()
-        val ktType = tsTypeNameToKotlinTypeName(tsType)
-        print(ktType)
+        print(":", suppressSpace = true)
+        print(node.`type`.toKotlinTypeName())
     }
+
+//    Functions
 
     override fun visitFunctionDeclaration(node: FunctionDeclarationSyntax) {
         // Skip if not declare
@@ -140,29 +144,92 @@ class TypeScriptToKotlinWalker : SyntaxWalker() {
 
         println(NATIVE)
         print(PUBLIC)
-//      TODO  visitList(node.modifiers);
-        print(FUN);
-        visitToken(node.identifier);
-        visitNode(node.callSignature);
+//      TODO  visitList(node.modifiers)
+        print(FUN)
+        visitToken(node.identifier)
+        visitNode(node.callSignature)
         println("= noImpl")
     }
 
+//  Function arguments
+
     override fun visitParameterList(node: ParameterListSyntax) {
-        print(OPEN_PAREN, suppressSpace = true, suppressNextSpace = true);
-        visitSeparatedList(node.parameters);
-        print(CLOSE_PAREN, suppressSpace = true);
+        print(OPEN_PAREN, suppressSpace = true, suppressNextSpace = true)
+        visitSeparatedList(node.parameters)
+        print(CLOSE_PAREN, suppressSpace = true)
     }
 
+//  Generic parameters
+
     override fun visitTypeParameterList(node: TypeParameterListSyntax) {
-        print(node.lessThanToken.text(), suppressSpace = true, suppressNextSpace = true);
-        visitSeparatedList(node.typeParameters);
-        print(node.greaterThanToken.text(), suppressSpace = true);
+        print(node.lessThanToken.text(), suppressSpace = true, suppressNextSpace = true)
+        visitSeparatedList(node.typeParameters)
+        print(node.greaterThanToken.text(), suppressSpace = true)
     }
 
     override fun visitConstraint(node: ConstraintSyntax) {
-        print(":");
-        val tsType = node.`type`.fullText()
-        val ktType = tsTypeNameToKotlinTypeName(tsType)
-        print(ktType)
+        print(":")
+        print(node.`type`.toKotlinTypeName())
+    }
+
+//    Interfaces
+
+    override fun visitInterfaceDeclaration(node: InterfaceDeclarationSyntax) {
+        println(NATIVE)
+        print(PUBLIC)
+//      todo visitList(node.modifiers)
+        print(TRAIT)
+        visitToken(node.identifier)
+        visitOptionalNode(node.typeParameterList)
+        visitList(node.heritageClauses)
+        visitNode(node.body)
+    }
+
+    override fun visitObjectType(node: ObjectTypeSyntax) {
+        println(node.openBraceToken.text())
+        enterBlock()
+
+        for (nodeOrToken in node.typeMembers.toNonSeparatorArray()) {
+            visitOptionalNodeOrToken(nodeOrToken)
+            println()
+        }
+
+        exitBlock()
+        println(node.closeBraceToken.text())
+    }
+
+    override fun visitPropertySignature(node: PropertySignatureSyntax) {
+        print(PUBLIC)
+        print(VAR)
+        visitToken(node.propertyName)
+        visitOptionalNode(node.typeAnnotation)
+        print(node.questionToken?.text(), suppressSpace = true)
+    }
+
+    override fun visitMethodSignature(node: MethodSignatureSyntax) {
+        print(PUBLIC)
+
+        if (node.questionToken == null) {
+            print(FUN)
+            visitToken(node.propertyName)
+            visitNode(node.callSignature)
+        }
+        else {
+            val call = node.callSignature
+
+            print(VAL)
+            if (call.typeParameterList != null) {
+                print("")
+                visitTypeParameterList(call.typeParameterList)
+            }
+            visitToken(node.propertyName)
+            print(":", suppressSpace = true)
+            print(OPEN_PAREN, suppressNextSpace = true)
+            visitNode(call.parameterList)
+            print("->")
+            print(call.typeAnnotation.toKotlinTypeName())
+            print(CLOSE_PAREN, suppressSpace = true)
+            print("?", suppressSpace = true)
+        }
     }
 }

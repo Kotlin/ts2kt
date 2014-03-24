@@ -835,7 +835,7 @@ abstract class ConstructSignatureSyntax(public val newKeyword: ISyntaxToken,
 [suppress("UNUSED_PARAMETER")]
 native
 abstract class MethodSignatureSyntax(public val propertyName: ISyntaxToken,
-                                     public val questionToken: ISyntaxToken,
+                                     public val questionToken: ISyntaxToken?,
                                      public val callSignature: CallSignatureSyntax,
                                      parsedInStrictMode: Boolean) : SyntaxNode(parsedInStrictMode), ITypeMemberSyntax {
     public fun update(propertyName: ISyntaxToken,
@@ -875,7 +875,7 @@ abstract class IndexSignatureSyntax(public val openBracketToken: ISyntaxToken,
 [suppress("UNUSED_PARAMETER")]
 native
 abstract class PropertySignatureSyntax(public val propertyName: ISyntaxToken,
-                                       public val questionToken: ISyntaxToken,
+                                       public val questionToken: ISyntaxToken?,
                                        public val typeAnnotation: TypeAnnotationSyntax,
                                        parsedInStrictMode: Boolean) : SyntaxNode(parsedInStrictMode), ITypeMemberSyntax {
     public fun update(propertyName: ISyntaxToken,
@@ -892,9 +892,9 @@ abstract class PropertySignatureSyntax(public val propertyName: ISyntaxToken,
 
 [suppress("UNUSED_PARAMETER")]
 native
-abstract class CallSignatureSyntax(public val typeParameterList: TypeParameterListSyntax,
+abstract class CallSignatureSyntax(public val typeParameterList: TypeParameterListSyntax?,
                                    public val parameterList: ParameterListSyntax,
-                                   public val typeAnnotation: TypeAnnotationSyntax,
+                                   public val typeAnnotation: TypeAnnotationSyntax?,
                                    parsedInStrictMode: Boolean) : SyntaxNode(parsedInStrictMode), ITypeMemberSyntax
 {
     public fun update(typeParameterList: TypeParameterListSyntax,
