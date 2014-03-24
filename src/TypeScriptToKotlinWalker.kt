@@ -152,4 +152,17 @@ class TypeScriptToKotlinWalker : SyntaxWalker() {
         visitSeparatedList(node.parameters);
         print(CLOSE_PAREN, suppressSpace = true);
     }
+
+    override fun visitTypeParameterList(node: TypeParameterListSyntax) {
+        print(node.lessThanToken.text(), suppressSpace = true, suppressNextSpace = true);
+        visitSeparatedList(node.typeParameters);
+        print(node.greaterThanToken.text(), suppressSpace = true);
+    }
+
+    override fun visitConstraint(node: ConstraintSyntax) {
+        print(":");
+        val tsType = node.`type`.fullText()
+        val ktType = tsTypeNameToKotlinTypeName(tsType)
+        print(ktType)
+    }
 }
