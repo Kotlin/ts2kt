@@ -47,7 +47,7 @@ trait ISyntaxVisitor {
     fun visitArrayType(node: ArrayTypeSyntax)
     fun visitGenericType(node: GenericTypeSyntax)
     fun visitTypeQuery(node: TypeQuerySyntax)
-    fun visitTypeAnnotation(node: TypeAnnotationSyntax)
+    fun visitTypeAnnotation(node: TypeAnnotationSyntax?)
     fun visitBlock(node: BlockSyntax)
     fun visitParameter(node: ParameterSyntax)
     fun visitMemberAccessExpression(node: MemberAccessExpressionSyntax)

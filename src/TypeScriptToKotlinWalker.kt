@@ -51,6 +51,7 @@ class TypeScriptToKotlinWalker : SyntaxWalker() {
     private val VAL = "val"
     private val VAR = "var"
     private val FUN = "fun"
+    private val VARARG = "vararg"
     private val TRAIT = "trait"
     val OPEN_PAREN = "("
     val CLOSE_PAREN = ")"
@@ -133,9 +134,14 @@ class TypeScriptToKotlinWalker : SyntaxWalker() {
 
 //  Type
 
-    override fun visitTypeAnnotation(node: TypeAnnotationSyntax) {
-        print(":", suppressSpace = true)
-        print(node.`type`.toKotlinTypeName())
+    fun printTypeAnnotation(typeNode: ITypeSyntax?, suppressSpace: Boolean = false) {
+        if (typeNode == null) return
+        print(":", suppressSpace)
+        print(typeNode.toKotlinTypeName())
+    }
+
+    override fun visitTypeAnnotation(node: TypeAnnotationSyntax?) {
+        printTypeAnnotation(node?.`type`, suppressSpace = true)
     }
 
 //    Functions
@@ -161,7 +167,26 @@ class TypeScriptToKotlinWalker : SyntaxWalker() {
         print(CLOSE_PAREN, suppressSpace = true)
     }
 
-//  Generic parameters
+    override fun visitParameter(node: ParameterSyntax) {
+        val originalNodeType = node.typeAnnotation.`type`
+        val nodeType =
+                if (node.dotDotDotToken != null) {
+                    if (originalNodeType.kind() != ArrayType) throw Exception("Rest prarameter must be array types")
+                    print(VARARG)
+                    (originalNodeType as ArrayTypeSyntax).`type`
+                }
+                else {
+                    originalNodeType
+                }
+
+        visitOptionalToken(node.publicOrPrivateKeyword)
+        visitToken(node.identifier)
+        visitOptionalToken(node.questionToken)
+        printTypeAnnotation(nodeType, suppressSpace = true)
+        visitOptionalNode(node.equalsValueClause)
+    }
+
+    //  Generic parameters
 
     override fun visitTypeParameterList(node: TypeParameterListSyntax) {
         print(node.lessThanToken.text(), suppressSpace = true, suppressNextSpace = true)
@@ -170,8 +195,7 @@ class TypeScriptToKotlinWalker : SyntaxWalker() {
     }
 
     override fun visitConstraint(node: ConstraintSyntax) {
-        print(":")
-        print(node.`type`.toKotlinTypeName())
+        printTypeAnnotation(node.`type`, suppressSpace = false)
     }
 
 //    Interfaces

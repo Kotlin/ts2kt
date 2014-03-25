@@ -631,7 +631,7 @@ abstract class BlockSyntax(public val openBraceToken: ISyntaxToken,
 
 [suppress("UNUSED_PARAMETER")]
 native
-abstract class ParameterSyntax(public val dotDotDotToken: ISyntaxToken,
+abstract class ParameterSyntax(public val dotDotDotToken: ISyntaxToken?,
                                public val publicOrPrivateKeyword: ISyntaxToken,
                                public val identifier: ISyntaxToken,
                                public val questionToken: ISyntaxToken,

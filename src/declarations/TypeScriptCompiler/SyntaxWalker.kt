@@ -48,7 +48,7 @@ open class SyntaxWalker : ISyntaxVisitor {
     override fun visitArrayType(node: ArrayTypeSyntax): Unit = noImpl
     override fun visitGenericType(node: GenericTypeSyntax): Unit = noImpl
     override fun visitTypeQuery(node: TypeQuerySyntax): Unit = noImpl
-    override fun visitTypeAnnotation(node: TypeAnnotationSyntax): Unit = noImpl
+    override fun visitTypeAnnotation(node: TypeAnnotationSyntax?): Unit = noImpl
     override fun visitBlock(node: BlockSyntax): Unit = noImpl
     override fun visitParameter(node: ParameterSyntax): Unit = noImpl
     override fun visitMemberAccessExpression(node: MemberAccessExpressionSyntax): Unit = noImpl
