@@ -8,3 +8,5 @@ native
 public var varAsBoolean: Boolean = noImpl
 native
 public var varAsString: String = noImpl
+native
+public var varAsFoo: Foo = noImpl

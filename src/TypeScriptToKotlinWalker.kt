@@ -22,6 +22,8 @@ import ts2kt.utils.listOf
 fun ITypeSyntax?.toKotlinTypeName(): String {
     if (this == null) return "Unit"
 
+    if (this.kind() == ArrayType) return "Array<${(this as ArrayTypeSyntax).`type`.toKotlinTypeName()}>"
+
     val name = this.fullText()
     return when (name) {
                 "any" -> "Any"
