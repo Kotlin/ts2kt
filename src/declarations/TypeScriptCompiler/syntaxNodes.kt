@@ -634,9 +634,9 @@ native
 abstract class ParameterSyntax(public val dotDotDotToken: ISyntaxToken?,
                                public val publicOrPrivateKeyword: ISyntaxToken,
                                public val identifier: ISyntaxToken,
-                               public val questionToken: ISyntaxToken,
+                               public val questionToken: ISyntaxToken?,
                                public val typeAnnotation: TypeAnnotationSyntax,
-                               public val equalsValueClause: EqualsValueClauseSyntax,
+                               public val equalsValueClause: EqualsValueClauseSyntax?,
                                parsedInStrictMode: Boolean) : SyntaxNode(parsedInStrictMode)
 {
     public fun update(dotDotDotToken: ISyntaxToken,

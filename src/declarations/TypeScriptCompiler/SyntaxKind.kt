@@ -24,6 +24,21 @@ val DeclareKeyword: SyntaxKind = noImpl
 native("typescript.SyntaxKind['CommaToken']")
 val CommaToken: SyntaxKind = noImpl
 
+native("typescript.SyntaxKind['VoidKeyword']")
+val VoidKeyword: SyntaxKind = noImpl
+
+native("typescript.SyntaxKind['AnyKeyword']")
+val AnyKeyword: SyntaxKind = noImpl
+
+native("typescript.SyntaxKind['BooleanKeyword']")
+val BooleanKeyword: SyntaxKind = noImpl
+
+native("typescript.SyntaxKind['NumberKeyword']")
+val NumberKeyword: SyntaxKind = noImpl
+
+native("typescript.SyntaxKind['StringKeyword']")
+val StringKeyword: SyntaxKind = noImpl
+
 native("typescript.SyntaxKind['ArrayType']")
 val ArrayType: SyntaxKind = noImpl
 

@@ -22,16 +22,14 @@ import ts2kt.utils.listOf
 fun ITypeSyntax?.toKotlinTypeName(): String {
     if (this == null) return "Unit"
 
-    if (this.kind() == ArrayType) return "Array<${(this as ArrayTypeSyntax).`type`.toKotlinTypeName()}>"
-
-    val name = this.fullText()
-    return when (name) {
-                "any" -> "Any"
-                "number" -> "Number"
-                "string" -> "String"
-                "boolean" -> "Boolean"
-                "void" -> "Unit"
-                else -> name
+    return when (this.kind()) {
+                AnyKeyword -> "Any"
+                NumberKeyword -> "Number"
+                StringKeyword -> "String"
+                BooleanKeyword -> "Boolean"
+                VoidKeyword -> "Unit"
+                ArrayType -> "Array<${(this as ArrayTypeSyntax).`type`.toKotlinTypeName()}>"
+                else -> this.fullText()
             }
 }
 
@@ -181,8 +179,14 @@ class TypeScriptToKotlinWalker : SyntaxWalker() {
 
         visitOptionalToken(node.publicOrPrivateKeyword)
         visitToken(node.identifier)
-        visitOptionalToken(node.questionToken)
         printTypeAnnotation(nodeType, suppressSpace = true)
+        if (node.questionToken != null) {
+            print("?", suppressSpace = true)
+            if (node.equalsValueClause == null) {
+                print("= null") // TODO replace `null` with `undefined`
+            }
+        }
+
         visitOptionalNode(node.equalsValueClause)
     }
 
