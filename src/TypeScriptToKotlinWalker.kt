@@ -25,19 +25,23 @@ fun FunctionTypeSyntax.toKotlinTypeName(): String {
     return "${tr.out} -> ${`type`.toKotlinTypeName()}"
 }
 
+fun ITypeSyntax.toKotlinTypeNameIfStandardType(): String? {
+    return when (this.kind()) {
+        AnyKeyword -> "Any"
+        NumberKeyword -> "Number"
+        StringKeyword -> "String"
+        BooleanKeyword -> "Boolean"
+        VoidKeyword -> "Unit"
+        ArrayType -> "Array<${(this as ArrayTypeSyntax).`type`.toKotlinTypeName()}>"
+        FunctionType -> (this as FunctionTypeSyntax).toKotlinTypeName()
+        else -> null
+    }
+}
+
 fun ITypeSyntax?.toKotlinTypeName(): String {
     if (this == null) return "Unit"
 
-    return when (this.kind()) {
-                AnyKeyword -> "Any"
-                NumberKeyword -> "Number"
-                StringKeyword -> "String"
-                BooleanKeyword -> "Boolean"
-                VoidKeyword -> "Unit"
-                ArrayType -> "Array<${(this as ArrayTypeSyntax).`type`.toKotlinTypeName()}>"
-                FunctionType -> (this as FunctionTypeSyntax).toKotlinTypeName()
-                else -> this.fullText()
-            }
+    return this.toKotlinTypeNameIfStandardType() ?: this.fullText()
 }
 
 fun String?.toKotlinTypeName(): String {
@@ -129,7 +133,9 @@ class TypeScriptToKotlinWalker : SyntaxWalker() {
 //  Translation
 
     override fun visitToken(token: ISyntaxToken) {
-        print(token.text(), suppressSpaceBeforeNodes.contains(token.tokenKind))
+        //TODO: HACK with `toKotlinTypeNameIfStandardType` because sometimes we get raw type here
+        val tokenAsString = token.toKotlinTypeNameIfStandardType() ?: token.text()
+        print(tokenAsString, suppressSpaceBeforeNodes.contains(token.tokenKind))
     }
 
 //  Variables
@@ -239,6 +245,17 @@ class TypeScriptToKotlinWalker : SyntaxWalker() {
         visitOptionalNode(node.typeParameterList)
         visitList(node.heritageClauses)
         visitNode(node.body)
+    }
+
+    override fun visitHeritageClause(node: HeritageClauseSyntax) {
+        print(":")
+        visitSeparatedList(node.typeNames)
+    }
+
+    override fun visitTypeArgumentList(node: TypeArgumentListSyntax) {
+        print(node.lessThanToken.text(), suppressSpace = true, suppressNextSpace = true)
+        visitSeparatedList(node.typeArguments)
+        print(node.greaterThanToken.text(), suppressSpace = true)
     }
 
     override fun visitObjectType(node: ObjectTypeSyntax) {
