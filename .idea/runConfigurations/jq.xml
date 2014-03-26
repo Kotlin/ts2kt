@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="jq" type="NodeJSConfigurationType" factoryName="Node.js" path-to-node="$USER_HOME$/local/bin/node" path-to-js-file="compiled/ts2kt.js" application-parameters="tmp/jquery.d.ts tmp/jquery.kt" working-dir="$PROJECT_DIR$">
+  <configuration default="false" name="jq" type="NodeJSConfigurationType" factoryName="Node.js" path-to-node="/usr/local/bin/node" path-to-js-file="compiled/ts2kt.js" application-parameters="tmp/jquery.d.ts tmp/jquery.kt" working-dir="$PROJECT_DIR$">
     <RunnerSettings RunnerId="NodeJS.debug" />
     <RunnerSettings RunnerId="NodeJS.run" />
     <ConfigurationWrapper RunnerId="NodeJS.debug" />
