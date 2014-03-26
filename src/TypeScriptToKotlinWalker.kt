@@ -19,6 +19,12 @@ package ts2kt
 import typescript.*
 import ts2kt.utils.listOf
 
+fun FunctionTypeSyntax.toKotlinTypeName(): String {
+    val tr = TypeScriptToKotlinWalker()
+    tr.visitNode(parameterList)
+    return "${tr.out} -> ${`type`.toKotlinTypeName()}"
+}
+
 fun ITypeSyntax?.toKotlinTypeName(): String {
     if (this == null) return "Unit"
 
@@ -29,8 +35,22 @@ fun ITypeSyntax?.toKotlinTypeName(): String {
                 BooleanKeyword -> "Boolean"
                 VoidKeyword -> "Unit"
                 ArrayType -> "Array<${(this as ArrayTypeSyntax).`type`.toKotlinTypeName()}>"
+                FunctionType -> (this as FunctionTypeSyntax).toKotlinTypeName()
                 else -> this.fullText()
             }
+}
+
+fun String?.toKotlinTypeName(): String {
+    if (this == null) return "Unit"
+
+    return when (this) {
+        "any" -> "Any"
+        "number" -> "Number"
+        "string" -> "String"
+        "boolean" -> "Boolean"
+        "void" -> "Unit"
+        else -> this
+    }
 }
 
 fun TypeAnnotationSyntax?.toKotlinTypeName(): String = this?.`type`.toKotlinTypeName()
@@ -166,20 +186,26 @@ class TypeScriptToKotlinWalker : SyntaxWalker() {
     }
 
     override fun visitParameter(node: ParameterSyntax) {
-        val originalNodeType = node.typeAnnotation.`type`
+        val originalNodeType = node.typeAnnotation?.`type`
         val nodeType =
                 if (node.dotDotDotToken != null) {
-                    if (originalNodeType.kind() != ArrayType) throw Exception("Rest prarameter must be array types")
+                    if (originalNodeType?.kind() != ArrayType) throw Exception("Rest prarameter must be array types")
                     print(VARARG)
-                    (originalNodeType as ArrayTypeSyntax).`type`
+                    (originalNodeType as? ArrayTypeSyntax)?.`type`
                 }
                 else {
                     originalNodeType
                 }
 
         visitOptionalToken(node.publicOrPrivateKeyword)
-        visitToken(node.identifier)
-        printTypeAnnotation(nodeType, suppressSpace = true)
+        if (node.typeAnnotation == null) {
+            print(node.identifier.fullText().toKotlinTypeName(), suppressSpace = true)
+        }
+        else {
+            visitToken(node.identifier)
+            printTypeAnnotation(nodeType, suppressSpace = true)
+        }
+
         if (node.questionToken != null) {
             print("?", suppressSpace = true)
             if (node.equalsValueClause == null) {
