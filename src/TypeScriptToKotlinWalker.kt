@@ -204,15 +204,28 @@ class TypeScriptToKotlinWalker : SyntaxWalker() {
                 }
 
         visitOptionalToken(node.publicOrPrivateKeyword)
+
+        if (node.typeAnnotation != null) {
+            visitToken(node.identifier)
+            print(":", suppressSpace = true)
+        }
+
+        if (node.questionToken != null && nodeType?.kind() == FunctionType) {
+            print(OPEN_PAREN, suppressNextSpace = true)
+        }
+
         if (node.typeAnnotation == null) {
-            print(node.identifier.fullText().toKotlinTypeName(), suppressSpace = true)
+            print(node.identifier.fullText().toKotlinTypeName())
         }
         else {
-            visitToken(node.identifier)
-            printTypeAnnotation(nodeType, suppressSpace = true)
+            print(nodeType.toKotlinTypeName())
         }
 
         if (node.questionToken != null) {
+            if (nodeType?.kind() == FunctionType) {
+                print(CLOSE_PAREN, suppressSpace = true)
+            }
+
             print("?", suppressSpace = true)
             if (node.equalsValueClause == null) {
                 print("= null") // TODO replace `null` with `undefined`
@@ -275,7 +288,19 @@ class TypeScriptToKotlinWalker : SyntaxWalker() {
         print(PUBLIC)
         print(VAR)
         visitToken(node.propertyName)
-        visitOptionalNode(node.typeAnnotation)
+
+        print(":", suppressSpace = true)
+
+        val needParens = node.questionToken != null && node.typeAnnotation.`type`.kind() == FunctionType
+        if (needParens) {
+            print(OPEN_PAREN, suppressNextSpace = true)
+        }
+
+        print(node.typeAnnotation.toKotlinTypeName())
+
+        if (needParens) {
+            print(CLOSE_PAREN, suppressSpace = true)
+        }
         print(node.questionToken?.text(), suppressSpace = true)
     }
 
