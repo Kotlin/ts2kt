@@ -1,4 +1,4 @@
 interface Foo {
     [n: number]: Bar;
-    [s: string]: String;
+    [s: string]: string;
 }
