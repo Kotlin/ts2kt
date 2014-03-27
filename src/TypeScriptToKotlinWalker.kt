@@ -17,7 +17,7 @@
 package ts2kt
 
 import typescript.*
-import ts2kt.utils.listOf
+import ts2kt.utils.*
 
 fun FunctionTypeSyntax.toKotlinTypeName(): String {
     val tr = TypeScriptToKotlinWalker()
@@ -130,12 +130,24 @@ class TypeScriptToKotlinWalker : SyntaxWalker() {
         return false
     }
 
+    val SHOULD_BE_ESCAPED =
+            setOf("val", "var", "is", "as", "trait", "package", "object", "when", "type", "fun", "in", "This")
+
+    fun String.escapedIfNeed(): String {
+        return if (this in SHOULD_BE_ESCAPED || this.contains("$")) {
+            "`$this`"
+        }
+        else {
+            this
+        }
+    }
+
 //  Translation
 
     override fun visitToken(token: ISyntaxToken) {
         //TODO: HACK with `toKotlinTypeNameIfStandardType` because sometimes we get raw type here
         val tokenAsString = token.toKotlinTypeNameIfStandardType() ?: token.text()
-        print(tokenAsString, suppressSpaceBeforeNodes.contains(token.tokenKind))
+        print(tokenAsString.escapedIfNeed(), suppressSpaceBeforeNodes.contains(token.tokenKind))
     }
 
 //  Variables
