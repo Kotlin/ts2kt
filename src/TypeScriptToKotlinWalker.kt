@@ -75,6 +75,9 @@ class TypeScriptToKotlinWalker : SyntaxWalker() {
     private val FUN = "fun"
     private val VARARG = "vararg"
     private val TRAIT = "trait"
+    val INVOKE = "invoke"
+    val GET = "get"
+    val SET = "set"
     val OPEN_PAREN = "("
     val CLOSE_PAREN = ")"
     var spaceSuppressed = false
@@ -191,7 +194,7 @@ class TypeScriptToKotlinWalker : SyntaxWalker() {
 //      TODO  visitList(node.modifiers)
         print(FUN)
         visitToken(node.identifier)
-        visitNode(node.callSignature)
+        translateCallSignature(node.callSignature)
         println("= noImpl")
     }
 
@@ -322,7 +325,7 @@ class TypeScriptToKotlinWalker : SyntaxWalker() {
         if (node.questionToken == null) {
             print(FUN)
             visitToken(node.propertyName)
-            visitNode(node.callSignature)
+            translateCallSignature(node.callSignature)
         }
         else {
             val call = node.callSignature
@@ -341,5 +344,47 @@ class TypeScriptToKotlinWalker : SyntaxWalker() {
             print(CLOSE_PAREN, suppressSpace = true)
             print("?", suppressSpace = true)
         }
+    }
+
+    private fun translateCallSignature(node: CallSignatureSyntax) {
+        visitOptionalNode(node.typeParameterList)
+        visitNode(node.parameterList)
+        visitOptionalNode(node.typeAnnotation)
+    }
+
+    override fun visitCallSignature(node: CallSignatureSyntax) {
+        print(PUBLIC)
+        print(FUN)
+        print(INVOKE)
+        translateCallSignature(node)
+    }
+
+    private fun translateAccessor(node: IndexSignatureSyntax, isGetter: Boolean = true) {
+        val methodName = if (isGetter) GET else SET
+
+        print(PUBLIC)
+        print(FUN)
+        print(methodName)
+
+        print(OPEN_PAREN, suppressSpace = true, suppressNextSpace = true)
+        visitNode(node.parameter)
+        if (!isGetter) {
+            print(",", suppressSpace = true)
+            print("value")
+            print(node.typeAnnotation)
+            visitOptionalNode(node.typeAnnotation)
+        }
+
+        print(CLOSE_PAREN, suppressSpace = true)
+
+        if (isGetter) {
+            visitOptionalNode(node.typeAnnotation)
+        }
+    }
+
+    override fun visitIndexSignature(node: IndexSignatureSyntax) {
+        translateAccessor(node)
+        println()
+        translateAccessor(node, isGetter = false)
     }
 }
