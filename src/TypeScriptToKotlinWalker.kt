@@ -38,10 +38,16 @@ fun ITypeSyntax.toKotlinTypeNameIfStandardType(): String? {
     }
 }
 
+fun ITypeSyntax.getText(): String {
+    if (this.isToken()) return (this as ISyntaxToken).text()
+
+    return this.fullText()
+}
+
 fun ITypeSyntax?.toKotlinTypeName(): String {
     if (this == null) return "Unit"
 
-    return this.toKotlinTypeNameIfStandardType() ?: this.fullText()
+    return this.toKotlinTypeNameIfStandardType() ?: this.getText()
 }
 
 fun String?.toKotlinTypeName(): String {
@@ -75,6 +81,7 @@ class TypeScriptToKotlinWalker : SyntaxWalker() {
     private val FUN = "fun"
     private val VARARG = "vararg"
     private val TRAIT = "trait"
+    private val CLASS = "class"
     val INVOKE = "invoke"
     val GET = "get"
     val SET = "set"
@@ -371,7 +378,6 @@ class TypeScriptToKotlinWalker : SyntaxWalker() {
         if (!isGetter) {
             print(",", suppressSpace = true)
             print("value")
-            print(node.typeAnnotation)
             visitOptionalNode(node.typeAnnotation)
         }
 
@@ -387,4 +393,55 @@ class TypeScriptToKotlinWalker : SyntaxWalker() {
         println()
         translateAccessor(node, isGetter = false)
     }
+
+//  Classes
+
+    override fun visitClassDeclaration(node: ClassDeclarationSyntax) {
+        println(NATIVE)
+        print(PUBLIC)
+//      todo visitList(node.modifiers)
+        print(CLASS)
+        visitToken(node.identifier)
+        visitOptionalNode(node.typeParameterList)
+        visitList(node.heritageClauses)
+
+        //this.visitList(node.classElements);
+
+//      Class body
+
+        println(node.openBraceToken.text())
+        enterBlock()
+
+        for (nodeOrToken in node.classElements.toArray()) {
+            visitOptionalNodeOrToken(nodeOrToken)
+            println()
+        }
+
+        exitBlock()
+        println(node.closeBraceToken.text())
+
+    }
+
+    override fun visitMemberFunctionDeclaration(node: MemberFunctionDeclarationSyntax) {
+        print(PUBLIC)
+        print(FUN)
+//        visitList(node.modifiers)
+        visitToken(node.propertyName)
+        translateCallSignature(node.callSignature)
+
+//      TODO assert null?
+//        visitOptionalNode(node.block)
+//        visitOptionalToken(node.semicolonToken)
+    }
+
+
+    override fun visitMemberVariableDeclaration(node: MemberVariableDeclarationSyntax) {
+        print(PUBLIC)
+        print(VAR)
+
+//        visitList(node.modifiers)
+        visitNode(node.variableDeclarator)
+    }
+
+
 }
