@@ -397,6 +397,9 @@ class TypeScriptToKotlinWalker : SyntaxWalker() {
 //  Classes
 
     override fun visitClassDeclaration(node: ClassDeclarationSyntax) {
+        // Skip if not declare
+        if (!node.modifiers.containsBy(DeclareKeyword) { it.kind() } ) return
+
         println(NATIVE)
         print(PUBLIC)
 //      todo visitList(node.modifiers)
