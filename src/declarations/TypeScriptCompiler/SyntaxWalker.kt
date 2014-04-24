@@ -108,6 +108,7 @@ open class SyntaxWalker : ISyntaxVisitor {
     override fun visitDebuggerStatement(node: DebuggerStatementSyntax): Unit = noImpl
 
     public open fun visitNode(node: SyntaxNode): Unit = noImpl
+    public open fun visitNodeOrToken(nodeOrToken: ISyntaxNodeOrToken): Unit = noImpl
     public open fun visitList(list: ISyntaxList): Unit = noImpl
     public open fun visitSeparatedList(list: ISeparatedSyntaxList): Unit = noImpl
     public open fun visitOptionalNode(node: SyntaxNode?): Unit = noImpl

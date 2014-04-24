@@ -25,6 +25,12 @@ fun FunctionTypeSyntax.toKotlinTypeName(): String {
     return "${tr.out} -> ${`type`.toKotlinTypeName()}"
 }
 
+fun GenericTypeSyntax.toKotlinTypeName(): String {
+    val tr = TypeScriptToKotlinWalker()
+    tr.visitNode(typeArgumentList)
+    return "${name.getText()}${tr.out}"
+}
+
 fun ITypeSyntax.toKotlinTypeNameIfStandardType(): String? {
     return when (this.kind()) {
         AnyKeyword -> "Any"
@@ -33,6 +39,7 @@ fun ITypeSyntax.toKotlinTypeNameIfStandardType(): String? {
         BooleanKeyword -> "Boolean"
         VoidKeyword -> "Unit"
         ArrayType -> "Array<${(this as ArrayTypeSyntax).`type`.toKotlinTypeName()}>"
+        GenericType -> (this as GenericTypeSyntax).toKotlinTypeName()
         FunctionType -> (this as FunctionTypeSyntax).toKotlinTypeName()
         else -> null
     }
@@ -190,7 +197,13 @@ class TypeScriptToKotlinWalker : SyntaxWalker() {
         printTypeAnnotation(node?.`type`, suppressSpace = true)
     }
 
-//    Functions
+    override fun visitArrayType(node: ArrayTypeSyntax) {
+        print("Array<", suppressNextSpace = true);
+        visitNodeOrToken(node.`type`);
+        print(">", suppressSpace = true)
+    }
+
+    //    Functions
 
     override fun visitFunctionDeclaration(node: FunctionDeclarationSyntax) {
         // Skip if not declare

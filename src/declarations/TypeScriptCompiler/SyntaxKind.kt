@@ -42,6 +42,9 @@ val StringKeyword: SyntaxKind = noImpl
 native("typescript.SyntaxKind['ArrayType']")
 val ArrayType: SyntaxKind = noImpl
 
+native("typescript.SyntaxKind['GenericType']")
+val GenericType: SyntaxKind = noImpl
+
 native("typescript.SyntaxKind['FunctionType']")
 val FunctionType: SyntaxKind = noImpl
 
