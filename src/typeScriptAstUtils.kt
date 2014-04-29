@@ -23,6 +23,7 @@ import ts2kt.kotlin.ast.FunParam
 import ts2kt.kotlin.ast.TypeAnnotation
 import ts2kt.utils.join
 import ts2kt.kotlin.ast.TypeParam
+import ts2kt.kotlin.ast.CallSignature
 
 val SHOULD_BE_ESCAPED =
         setOf("val", "var", "is", "as", "trait", "package", "object", "when", "type", "fun", "in", "This")
@@ -36,9 +37,9 @@ fun String.escapedIfNeed(): String {
     }
 }
 
-fun ISyntaxElement.getText(): String = (if (this.isToken()) (this as ISyntaxToken).text() else this.fullText()).escapedIfNeed()
+fun ISyntaxElement.getText(): String = if (this.isToken()) (this as ISyntaxToken).text() else this.fullText()
 
-//fun IIdentifierSyntax.getText(): String = (this: ISyntaxElement).getText().escapedIfNeed()
+fun ShouldBeEscaped.getText(): String = (this: ISyntaxElement).getText().escapedIfNeed()
 
 ///
 
@@ -76,6 +77,15 @@ fun TypeParameterListSyntax.toKotlinTypeParams(): List<TypeParam>  =
             val upperBound = typeParam.constraint?.`type`?.toKotlinTypeName()
             TypeParam(typeName, upperBound)
         }
+
+fun CallSignatureSyntax.toKotlinCallSignature(): CallSignature {
+    val typeParams = typeParameterList?.toKotlinTypeParams()
+    val params = parameterList.toKotlinParams()
+    val returnType = typeAnnotation?.toKotlinTypeName() ?: "Unit"
+
+    return CallSignature(params, typeParams, TypeAnnotation(returnType))
+}
+
 
 //TODO: do we need LambdaType???
 fun FunctionTypeSyntax.toKotlinTypeName(): String {

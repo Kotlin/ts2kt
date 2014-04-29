@@ -27,8 +27,6 @@ private val VAL = "val"
 private val FUN = "fun"
 private val VARARG = "vararg"
 
-//private val NEW_LINE = "\n"
-
 private val INDENT = "    "
 private val indents = listOf("") as MutableList<String>
 
@@ -78,14 +76,6 @@ abstract class Node(val needsFixIndent: Boolean = false) {
         return lines.join("\n")
     }
 }
-
-//class SimpleNode(val value: String) : Node() {
-//    override fun stringify(): String = value
-//}
-
-//object EMPTY : Node() {
-//    override fun stringify(): String = throw UnsupportedOperationException()
-//}
 
 class MemberList(val elements: List<Member>) : Node() {
     override fun stringify(): String = throw UnsupportedOperationException()
@@ -149,11 +139,20 @@ class FunParam(override val name: String, val `type`: TypeAnnotation, val defaul
             (if (`type`.isVararg) VARARG + " " else "") + name + `type` + if (defaultValue == null) "" else " = $defaultValue"
 }
 
+class CallSignature(
+        val params: List<FunParam>,
+        val typeParams: List<TypeParam>?,
+        val returnType: TypeAnnotation
+) : Node() {
+    override fun stringify(): String =
+            (typeParams?.join(startWithIfNotEmpty = "<", endWithIfNotEmpty = ">") ?: "") +
+            params.join(start = "(", end = ")") +
+            returnType
+}
+
 class Function(
         override val name: String,
-        val params: List<FunParam>,
-        val returnType: TypeAnnotation,
-        val typeParams: List<TypeParam>?,
+        val callSignature: CallSignature,
         override val annotations: List<Annotation>,
         val needsNoImpl: Boolean = true
 ) : Member, Node() {
@@ -161,9 +160,7 @@ class Function(
             annotations.stringify() +
             "$PUBLIC $FUN " +
             name +
-            (typeParams?.join(startWithIfNotEmpty = "<", endWithIfNotEmpty = ">") ?: "") +
-            params.join(start = "(", end = ")") +
-            returnType +
+            callSignature +
             if (needsNoImpl) EQ_NO_IMPL else ""
 }
 

@@ -116,14 +116,15 @@ native
 trait IUnaryExpressionSyntax : IExpressionSyntax
 
 native
-trait ITypeSyntax : IUnaryExpressionSyntax
+trait ITypeSyntax : ShouldBeEscaped, IUnaryExpressionSyntax
 
 native
-trait INameSyntax : ITypeSyntax
+trait INameSyntax : ShouldBeEscaped, ITypeSyntax
 
 // Sugar
 native
-trait IIdentifierSyntax : ISyntaxToken
+trait IIdentifierSyntax : ShouldBeEscaped, ISyntaxToken
 
-
+native
+trait ShouldBeEscaped: ISyntaxElement
 

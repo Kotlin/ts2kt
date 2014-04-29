@@ -37,10 +37,9 @@ abstract class TypeScriptToKotlinBase : SyntaxWalker() {
         declarations.add(Variable(name, TypeAnnotation(`type`, isNullable = isNullable, isLambda = isLambda), defaultAnnotations, typeParams, isVar = isVar, needsNoImpl = needsNoImpl))
     }
 
-    fun addFunction(name: String, params: List<FunParam>, returnType: String, typeParams: List<TypeParam>?, needsNoImpl: Boolean = true) {
-        declarations.add(Function(name, params, TypeAnnotation(returnType), typeParams, defaultAnnotations, needsNoImpl = needsNoImpl))
+    fun addFunction(name: String, callSignature: CallSignature, needsNoImpl: Boolean = true) {
+        declarations.add(Function(name, callSignature, defaultAnnotations, needsNoImpl = needsNoImpl))
     }
-
 }
 
 class TypeScriptToKotlinWalker(val packageFqName: String? = null) : TypeScriptToKotlinBase() {
@@ -48,13 +47,6 @@ class TypeScriptToKotlinWalker(val packageFqName: String? = null) : TypeScriptTo
         get() = KotlinFile(if (packageFqName != null) Package(packageFqName) else null, declarations)
 
     override val defaultAnnotations: List<Annotation> = NATIVE_ANNOTATION
-
-//    override fun visitToken(token: ISyntaxToken) {
-////        return SimpleNode(token.getText())
-//        //TODO: HACK with `toKotlinTypeNameIfStandardType` because sometimes we get raw type here
-////        val tokenAsString = token.toKotlinTypeNameIfStandardType() ?: token.text()
-////        print(tokenAsString.escapedIfNeed(), suppressSpaceBeforeNodes.contains(token.tokenKind))
-//    }
 
 //  Variables
 
@@ -72,7 +64,7 @@ class TypeScriptToKotlinWalker(val packageFqName: String? = null) : TypeScriptTo
         }
     }
 
-//    Functions
+//  Functions
 
     override fun visitFunctionDeclaration(node: FunctionDeclarationSyntax) {
         // Skip if not declare
@@ -80,14 +72,11 @@ class TypeScriptToKotlinWalker(val packageFqName: String? = null) : TypeScriptTo
 
 //      TODO  visitList(node.modifiers)
         val name = node.identifier.getText()
-        val returnType = node.callSignature.typeAnnotation?.toKotlinTypeName() ?: "Unit"
-        val params = node.callSignature.parameterList.toKotlinParams()
-        val typeParams = node.callSignature.typeParameterList?.toKotlinTypeParams()
-
-        addFunction(name, params, returnType, typeParams)
+        val callSignature = node.callSignature.toKotlinCallSignature()
+        addFunction(name, callSignature)
     }
 
-//    Interfaces
+//  Interfaces
 
     override fun visitInterfaceDeclaration(node: InterfaceDeclarationSyntax) {
         val translator = TsInterfaceToKt()
@@ -95,7 +84,7 @@ class TypeScriptToKotlinWalker(val packageFqName: String? = null) : TypeScriptTo
         declarations.add(translator.result)
     }
 
-////  Classes
+//  Classes
 
     override fun visitClassDeclaration(node: ClassDeclarationSyntax) {
         val translator = TsClassToKt()
@@ -127,12 +116,18 @@ abstract class TsClassifierToKt() : TypeScriptToKotlinBase() {
         val param = node.parameter.toKotlinParam()
         val propType = node.typeAnnotation.toKotlinTypeName()
 
+        val callSignature: CallSignature
+        val accessorName: String
         if (isGetter) {
-            addFunction(GET, listOf(param), propType, listOf(), needsNoImpl)
+            callSignature = CallSignature(listOf(param), listOf(), TypeAnnotation(propType))
+            accessorName = GET
         }
         else {
-            addFunction(SET, listOf(param, FunParam("value", TypeAnnotation(propType))), "Unit", listOf(), needsNoImpl)
+            callSignature = CallSignature(listOf(param, FunParam("value", TypeAnnotation(propType))), listOf(), TypeAnnotation("Unit"))
+            accessorName = SET
         }
+
+        addFunction(accessorName, callSignature, needsNoImpl)
     }
 }
 
@@ -167,28 +162,19 @@ class TsInterfaceToKt() : TsClassifierToKt() {
         val name = node.propertyName.getText()
         val isOptional = node.questionToken != null
 
-        val call = node.callSignature
-
-        // TODO extract
-        val typeParams = call.typeParameterList?.toKotlinTypeParams()
-        val params = call.parameterList.toKotlinParams()
-        val returnType = call.typeAnnotation?.toKotlinTypeName() ?: "Unit"
+        val call = node.callSignature.toKotlinCallSignature()
 
         if (isOptional) {
-            addVariable(name, "(${params.join(", ")}) -> $returnType", typeParams, isVar = false, isNullable = true, isLambda = true, needsNoImpl = false)
+            val typeAsString = "(${call.params.join(", ")}) -> ${call.returnType.name}"
+            addVariable(name, typeAsString, call.typeParams, isVar = false, isNullable = true, isLambda = true, needsNoImpl = false)
         }
         else {
-            addFunction(name, params, returnType, typeParams, needsNoImpl = false)
+            addFunction(name, call, needsNoImpl = false)
         }
     }
 
     override fun visitCallSignature(node: CallSignatureSyntax) {
-        //TODO extract this code???
-        val typeParams = node.typeParameterList?.toKotlinTypeParams()
-        val params = node.parameterList.toKotlinParams()
-        val returnType = node.typeAnnotation?.toKotlinTypeName() ?: "Unit"
-
-        addFunction(INVOKE, params, returnType, typeParams, needsNoImpl = false)
+        addFunction(INVOKE, node.toKotlinCallSignature(), needsNoImpl = false)
     }
 }
 
@@ -211,12 +197,6 @@ class TsClassToKt() : TsClassifierToKt() {
 
         visitList(node.heritageClauses)
         visitList(node.classElements)
-
-//        val elements = node.classElements
-//        for (i in 0..elements.childCount() - 1) {
-//            val nodeOrToken = elements.childAt(i)
-//            visitOptionalNodeOrToken(nodeOrToken)
-//        }
     }
 
     override fun visitMemberVariableDeclaration(node: MemberVariableDeclarationSyntax) {
@@ -233,15 +213,10 @@ class TsClassToKt() : TsClassifierToKt() {
 
     override fun visitMemberFunctionDeclaration(node: MemberFunctionDeclarationSyntax) {
 //        TODO visitList(node.modifiers)
+//        TODO
         val name = node.propertyName.getText()
 
-        val call = node.callSignature
-        // TODO extract
-        val typeParams = call.typeParameterList?.toKotlinTypeParams()
-        val params = call.parameterList.toKotlinParams()
-        val returnType = call.typeAnnotation?.toKotlinTypeName() ?: "Unit"
-
-        addFunction(name, params, returnType, typeParams)
+        addFunction(name, node.callSignature.toKotlinCallSignature())
 
 //      TODO assert null?
 //        visitOptionalNode(node.block)
