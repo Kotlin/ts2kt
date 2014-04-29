@@ -25,6 +25,13 @@ import ts2kt.utils.join
 import ts2kt.kotlin.ast.TypeParam
 import ts2kt.kotlin.ast.CallSignature
 
+val ANY = "Any"
+val NUMBER = "Number"
+val STRING = "String"
+val BOOLEAN = "Boolean"
+val UNIT = "Unit"
+val ARRAY = "Array"
+
 val SHOULD_BE_ESCAPED =
         setOf("val", "var", "is", "as", "trait", "package", "object", "when", "type", "fun", "in", "This")
 
@@ -58,7 +65,7 @@ fun ParameterSyntax.toKotlinParam(): FunParam {
             }
 
     val name = identifier.getText()
-    val typeName = nodeType?.toKotlinTypeName() ?: "Any"
+    val typeName = nodeType?.toKotlinTypeName() ?: ANY
     val defaultValue = equalsValueClause?.value?.fullText()
     val isNullable = questionToken != null
     val isLambda = nodeType?.kind() == FunctionType
@@ -81,31 +88,31 @@ fun TypeParameterListSyntax.toKotlinTypeParams(): List<TypeParam>  =
 fun CallSignatureSyntax.toKotlinCallSignature(): CallSignature {
     val typeParams = typeParameterList?.toKotlinTypeParams()
     val params = parameterList.toKotlinParams()
-    val returnType = typeAnnotation?.toKotlinTypeName() ?: "Unit"
+    val returnType = typeAnnotation?.toKotlinTypeName() ?: UNIT
 
     return CallSignature(params, typeParams, TypeAnnotation(returnType))
 }
 
 
 //TODO: do we need LambdaType???
-fun FunctionTypeSyntax.toKotlinTypeName(): String {
+private fun FunctionTypeSyntax.toKotlinTypeName(): String {
     val params = parameterList.toKotlinParams()
     return "${params.join(", ", start = "(", end = ")")} -> ${`type`.toKotlinTypeName()}"
 }
 
-fun GenericTypeSyntax.toKotlinTypeName(): String {
+private fun GenericTypeSyntax.toKotlinTypeName(): String {
     var typeArgs = typeArgumentList.typeArguments.map { (typeArg: ITypeSyntax) -> typeArg.toKotlinTypeName() }
     return "${name.getText()}<${typeArgs.join(", ")}>"
 }
 
-fun ITypeSyntax.toKotlinTypeNameIfStandardType(): String? {
+private fun ITypeSyntax.toKotlinTypeNameIfStandardType(): String? {
     return when (this.kind()) {
-        AnyKeyword -> "Any"
-        NumberKeyword -> "Number"
-        StringKeyword -> "String"
-        BooleanKeyword -> "Boolean"
-        VoidKeyword -> "Unit"
-        ArrayType -> "Array<${(this as ArrayTypeSyntax).`type`.toKotlinTypeName()}>"
+        AnyKeyword -> ANY
+        NumberKeyword -> NUMBER
+        StringKeyword -> STRING
+        BooleanKeyword -> BOOLEAN
+        VoidKeyword -> UNIT
+        ArrayType -> "$ARRAY<${(this as ArrayTypeSyntax).`type`.toKotlinTypeName()}>"
         GenericType -> (this as GenericTypeSyntax).toKotlinTypeName()
         FunctionType -> (this as FunctionTypeSyntax).toKotlinTypeName()
         else -> null
@@ -114,19 +121,6 @@ fun ITypeSyntax.toKotlinTypeNameIfStandardType(): String? {
 
 fun ITypeSyntax.toKotlinTypeName(): String {
     return this.toKotlinTypeNameIfStandardType() ?: this.getText()
-}
-
-fun String?.toKotlinTypeName(): String {
-    if (this == null) return "Unit"
-
-    return when (this) {
-        "any" -> "Any"
-        "number" -> "Number"
-        "string" -> "String"
-        "boolean" -> "Boolean"
-        "void" -> "Unit"
-        else -> this
-    }
 }
 
 fun TypeAnnotationSyntax.toKotlinTypeName(): String = `type`.toKotlinTypeName()
@@ -173,4 +167,3 @@ fun ISeparatedSyntaxList.iterator(): Iterator<VariableDeclaratorSyntax> {
         override fun hasNext() = i < childCount()
     }
 }
-

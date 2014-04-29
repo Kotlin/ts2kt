@@ -59,8 +59,8 @@ class TypeScriptToKotlinWalker(val packageFqName: String? = null) : TypeScriptTo
         val declarators = node.variableDeclaration.variableDeclarators
         for (d in declarators) {
             val name = d.identifier.getText()
-            val `type` = d.typeAnnotation?.toKotlinTypeName() ?: "Any"
-            addVariable(name, `type`)
+            val varType = d.typeAnnotation?.toKotlinTypeName() ?: ANY
+            addVariable(name, varType)
         }
     }
 
@@ -123,7 +123,7 @@ abstract class TsClassifierToKt() : TypeScriptToKotlinBase() {
             accessorName = GET
         }
         else {
-            callSignature = CallSignature(listOf(param, FunParam("value", TypeAnnotation(propType))), listOf(), TypeAnnotation("Unit"))
+            callSignature = CallSignature(listOf(param, FunParam("value", TypeAnnotation(propType))), listOf(), TypeAnnotation(UNIT))
             accessorName = SET
         }
 
@@ -203,23 +203,19 @@ class TsClassToKt() : TsClassifierToKt() {
 //        TODO visitList(node.modifiers)
         val declarator = node.variableDeclarator
 
-        // TODO extract??? (see TypeScriptToKotlinWalker::visitVariableStatement)
         val name = declarator.identifier.getText()
-        val `type` = declarator.typeAnnotation?.toKotlinTypeName() ?: "Any"
+        val varType = declarator.typeAnnotation?.toKotlinTypeName() ?: ANY
 
-        addVariable(name, `type`)
+        addVariable(name, varType)
     }
 
 
     override fun visitMemberFunctionDeclaration(node: MemberFunctionDeclarationSyntax) {
 //        TODO visitList(node.modifiers)
-//        TODO
         val name = node.propertyName.getText()
 
         addFunction(name, node.callSignature.toKotlinCallSignature())
 
-//      TODO assert null?
-//        visitOptionalNode(node.block)
-//        visitOptionalToken(node.semicolonToken)
+        if (node.block != null) throw Exception("An function in declarations file should not have body, function '${this.name}.$name'")
     }
 }

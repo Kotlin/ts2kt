@@ -1061,7 +1061,7 @@ native
 abstract class MemberFunctionDeclarationSyntax(public val modifiers: ISyntaxList,
                                                public val propertyName: IIdentifierSyntax,
                                                public val callSignature: CallSignatureSyntax,
-                                               public val block: BlockSyntax,
+                                               public val block: BlockSyntax?,
                                                public val semicolonToken: ISyntaxToken,
                                                parsedInStrictMode: Boolean) : SyntaxNode(parsedInStrictMode), IMemberDeclarationSyntax {
     public fun isMemberDeclaration(): Boolean = noImpl
