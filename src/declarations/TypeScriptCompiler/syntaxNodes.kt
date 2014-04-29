@@ -70,7 +70,7 @@ native
 abstract class ImportDeclarationSyntax(
         public val modifiers: ISyntaxList,
         public val importKeyword: ISyntaxToken,
-        public val identifier: ISyntaxToken,
+        public val identifier: IIdentifierSyntax,
         public val equalsToken: ISyntaxToken,
         public val moduleReference: ModuleReferenceSyntax,
         public val semicolonToken: ISyntaxToken,
@@ -78,7 +78,7 @@ abstract class ImportDeclarationSyntax(
 {
     public fun update(modifiers: ISyntaxList,
                       importKeyword: ISyntaxToken,
-                      identifier: ISyntaxToken,
+                      identifier: IIdentifierSyntax,
                       equalsToken: ISyntaxToken,
                       moduleReference: ModuleReferenceSyntax,
                       semicolonToken: ISyntaxToken): ImportDeclarationSyntax = noImpl
@@ -86,7 +86,7 @@ abstract class ImportDeclarationSyntax(
     public fun withModifiers(modifiers: ISyntaxList): ImportDeclarationSyntax = noImpl
     public fun withModifier(modifier: ISyntaxToken): ImportDeclarationSyntax = noImpl
     public fun withImportKeyword(importKeyword: ISyntaxToken): ImportDeclarationSyntax = noImpl
-    public fun withIdentifier(identifier: ISyntaxToken): ImportDeclarationSyntax = noImpl
+    public fun withIdentifier(identifier: IIdentifierSyntax): ImportDeclarationSyntax = noImpl
     public fun withEqualsToken(equalsToken: ISyntaxToken): ImportDeclarationSyntax = noImpl
     public fun withModuleReference(moduleReference: ModuleReferenceSyntax): ImportDeclarationSyntax = noImpl
     public fun withSemicolonToken(semicolonToken: ISyntaxToken): ImportDeclarationSyntax = noImpl
@@ -96,18 +96,18 @@ abstract class ImportDeclarationSyntax(
 native
 abstract class ExportAssignmentSyntax(public val exportKeyword: ISyntaxToken,
                                       public val equalsToken: ISyntaxToken,
-                                      public val identifier: ISyntaxToken,
+                                      public val identifier: IIdentifierSyntax,
                                       public val semicolonToken: ISyntaxToken,
                                       parsedInStrictMode: Boolean) : SyntaxNode(parsedInStrictMode), IModuleElementSyntax {
 
     public fun update(exportKeyword: ISyntaxToken,
                       equalsToken: ISyntaxToken,
-                      identifier: ISyntaxToken,
+                      identifier: IIdentifierSyntax,
                       semicolonToken: ISyntaxToken): ExportAssignmentSyntax = noImpl
 
     public fun withExportKeyword(exportKeyword: ISyntaxToken): ExportAssignmentSyntax = noImpl
     public fun withEqualsToken(equalsToken: ISyntaxToken): ExportAssignmentSyntax = noImpl
-    public fun withIdentifier(identifier: ISyntaxToken): ExportAssignmentSyntax = noImpl
+    public fun withIdentifier(identifier: IIdentifierSyntax): ExportAssignmentSyntax = noImpl
     public fun withSemicolonToken(semicolonToken: ISyntaxToken): ExportAssignmentSyntax = noImpl
 }
 
@@ -115,8 +115,8 @@ abstract class ExportAssignmentSyntax(public val exportKeyword: ISyntaxToken,
 native
 abstract class ClassDeclarationSyntax(public val modifiers: ISyntaxList,
                                       public val classKeyword: ISyntaxToken,
-                                      public val identifier: ISyntaxToken,
-                                      public val typeParameterList: TypeParameterListSyntax,
+                                      public val identifier: IIdentifierSyntax,
+                                      public val typeParameterList: TypeParameterListSyntax?,
                                       public val heritageClauses: ISyntaxList,
                                       public val openBraceToken: ISyntaxToken,
                                       public val classElements: ISyntaxList,
@@ -125,7 +125,7 @@ abstract class ClassDeclarationSyntax(public val modifiers: ISyntaxList,
 
     public fun update(modifiers: ISyntaxList,
                       classKeyword: ISyntaxToken,
-                      identifier: ISyntaxToken,
+                      identifier: IIdentifierSyntax,
                       typeParameterList: TypeParameterListSyntax,
                       heritageClauses: ISyntaxList,
                       openBraceToken: ISyntaxToken,
@@ -135,7 +135,7 @@ abstract class ClassDeclarationSyntax(public val modifiers: ISyntaxList,
     public fun withModifiers(modifiers: ISyntaxList): ClassDeclarationSyntax = noImpl
     public fun withModifier(modifier: ISyntaxToken): ClassDeclarationSyntax = noImpl
     public fun withClassKeyword(classKeyword: ISyntaxToken): ClassDeclarationSyntax = noImpl
-    public fun withIdentifier(identifier: ISyntaxToken): ClassDeclarationSyntax = noImpl
+    public fun withIdentifier(identifier: IIdentifierSyntax): ClassDeclarationSyntax = noImpl
     public fun withTypeParameterList(typeParameterList: TypeParameterListSyntax): ClassDeclarationSyntax = noImpl
     public fun withHeritageClauses(heritageClauses: ISyntaxList): ClassDeclarationSyntax = noImpl
     public fun withHeritageClause(heritageClause: HeritageClauseSyntax): ClassDeclarationSyntax = noImpl
@@ -149,15 +149,15 @@ abstract class ClassDeclarationSyntax(public val modifiers: ISyntaxList,
 native
 abstract class InterfaceDeclarationSyntax(public val modifiers: ISyntaxList,
                                           public val interfaceKeyword: ISyntaxToken,
-                                          public val identifier: ISyntaxToken,
-                                          public val typeParameterList: TypeParameterListSyntax,
+                                          public val identifier: IIdentifierSyntax,
+                                          public val typeParameterList: TypeParameterListSyntax?,
                                           public val heritageClauses: ISyntaxList,
                                           public val body: ObjectTypeSyntax,
                                           parsedInStrictMode: Boolean) : SyntaxNode(parsedInStrictMode), IModuleElementSyntax
 {
     public fun update(modifiers: ISyntaxList,
                       interfaceKeyword: ISyntaxToken,
-                      identifier: ISyntaxToken,
+                      identifier: IIdentifierSyntax,
                       typeParameterList: TypeParameterListSyntax,
                       heritageClauses: ISyntaxList,
                       body: ObjectTypeSyntax): InterfaceDeclarationSyntax = noImpl
@@ -165,7 +165,7 @@ abstract class InterfaceDeclarationSyntax(public val modifiers: ISyntaxList,
     public fun withModifiers(modifiers: ISyntaxList): InterfaceDeclarationSyntax = noImpl
     public fun withModifier(modifier: ISyntaxToken): InterfaceDeclarationSyntax = noImpl
     public fun withInterfaceKeyword(interfaceKeyword: ISyntaxToken): InterfaceDeclarationSyntax = noImpl
-    public fun withIdentifier(identifier: ISyntaxToken): InterfaceDeclarationSyntax = noImpl
+    public fun withIdentifier(identifier: IIdentifierSyntax): InterfaceDeclarationSyntax = noImpl
     public fun withTypeParameterList(typeParameterList: TypeParameterListSyntax): InterfaceDeclarationSyntax = noImpl
     public fun withHeritageClauses(heritageClauses: ISyntaxList): InterfaceDeclarationSyntax = noImpl
     public fun withHeritageClause(heritageClause: HeritageClauseSyntax): InterfaceDeclarationSyntax = noImpl
@@ -219,7 +219,7 @@ abstract class ModuleDeclarationSyntax(public val modifiers: ISyntaxList,
 native
 abstract class FunctionDeclarationSyntax(public val modifiers: ISyntaxList,
                                          public val functionKeyword: ISyntaxToken,
-                                         public val identifier: ISyntaxToken,
+                                         public val identifier: IIdentifierSyntax,
                                          public val callSignature: CallSignatureSyntax,
                                          public val block: BlockSyntax,
                                          public val semicolonToken: ISyntaxToken,
@@ -227,7 +227,7 @@ abstract class FunctionDeclarationSyntax(public val modifiers: ISyntaxList,
 {
     public fun update(modifiers: ISyntaxList,
                       functionKeyword: ISyntaxToken,
-                      identifier: ISyntaxToken,
+                      identifier: IIdentifierSyntax,
                       callSignature: CallSignatureSyntax,
                       block: BlockSyntax,
                       semicolonToken: ISyntaxToken): FunctionDeclarationSyntax = noImpl
@@ -235,7 +235,7 @@ abstract class FunctionDeclarationSyntax(public val modifiers: ISyntaxList,
     public fun withModifiers(modifiers: ISyntaxList): FunctionDeclarationSyntax = noImpl
     public fun withModifier(modifier: ISyntaxToken): FunctionDeclarationSyntax = noImpl
     public fun withFunctionKeyword(functionKeyword: ISyntaxToken): FunctionDeclarationSyntax = noImpl
-    public fun withIdentifier(identifier: ISyntaxToken): FunctionDeclarationSyntax = noImpl
+    public fun withIdentifier(identifier: IIdentifierSyntax): FunctionDeclarationSyntax = noImpl
     public fun withCallSignature(callSignature: CallSignatureSyntax): FunctionDeclarationSyntax = noImpl
     public fun withBlock(block: BlockSyntax): FunctionDeclarationSyntax = noImpl
     public fun withSemicolonToken(semicolonToken: ISyntaxToken): FunctionDeclarationSyntax = noImpl
@@ -272,16 +272,16 @@ abstract class VariableDeclarationSyntax(public val varKeyword: ISyntaxToken,
 
 [suppress("UNUSED_PARAMETER")]
 native
-abstract class VariableDeclaratorSyntax(public val identifier: ISyntaxToken,
+abstract class VariableDeclaratorSyntax(public val identifier: IIdentifierSyntax,
                                         public val typeAnnotation: TypeAnnotationSyntax?,
                                         public val equalsValueClause: EqualsValueClauseSyntax,
                                         parsedInStrictMode: Boolean) : SyntaxNode(parsedInStrictMode)
 {
 
-    public fun update(identifier: ISyntaxToken, typeAnnotation: TypeAnnotationSyntax,
+    public fun update(identifier: IIdentifierSyntax, typeAnnotation: TypeAnnotationSyntax,
                       equalsValueClause: EqualsValueClauseSyntax): VariableDeclaratorSyntax = noImpl
 
-    public fun withIdentifier(identifier: ISyntaxToken): VariableDeclaratorSyntax = noImpl
+    public fun withIdentifier(identifier: IIdentifierSyntax): VariableDeclaratorSyntax = noImpl
     public fun withTypeAnnotation(typeAnnotation: TypeAnnotationSyntax): VariableDeclaratorSyntax = noImpl
     public fun withEqualsValueClause(equalsValueClause: EqualsValueClauseSyntax): VariableDeclaratorSyntax = noImpl
 }
@@ -380,16 +380,16 @@ abstract class ArrowFunctionExpressionSyntax(public val equalsGreaterThanToken: 
 
 [suppress("UNUSED_PARAMETER")]
 native
-abstract class SimpleArrowFunctionExpressionSyntax(public val identifier: ISyntaxToken,
+abstract class SimpleArrowFunctionExpressionSyntax(public val identifier: IIdentifierSyntax,
                                                    equalsGreaterThanToken: ISyntaxToken,
                                                    body: ISyntaxNodeOrToken,
                                                    parsedInStrictMode: Boolean) : ArrowFunctionExpressionSyntax(equalsGreaterThanToken, body, parsedInStrictMode)
 {
-    public fun update(identifier: ISyntaxToken,
+    public fun update(identifier: IIdentifierSyntax,
                       equalsGreaterThanToken: ISyntaxToken,
                       body: ISyntaxNodeOrToken): SimpleArrowFunctionExpressionSyntax = noImpl
 
-    public fun withIdentifier(identifier: ISyntaxToken): SimpleArrowFunctionExpressionSyntax = noImpl
+    public fun withIdentifier(identifier: IIdentifierSyntax): SimpleArrowFunctionExpressionSyntax = noImpl
     public fun withEqualsGreaterThanToken(equalsGreaterThanToken: ISyntaxToken): SimpleArrowFunctionExpressionSyntax = noImpl
     public fun withBody(body: ISyntaxNodeOrToken): SimpleArrowFunctionExpressionSyntax = noImpl
 }
@@ -633,7 +633,7 @@ abstract class BlockSyntax(public val openBraceToken: ISyntaxToken,
 native
 abstract class ParameterSyntax(public val dotDotDotToken: ISyntaxToken?,
                                public val publicOrPrivateKeyword: ISyntaxToken,
-                               public val identifier: ISyntaxToken,
+                               public val identifier: IIdentifierSyntax,
                                public val questionToken: ISyntaxToken?,
                                public val typeAnnotation: TypeAnnotationSyntax?,
                                public val equalsValueClause: EqualsValueClauseSyntax?,
@@ -641,7 +641,7 @@ abstract class ParameterSyntax(public val dotDotDotToken: ISyntaxToken?,
 {
     public fun update(dotDotDotToken: ISyntaxToken,
                       publicOrPrivateKeyword: ISyntaxToken,
-                      identifier: ISyntaxToken,
+                      identifier: IIdentifierSyntax,
                       questionToken: ISyntaxToken,
                       typeAnnotation: TypeAnnotationSyntax,
                       equalsValueClause: EqualsValueClauseSyntax): ParameterSyntax = noImpl
@@ -651,7 +651,7 @@ abstract class ParameterSyntax(public val dotDotDotToken: ISyntaxToken?,
 
     public fun withDotDotDotToken(dotDotDotToken: ISyntaxToken): ParameterSyntax = noImpl
     public fun withPublicOrPrivateKeyword(publicOrPrivateKeyword: ISyntaxToken): ParameterSyntax = noImpl
-    public fun withIdentifier(identifier: ISyntaxToken): ParameterSyntax = noImpl
+    public fun withIdentifier(identifier: IIdentifierSyntax): ParameterSyntax = noImpl
     public fun withQuestionToken(questionToken: ISyntaxToken): ParameterSyntax = noImpl
     public fun withTypeAnnotation(typeAnnotation: TypeAnnotationSyntax): ParameterSyntax = noImpl
     public fun withEqualsValueClause(equalsValueClause: EqualsValueClauseSyntax): ParameterSyntax = noImpl
@@ -834,18 +834,18 @@ abstract class ConstructSignatureSyntax(public val newKeyword: ISyntaxToken,
 
 [suppress("UNUSED_PARAMETER")]
 native
-abstract class MethodSignatureSyntax(public val propertyName: ISyntaxToken,
+abstract class MethodSignatureSyntax(public val propertyName: IIdentifierSyntax,
                                      public val questionToken: ISyntaxToken?,
                                      public val callSignature: CallSignatureSyntax,
                                      parsedInStrictMode: Boolean) : SyntaxNode(parsedInStrictMode), ITypeMemberSyntax {
-    public fun update(propertyName: ISyntaxToken,
+    public fun update(propertyName: IIdentifierSyntax,
                       questionToken: ISyntaxToken,
                       callSignature: CallSignatureSyntax): MethodSignatureSyntax = noImpl
 
     public override fun withLeadingTrivia(trivia: ISyntaxTriviaList): MethodSignatureSyntax = noImpl
     public override fun withTrailingTrivia(trivia: ISyntaxTriviaList): MethodSignatureSyntax = noImpl
 
-    public fun withPropertyName(propertyName: ISyntaxToken): MethodSignatureSyntax = noImpl
+    public fun withPropertyName(propertyName: IIdentifierSyntax): MethodSignatureSyntax = noImpl
     public fun withQuestionToken(questionToken: ISyntaxToken): MethodSignatureSyntax = noImpl
     public fun withCallSignature(callSignature: CallSignatureSyntax): MethodSignatureSyntax = noImpl
 }
@@ -874,18 +874,18 @@ abstract class IndexSignatureSyntax(public val openBracketToken: ISyntaxToken,
 
 [suppress("UNUSED_PARAMETER")]
 native
-abstract class PropertySignatureSyntax(public val propertyName: ISyntaxToken,
+abstract class PropertySignatureSyntax(public val propertyName: IIdentifierSyntax,
                                        public val questionToken: ISyntaxToken?,
                                        public val typeAnnotation: TypeAnnotationSyntax,
                                        parsedInStrictMode: Boolean) : SyntaxNode(parsedInStrictMode), ITypeMemberSyntax {
-    public fun update(propertyName: ISyntaxToken,
+    public fun update(propertyName: IIdentifierSyntax,
                       questionToken: ISyntaxToken,
                       typeAnnotation: TypeAnnotationSyntax): PropertySignatureSyntax = noImpl
 
     public override fun withLeadingTrivia(trivia: ISyntaxTriviaList): PropertySignatureSyntax = noImpl
     public override fun withTrailingTrivia(trivia: ISyntaxTriviaList): PropertySignatureSyntax = noImpl
 
-    public fun withPropertyName(propertyName: ISyntaxToken): PropertySignatureSyntax = noImpl
+    public fun withPropertyName(propertyName: IIdentifierSyntax): PropertySignatureSyntax = noImpl
     public fun withQuestionToken(questionToken: ISyntaxToken): PropertySignatureSyntax = noImpl
     public fun withTypeAnnotation(typeAnnotation: TypeAnnotationSyntax): PropertySignatureSyntax = noImpl
 }
@@ -951,16 +951,16 @@ abstract class TypeParameterListSyntax(public val lessThanToken: ISyntaxToken,
 
 [suppress("UNUSED_PARAMETER")]
 native
-abstract class TypeParameterSyntax(public val identifier: ISyntaxToken,
-                                   public val constraint: ConstraintSyntax,
+abstract class TypeParameterSyntax(public val identifier: IIdentifierSyntax,
+                                   public val constraint: ConstraintSyntax?,
                                    parsedInStrictMode: Boolean) : SyntaxNode(parsedInStrictMode) {
-    public fun update(identifier: ISyntaxToken,
+    public fun update(identifier: IIdentifierSyntax,
                       constraint: ConstraintSyntax): TypeParameterSyntax = noImpl
 
     public override fun withLeadingTrivia(trivia: ISyntaxTriviaList): TypeParameterSyntax = noImpl
     public override fun withTrailingTrivia(trivia: ISyntaxTriviaList): TypeParameterSyntax = noImpl
 
-    public fun withIdentifier(identifier: ISyntaxToken): TypeParameterSyntax = noImpl
+    public fun withIdentifier(identifier: IIdentifierSyntax): TypeParameterSyntax = noImpl
     public fun withConstraint(constraint: ConstraintSyntax): TypeParameterSyntax = noImpl
 }
 
@@ -1059,7 +1059,7 @@ abstract class ConstructorDeclarationSyntax(public val constructorKeyword: ISynt
 [suppress("UNUSED_PARAMETER")]
 native
 abstract class MemberFunctionDeclarationSyntax(public val modifiers: ISyntaxList,
-                                               public val propertyName: ISyntaxToken,
+                                               public val propertyName: IIdentifierSyntax,
                                                public val callSignature: CallSignatureSyntax,
                                                public val block: BlockSyntax,
                                                public val semicolonToken: ISyntaxToken,
@@ -1067,7 +1067,7 @@ abstract class MemberFunctionDeclarationSyntax(public val modifiers: ISyntaxList
     public fun isMemberDeclaration(): Boolean = noImpl
 
     public fun update(modifiers: ISyntaxList,
-                      propertyName: ISyntaxToken,
+                      propertyName: IIdentifierSyntax,
                       callSignature: CallSignatureSyntax,
                       block: BlockSyntax,
                       semicolonToken: ISyntaxToken): MemberFunctionDeclarationSyntax = noImpl
@@ -1077,7 +1077,7 @@ abstract class MemberFunctionDeclarationSyntax(public val modifiers: ISyntaxList
 
     public fun withModifiers(modifiers: ISyntaxList): MemberFunctionDeclarationSyntax = noImpl
     public fun withModifier(modifier: ISyntaxToken): MemberFunctionDeclarationSyntax = noImpl
-    public fun withPropertyName(propertyName: ISyntaxToken): MemberFunctionDeclarationSyntax = noImpl
+    public fun withPropertyName(propertyName: IIdentifierSyntax): MemberFunctionDeclarationSyntax = noImpl
     public fun withCallSignature(callSignature: CallSignatureSyntax): MemberFunctionDeclarationSyntax = noImpl
     public fun withBlock(block: BlockSyntax): MemberFunctionDeclarationSyntax = noImpl
     public fun withSemicolonToken(semicolonToken: ISyntaxToken): MemberFunctionDeclarationSyntax = noImpl
@@ -1087,7 +1087,7 @@ abstract class MemberFunctionDeclarationSyntax(public val modifiers: ISyntaxList
 [suppress("UNUSED_PARAMETER")]
 native
 abstract class MemberAccessorDeclarationSyntax(public val modifiers: ISyntaxList,
-                                               public val propertyName: ISyntaxToken,
+                                               public val propertyName: IIdentifierSyntax,
                                                public val parameterList: ParameterListSyntax,
                                                public val block: BlockSyntax,
                                                parsedInStrictMode: Boolean) : SyntaxNode(parsedInStrictMode), IMemberDeclarationSyntax
@@ -1102,14 +1102,14 @@ abstract class MemberAccessorDeclarationSyntax(public val modifiers: ISyntaxList
 native
 abstract class GetMemberAccessorDeclarationSyntax(modifiers: ISyntaxList,
                                                   public val getKeyword: ISyntaxToken,
-                                                  propertyName: ISyntaxToken,
+                                                  propertyName: IIdentifierSyntax,
                                                   parameterList: ParameterListSyntax,
                                                   public val typeAnnotation: TypeAnnotationSyntax,
                                                   block: BlockSyntax,
                                                   parsedInStrictMode: Boolean) : MemberAccessorDeclarationSyntax(modifiers, propertyName, parameterList, block, parsedInStrictMode) {
     public fun update(modifiers: ISyntaxList,
                       getKeyword: ISyntaxToken,
-                      propertyName: ISyntaxToken,
+                      propertyName: IIdentifierSyntax,
                       parameterList: ParameterListSyntax,
                       typeAnnotation: TypeAnnotationSyntax,
                       block: BlockSyntax): GetMemberAccessorDeclarationSyntax = noImpl
@@ -1120,7 +1120,7 @@ abstract class GetMemberAccessorDeclarationSyntax(modifiers: ISyntaxList,
     public fun withModifiers(modifiers: ISyntaxList): GetMemberAccessorDeclarationSyntax = noImpl
     public fun withModifier(modifier: ISyntaxToken): GetMemberAccessorDeclarationSyntax = noImpl
     public fun withGetKeyword(getKeyword: ISyntaxToken): GetMemberAccessorDeclarationSyntax = noImpl
-    public fun withPropertyName(propertyName: ISyntaxToken): GetMemberAccessorDeclarationSyntax = noImpl
+    public fun withPropertyName(propertyName: IIdentifierSyntax): GetMemberAccessorDeclarationSyntax = noImpl
     public fun withParameterList(parameterList: ParameterListSyntax): GetMemberAccessorDeclarationSyntax = noImpl
     public fun withTypeAnnotation(typeAnnotation: TypeAnnotationSyntax): GetMemberAccessorDeclarationSyntax = noImpl
     public fun withBlock(block: BlockSyntax): GetMemberAccessorDeclarationSyntax = noImpl
@@ -1130,13 +1130,13 @@ abstract class GetMemberAccessorDeclarationSyntax(modifiers: ISyntaxList,
 native
 abstract class SetMemberAccessorDeclarationSyntax(modifiers: ISyntaxList,
                                                   public val setKeyword: ISyntaxToken,
-                                                  propertyName: ISyntaxToken,
+                                                  propertyName: IIdentifierSyntax,
                                                   parameterList: ParameterListSyntax,
                                                   block: BlockSyntax,
                                                   parsedInStrictMode: Boolean) : MemberAccessorDeclarationSyntax(modifiers, propertyName, parameterList, block, parsedInStrictMode) {
     public fun update(modifiers: ISyntaxList,
                       setKeyword: ISyntaxToken,
-                      propertyName: ISyntaxToken,
+                      propertyName: IIdentifierSyntax,
                       parameterList: ParameterListSyntax,
                       block: BlockSyntax): SetMemberAccessorDeclarationSyntax = noImpl
 
@@ -1146,7 +1146,7 @@ abstract class SetMemberAccessorDeclarationSyntax(modifiers: ISyntaxList,
     public fun withModifiers(modifiers: ISyntaxList): SetMemberAccessorDeclarationSyntax = noImpl
     public fun withModifier(modifier: ISyntaxToken): SetMemberAccessorDeclarationSyntax = noImpl
     public fun withSetKeyword(setKeyword: ISyntaxToken): SetMemberAccessorDeclarationSyntax = noImpl
-    public fun withPropertyName(propertyName: ISyntaxToken): SetMemberAccessorDeclarationSyntax = noImpl
+    public fun withPropertyName(propertyName: IIdentifierSyntax): SetMemberAccessorDeclarationSyntax = noImpl
     public fun withParameterList(parameterList: ParameterListSyntax): SetMemberAccessorDeclarationSyntax = noImpl
     public fun withBlock(block: BlockSyntax): SetMemberAccessorDeclarationSyntax = noImpl
 }
@@ -1316,37 +1316,37 @@ abstract class DefaultSwitchClauseSyntax(public val defaultKeyword: ISyntaxToken
 [suppress("UNUSED_PARAMETER")]
 native
 abstract class BreakStatementSyntax(public val breakKeyword: ISyntaxToken,
-                                    public val identifier: ISyntaxToken,
+                                    public val identifier: IIdentifierSyntax,
                                     public val semicolonToken: ISyntaxToken,
                                     parsedInStrictMode: Boolean) : SyntaxNode(parsedInStrictMode), IStatementSyntax
 {
     public fun update(breakKeyword: ISyntaxToken,
-                      identifier: ISyntaxToken,
+                      identifier: IIdentifierSyntax,
                       semicolonToken: ISyntaxToken): BreakStatementSyntax = noImpl
 
     public override fun withLeadingTrivia(trivia: ISyntaxTriviaList): BreakStatementSyntax = noImpl
     public override fun withTrailingTrivia(trivia: ISyntaxTriviaList): BreakStatementSyntax = noImpl
 
     public fun withBreakKeyword(breakKeyword: ISyntaxToken): BreakStatementSyntax = noImpl
-    public fun withIdentifier(identifier: ISyntaxToken): BreakStatementSyntax = noImpl
+    public fun withIdentifier(identifier: IIdentifierSyntax): BreakStatementSyntax = noImpl
     public fun withSemicolonToken(semicolonToken: ISyntaxToken): BreakStatementSyntax = noImpl
 }
 
 [suppress("UNUSED_PARAMETER")]
 native
 abstract class ContinueStatementSyntax(public val continueKeyword: ISyntaxToken,
-                                       public val identifier: ISyntaxToken,
+                                       public val identifier: IIdentifierSyntax,
                                        public val semicolonToken: ISyntaxToken,
                                        parsedInStrictMode: Boolean) : SyntaxNode(parsedInStrictMode), IStatementSyntax {
     public fun update(continueKeyword: ISyntaxToken,
-                      identifier: ISyntaxToken,
+                      identifier: IIdentifierSyntax,
                       semicolonToken: ISyntaxToken): ContinueStatementSyntax = noImpl
 
     public override fun withLeadingTrivia(trivia: ISyntaxTriviaList): ContinueStatementSyntax = noImpl
     public override fun withTrailingTrivia(trivia: ISyntaxTriviaList): ContinueStatementSyntax = noImpl
 
     public fun withContinueKeyword(continueKeyword: ISyntaxToken): ContinueStatementSyntax = noImpl
-    public fun withIdentifier(identifier: ISyntaxToken): ContinueStatementSyntax = noImpl
+    public fun withIdentifier(identifier: IIdentifierSyntax): ContinueStatementSyntax = noImpl
     public fun withSemicolonToken(semicolonToken: ISyntaxToken): ContinueStatementSyntax = noImpl
 }
 
@@ -1499,14 +1499,14 @@ abstract class WithStatementSyntax(public val withKeyword: ISyntaxToken,
 native
 abstract class EnumDeclarationSyntax(public val modifiers: ISyntaxList,
                                      public val enumKeyword: ISyntaxToken,
-                                     public val identifier: ISyntaxToken,
+                                     public val identifier: IIdentifierSyntax,
                                      public val openBraceToken: ISyntaxToken,
                                      public val enumElements: ISeparatedSyntaxList,
                                      public val closeBraceToken: ISyntaxToken,
                                      parsedInStrictMode: Boolean) : SyntaxNode(parsedInStrictMode), IModuleElementSyntax {
     public fun update(modifiers: ISyntaxList,
                       enumKeyword: ISyntaxToken,
-                      identifier: ISyntaxToken,
+                      identifier: IIdentifierSyntax,
                       openBraceToken: ISyntaxToken,
                       enumElements: ISeparatedSyntaxList,
                       closeBraceToken: ISyntaxToken): EnumDeclarationSyntax = noImpl
@@ -1517,7 +1517,7 @@ abstract class EnumDeclarationSyntax(public val modifiers: ISyntaxList,
     public fun withModifiers(modifiers: ISyntaxList): EnumDeclarationSyntax = noImpl
     public fun withModifier(modifier: ISyntaxToken): EnumDeclarationSyntax = noImpl
     public fun withEnumKeyword(enumKeyword: ISyntaxToken): EnumDeclarationSyntax = noImpl
-    public fun withIdentifier(identifier: ISyntaxToken): EnumDeclarationSyntax = noImpl
+    public fun withIdentifier(identifier: IIdentifierSyntax): EnumDeclarationSyntax = noImpl
     public fun withOpenBraceToken(openBraceToken: ISyntaxToken): EnumDeclarationSyntax = noImpl
     public fun withEnumElements(enumElements: ISeparatedSyntaxList): EnumDeclarationSyntax = noImpl
     public fun withEnumElement(enumElement: EnumElementSyntax): EnumDeclarationSyntax = noImpl
@@ -1526,16 +1526,16 @@ abstract class EnumDeclarationSyntax(public val modifiers: ISyntaxList,
 
 [suppress("UNUSED_PARAMETER")]
 native
-abstract class EnumElementSyntax(public val propertyName: ISyntaxToken,
+abstract class EnumElementSyntax(public val propertyName: IIdentifierSyntax,
                                  public val equalsValueClause: EqualsValueClauseSyntax,
                                  parsedInStrictMode: Boolean) : SyntaxNode(parsedInStrictMode) {
-    public fun update(propertyName: ISyntaxToken,
+    public fun update(propertyName: IIdentifierSyntax,
                       equalsValueClause: EqualsValueClauseSyntax): EnumElementSyntax = noImpl
 
     public override fun withLeadingTrivia(trivia: ISyntaxTriviaList): EnumElementSyntax = noImpl
     public override fun withTrailingTrivia(trivia: ISyntaxTriviaList): EnumElementSyntax = noImpl
 
-    public fun withPropertyName(propertyName: ISyntaxToken): EnumElementSyntax = noImpl
+    public fun withPropertyName(propertyName: IIdentifierSyntax): EnumElementSyntax = noImpl
     public fun withEqualsValueClause(equalsValueClause: EqualsValueClauseSyntax): EnumElementSyntax = noImpl
 }
 
@@ -1587,7 +1587,7 @@ abstract class ObjectLiteralExpressionSyntax(public val openBraceToken: ISyntaxT
 
 [suppress("UNUSED_PARAMETER")]
 native
-abstract class PropertyAssignmentSyntax(public val propertyName: ISyntaxToken,
+abstract class PropertyAssignmentSyntax(public val propertyName: IIdentifierSyntax,
                                         parsedInStrictMode: Boolean) : SyntaxNode(parsedInStrictMode)
 {
     public override fun withLeadingTrivia(trivia: ISyntaxTriviaList): PropertyAssignmentSyntax = noImpl
@@ -1596,43 +1596,43 @@ abstract class PropertyAssignmentSyntax(public val propertyName: ISyntaxToken,
 
 [suppress("UNUSED_PARAMETER")]
 native
-abstract class SimplePropertyAssignmentSyntax(propertyName: ISyntaxToken,
+abstract class SimplePropertyAssignmentSyntax(propertyName: IIdentifierSyntax,
                                               public val colonToken: ISyntaxToken,
                                               public val expression: IExpressionSyntax,
                                               parsedInStrictMode: Boolean) : PropertyAssignmentSyntax(propertyName, parsedInStrictMode) {
-    public fun update(propertyName: ISyntaxToken,
+    public fun update(propertyName: IIdentifierSyntax,
                       colonToken: ISyntaxToken,
                       expression: IExpressionSyntax): SimplePropertyAssignmentSyntax = noImpl
 
     public override fun withLeadingTrivia(trivia: ISyntaxTriviaList): SimplePropertyAssignmentSyntax = noImpl
     public override fun withTrailingTrivia(trivia: ISyntaxTriviaList): SimplePropertyAssignmentSyntax = noImpl
 
-    public fun withPropertyName(propertyName: ISyntaxToken): SimplePropertyAssignmentSyntax = noImpl
+    public fun withPropertyName(propertyName: IIdentifierSyntax): SimplePropertyAssignmentSyntax = noImpl
     public fun withColonToken(colonToken: ISyntaxToken): SimplePropertyAssignmentSyntax = noImpl
     public fun withExpression(expression: IExpressionSyntax): SimplePropertyAssignmentSyntax = noImpl
 }
 
 [suppress("UNUSED_PARAMETER")]
 native
-abstract class FunctionPropertyAssignmentSyntax(propertyName: ISyntaxToken,
+abstract class FunctionPropertyAssignmentSyntax(propertyName: IIdentifierSyntax,
                                                 public val callSignature: CallSignatureSyntax,
                                                 public val block: BlockSyntax,
                                                 parsedInStrictMode: Boolean) : PropertyAssignmentSyntax(propertyName, parsedInStrictMode) {
-    public fun update(propertyName: ISyntaxToken,
+    public fun update(propertyName: IIdentifierSyntax,
                       callSignature: CallSignatureSyntax,
                       block: BlockSyntax): FunctionPropertyAssignmentSyntax = noImpl
 
     public override fun withLeadingTrivia(trivia: ISyntaxTriviaList): FunctionPropertyAssignmentSyntax = noImpl
     public override fun withTrailingTrivia(trivia: ISyntaxTriviaList): FunctionPropertyAssignmentSyntax = noImpl
 
-    public fun withPropertyName(propertyName: ISyntaxToken): FunctionPropertyAssignmentSyntax = noImpl
+    public fun withPropertyName(propertyName: IIdentifierSyntax): FunctionPropertyAssignmentSyntax = noImpl
     public fun withCallSignature(callSignature: CallSignatureSyntax): FunctionPropertyAssignmentSyntax = noImpl
     public fun withBlock(block: BlockSyntax): FunctionPropertyAssignmentSyntax = noImpl
 }
 
 [suppress("UNUSED_PARAMETER")]
 native
-abstract class AccessorPropertyAssignmentSyntax(propertyName: ISyntaxToken,
+abstract class AccessorPropertyAssignmentSyntax(propertyName: IIdentifierSyntax,
                                                 public val openParenToken: ISyntaxToken,
                                                 public val closeParenToken: ISyntaxToken,
                                                 public val block: BlockSyntax,
@@ -1644,14 +1644,14 @@ abstract class AccessorPropertyAssignmentSyntax(propertyName: ISyntaxToken,
 [suppress("UNUSED_PARAMETER")]
 native
 abstract class GetAccessorPropertyAssignmentSyntax(public val getKeyword: ISyntaxToken,
-                                                   propertyName: ISyntaxToken,
+                                                   propertyName: IIdentifierSyntax,
                                                    openParenToken: ISyntaxToken,
                                                    closeParenToken: ISyntaxToken,
                                                    public val typeAnnotation: TypeAnnotationSyntax,
                                                    block: BlockSyntax,
                                                    parsedInStrictMode: Boolean) : AccessorPropertyAssignmentSyntax(propertyName, openParenToken, closeParenToken, block, parsedInStrictMode) {
     public fun update(getKeyword: ISyntaxToken,
-                      propertyName: ISyntaxToken,
+                      propertyName: IIdentifierSyntax,
                       openParenToken: ISyntaxToken,
                       closeParenToken: ISyntaxToken,
                       typeAnnotation: TypeAnnotationSyntax,
@@ -1661,7 +1661,7 @@ abstract class GetAccessorPropertyAssignmentSyntax(public val getKeyword: ISynta
     public override fun withTrailingTrivia(trivia: ISyntaxTriviaList): GetAccessorPropertyAssignmentSyntax = noImpl
 
     public fun withGetKeyword(getKeyword: ISyntaxToken): GetAccessorPropertyAssignmentSyntax = noImpl
-    public fun withPropertyName(propertyName: ISyntaxToken): GetAccessorPropertyAssignmentSyntax = noImpl
+    public fun withPropertyName(propertyName: IIdentifierSyntax): GetAccessorPropertyAssignmentSyntax = noImpl
     public fun withOpenParenToken(openParenToken: ISyntaxToken): GetAccessorPropertyAssignmentSyntax = noImpl
     public fun withCloseParenToken(closeParenToken: ISyntaxToken): GetAccessorPropertyAssignmentSyntax = noImpl
     public fun withTypeAnnotation(typeAnnotation: TypeAnnotationSyntax): GetAccessorPropertyAssignmentSyntax = noImpl
@@ -1671,14 +1671,14 @@ abstract class GetAccessorPropertyAssignmentSyntax(public val getKeyword: ISynta
 [suppress("UNUSED_PARAMETER")]
 native
 abstract class SetAccessorPropertyAssignmentSyntax(public val setKeyword: ISyntaxToken,
-                                                   propertyName: ISyntaxToken,
+                                                   propertyName: IIdentifierSyntax,
                                                    openParenToken: ISyntaxToken,
                                                    public val parameter: ParameterSyntax,
                                                    closeParenToken: ISyntaxToken,
                                                    block: BlockSyntax,
                                                    parsedInStrictMode: Boolean) : AccessorPropertyAssignmentSyntax(propertyName, openParenToken, closeParenToken, block, parsedInStrictMode) {
     public fun update(setKeyword: ISyntaxToken,
-                      propertyName: ISyntaxToken,
+                      propertyName: IIdentifierSyntax,
                       openParenToken: ISyntaxToken,
                       parameter: ParameterSyntax,
                       closeParenToken: ISyntaxToken,
@@ -1688,7 +1688,7 @@ abstract class SetAccessorPropertyAssignmentSyntax(public val setKeyword: ISynta
     public override fun withTrailingTrivia(trivia: ISyntaxTriviaList): SetAccessorPropertyAssignmentSyntax = noImpl
 
     public fun withSetKeyword(setKeyword: ISyntaxToken): SetAccessorPropertyAssignmentSyntax = noImpl
-    public fun withPropertyName(propertyName: ISyntaxToken): SetAccessorPropertyAssignmentSyntax = noImpl
+    public fun withPropertyName(propertyName: IIdentifierSyntax): SetAccessorPropertyAssignmentSyntax = noImpl
     public fun withOpenParenToken(openParenToken: ISyntaxToken): SetAccessorPropertyAssignmentSyntax = noImpl
     public fun withParameter(parameter: ParameterSyntax): SetAccessorPropertyAssignmentSyntax = noImpl
     public fun withCloseParenToken(closeParenToken: ISyntaxToken): SetAccessorPropertyAssignmentSyntax = noImpl
@@ -1698,7 +1698,7 @@ abstract class SetAccessorPropertyAssignmentSyntax(public val setKeyword: ISynta
 [suppress("UNUSED_PARAMETER")]
 native
 abstract class FunctionExpressionSyntax(public val functionKeyword: ISyntaxToken,
-                                        public val identifier: ISyntaxToken,
+                                        public val identifier: IIdentifierSyntax,
                                         public val callSignature: CallSignatureSyntax,
                                         public val block: BlockSyntax,
                                         parsedInStrictMode: Boolean) : SyntaxNode(parsedInStrictMode), IUnaryExpressionSyntax {
@@ -1706,7 +1706,7 @@ abstract class FunctionExpressionSyntax(public val functionKeyword: ISyntaxToken
     public fun isExpression(): Boolean = noImpl
 
     public fun update(functionKeyword: ISyntaxToken,
-                      identifier: ISyntaxToken,
+                      identifier: IIdentifierSyntax,
                       callSignature: CallSignatureSyntax,
                       block: BlockSyntax): FunctionExpressionSyntax = noImpl
 
@@ -1714,7 +1714,7 @@ abstract class FunctionExpressionSyntax(public val functionKeyword: ISyntaxToken
     public override fun withTrailingTrivia(trivia: ISyntaxTriviaList): FunctionExpressionSyntax = noImpl
 
     public fun withFunctionKeyword(functionKeyword: ISyntaxToken): FunctionExpressionSyntax = noImpl
-    public fun withIdentifier(identifier: ISyntaxToken): FunctionExpressionSyntax = noImpl
+    public fun withIdentifier(identifier: IIdentifierSyntax): FunctionExpressionSyntax = noImpl
     public fun withCallSignature(callSignature: CallSignatureSyntax): FunctionExpressionSyntax = noImpl
     public fun withBlock(block: BlockSyntax): FunctionExpressionSyntax = noImpl
 }
@@ -1756,14 +1756,14 @@ abstract class TryStatementSyntax(public val tryKeyword: ISyntaxToken,
 native
 abstract class CatchClauseSyntax(public val catchKeyword: ISyntaxToken,
                                  public val openParenToken: ISyntaxToken,
-                                 public val identifier: ISyntaxToken,
+                                 public val identifier: IIdentifierSyntax,
                                  public val typeAnnotation: TypeAnnotationSyntax,
                                  public val closeParenToken: ISyntaxToken,
                                  public val block: BlockSyntax,
                                  parsedInStrictMode: Boolean) : SyntaxNode(parsedInStrictMode) {
     public fun update(catchKeyword: ISyntaxToken,
                       openParenToken: ISyntaxToken,
-                      identifier: ISyntaxToken,
+                      identifier: IIdentifierSyntax,
                       typeAnnotation: TypeAnnotationSyntax,
                       closeParenToken: ISyntaxToken,
                       block: BlockSyntax): CatchClauseSyntax = noImpl
@@ -1773,7 +1773,7 @@ abstract class CatchClauseSyntax(public val catchKeyword: ISyntaxToken,
 
     public fun withCatchKeyword(catchKeyword: ISyntaxToken): CatchClauseSyntax = noImpl
     public fun withOpenParenToken(openParenToken: ISyntaxToken): CatchClauseSyntax = noImpl
-    public fun withIdentifier(identifier: ISyntaxToken): CatchClauseSyntax = noImpl
+    public fun withIdentifier(identifier: IIdentifierSyntax): CatchClauseSyntax = noImpl
     public fun withTypeAnnotation(typeAnnotation: TypeAnnotationSyntax): CatchClauseSyntax = noImpl
     public fun withCloseParenToken(closeParenToken: ISyntaxToken): CatchClauseSyntax = noImpl
     public fun withBlock(block: BlockSyntax): CatchClauseSyntax = noImpl
@@ -1796,15 +1796,15 @@ abstract class FinallyClauseSyntax(public val finallyKeyword: ISyntaxToken,
 
 [suppress("UNUSED_PARAMETER")]
 native
-abstract class LabeledStatementSyntax(public val identifier: ISyntaxToken,
+abstract class LabeledStatementSyntax(public val identifier: IIdentifierSyntax,
                                       public val colonToken: ISyntaxToken,
                                       public val statement: IStatementSyntax,
                                       parsedInStrictMode: Boolean) : SyntaxNode(parsedInStrictMode), IStatementSyntax
 {
-    public fun update(identifier: ISyntaxToken,
+    public fun update(identifier: IIdentifierSyntax,
                       colonToken: ISyntaxToken,
                       statement: IStatementSyntax): LabeledStatementSyntax = noImpl
-    public fun withIdentifier(identifier: ISyntaxToken): LabeledStatementSyntax = noImpl
+    public fun withIdentifier(identifier: IIdentifierSyntax): LabeledStatementSyntax = noImpl
     public fun withColonToken(colonToken: ISyntaxToken): LabeledStatementSyntax = noImpl
     public fun withStatement(statement: IStatementSyntax): LabeledStatementSyntax = noImpl
 }

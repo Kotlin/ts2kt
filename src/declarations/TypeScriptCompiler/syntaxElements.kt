@@ -82,7 +82,7 @@ trait ISyntaxNodeOrToken : ISyntaxElement {
     fun withLeadingTrivia(trivia: ISyntaxTriviaList): ISyntaxNodeOrToken
     fun withTrailingTrivia(trivia: ISyntaxTriviaList): ISyntaxNodeOrToken
 
-    fun accept(visitor: ISyntaxVisitor): Any
+    fun accept(visitor: ISyntaxVisitor<Any>): Any
 }
 
 native
@@ -120,6 +120,10 @@ trait ITypeSyntax : IUnaryExpressionSyntax
 
 native
 trait INameSyntax : ITypeSyntax
+
+// Sugar
+native
+trait IIdentifierSyntax : ISyntaxToken
 
 
 

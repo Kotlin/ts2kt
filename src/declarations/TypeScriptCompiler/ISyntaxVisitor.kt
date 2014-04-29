@@ -17,92 +17,92 @@
 package typescript
 
 native
-trait ISyntaxVisitor {
-    fun visitToken(token: ISyntaxToken)
-    fun visitSourceUnit(node: SourceUnitSyntax)
-    fun visitExternalModuleReference(node: ExternalModuleReferenceSyntax)
-    fun visitModuleNameModuleReference(node: ModuleNameModuleReferenceSyntax)
-    fun visitImportDeclaration(node: ImportDeclarationSyntax)
-    fun visitExportAssignment(node: ExportAssignmentSyntax)
-    fun visitClassDeclaration(node: ClassDeclarationSyntax)
-    fun visitInterfaceDeclaration(node: InterfaceDeclarationSyntax)
-    fun visitHeritageClause(node: HeritageClauseSyntax)
-    fun visitModuleDeclaration(node: ModuleDeclarationSyntax)
-    fun visitFunctionDeclaration(node: FunctionDeclarationSyntax)
-    fun visitVariableStatement(node: VariableStatementSyntax)
-    fun visitVariableDeclaration(node: VariableDeclarationSyntax)
-    fun visitVariableDeclarator(node: VariableDeclaratorSyntax)
-    fun visitEqualsValueClause(node: EqualsValueClauseSyntax)
-    fun visitPrefixUnaryExpression(node: PrefixUnaryExpressionSyntax)
-    fun visitArrayLiteralExpression(node: ArrayLiteralExpressionSyntax)
-    fun visitOmittedExpression(node: OmittedExpressionSyntax)
-    fun visitParenthesizedExpression(node: ParenthesizedExpressionSyntax)
-    fun visitSimpleArrowFunctionExpression(node: SimpleArrowFunctionExpressionSyntax)
-    fun visitParenthesizedArrowFunctionExpression(node: ParenthesizedArrowFunctionExpressionSyntax)
-    fun visitQualifiedName(node: QualifiedNameSyntax)
-    fun visitTypeArgumentList(node: TypeArgumentListSyntax)
-    fun visitConstructorType(node: ConstructorTypeSyntax)
-    fun visitFunctionType(node: FunctionTypeSyntax)
-    fun visitObjectType(node: ObjectTypeSyntax)
-    fun visitArrayType(node: ArrayTypeSyntax)
-    fun visitGenericType(node: GenericTypeSyntax)
-    fun visitTypeQuery(node: TypeQuerySyntax)
-    fun visitTypeAnnotation(node: TypeAnnotationSyntax?)
-    fun visitBlock(node: BlockSyntax)
-    fun visitParameter(node: ParameterSyntax)
-    fun visitMemberAccessExpression(node: MemberAccessExpressionSyntax)
-    fun visitPostfixUnaryExpression(node: PostfixUnaryExpressionSyntax)
-    fun visitElementAccessExpression(node: ElementAccessExpressionSyntax)
-    fun visitInvocationExpression(node: InvocationExpressionSyntax)
-    fun visitArgumentList(node: ArgumentListSyntax)
-    fun visitBinaryExpression(node: BinaryExpressionSyntax)
-    fun visitConditionalExpression(node: ConditionalExpressionSyntax)
-    fun visitConstructSignature(node: ConstructSignatureSyntax)
-    fun visitMethodSignature(node: MethodSignatureSyntax)
-    fun visitIndexSignature(node: IndexSignatureSyntax)
-    fun visitPropertySignature(node: PropertySignatureSyntax)
-    fun visitCallSignature(node: CallSignatureSyntax)
-    fun visitParameterList(node: ParameterListSyntax)
-    fun visitTypeParameterList(node: TypeParameterListSyntax)
-    fun visitTypeParameter(node: TypeParameterSyntax)
-    fun visitConstraint(node: ConstraintSyntax)
-    fun visitElseClause(node: ElseClauseSyntax)
-    fun visitIfStatement(node: IfStatementSyntax)
-    fun visitExpressionStatement(node: ExpressionStatementSyntax)
-    fun visitConstructorDeclaration(node: ConstructorDeclarationSyntax)
-    fun visitMemberFunctionDeclaration(node: MemberFunctionDeclarationSyntax)
-    fun visitGetMemberAccessorDeclaration(node: GetMemberAccessorDeclarationSyntax)
-    fun visitSetMemberAccessorDeclaration(node: SetMemberAccessorDeclarationSyntax)
-    fun visitMemberVariableDeclaration(node: MemberVariableDeclarationSyntax)
-    fun visitThrowStatement(node: ThrowStatementSyntax)
-    fun visitReturnStatement(node: ReturnStatementSyntax)
-    fun visitObjectCreationExpression(node: ObjectCreationExpressionSyntax)
-    fun visitSwitchStatement(node: SwitchStatementSyntax)
-    fun visitCaseSwitchClause(node: CaseSwitchClauseSyntax)
-    fun visitDefaultSwitchClause(node: DefaultSwitchClauseSyntax)
-    fun visitBreakStatement(node: BreakStatementSyntax)
-    fun visitContinueStatement(node: ContinueStatementSyntax)
-    fun visitForStatement(node: ForStatementSyntax)
-    fun visitForInStatement(node: ForInStatementSyntax)
-    fun visitWhileStatement(node: WhileStatementSyntax)
-    fun visitWithStatement(node: WithStatementSyntax)
-    fun visitEnumDeclaration(node: EnumDeclarationSyntax)
-    fun visitEnumElement(node: EnumElementSyntax)
-    fun visitCastExpression(node: CastExpressionSyntax)
-    fun visitObjectLiteralExpression(node: ObjectLiteralExpressionSyntax)
-    fun visitSimplePropertyAssignment(node: SimplePropertyAssignmentSyntax)
-    fun visitFunctionPropertyAssignment(node: FunctionPropertyAssignmentSyntax)
-    fun visitGetAccessorPropertyAssignment(node: GetAccessorPropertyAssignmentSyntax)
-    fun visitSetAccessorPropertyAssignment(node: SetAccessorPropertyAssignmentSyntax)
-    fun visitFunctionExpression(node: FunctionExpressionSyntax)
-    fun visitEmptyStatement(node: EmptyStatementSyntax)
-    fun visitTryStatement(node: TryStatementSyntax)
-    fun visitCatchClause(node: CatchClauseSyntax)
-    fun visitFinallyClause(node: FinallyClauseSyntax)
-    fun visitLabeledStatement(node: LabeledStatementSyntax)
-    fun visitDoStatement(node: DoStatementSyntax)
-    fun visitTypeOfExpression(node: TypeOfExpressionSyntax)
-    fun visitDeleteExpression(node: DeleteExpressionSyntax)
-    fun visitVoidExpression(node: VoidExpressionSyntax)
-    fun visitDebuggerStatement(node: DebuggerStatementSyntax)
+trait ISyntaxVisitor<out T> {
+    fun visitToken(token: ISyntaxToken): T
+    fun visitSourceUnit(node: SourceUnitSyntax): T
+    fun visitExternalModuleReference(node: ExternalModuleReferenceSyntax): T
+    fun visitModuleNameModuleReference(node: ModuleNameModuleReferenceSyntax): T
+    fun visitImportDeclaration(node: ImportDeclarationSyntax): T
+    fun visitExportAssignment(node: ExportAssignmentSyntax): T
+    fun visitClassDeclaration(node: ClassDeclarationSyntax): T
+    fun visitInterfaceDeclaration(node: InterfaceDeclarationSyntax): T
+    fun visitHeritageClause(node: HeritageClauseSyntax): T
+    fun visitModuleDeclaration(node: ModuleDeclarationSyntax): T
+    fun visitFunctionDeclaration(node: FunctionDeclarationSyntax): T
+    fun visitVariableStatement(node: VariableStatementSyntax): T
+    fun visitVariableDeclaration(node: VariableDeclarationSyntax): T
+    fun visitVariableDeclarator(node: VariableDeclaratorSyntax): T
+    fun visitEqualsValueClause(node: EqualsValueClauseSyntax): T
+    fun visitPrefixUnaryExpression(node: PrefixUnaryExpressionSyntax): T
+    fun visitArrayLiteralExpression(node: ArrayLiteralExpressionSyntax): T
+    fun visitOmittedExpression(node: OmittedExpressionSyntax): T
+    fun visitParenthesizedExpression(node: ParenthesizedExpressionSyntax): T
+    fun visitSimpleArrowFunctionExpression(node: SimpleArrowFunctionExpressionSyntax): T
+    fun visitParenthesizedArrowFunctionExpression(node: ParenthesizedArrowFunctionExpressionSyntax): T
+    fun visitQualifiedName(node: QualifiedNameSyntax): T
+    fun visitTypeArgumentList(node: TypeArgumentListSyntax): T
+    fun visitConstructorType(node: ConstructorTypeSyntax): T
+    fun visitFunctionType(node: FunctionTypeSyntax): T
+    fun visitObjectType(node: ObjectTypeSyntax): T
+    fun visitArrayType(node: ArrayTypeSyntax): T
+    fun visitGenericType(node: GenericTypeSyntax): T
+    fun visitTypeQuery(node: TypeQuerySyntax): T
+    fun visitTypeAnnotation(node: TypeAnnotationSyntax?): T
+    fun visitBlock(node: BlockSyntax): T
+    fun visitParameter(node: ParameterSyntax): T
+    fun visitMemberAccessExpression(node: MemberAccessExpressionSyntax): T
+    fun visitPostfixUnaryExpression(node: PostfixUnaryExpressionSyntax): T
+    fun visitElementAccessExpression(node: ElementAccessExpressionSyntax): T
+    fun visitInvocationExpression(node: InvocationExpressionSyntax): T
+    fun visitArgumentList(node: ArgumentListSyntax): T
+    fun visitBinaryExpression(node: BinaryExpressionSyntax): T
+    fun visitConditionalExpression(node: ConditionalExpressionSyntax): T
+    fun visitConstructSignature(node: ConstructSignatureSyntax): T
+    fun visitMethodSignature(node: MethodSignatureSyntax): T
+    fun visitIndexSignature(node: IndexSignatureSyntax): T
+    fun visitPropertySignature(node: PropertySignatureSyntax): T
+    fun visitCallSignature(node: CallSignatureSyntax): T
+    fun visitParameterList(node: ParameterListSyntax): T
+    fun visitTypeParameterList(node: TypeParameterListSyntax): T
+    fun visitTypeParameter(node: TypeParameterSyntax): T
+    fun visitConstraint(node: ConstraintSyntax): T
+    fun visitElseClause(node: ElseClauseSyntax): T
+    fun visitIfStatement(node: IfStatementSyntax): T
+    fun visitExpressionStatement(node: ExpressionStatementSyntax): T
+    fun visitConstructorDeclaration(node: ConstructorDeclarationSyntax): T
+    fun visitMemberFunctionDeclaration(node: MemberFunctionDeclarationSyntax): T
+    fun visitGetMemberAccessorDeclaration(node: GetMemberAccessorDeclarationSyntax): T
+    fun visitSetMemberAccessorDeclaration(node: SetMemberAccessorDeclarationSyntax): T
+    fun visitMemberVariableDeclaration(node: MemberVariableDeclarationSyntax): T
+    fun visitThrowStatement(node: ThrowStatementSyntax): T
+    fun visitReturnStatement(node: ReturnStatementSyntax): T
+    fun visitObjectCreationExpression(node: ObjectCreationExpressionSyntax): T
+    fun visitSwitchStatement(node: SwitchStatementSyntax): T
+    fun visitCaseSwitchClause(node: CaseSwitchClauseSyntax): T
+    fun visitDefaultSwitchClause(node: DefaultSwitchClauseSyntax): T
+    fun visitBreakStatement(node: BreakStatementSyntax): T
+    fun visitContinueStatement(node: ContinueStatementSyntax): T
+    fun visitForStatement(node: ForStatementSyntax): T
+    fun visitForInStatement(node: ForInStatementSyntax): T
+    fun visitWhileStatement(node: WhileStatementSyntax): T
+    fun visitWithStatement(node: WithStatementSyntax): T
+    fun visitEnumDeclaration(node: EnumDeclarationSyntax): T
+    fun visitEnumElement(node: EnumElementSyntax): T
+    fun visitCastExpression(node: CastExpressionSyntax): T
+    fun visitObjectLiteralExpression(node: ObjectLiteralExpressionSyntax): T
+    fun visitSimplePropertyAssignment(node: SimplePropertyAssignmentSyntax): T
+    fun visitFunctionPropertyAssignment(node: FunctionPropertyAssignmentSyntax): T
+    fun visitGetAccessorPropertyAssignment(node: GetAccessorPropertyAssignmentSyntax): T
+    fun visitSetAccessorPropertyAssignment(node: SetAccessorPropertyAssignmentSyntax): T
+    fun visitFunctionExpression(node: FunctionExpressionSyntax): T
+    fun visitEmptyStatement(node: EmptyStatementSyntax): T
+    fun visitTryStatement(node: TryStatementSyntax): T
+    fun visitCatchClause(node: CatchClauseSyntax): T
+    fun visitFinallyClause(node: FinallyClauseSyntax): T
+    fun visitLabeledStatement(node: LabeledStatementSyntax): T
+    fun visitDoStatement(node: DoStatementSyntax): T
+    fun visitTypeOfExpression(node: TypeOfExpressionSyntax): T
+    fun visitDeleteExpression(node: DeleteExpressionSyntax): T
+    fun visitVoidExpression(node: VoidExpressionSyntax): T
+    fun visitDebuggerStatement(node: DebuggerStatementSyntax): T
 }
