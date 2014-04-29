@@ -18,154 +18,43 @@ package ts2kt
 
 import typescript.*
 import ts2kt.utils.*
+import ts2kt.kotlin.ast.*
+import java.util.ArrayList
 
-fun FunctionTypeSyntax.toKotlinTypeName(): String {
-    val tr = TypeScriptToKotlinWalker()
-    tr.visitNode(parameterList)
-    return "${tr.out} -> ${`type`.toKotlinTypeName()}"
+private val NATIVE_ANNOTATION = listOf(Annotation("native"))
+private val INVOKE = "invoke"
+private val GET = "get"
+private val SET = "set"
+
+abstract class TypeScriptToKotlinBase : SyntaxWalker() {
+    abstract val result: Node?
+
+    open val defaultAnnotations: List<Annotation> = listOf()
+
+    val declarations = ArrayList<Member>()
+
+    fun addVariable(name: String, `type`: String, typeParams: List<TypeParam>? = null, isVar: Boolean = true, isNullable: Boolean = false, isLambda: Boolean = false, needsNoImpl: Boolean = true) {
+        declarations.add(Variable(name, TypeAnnotation(`type`, isNullable = isNullable, isLambda = isLambda), defaultAnnotations, typeParams, isVar = isVar, needsNoImpl = needsNoImpl))
+    }
+
+    fun addFunction(name: String, params: List<FunParam>, returnType: String, typeParams: List<TypeParam>?, needsNoImpl: Boolean = true) {
+        declarations.add(Function(name, params, TypeAnnotation(returnType), typeParams, defaultAnnotations, needsNoImpl = needsNoImpl))
+    }
+
 }
 
-fun GenericTypeSyntax.toKotlinTypeName(): String {
-    val tr = TypeScriptToKotlinWalker()
-    tr.visitNode(typeArgumentList)
-    return "${name.getText()}${tr.out}"
-}
+class TypeScriptToKotlinWalker(val packageFqName: String? = null) : TypeScriptToKotlinBase() {
+    override val result: KotlinFile
+        get() = KotlinFile(if (packageFqName != null) Package(packageFqName) else null, declarations)
 
-fun ITypeSyntax.toKotlinTypeNameIfStandardType(): String? {
-    return when (this.kind()) {
-        AnyKeyword -> "Any"
-        NumberKeyword -> "Number"
-        StringKeyword -> "String"
-        BooleanKeyword -> "Boolean"
-        VoidKeyword -> "Unit"
-        ArrayType -> "Array<${(this as ArrayTypeSyntax).`type`.toKotlinTypeName()}>"
-        GenericType -> (this as GenericTypeSyntax).toKotlinTypeName()
-        FunctionType -> (this as FunctionTypeSyntax).toKotlinTypeName()
-        else -> null
-    }
-}
+    override val defaultAnnotations: List<Annotation> = NATIVE_ANNOTATION
 
-fun ITypeSyntax.getText(): String {
-    if (this.isToken()) return (this as ISyntaxToken).text()
-
-    return this.fullText()
-}
-
-fun ITypeSyntax?.toKotlinTypeName(): String {
-    if (this == null) return "Unit"
-
-    return this.toKotlinTypeNameIfStandardType() ?: this.getText()
-}
-
-fun String?.toKotlinTypeName(): String {
-    if (this == null) return "Unit"
-
-    return when (this) {
-        "any" -> "Any"
-        "number" -> "Number"
-        "string" -> "String"
-        "boolean" -> "Boolean"
-        "void" -> "Unit"
-        else -> this
-    }
-}
-
-fun TypeAnnotationSyntax?.toKotlinTypeName(): String = this?.`type`.toKotlinTypeName()
-
-class TypeScriptToKotlinWalker : SyntaxWalker() {
-    var out = ""
-        private set
-
-    private val INDENT = "    "
-    private val indents = listOf("") as MutableList<String>
-    private var indentIdx = 0
-    private var isNewLine = true
-
-    private val NATIVE = "native"
-    private val PUBLIC = "public"
-    private val VAL = "val"
-    private val VAR = "var"
-    private val FUN = "fun"
-    private val VARARG = "vararg"
-    private val TRAIT = "trait"
-    private val CLASS = "class"
-    val INVOKE = "invoke"
-    val GET = "get"
-    val SET = "set"
-    val OPEN_PAREN = "("
-    val CLOSE_PAREN = ")"
-    var spaceSuppressed = false
-
-    val suppressSpaceBeforeNodes = listOf(CommaToken)
-
-//  Helpers
-
-    fun print(s: String?, suppressSpace: Boolean = false, suppressNextSpace: Boolean = false) {
-        if (s == null) return
-
-        val spaces =
-                if (isNewLine) {
-                    isNewLine = false
-                    indents[indentIdx]
-                }
-                else {
-                    if (suppressSpace || spaceSuppressed) "" else " "
-                }
-        spaceSuppressed = suppressNextSpace
-
-        out += spaces
-        out += s
-    }
-
-    fun println() {
-        out += "\n"
-        isNewLine = true
-    }
-
-    fun println(s: String) {
-        print(s)
-        println()
-    }
-
-    fun enterBlock() {
-        indentIdx++
-        if (indents.size() <= indentIdx) {
-            indents.add(indents[indentIdx - 1] + INDENT)
-        }
-    }
-
-    fun exitBlock() {
-        indentIdx--
-    }
-
-    fun ISyntaxList.containsBy<T>(a: T, f: (ISyntaxNodeOrToken) -> T): Boolean {
-        for (i in 0..childCount() - 1) {
-            val e = f(childAt(i))
-            if (e == a) return true
-        }
-
-        return false
-    }
-
-    val SHOULD_BE_ESCAPED =
-            setOf("val", "var", "is", "as", "trait", "package", "object", "when", "type", "fun", "in", "This")
-
-    fun String.escapedIfNeed(): String {
-        return if (this in SHOULD_BE_ESCAPED || this.contains("$")) {
-            "`$this`"
-        }
-        else {
-            this
-        }
-    }
-
-//  Translation
-
-    override fun visitToken(token: ISyntaxToken) {
-        //TODO: HACK with `toKotlinTypeNameIfStandardType` because sometimes we get raw type here
-        val tokenAsString = token.toKotlinTypeNameIfStandardType() ?: token.text()
-        print(tokenAsString.escapedIfNeed(), suppressSpaceBeforeNodes.contains(token.tokenKind))
-    }
+//    override fun visitToken(token: ISyntaxToken) {
+////        return SimpleNode(token.getText())
+//        //TODO: HACK with `toKotlinTypeNameIfStandardType` because sometimes we get raw type here
+////        val tokenAsString = token.toKotlinTypeNameIfStandardType() ?: token.text()
+////        print(tokenAsString.escapedIfNeed(), suppressSpaceBeforeNodes.contains(token.tokenKind))
+//    }
 
 //  Variables
 
@@ -173,291 +62,189 @@ class TypeScriptToKotlinWalker : SyntaxWalker() {
         // Skip if not declare
         if (!node.modifiers.containsBy(DeclareKeyword) { it.kind() } ) return
 
-        println(NATIVE)
-        print(PUBLIC)
 //      TODO  node.modifiers
-        visitVariableDeclaration(node.variableDeclaration)
-        println("= noImpl")
+//      TODO  test many declarations
+        val declarators = node.variableDeclaration.variableDeclarators
+        for (d in declarators) {
+            val name = d.identifier.getText()
+            val `type` = d.typeAnnotation?.toKotlinTypeName() ?: "Any"
+            addVariable(name, `type`)
+        }
     }
 
-    override fun visitVariableDeclaration(node: VariableDeclarationSyntax) {
-        print(VAR)
-        visitSeparatedList(node.variableDeclarators)
-    }
-
-//  Type
-
-    fun printTypeAnnotation(typeNode: ITypeSyntax?, suppressSpace: Boolean = false) {
-        if (typeNode == null) return
-        print(":", suppressSpace)
-        print(typeNode.toKotlinTypeName())
-    }
-
-    override fun visitTypeAnnotation(node: TypeAnnotationSyntax?) {
-        printTypeAnnotation(node?.`type`, suppressSpace = true)
-    }
-
-    override fun visitArrayType(node: ArrayTypeSyntax) {
-        print("Array<", suppressNextSpace = true);
-        visitNodeOrToken(node.`type`);
-        print(">", suppressSpace = true)
-    }
-
-    //    Functions
+//    Functions
 
     override fun visitFunctionDeclaration(node: FunctionDeclarationSyntax) {
         // Skip if not declare
         if (!node.modifiers.containsBy(DeclareKeyword) { it.kind() } ) return
 
-        println(NATIVE)
-        print(PUBLIC)
 //      TODO  visitList(node.modifiers)
-        print(FUN)
-        visitToken(node.identifier)
-        translateCallSignature(node.callSignature)
-        println("= noImpl")
-    }
+        val name = node.identifier.getText()
+        val returnType = node.callSignature.typeAnnotation?.toKotlinTypeName() ?: "Unit"
+        val params = node.callSignature.parameterList.toKotlinParams()
+        val typeParams = node.callSignature.typeParameterList?.toKotlinTypeParams()
 
-//  Function arguments
-
-    override fun visitParameterList(node: ParameterListSyntax) {
-        print(OPEN_PAREN, suppressSpace = true, suppressNextSpace = true)
-        visitSeparatedList(node.parameters)
-        print(CLOSE_PAREN, suppressSpace = true)
-    }
-
-    override fun visitParameter(node: ParameterSyntax) {
-        val originalNodeType = node.typeAnnotation?.`type`
-        val nodeType =
-                if (node.dotDotDotToken != null) {
-                    if (originalNodeType?.kind() != ArrayType) throw Exception("Rest prarameter must be array types")
-                    print(VARARG)
-                    (originalNodeType as? ArrayTypeSyntax)?.`type`
-                }
-                else {
-                    originalNodeType
-                }
-
-        visitOptionalToken(node.publicOrPrivateKeyword)
-
-        if (node.typeAnnotation != null) {
-            visitToken(node.identifier)
-            print(":", suppressSpace = true)
-        }
-
-        if (node.questionToken != null && nodeType?.kind() == FunctionType) {
-            print(OPEN_PAREN, suppressNextSpace = true)
-        }
-
-        if (node.typeAnnotation == null) {
-            print(node.identifier.fullText().toKotlinTypeName())
-        }
-        else {
-            print(nodeType.toKotlinTypeName())
-        }
-
-        if (node.questionToken != null) {
-            if (nodeType?.kind() == FunctionType) {
-                print(CLOSE_PAREN, suppressSpace = true)
-            }
-
-            print("?", suppressSpace = true)
-            if (node.equalsValueClause == null) {
-                print("= null") // TODO replace `null` with `undefined`
-            }
-        }
-
-        visitOptionalNode(node.equalsValueClause)
-    }
-
-    //  Generic parameters
-
-    override fun visitTypeParameterList(node: TypeParameterListSyntax) {
-        print(node.lessThanToken.text(), suppressSpace = true, suppressNextSpace = true)
-        visitSeparatedList(node.typeParameters)
-        print(node.greaterThanToken.text(), suppressSpace = true)
-    }
-
-    override fun visitConstraint(node: ConstraintSyntax) {
-        printTypeAnnotation(node.`type`, suppressSpace = false)
+        addFunction(name, params, returnType, typeParams)
     }
 
 //    Interfaces
 
     override fun visitInterfaceDeclaration(node: InterfaceDeclarationSyntax) {
-        println(NATIVE)
-        print(PUBLIC)
+        val translator = TsInterfaceToKt()
+        translator.visitInterfaceDeclaration(node)
+        declarations.add(translator.result)
+    }
+
+////  Classes
+
+    override fun visitClassDeclaration(node: ClassDeclarationSyntax) {
+        val translator = TsClassToKt()
+        translator.visitClassDeclaration(node)
+
+        val result = translator.result
+        if (result != null) {
+            declarations.add(result)
+        }
+    }
+}
+
+abstract class TsClassifierToKt() : TypeScriptToKotlinBase() {
+    abstract val needsNoImpl: Boolean
+
+    var parents = ArrayList<Type>()
+
+    override fun visitHeritageClause(node: HeritageClauseSyntax) {
+        val types = node.typeNames.map {(id: IIdentifierSyntax) -> Type(id.toKotlinTypeName()) }
+        parents.addAll(types)
+    }
+
+    override fun visitIndexSignature(node: IndexSignatureSyntax) {
+        translateAccessor(node, isGetter = true)
+        translateAccessor(node, isGetter = false)
+    }
+
+    private fun translateAccessor(node: IndexSignatureSyntax, isGetter: Boolean) {
+        val param = node.parameter.toKotlinParam()
+        val propType = node.typeAnnotation.toKotlinTypeName()
+
+        if (isGetter) {
+            addFunction(GET, listOf(param), propType, listOf(), needsNoImpl)
+        }
+        else {
+            addFunction(SET, listOf(param, FunParam("value", TypeAnnotation(propType))), "Unit", listOf(), needsNoImpl)
+        }
+    }
+}
+
+class TsInterfaceToKt() : TsClassifierToKt() {
+    override val result: Classifier
+        get() = Classifier(ClassKind.TRAIT, name!!, typeParams, parents, declarations, NATIVE_ANNOTATION)
+
+    override val needsNoImpl = false
+
+    var name: String? = null
+    var typeParams: List<TypeParam>? = null
+
+    override fun visitInterfaceDeclaration(node: InterfaceDeclarationSyntax) {
 //      todo visitList(node.modifiers)
-        print(TRAIT)
-        visitToken(node.identifier)
-        visitOptionalNode(node.typeParameterList)
+        name = node.identifier.getText()
+        typeParams = node.typeParameterList?.toKotlinTypeParams()
+
         visitList(node.heritageClauses)
         visitNode(node.body)
     }
 
-    override fun visitHeritageClause(node: HeritageClauseSyntax) {
-        print(":")
-        visitSeparatedList(node.typeNames)
-    }
-
-    override fun visitTypeArgumentList(node: TypeArgumentListSyntax) {
-        print(node.lessThanToken.text(), suppressSpace = true, suppressNextSpace = true)
-        visitSeparatedList(node.typeArguments)
-        print(node.greaterThanToken.text(), suppressSpace = true)
-    }
-
-    override fun visitObjectType(node: ObjectTypeSyntax) {
-        println(node.openBraceToken.text())
-        enterBlock()
-
-        for (nodeOrToken in node.typeMembers.toNonSeparatorArray()) {
-            visitOptionalNodeOrToken(nodeOrToken)
-            println()
-        }
-
-        exitBlock()
-        println(node.closeBraceToken.text())
-    }
-
     override fun visitPropertySignature(node: PropertySignatureSyntax) {
-        print(PUBLIC)
-        print(VAR)
-        visitToken(node.propertyName)
+        val name = node.propertyName.getText()
+        val typeName = node.typeAnnotation.toKotlinTypeName()
+        val isNullable = node.questionToken != null
+        val isLambda = node.typeAnnotation.`type`.kind() == FunctionType
 
-        print(":", suppressSpace = true)
-
-        val needParens = node.questionToken != null && node.typeAnnotation.`type`.kind() == FunctionType
-        if (needParens) {
-            print(OPEN_PAREN, suppressNextSpace = true)
-        }
-
-        print(node.typeAnnotation.toKotlinTypeName())
-
-        if (needParens) {
-            print(CLOSE_PAREN, suppressSpace = true)
-        }
-        print(node.questionToken?.text(), suppressSpace = true)
+        addVariable(name, typeName, isNullable = isNullable, isLambda = isLambda, needsNoImpl = false)
     }
 
     override fun visitMethodSignature(node: MethodSignatureSyntax) {
-        print(PUBLIC)
+        val name = node.propertyName.getText()
+        val isOptional = node.questionToken != null
 
-        if (node.questionToken == null) {
-            print(FUN)
-            visitToken(node.propertyName)
-            translateCallSignature(node.callSignature)
+        val call = node.callSignature
+
+        // TODO extract
+        val typeParams = call.typeParameterList?.toKotlinTypeParams()
+        val params = call.parameterList.toKotlinParams()
+        val returnType = call.typeAnnotation?.toKotlinTypeName() ?: "Unit"
+
+        if (isOptional) {
+            addVariable(name, "(${params.join(", ")}) -> $returnType", typeParams, isVar = false, isNullable = true, isLambda = true, needsNoImpl = false)
         }
         else {
-            val call = node.callSignature
-
-            print(VAL)
-            if (call.typeParameterList != null) {
-                print("")
-                visitTypeParameterList(call.typeParameterList)
-            }
-            visitToken(node.propertyName)
-            print(":", suppressSpace = true)
-            print(OPEN_PAREN, suppressNextSpace = true)
-            visitNode(call.parameterList)
-            print("->")
-            print(call.typeAnnotation.toKotlinTypeName())
-            print(CLOSE_PAREN, suppressSpace = true)
-            print("?", suppressSpace = true)
+            addFunction(name, params, returnType, typeParams, needsNoImpl = false)
         }
-    }
-
-    private fun translateCallSignature(node: CallSignatureSyntax) {
-        visitOptionalNode(node.typeParameterList)
-        visitNode(node.parameterList)
-        visitOptionalNode(node.typeAnnotation)
     }
 
     override fun visitCallSignature(node: CallSignatureSyntax) {
-        print(PUBLIC)
-        print(FUN)
-        print(INVOKE)
-        translateCallSignature(node)
+        //TODO extract this code???
+        val typeParams = node.typeParameterList?.toKotlinTypeParams()
+        val params = node.parameterList.toKotlinParams()
+        val returnType = node.typeAnnotation?.toKotlinTypeName() ?: "Unit"
+
+        addFunction(INVOKE, params, returnType, typeParams, needsNoImpl = false)
     }
+}
 
-    private fun translateAccessor(node: IndexSignatureSyntax, isGetter: Boolean = true) {
-        val methodName = if (isGetter) GET else SET
+class TsClassToKt() : TsClassifierToKt() {
+    override val result: Classifier?
+        get() = if (name == null) null else Classifier(ClassKind.CLASS, name!!, typeParams, parents, declarations, NATIVE_ANNOTATION)
 
-        print(PUBLIC)
-        print(FUN)
-        print(methodName)
+    override val needsNoImpl = true
 
-        print(OPEN_PAREN, suppressSpace = true, suppressNextSpace = true)
-        visitNode(node.parameter)
-        if (!isGetter) {
-            print(",", suppressSpace = true)
-            print("value")
-            visitOptionalNode(node.typeAnnotation)
-        }
-
-        print(CLOSE_PAREN, suppressSpace = true)
-
-        if (isGetter) {
-            visitOptionalNode(node.typeAnnotation)
-        }
-    }
-
-    override fun visitIndexSignature(node: IndexSignatureSyntax) {
-        translateAccessor(node)
-        println()
-        translateAccessor(node, isGetter = false)
-    }
-
-//  Classes
+    var name: String? = null
+    var typeParams: List<TypeParam>? = null
 
     override fun visitClassDeclaration(node: ClassDeclarationSyntax) {
         // Skip if not declare
         if (!node.modifiers.containsBy(DeclareKeyword) { it.kind() } ) return
 
-        println(NATIVE)
-        print(PUBLIC)
 //      todo visitList(node.modifiers)
-        print(CLASS)
-        visitToken(node.identifier)
-        visitOptionalNode(node.typeParameterList)
+        name = node.identifier.getText()
+        typeParams = node.typeParameterList?.toKotlinTypeParams()
+
         visitList(node.heritageClauses)
+        visitList(node.classElements)
 
-        //this.visitList(node.classElements);
-
-//      Class body
-
-        println(node.openBraceToken.text())
-        enterBlock()
-
-        for (nodeOrToken in node.classElements.toArray()) {
-            visitOptionalNodeOrToken(nodeOrToken)
-            println()
-        }
-
-        exitBlock()
-        println(node.closeBraceToken.text())
-
+//        val elements = node.classElements
+//        for (i in 0..elements.childCount() - 1) {
+//            val nodeOrToken = elements.childAt(i)
+//            visitOptionalNodeOrToken(nodeOrToken)
+//        }
     }
 
+    override fun visitMemberVariableDeclaration(node: MemberVariableDeclarationSyntax) {
+//        TODO visitList(node.modifiers)
+        val declarator = node.variableDeclarator
+
+        // TODO extract??? (see TypeScriptToKotlinWalker::visitVariableStatement)
+        val name = declarator.identifier.getText()
+        val `type` = declarator.typeAnnotation?.toKotlinTypeName() ?: "Any"
+
+        addVariable(name, `type`)
+    }
+
+
     override fun visitMemberFunctionDeclaration(node: MemberFunctionDeclarationSyntax) {
-        print(PUBLIC)
-        print(FUN)
-//        visitList(node.modifiers)
-        visitToken(node.propertyName)
-        translateCallSignature(node.callSignature)
+//        TODO visitList(node.modifiers)
+        val name = node.propertyName.getText()
+
+        val call = node.callSignature
+        // TODO extract
+        val typeParams = call.typeParameterList?.toKotlinTypeParams()
+        val params = call.parameterList.toKotlinParams()
+        val returnType = call.typeAnnotation?.toKotlinTypeName() ?: "Unit"
+
+        addFunction(name, params, returnType, typeParams)
 
 //      TODO assert null?
 //        visitOptionalNode(node.block)
 //        visitOptionalToken(node.semicolonToken)
     }
-
-
-    override fun visitMemberVariableDeclaration(node: MemberVariableDeclarationSyntax) {
-        print(PUBLIC)
-        print(VAR)
-
-//        visitList(node.modifiers)
-        visitNode(node.variableDeclarator)
-    }
-
-
 }

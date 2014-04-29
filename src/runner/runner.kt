@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 package ts2kt
 
 import js.debug.console
@@ -37,14 +37,17 @@ fun translate(srcPath: String): String {
     val sourceFile = batch.getSourceFile(srcPath);
     compiler.addSourceUnit(srcPath, sourceFile.scriptSnapshot, sourceFile.byteOrderMark, 0, false);
 
-    val tree = compiler.getSyntaxTree(srcPath);
-    val typeScriptToKotlinWalker = TypeScriptToKotlinWalker();
-    tree.sourceUnit().accept(typeScriptToKotlinWalker);
-
     val path = require("path") as node.path
     val srcName = path.basename(srcPath, TYPESCRIPT_DEFINITION_FILE_EXT)
 
-    var out = "package " + srcName + "\n\n" + typeScriptToKotlinWalker.out;
+    val typeScriptToKotlinWalker = TypeScriptToKotlinWalker(srcName);
+
+    val tsTree = compiler.getSyntaxTree(srcPath);
+    tsTree.sourceUnit().accept(typeScriptToKotlinWalker)
+
+    val ktTree = typeScriptToKotlinWalker.result
+
+    var out = ktTree.toString()
 
     return out
 }
