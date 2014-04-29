@@ -1,3 +1,3 @@
 interface Foo {
-    bar?: (boolean, Baz) => boolean;
+    bar?: (b: boolean, baz) => boolean;
 }

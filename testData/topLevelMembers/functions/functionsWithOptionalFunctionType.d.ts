@@ -1,1 +1,1 @@
-declare function foo(f?: (string) => boolean): boolean;
+declare function foo(f?: (a) => boolean): boolean;

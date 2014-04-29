@@ -2,5 +2,5 @@ package optionalMethodsWithOptinalFunctionType
 
 native
 public trait Foo {
-    public val foo: ((f: ((Number, String) -> String)? = null) -> Boolean)?
+    public val foo: ((f: ((n: Number, s: String) -> String)? = null) -> Boolean)?
 }

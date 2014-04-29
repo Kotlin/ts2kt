@@ -1,3 +1,3 @@
 interface Foo {
-    foo?(f?: (number, string) => string): boolean;
+    foo?(f?: (n: number, s: string) => string): boolean;
 }

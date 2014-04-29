@@ -1,7 +1,7 @@
 package functions
 
 native
-public fun withoutArguments() = noImpl
+public fun withoutArguments(): Unit = noImpl
 native
 public fun withOneAny(a: Any): Any = noImpl
 native
