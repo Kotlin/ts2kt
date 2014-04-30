@@ -133,7 +133,7 @@ abstract class TsClassifierToKt() : TypeScriptToKotlinBase() {
 
 class TsInterfaceToKt() : TsClassifierToKt() {
     override val result: Classifier
-        get() = Classifier(ClassKind.TRAIT, name!!, typeParams, parents, declarations, NATIVE_ANNOTATION)
+        get() = Classifier(ClassKind.TRAIT, name!!, listOf(), typeParams, parents, declarations, NATIVE_ANNOTATION)
 
     override val needsNoImpl = false
 
@@ -198,7 +198,7 @@ class TsClassToKt(
                         }
             }
 
-            return Classifier(kind, name!!, typeParams, parents, cachedDeclarations!!, annotations)
+            return Classifier(kind, name!!, paramsOfConstructors, typeParams, parents, cachedDeclarations!!, annotations)
         }
 
     var cachedDeclarations: List<Member>? = null
@@ -208,6 +208,7 @@ class TsClassToKt(
     var name: String? = null
     var typeParams: List<TypeParam>? = null
     var staticTranslator: TsClassToKt? = null
+    val paramsOfConstructors = ArrayList<List<FunParam>>()
 
     fun getTranslator(node: IMemberDeclarationSyntax): TsClassToKt {
         if (node.modifiers.contains(StaticKeyword)) {
@@ -248,6 +249,13 @@ class TsClassToKt(
 
         getTranslator(node).addFunction(name, node.callSignature.toKotlinCallSignature())
 
-        if (node.block != null) throw Exception("An function in declarations file should not have body, function '${this.name}.$name'")
+        assert(node.block == null, "An function in declarations file should not have body, function '${this.name}.$name'")
+    }
+
+    override fun visitConstructorDeclaration(node: ConstructorDeclarationSyntax) {
+        val params = node.parameterList.toKotlinParams()
+        paramsOfConstructors.add(params)
+
+        assert(node.block == null, "A constructor in declarations file should not have body, constructor in '${this.name}")
     }
 }

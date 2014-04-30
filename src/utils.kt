@@ -76,3 +76,7 @@ fun <T> List<T>.join(
 [suppress("UNUSED_PARAMETER")]
 native
 fun <T> Array<T>.join(delimiter: String = ","): String = noImpl
+
+fun assert(condition: Boolean, message: String) {
+    if (!condition) throw Exception(message)
+}

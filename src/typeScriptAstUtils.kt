@@ -69,10 +69,12 @@ fun ParameterSyntax.toKotlinParam(): FunParam {
     val defaultValue = equalsValueClause?.value?.fullText()
     val isNullable = questionToken != null
     val isLambda = nodeType?.kind() == FunctionType
+    val isVar = publicOrPrivateKeyword != null
 
     return FunParam(name,
             TypeAnnotation(typeName, isNullable = isNullable, isLambda = isLambda, isVararg = isVararg),
-            if (defaultValue == null && isNullable) "null" else defaultValue)
+            if (defaultValue == null && isNullable) "null" else defaultValue,
+            isVar)
 }
 
 fun ParameterListSyntax.toKotlinParams(): List<FunParam>  =

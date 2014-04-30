@@ -121,6 +121,7 @@ enum class ClassKind(val name: String) {
 class Classifier(
         val kind: ClassKind,
         override val name: String,
+        val paramsOfConstructors: List<List<FunParam>>,
         val typeParams: List<TypeParam>?,
         val parents: List<Type>,
         val members: List<Node>,
@@ -133,12 +134,14 @@ class Classifier(
             (if (name.isEmpty()) "" else " ") +
             name +
             (typeParams?.join(", ", startWithIfNotEmpty = "<", endWithIfNotEmpty = ">") ?: "") +
+            (if (paramsOfConstructors.isEmpty()) "" else paramsOfConstructors[0].join(", ", startWithIfNotEmpty = "(", endWithIfNotEmpty = ")")) +
             parents.join(", ", startWithIfNotEmpty = " : ") +
             members.join("\n", startWithIfNotEmpty = " {\n", endWithIfNotEmpty = "\n}")
 }
 
-class FunParam(override val name: String, val `type`: TypeAnnotation, val defaultValue: Any? = null) : Named, Node() {
+class FunParam(override val name: String, val `type`: TypeAnnotation, val defaultValue: Any? = null, val isVar: Boolean = false) : Named, Node() {
     override fun stringify(): String =
+            (if (isVar) "$PUBLIC $VAR " else "") +
             (if (`type`.isVararg) VARARG + " " else "") + name + `type` + if (defaultValue == null) "" else " = $defaultValue"
 }
 

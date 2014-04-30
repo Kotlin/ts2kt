@@ -632,7 +632,7 @@ abstract class BlockSyntax(public val openBraceToken: ISyntaxToken,
 [suppress("UNUSED_PARAMETER")]
 native
 abstract class ParameterSyntax(public val dotDotDotToken: ISyntaxToken?,
-                               public val publicOrPrivateKeyword: ISyntaxToken,
+                               public val publicOrPrivateKeyword: ISyntaxToken?,
                                public val identifier: IIdentifierSyntax,
                                public val questionToken: ISyntaxToken?,
                                public val typeAnnotation: TypeAnnotationSyntax?,
@@ -1039,7 +1039,7 @@ abstract class ExpressionStatementSyntax(public val expression: IExpressionSynta
 native
 abstract class ConstructorDeclarationSyntax(public val constructorKeyword: ISyntaxToken,
                                             public val parameterList: ParameterListSyntax,
-                                            public val block: BlockSyntax,
+                                            public val block: BlockSyntax?,
                                             public val semicolonToken: ISyntaxToken,
                                             parsedInStrictMode: Boolean) : SyntaxNode(parsedInStrictMode), IClassElementSyntax {
     public fun update(constructorKeyword: ISyntaxToken,
