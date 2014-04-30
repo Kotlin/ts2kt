@@ -104,7 +104,9 @@ native
 trait IClassElementSyntax : ISyntaxNode
 
 native
-trait IMemberDeclarationSyntax : IClassElementSyntax
+trait IMemberDeclarationSyntax : IClassElementSyntax {
+    public val modifiers: ISyntaxList
+}
 
 native
 trait ISwitchClauseSyntax : ISyntaxNode

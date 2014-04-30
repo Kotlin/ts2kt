@@ -1058,7 +1058,7 @@ abstract class ConstructorDeclarationSyntax(public val constructorKeyword: ISynt
 
 [suppress("UNUSED_PARAMETER")]
 native
-abstract class MemberFunctionDeclarationSyntax(public val modifiers: ISyntaxList,
+abstract class MemberFunctionDeclarationSyntax(public override val modifiers: ISyntaxList,
                                                public val propertyName: IIdentifierSyntax,
                                                public val callSignature: CallSignatureSyntax,
                                                public val block: BlockSyntax?,
@@ -1086,7 +1086,7 @@ abstract class MemberFunctionDeclarationSyntax(public val modifiers: ISyntaxList
 
 [suppress("UNUSED_PARAMETER")]
 native
-abstract class MemberAccessorDeclarationSyntax(public val modifiers: ISyntaxList,
+abstract class MemberAccessorDeclarationSyntax(public override val modifiers: ISyntaxList,
                                                public val propertyName: IIdentifierSyntax,
                                                public val parameterList: ParameterListSyntax,
                                                public val block: BlockSyntax,
@@ -1153,7 +1153,7 @@ abstract class SetMemberAccessorDeclarationSyntax(modifiers: ISyntaxList,
 
 [suppress("UNUSED_PARAMETER")]
 native
-abstract class MemberVariableDeclarationSyntax(public val modifiers: ISyntaxList,
+abstract class MemberVariableDeclarationSyntax(public override val modifiers: ISyntaxList,
                                                public val variableDeclarator: VariableDeclaratorSyntax,
                                                public val semicolonToken: ISyntaxToken,
                                                parsedInStrictMode: Boolean) : SyntaxNode(parsedInStrictMode), IMemberDeclarationSyntax {

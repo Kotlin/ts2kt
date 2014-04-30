@@ -21,6 +21,18 @@ class SyntaxKind
 native("typescript.SyntaxKind['DeclareKeyword']")
 val DeclareKeyword: SyntaxKind = noImpl
 
+native("typescript.SyntaxKind['PrivateKeyword']")
+val PrivateKeyword: SyntaxKind = noImpl
+
+native("typescript.SyntaxKind['ProtectedKeyword']")
+val ProtectedKeyword: SyntaxKind = noImpl
+
+native("typescript.SyntaxKind['PublicKeyword']")
+val PublicKeyword: SyntaxKind = noImpl
+
+native("typescript.SyntaxKind['StaticKeyword']")
+val StaticKeyword: SyntaxKind = noImpl
+
 native("typescript.SyntaxKind['CommaToken']")
 val CommaToken: SyntaxKind = noImpl
 

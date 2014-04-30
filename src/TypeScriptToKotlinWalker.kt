@@ -52,7 +52,7 @@ class TypeScriptToKotlinWalker(val packageFqName: String? = null) : TypeScriptTo
 
     override fun visitVariableStatement(node: VariableStatementSyntax) {
         // Skip if not declare
-        if (!node.modifiers.containsBy(DeclareKeyword) { it.kind() } ) return
+        if (!node.modifiers.contains(DeclareKeyword)) return
 
 //      TODO  node.modifiers
 //      TODO  test many declarations
@@ -68,7 +68,7 @@ class TypeScriptToKotlinWalker(val packageFqName: String? = null) : TypeScriptTo
 
     override fun visitFunctionDeclaration(node: FunctionDeclarationSyntax) {
         // Skip if not declare
-        if (!node.modifiers.containsBy(DeclareKeyword) { it.kind() } ) return
+        if (!node.modifiers.contains(DeclareKeyword)) return
 
 //      TODO  visitList(node.modifiers)
         val name = node.identifier.getText()
@@ -178,18 +178,52 @@ class TsInterfaceToKt() : TsClassifierToKt() {
     }
 }
 
-class TsClassToKt() : TsClassifierToKt() {
+class TsClassToKt(
+        val kind: ClassKind = ClassKind.CLASS,
+        val annotations: List<Annotation> = NATIVE_ANNOTATION
+) : TsClassifierToKt() {
     override val result: Classifier?
-        get() = if (name == null) null else Classifier(ClassKind.CLASS, name!!, typeParams, parents, declarations, NATIVE_ANNOTATION)
+        get()  {
+            if (name == null) return null
+
+            if (cachedDeclarations == null) {
+                cachedDeclarations =
+                        if (staticTranslator == null) {
+                            declarations
+                        } else {
+                            val t = ArrayList<Member>()
+                            t.addAll(declarations)
+                            t.add(staticTranslator!!.result!!)
+                            t
+                        }
+            }
+
+            return Classifier(kind, name!!, typeParams, parents, cachedDeclarations!!, annotations)
+        }
+
+    var cachedDeclarations: List<Member>? = null
 
     override val needsNoImpl = true
 
     var name: String? = null
     var typeParams: List<TypeParam>? = null
+    var staticTranslator: TsClassToKt? = null
+
+    fun getTranslator(node: IMemberDeclarationSyntax): TsClassToKt {
+        if (node.modifiers.contains(StaticKeyword)) {
+            if (staticTranslator == null) {
+                staticTranslator = TsClassToKt(ClassKind.CLASS_OBJECT, listOf())
+                staticTranslator?.name = ""
+            }
+            return staticTranslator!!
+        }
+
+        return this
+    }
 
     override fun visitClassDeclaration(node: ClassDeclarationSyntax) {
         // Skip if not declare
-        if (!node.modifiers.containsBy(DeclareKeyword) { it.kind() } ) return
+        if (!node.modifiers.contains(DeclareKeyword)) return
 
 //      todo visitList(node.modifiers)
         name = node.identifier.getText()
@@ -200,21 +234,19 @@ class TsClassToKt() : TsClassifierToKt() {
     }
 
     override fun visitMemberVariableDeclaration(node: MemberVariableDeclarationSyntax) {
-//        TODO visitList(node.modifiers)
         val declarator = node.variableDeclarator
 
         val name = declarator.identifier.getText()
         val varType = declarator.typeAnnotation?.toKotlinTypeName() ?: ANY
 
-        addVariable(name, varType)
+        getTranslator(node).addVariable(name, varType)
     }
 
 
     override fun visitMemberFunctionDeclaration(node: MemberFunctionDeclarationSyntax) {
-//        TODO visitList(node.modifiers)
         val name = node.propertyName.getText()
 
-        addFunction(name, node.callSignature.toKotlinCallSignature())
+        getTranslator(node).addFunction(name, node.callSignature.toKotlinCallSignature())
 
         if (node.block != null) throw Exception("An function in declarations file should not have body, function '${this.name}.$name'")
     }

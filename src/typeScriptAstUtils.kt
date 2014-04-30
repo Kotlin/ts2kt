@@ -136,6 +136,8 @@ fun ISyntaxList.containsBy<T>(a: T, f: (ISyntaxNodeOrToken) -> T): Boolean {
     return false
 }
 
+fun ISyntaxList.contains(syntaxKind: SyntaxKind): Boolean = this.containsBy(syntaxKind) { it.kind() }
+
 fun ISyntaxList.map<T : ISyntaxNodeOrToken, R>(f: (T) -> R): List<R> {
     val l = ArrayList<R>()
 

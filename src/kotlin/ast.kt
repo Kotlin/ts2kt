@@ -65,7 +65,7 @@ abstract class Node(val needsFixIndent: Boolean = false) {
             }
 
             if (!lines[i].isEmpty() && indentIdx != 0) {
-                lines[i] = indent + lines[i]
+                lines[i] = indent + lines[i].trim()
             }
 
             if (lines[i].endsWith('{')) {
@@ -115,6 +115,7 @@ enum class ClassKind(val name: String) {
     CLASS : ClassKind("class")
     TRAIT : ClassKind("trait")
     OBJECT : ClassKind("object")
+    CLASS_OBJECT: ClassKind("class object")
 }
 
 class Classifier(
@@ -128,7 +129,9 @@ class Classifier(
     override fun stringify(): String =
             annotations.stringify() +
             PUBLIC + " " +
-            kind.name + " " + name +
+            kind.name +
+            (if (name.isEmpty()) "" else " ") +
+            name +
             (typeParams?.join(", ", startWithIfNotEmpty = "<", endWithIfNotEmpty = ">") ?: "") +
             parents.join(", ", startWithIfNotEmpty = " : ") +
             members.join("\n", startWithIfNotEmpty = " {\n", endWithIfNotEmpty = "\n}")
