@@ -18,46 +18,46 @@ package typescript
 native
 class SyntaxKind
 
-native("typescript.SyntaxKind['DeclareKeyword']")
+native("typescript.SyntaxKind.DeclareKeyword")
 val DeclareKeyword: SyntaxKind = noImpl
 
-native("typescript.SyntaxKind['PrivateKeyword']")
+native("typescript.SyntaxKind.PrivateKeyword")
 val PrivateKeyword: SyntaxKind = noImpl
 
-native("typescript.SyntaxKind['ProtectedKeyword']")
+native("typescript.SyntaxKind.ProtectedKeyword")
 val ProtectedKeyword: SyntaxKind = noImpl
 
-native("typescript.SyntaxKind['PublicKeyword']")
+native("typescript.SyntaxKind.PublicKeyword")
 val PublicKeyword: SyntaxKind = noImpl
 
-native("typescript.SyntaxKind['StaticKeyword']")
+native("typescript.SyntaxKind.StaticKeyword")
 val StaticKeyword: SyntaxKind = noImpl
 
-native("typescript.SyntaxKind['CommaToken']")
+native("typescript.SyntaxKind.CommaToken")
 val CommaToken: SyntaxKind = noImpl
 
-native("typescript.SyntaxKind['VoidKeyword']")
+native("typescript.SyntaxKind.VoidKeyword")
 val VoidKeyword: SyntaxKind = noImpl
 
-native("typescript.SyntaxKind['AnyKeyword']")
+native("typescript.SyntaxKind.AnyKeyword")
 val AnyKeyword: SyntaxKind = noImpl
 
-native("typescript.SyntaxKind['BooleanKeyword']")
+native("typescript.SyntaxKind.BooleanKeyword")
 val BooleanKeyword: SyntaxKind = noImpl
 
-native("typescript.SyntaxKind['NumberKeyword']")
+native("typescript.SyntaxKind.NumberKeyword")
 val NumberKeyword: SyntaxKind = noImpl
 
-native("typescript.SyntaxKind['StringKeyword']")
+native("typescript.SyntaxKind.StringKeyword")
 val StringKeyword: SyntaxKind = noImpl
 
-native("typescript.SyntaxKind['ArrayType']")
+native("typescript.SyntaxKind.ArrayType")
 val ArrayType: SyntaxKind = noImpl
 
-native("typescript.SyntaxKind['GenericType']")
+native("typescript.SyntaxKind.GenericType")
 val GenericType: SyntaxKind = noImpl
 
-native("typescript.SyntaxKind['FunctionType']")
+native("typescript.SyntaxKind.FunctionType")
 val FunctionType: SyntaxKind = noImpl
 
 native("typescript.SyntaxKind")
