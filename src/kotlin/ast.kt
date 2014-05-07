@@ -60,7 +60,7 @@ abstract class Node(val needsFixIndent: Boolean = false) {
         var indentIdx = 0
         var indent = getIndent(indentIdx)
         for (i in lines.indices) {
-            if (lines[i] == "}") {
+            if (lines[i].endsWith("}")) {
                 indent = getIndent(--indentIdx)
             }
 
@@ -111,11 +111,11 @@ class Annotation(override val name: String, val parameters: List<Argument> = lis
     override fun stringify(): String = "$name" + if (parameters.isEmpty()) "" else "(${parameters.join()})"
 }
 
-enum class ClassKind(val name: String) {
+enum class ClassKind(val name: String, val bracesAlwaysRequired: Boolean = false) {
     CLASS : ClassKind("class")
     TRAIT : ClassKind("trait")
-    OBJECT : ClassKind("object")
-    CLASS_OBJECT: ClassKind("class object")
+    OBJECT : ClassKind("object", bracesAlwaysRequired = true)
+    CLASS_OBJECT: ClassKind("class object", bracesAlwaysRequired = true)
 }
 
 class Classifier(
@@ -136,7 +136,11 @@ class Classifier(
             (typeParams?.join(", ", startWithIfNotEmpty = "<", endWithIfNotEmpty = ">") ?: "") +
             (if (paramsOfConstructors.isEmpty()) "" else paramsOfConstructors[0].join(", ", startWithIfNotEmpty = "(", endWithIfNotEmpty = ")")) +
             parents.join(", ", startWithIfNotEmpty = " : ") +
-            members.join("\n", startWithIfNotEmpty = " {\n", endWithIfNotEmpty = "\n}")
+            (if (bracesRequired) " {\n" else "") +
+            members.join("\n") +
+            (if (bracesRequired) "\n}" else "")
+
+    val bracesRequired = kind.bracesAlwaysRequired || !members.isEmpty()
 }
 
 class FunParam(override val name: String, val `type`: TypeAnnotation, val defaultValue: Any? = null, val isVar: Boolean = false) : Named, Node() {
