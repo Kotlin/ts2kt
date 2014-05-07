@@ -19,6 +19,8 @@ package typescript
 [suppress("UNUSED_PARAMETER")]
 native
 abstract class SyntaxNode(parsedInStrictMode: Boolean) : ISyntaxNodeOrToken {
+    public abstract val modifiers: ISyntaxList
+
     fun toJSON(key: Any): Any = noImpl
 
     fun replaceToken(token1: ISyntaxToken, token2: ISyntaxToken): SyntaxNode = noImpl

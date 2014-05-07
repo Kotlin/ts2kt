@@ -33,6 +33,9 @@ val PublicKeyword: SyntaxKind = noImpl
 native("typescript.SyntaxKind.StaticKeyword")
 val StaticKeyword: SyntaxKind = noImpl
 
+native("typescript.SyntaxKind.ExportKeyword")
+val ExportKeyword: SyntaxKind = noImpl
+
 native("typescript.SyntaxKind.CommaToken")
 val CommaToken: SyntaxKind = noImpl
 

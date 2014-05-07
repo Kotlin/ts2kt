@@ -125,8 +125,10 @@ trait INameSyntax : ShouldBeEscaped, ITypeSyntax
 
 // Sugar
 native
+trait ShouldBeEscaped : ISyntaxElement
+
+native
 trait IIdentifierSyntax : ShouldBeEscaped, ISyntaxToken
 
 native
-trait ShouldBeEscaped: ISyntaxElement
-
+trait NameAsStringLiteral : ShouldBeEscaped, ISyntaxToken

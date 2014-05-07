@@ -48,6 +48,12 @@ fun ISyntaxElement.getText(): String = if (this.isToken()) (this as ISyntaxToken
 
 fun ShouldBeEscaped.getText(): String = (this: ISyntaxElement).getText().escapedIfNeed()
 
+fun NameAsStringLiteral.getText(): String {
+    val quotedText = (this: ISyntaxElement).getText()
+    val text = quotedText.substring(1, quotedText.size - 1)
+    return text.escapedIfNeed()
+}
+
 ///
 
 fun ParameterSyntax.toKotlinParam(): FunParam {

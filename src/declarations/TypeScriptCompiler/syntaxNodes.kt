@@ -68,7 +68,7 @@ abstract class ModuleNameModuleReferenceSyntax(
 [suppress("UNUSED_PARAMETER")]
 native
 abstract class ImportDeclarationSyntax(
-        public val modifiers: ISyntaxList,
+        public override val modifiers: ISyntaxList,
         public val importKeyword: ISyntaxToken,
         public val identifier: IIdentifierSyntax,
         public val equalsToken: ISyntaxToken,
@@ -113,7 +113,7 @@ abstract class ExportAssignmentSyntax(public val exportKeyword: ISyntaxToken,
 
 [suppress("UNUSED_PARAMETER")]
 native
-abstract class ClassDeclarationSyntax(public val modifiers: ISyntaxList,
+abstract class ClassDeclarationSyntax(public override val modifiers: ISyntaxList,
                                       public val classKeyword: ISyntaxToken,
                                       public val identifier: IIdentifierSyntax,
                                       public val typeParameterList: TypeParameterListSyntax?,
@@ -147,7 +147,7 @@ abstract class ClassDeclarationSyntax(public val modifiers: ISyntaxList,
 
 [suppress("UNUSED_PARAMETER")]
 native
-abstract class InterfaceDeclarationSyntax(public val modifiers: ISyntaxList,
+abstract class InterfaceDeclarationSyntax(public override val modifiers: ISyntaxList,
                                           public val interfaceKeyword: ISyntaxToken,
                                           public val identifier: IIdentifierSyntax,
                                           public val typeParameterList: TypeParameterListSyntax?,
@@ -187,10 +187,10 @@ abstract class HeritageClauseSyntax(public val extendsOrImplementsKeyword: ISynt
 
 [suppress("UNUSED_PARAMETER")]
 native
-abstract class ModuleDeclarationSyntax(public val modifiers: ISyntaxList,
+abstract class ModuleDeclarationSyntax(public override val modifiers: ISyntaxList,
                                        public val moduleKeyword: ISyntaxToken,
-                                       public val moduleName: INameSyntax,
-                                       public val stringLiteral: ISyntaxToken,
+                                       public val moduleName: INameSyntax?,
+                                       public val stringLiteral: NameAsStringLiteral?,
                                        public val openBraceToken: ISyntaxToken,
                                        public val moduleElements: ISyntaxList,
                                        public val closeBraceToken: ISyntaxToken,
@@ -199,7 +199,7 @@ abstract class ModuleDeclarationSyntax(public val modifiers: ISyntaxList,
     public fun update(modifiers: ISyntaxList,
                       moduleKeyword: ISyntaxToken,
                       moduleName: INameSyntax,
-                      stringLiteral: ISyntaxToken,
+                      stringLiteral: NameAsStringLiteral,
                       openBraceToken: ISyntaxToken,
                       moduleElements: ISyntaxList,
                       closeBraceToken: ISyntaxToken): ModuleDeclarationSyntax = noImpl
@@ -208,7 +208,7 @@ abstract class ModuleDeclarationSyntax(public val modifiers: ISyntaxList,
     public fun withModifier(modifier: ISyntaxToken): ModuleDeclarationSyntax = noImpl
     public fun withModuleKeyword(moduleKeyword: ISyntaxToken): ModuleDeclarationSyntax = noImpl
     public fun withModuleName(moduleName: INameSyntax): ModuleDeclarationSyntax = noImpl
-    public fun withStringLiteral(stringLiteral: ISyntaxToken): ModuleDeclarationSyntax = noImpl
+    public fun withStringLiteral(stringLiteral: NameAsStringLiteral): ModuleDeclarationSyntax = noImpl
     public fun withOpenBraceToken(openBraceToken: ISyntaxToken): ModuleDeclarationSyntax = noImpl
     public fun withModuleElements(moduleElements: ISyntaxList): ModuleDeclarationSyntax = noImpl
     public fun withModuleElement(moduleElement: IModuleElementSyntax): ModuleDeclarationSyntax = noImpl
@@ -217,7 +217,7 @@ abstract class ModuleDeclarationSyntax(public val modifiers: ISyntaxList,
 
 [suppress("UNUSED_PARAMETER")]
 native
-abstract class FunctionDeclarationSyntax(public val modifiers: ISyntaxList,
+abstract class FunctionDeclarationSyntax(public override val modifiers: ISyntaxList,
                                          public val functionKeyword: ISyntaxToken,
                                          public val identifier: IIdentifierSyntax,
                                          public val callSignature: CallSignatureSyntax,
@@ -243,7 +243,7 @@ abstract class FunctionDeclarationSyntax(public val modifiers: ISyntaxList,
 
 [suppress("UNUSED_PARAMETER")]
 native
-abstract class VariableStatementSyntax(public val modifiers: ISyntaxList,
+abstract class VariableStatementSyntax(public override val modifiers: ISyntaxList,
                                        public val variableDeclaration: VariableDeclarationSyntax,
                                        public val semicolonToken: ISyntaxToken,
                                        parsedInStrictMode: Boolean) : SyntaxNode(parsedInStrictMode), IStatementSyntax
@@ -1497,7 +1497,7 @@ abstract class WithStatementSyntax(public val withKeyword: ISyntaxToken,
 
 [suppress("UNUSED_PARAMETER")]
 native
-abstract class EnumDeclarationSyntax(public val modifiers: ISyntaxList,
+abstract class EnumDeclarationSyntax(public override val modifiers: ISyntaxList,
                                      public val enumKeyword: ISyntaxToken,
                                      public val identifier: IIdentifierSyntax,
                                      public val openBraceToken: ISyntaxToken,
