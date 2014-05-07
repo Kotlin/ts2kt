@@ -21,7 +21,10 @@ import ts2kt.utils.*
 import ts2kt.kotlin.ast.*
 import java.util.ArrayList
 
-private val NATIVE_ANNOTATION = listOf(Annotation("native"))
+private val NATIVE_ANNOTATION = Annotation("native")
+private val MODULE_ANNOTATION = Annotation("module")
+private val DEFAULT_ANNOTATION = listOf(NATIVE_ANNOTATION)
+private val DEFAULT_MODULE_ANNOTATION = listOf(MODULE_ANNOTATION)
 private val INVOKE = "invoke"
 private val GET = "get"
 private val SET = "set"
@@ -42,17 +45,22 @@ abstract class TypeScriptToKotlinBase : SyntaxWalker() {
     }
 }
 
-class TypeScriptToKotlinWalker(val packageFqName: String? = null) : TypeScriptToKotlinBase() {
+class TypeScriptToKotlinWalker(
+        val packageFqName: String? = null,
+        override val defaultAnnotations: List<Annotation> = DEFAULT_ANNOTATION,
+        val requiredModifier: SyntaxKind = DeclareKeyword
+) : TypeScriptToKotlinBase() {
     override val result: KotlinFile
         get() = KotlinFile(if (packageFqName != null) Package(packageFqName) else null, declarations)
 
-    override val defaultAnnotations: List<Annotation> = NATIVE_ANNOTATION
+    fun addModule(name: String, members: List<Member>) {
+        declarations.add(Classifier(ClassKind.OBJECT, name, listOf(), listOf(), listOf(), members, DEFAULT_MODULE_ANNOTATION))
+    }
 
-//  Variables
+    fun isShouldSkip(node: SyntaxNode) = !node.modifiers.contains(requiredModifier)
 
     override fun visitVariableStatement(node: VariableStatementSyntax) {
-        // Skip if not declare
-        if (!node.modifiers.contains(DeclareKeyword)) return
+        if (isShouldSkip(node)) return
 
 //      TODO  node.modifiers
 //      TODO  test many declarations
@@ -67,8 +75,7 @@ class TypeScriptToKotlinWalker(val packageFqName: String? = null) : TypeScriptTo
 //  Functions
 
     override fun visitFunctionDeclaration(node: FunctionDeclarationSyntax) {
-        // Skip if not declare
-        if (!node.modifiers.contains(DeclareKeyword)) return
+        if (isShouldSkip(node)) return
 
 //      TODO  visitList(node.modifiers)
         val name = node.identifier.getText()
@@ -76,18 +83,19 @@ class TypeScriptToKotlinWalker(val packageFqName: String? = null) : TypeScriptTo
         addFunction(name, callSignature)
     }
 
-//  Interfaces
-
     override fun visitInterfaceDeclaration(node: InterfaceDeclarationSyntax) {
-        val translator = TsInterfaceToKt()
+        // TODO: is it hack?
+        if (requiredModifier != DeclareKeyword && isShouldSkip(node)) return
+
+        val translator = TsInterfaceToKt(annotations = defaultAnnotations)
         translator.visitInterfaceDeclaration(node)
         declarations.add(translator.result)
     }
 
-//  Classes
-
     override fun visitClassDeclaration(node: ClassDeclarationSyntax) {
-        val translator = TsClassToKt()
+        if (isShouldSkip(node)) return
+
+        val translator = TsClassToKt(annotations = defaultAnnotations)
         translator.visitClassDeclaration(node)
 
         val result = translator.result
@@ -95,9 +103,22 @@ class TypeScriptToKotlinWalker(val packageFqName: String? = null) : TypeScriptTo
             declarations.add(result)
         }
     }
+
+    override fun visitModuleDeclaration(node: ModuleDeclarationSyntax) {
+        if (isShouldSkip(node)) return
+
+        val name = node.moduleName?.getText() ?: node.stringLiteral?.getText() ?: throw Exception("Anonimus module")
+
+        val tr = TypeScriptToKotlinWalker(defaultAnnotations = listOf(), requiredModifier = ExportKeyword)
+
+        tr.visitList(node.moduleElements)
+
+        addModule(name, tr.declarations)
+    }
 }
 
-abstract class TsClassifierToKt() : TypeScriptToKotlinBase() {
+abstract class TsClassifierToKt : TypeScriptToKotlinBase() {
+
     abstract val needsNoImpl: Boolean
 
     var parents = ArrayList<Type>()
@@ -131,9 +152,9 @@ abstract class TsClassifierToKt() : TypeScriptToKotlinBase() {
     }
 }
 
-class TsInterfaceToKt() : TsClassifierToKt() {
+class TsInterfaceToKt(val annotations: List<Annotation>) : TsClassifierToKt() {
     override val result: Classifier
-        get() = Classifier(ClassKind.TRAIT, name!!, listOf(), typeParams, parents, declarations, NATIVE_ANNOTATION)
+        get() = Classifier(ClassKind.TRAIT, name!!, listOf(), typeParams, parents, declarations, annotations)
 
     override val needsNoImpl = false
 
@@ -180,7 +201,7 @@ class TsInterfaceToKt() : TsClassifierToKt() {
 
 class TsClassToKt(
         val kind: ClassKind = ClassKind.CLASS,
-        val annotations: List<Annotation> = NATIVE_ANNOTATION
+        val annotations: List<Annotation> = DEFAULT_ANNOTATION
 ) : TsClassifierToKt() {
     override val result: Classifier?
         get()  {
@@ -223,9 +244,6 @@ class TsClassToKt(
     }
 
     override fun visitClassDeclaration(node: ClassDeclarationSyntax) {
-        // Skip if not declare
-        if (!node.modifiers.contains(DeclareKeyword)) return
-
 //      todo visitList(node.modifiers)
         name = node.identifier.getText()
         typeParams = node.typeParameterList?.toKotlinTypeParams()
