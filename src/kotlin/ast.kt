@@ -18,6 +18,7 @@ package ts2kt.kotlin.ast
 
 import ts2kt.utils.listOf
 import ts2kt.utils.join
+import ts2kt.utils.assert
 
 
 private val EQ_NO_IMPL = " = noImpl"
@@ -31,6 +32,7 @@ private val INDENT = "    "
 private val indents = listOf("") as MutableList<String>
 
 fun getIndent(n: Int): String {
+    assert(n >= 0, "The indent index should be >= 0")
     if (n < indents.size()) return indents[n]
 
     for (i in indents.size()..n) {
@@ -61,6 +63,7 @@ abstract class Node(val needsFixIndent: Boolean = false) {
         var indent = getIndent(indentIdx)
         for (i in lines.indices) {
             if (lines[i].endsWith("}")) {
+
                 indent = getIndent(--indentIdx)
             }
 
@@ -98,13 +101,14 @@ trait Named : Node {
 }
 
 trait Annotated : Node {
-    val annotations: List<Annotation>
+    // TODO: fix this HACK
+    var annotations: List<Annotation>
 }
 
 trait Member : Named, Annotated
 
-class Argument(val name: String, val value: Any /* TODO ??? */) {
-    override fun toString() = "$name = $value"
+class Argument(val name: String? = null, val value: Any /* TODO ??? */) {
+    override fun toString() = (if (name == null) "" else "$name = ") + value
 }
 
 class Annotation(override val name: String, val parameters: List<Argument> = listOf()) : Named, Node() {
@@ -125,7 +129,7 @@ class Classifier(
         val typeParams: List<TypeParam>?,
         val parents: List<Type>,
         val members: List<Node>,
-        override val annotations: List<Annotation>
+        override var annotations: List<Annotation>
 ) : Member, Node(needsFixIndent = true) {
     override fun stringify(): String =
             annotations.stringify() +
@@ -163,7 +167,7 @@ class CallSignature(
 class Function(
         override val name: String,
         val callSignature: CallSignature,
-        override val annotations: List<Annotation>,
+        override var annotations: List<Annotation>,
         val needsNoImpl: Boolean = true
 ) : Member, Node() {
     override fun stringify(): String =
@@ -177,7 +181,7 @@ class Function(
 class Variable(
         override val name: String,
         var `type`: TypeAnnotation,
-        override val annotations: List<Annotation>,
+        override var annotations: List<Annotation>,
         val typeParams: List<TypeParam>?,
         val isVar: Boolean,
         val needsNoImpl: Boolean = true
@@ -205,7 +209,14 @@ class TypeAnnotation(override val name: String,
                      val isLambda: Boolean = false,
                      val isVararg: Boolean = false
 ) : Named {
-    override fun stringify(): String =
+    // TODO: drop this temporary fix of indentation
+    override fun stringify(): String {
+        val result = stringify_()
+        // Add space to the end when results ends with '}' to avoid to detect a wrong indentation
+        return result + if (result.endsWith("}")) " " else ""
+    }
+
+    fun stringify_(): String =
             ": " +
             (if (isLambda && isNullable) "(" else "") +
             name +

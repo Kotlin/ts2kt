@@ -20,9 +20,12 @@ import typescript.*
 import ts2kt.utils.*
 import ts2kt.kotlin.ast.*
 import java.util.ArrayList
+import java.util.HashSet
+import java.util.HashMap
 
+private val MODULE = "module"
 private val NATIVE_ANNOTATION = Annotation("native")
-private val MODULE_ANNOTATION = Annotation("module")
+private val MODULE_ANNOTATION = Annotation(MODULE)
 private val DEFAULT_ANNOTATION = listOf(NATIVE_ANNOTATION)
 private val DEFAULT_MODULE_ANNOTATION = listOf(MODULE_ANNOTATION)
 private val INVOKE = "invoke"
@@ -48,10 +51,16 @@ abstract class TypeScriptToKotlinBase : SyntaxWalker() {
 class TypeScriptToKotlinWalker(
         val packageFqName: String? = null,
         override val defaultAnnotations: List<Annotation> = DEFAULT_ANNOTATION,
-        val requiredModifier: SyntaxKind = DeclareKeyword
+        val requiredModifier: SyntaxKind = DeclareKeyword,
+        val moduleName: String? = null
 ) : TypeScriptToKotlinBase() {
     override val result: KotlinFile
-        get() = KotlinFile(if (packageFqName != null) Package(packageFqName) else null, declarations)
+        get()  {
+            assert(exportedByAssignment.isEmpty(), "exportedByAssignment should be empty, but it contains: $exportedByAssignment")
+            return KotlinFile(if (packageFqName != null) Package(packageFqName) else null, declarations)
+        }
+
+    val exportedByAssignment = HashMap<String, Annotation>()
 
     fun addModule(name: String, members: List<Member>) {
         declarations.add(Classifier(ClassKind.OBJECT, name, listOf(), listOf(), listOf(), members, DEFAULT_MODULE_ANNOTATION))
@@ -71,8 +80,6 @@ class TypeScriptToKotlinWalker(
             addVariable(name, varType)
         }
     }
-
-//  Functions
 
     override fun visitFunctionDeclaration(node: FunctionDeclarationSyntax) {
         if (isShouldSkip(node)) return
@@ -109,11 +116,44 @@ class TypeScriptToKotlinWalker(
 
         val name = node.moduleName?.getText() ?: node.stringLiteral?.getText() ?: throw Exception("Anonimus module")
 
-        val tr = TypeScriptToKotlinWalker(defaultAnnotations = listOf(), requiredModifier = ExportKeyword)
+        val tr = TypeScriptToKotlinWalker(moduleName = name, defaultAnnotations = listOf(), requiredModifier = ExportKeyword)
 
         tr.visitList(node.moduleElements)
 
         addModule(name, tr.declarations)
+
+        exportedByAssignment.putAll(tr.exportedByAssignment)
+    }
+
+    override fun visitExportAssignment(node: ExportAssignmentSyntax) {
+        exportedByAssignment[node.identifier.getText()] = Annotation(MODULE, if (moduleName == null) listOf() else listOf(Argument(value = "\"$moduleName\"")))
+    }
+
+    override fun visitList(list: ISyntaxList) {
+        super<TypeScriptToKotlinBase>.visitList(list)
+        // TODO: Is it good place for call finish?
+        finish()
+    }
+
+    fun finish() {
+        val found = HashSet<String>()
+
+        for (declaration in declarations) {
+            val annotation = exportedByAssignment[declaration.name]
+            if (annotation != null) {
+                // TODO: fix this HACK
+                val t = ArrayList<Annotation>(declaration.annotations.size() + 1)
+                t.addAll(declaration.annotations)
+                t.add(annotation)
+                declaration.annotations = t
+
+                found.add(declaration.name)
+            }
+        }
+
+        for (key in found) {
+            exportedByAssignment.remove(key)
+        }
     }
 }
 
