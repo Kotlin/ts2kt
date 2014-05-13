@@ -20,6 +20,12 @@ import ts2kt.utils.listOf
 import ts2kt.utils.join
 import ts2kt.utils.assert
 
+val MODULE = "module"
+val NATIVE = "native"
+val FAKE = "fake"
+
+val FAKE_ANNOTATION = Annotation(FAKE)
+val DEFAULT_FAKE_ANNOTATION = listOf(FAKE_ANNOTATION)
 
 private val EQ_NO_IMPL = " = noImpl"
 private val PUBLIC = "public"
@@ -30,6 +36,19 @@ private val VARARG = "vararg"
 
 private val INDENT = "    "
 private val indents = listOf("") as MutableList<String>
+
+private val takeIfNotAnnotatedAsFake = { (node: Annotated) ->
+    var result = true
+    for (a in node.annotations) {
+        if (a == FAKE_ANNOTATION) {
+            result = false
+            break
+        }
+    }
+
+    result
+}
+
 
 fun getIndent(n: Int): String {
     assert(n >= 0, "The indent index should be >= 0")
@@ -89,7 +108,8 @@ class KotlinFile(val packageFqName: Package?, val members: List<Member>) : Node(
             (packageFqName?.toString()?.plus("\n") ?: "") +
             members.join("\n",
                     startWithIfNotEmpty = if (packageFqName == null) "" else "\n",
-                    endWithIfNotEmpty = "\n")
+                    endWithIfNotEmpty = "\n",
+                    filter = takeIfNotAnnotatedAsFake)
 }
 
 class Package(val name: String) : Node() {
@@ -128,7 +148,7 @@ class Classifier(
         val paramsOfConstructors: List<List<FunParam>>,
         val typeParams: List<TypeParam>?,
         val parents: List<Type>,
-        val members: List<Node>,
+        val members: List<Member>,
         override var annotations: List<Annotation>
 ) : Member, Node(needsFixIndent = true) {
     override fun stringify(): String =
@@ -141,7 +161,7 @@ class Classifier(
             (if (paramsOfConstructors.isEmpty()) "" else paramsOfConstructors[0].join(", ", startWithIfNotEmpty = "(", endWithIfNotEmpty = ")")) +
             parents.join(", ", startWithIfNotEmpty = " : ") +
             (if (bracesRequired) " {\n" else "") +
-            members.join("\n") +
+            members.join("\n", filter = takeIfNotAnnotatedAsFake) +
             (if (bracesRequired) "\n}" else "")
 
     val bracesRequired = kind.bracesAlwaysRequired || !members.isEmpty()

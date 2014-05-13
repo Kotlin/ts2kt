@@ -23,11 +23,11 @@ import java.util.ArrayList
 import java.util.HashSet
 import java.util.HashMap
 
-private val MODULE = "module"
-private val NATIVE_ANNOTATION = Annotation("native")
+private val NATIVE_ANNOTATION = Annotation(NATIVE)
 private val MODULE_ANNOTATION = Annotation(MODULE)
 private val DEFAULT_ANNOTATION = listOf(NATIVE_ANNOTATION)
 private val DEFAULT_MODULE_ANNOTATION = listOf(MODULE_ANNOTATION)
+private val NO_ANNOTATIONS = listOf<Annotation>()
 private val INVOKE = "invoke"
 private val GET = "get"
 private val SET = "set"
@@ -39,12 +39,14 @@ abstract class TypeScriptToKotlinBase : SyntaxWalker() {
 
     val declarations = ArrayList<Member>()
 
-    fun addVariable(name: String, `type`: String, typeParams: List<TypeParam>? = null, isVar: Boolean = true, isNullable: Boolean = false, isLambda: Boolean = false, needsNoImpl: Boolean = true) {
-        declarations.add(Variable(name, TypeAnnotation(`type`, isNullable = isNullable, isLambda = isLambda), defaultAnnotations, typeParams, isVar = isVar, needsNoImpl = needsNoImpl))
+    fun addVariable(name: String, `type`: String, typeParams: List<TypeParam>? = null, isVar: Boolean = true, isNullable: Boolean = false, isLambda: Boolean = false, needsNoImpl: Boolean = true, additionalAnnotations: List<Annotation> = listOf()) {
+        val annotations = defaultAnnotations + additionalAnnotations
+        declarations.add(Variable(name, TypeAnnotation(`type`, isNullable = isNullable, isLambda = isLambda), annotations, typeParams, isVar = isVar, needsNoImpl = needsNoImpl))
     }
 
-    fun addFunction(name: String, callSignature: CallSignature, needsNoImpl: Boolean = true) {
-        declarations.add(Function(name, callSignature, defaultAnnotations, needsNoImpl = needsNoImpl))
+    fun addFunction(name: String, callSignature: CallSignature, needsNoImpl: Boolean = true, additionalAnnotations: List<Annotation> = listOf()) {
+        val annotations = defaultAnnotations + additionalAnnotations
+        declarations.add(Function(name, callSignature, annotations, needsNoImpl = needsNoImpl))
     }
 }
 
@@ -62,14 +64,19 @@ class TypeScriptToKotlinWalker(
 
     val exportedByAssignment = HashMap<String, Annotation>()
 
-    fun addModule(name: String, members: List<Member>) {
-        declarations.add(Classifier(ClassKind.OBJECT, name, listOf(), listOf(), listOf(), members, DEFAULT_MODULE_ANNOTATION))
+    fun addModule(name: String, members: List<Member>, additionalAnnotations: List<Annotation> = listOf()) {
+        val annotations = DEFAULT_MODULE_ANNOTATION + additionalAnnotations
+        declarations.add(Classifier(ClassKind.OBJECT, name, listOf(), listOf(), listOf(), members, annotations))
     }
 
     fun isShouldSkip(node: SyntaxNode) = !node.modifiers.contains(requiredModifier)
 
+
+    fun getAdditionalAnnotations(node: SyntaxNode): List<Annotation> =
+            if (isShouldSkip(node)) DEFAULT_FAKE_ANNOTATION else NO_ANNOTATIONS
+
     override fun visitVariableStatement(node: VariableStatementSyntax) {
-        if (isShouldSkip(node)) return
+        val additionalAnnotations = getAdditionalAnnotations(node)
 
 //      TODO  node.modifiers
 //      TODO  test many declarations
@@ -77,22 +84,22 @@ class TypeScriptToKotlinWalker(
         for (d in declarators) {
             val name = d.identifier.getText()
             val varType = d.typeAnnotation?.toKotlinTypeName() ?: ANY
-            addVariable(name, varType)
+            addVariable(name, varType, additionalAnnotations = additionalAnnotations)
         }
     }
 
     override fun visitFunctionDeclaration(node: FunctionDeclarationSyntax) {
-        if (isShouldSkip(node)) return
+        val additionalAnnotations = getAdditionalAnnotations(node)
 
 //      TODO  visitList(node.modifiers)
         val name = node.identifier.getText()
         val callSignature = node.callSignature.toKotlinCallSignature()
-        addFunction(name, callSignature)
+        addFunction(name, callSignature, additionalAnnotations = additionalAnnotations)
     }
 
     override fun visitInterfaceDeclaration(node: InterfaceDeclarationSyntax) {
-        // TODO: is it hack?
-        if (requiredModifier != DeclareKeyword && isShouldSkip(node)) return
+//        // TODO: is it hack?
+//        if (requiredModifier != DeclareKeyword && isShouldSkip(node)) return
 
         val translator = TsInterfaceToKt(annotations = defaultAnnotations)
         translator.visitInterfaceDeclaration(node)
@@ -100,9 +107,9 @@ class TypeScriptToKotlinWalker(
     }
 
     override fun visitClassDeclaration(node: ClassDeclarationSyntax) {
-        if (isShouldSkip(node)) return
+        val additionalAnnotations = getAdditionalAnnotations(node)
 
-        val translator = TsClassToKt(annotations = defaultAnnotations)
+        val translator = TsClassToKt(annotations = defaultAnnotations + additionalAnnotations)
         translator.visitClassDeclaration(node)
 
         val result = translator.result
@@ -112,7 +119,7 @@ class TypeScriptToKotlinWalker(
     }
 
     override fun visitModuleDeclaration(node: ModuleDeclarationSyntax) {
-        if (isShouldSkip(node)) return
+        val additionalAnnotations = getAdditionalAnnotations(node)
 
         val name = node.moduleName?.getText() ?: node.stringLiteral?.getText() ?: throw Exception("Anonimus module")
 
@@ -120,13 +127,14 @@ class TypeScriptToKotlinWalker(
 
         tr.visitList(node.moduleElements)
 
-        addModule(name, tr.declarations)
+        addModule(name, tr.declarations, additionalAnnotations = additionalAnnotations)
 
         exportedByAssignment.putAll(tr.exportedByAssignment)
     }
 
     override fun visitExportAssignment(node: ExportAssignmentSyntax) {
-        exportedByAssignment[node.identifier.getText()] = Annotation(MODULE, if (moduleName == null) listOf() else listOf(Argument(value = "\"$moduleName\"")))
+        exportedByAssignment[node.identifier.getText()] =
+                Annotation(MODULE, if (moduleName == null) listOf() else listOf(Argument(value = "\"$moduleName\"")))
     }
 
     override fun visitList(list: ISyntaxList) {
@@ -141,9 +149,36 @@ class TypeScriptToKotlinWalker(
         for (declaration in declarations) {
             val annotation = exportedByAssignment[declaration.name]
             if (annotation != null) {
+                val annotationParamString =
+                        if (annotation.parameters.isEmpty()) {
+                            ""
+                        }
+                        else {
+                            val annotationParam = annotation.parameters[0].value as String
+                            annotationParam.substring(1, annotationParam.size - 1)
+                        }
+
+                // TODO: fix in compiler
+                var needContinue = false;
                 // TODO: fix this HACK
                 val t = ArrayList<Annotation>(declaration.annotations.size() + 1)
-                t.addAll(declaration.annotations)
+                for (a in declaration.annotations) {
+                    if (a == FAKE_ANNOTATION) continue
+
+                    if (a.name == MODULE) {
+                        if (declaration.name == annotationParamString) {
+                            needContinue = true
+                            break
+                        }
+
+                        continue
+                    }
+
+                    t.add(a)
+                }
+
+                if (needContinue) continue
+
                 t.add(annotation)
                 declaration.annotations = t
 

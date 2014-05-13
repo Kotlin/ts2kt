@@ -1,4 +1,4 @@
-package jquery
+package refToOuterVarAfterModule
 
 native
 public trait JQueryStatic {

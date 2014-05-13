@@ -52,15 +52,17 @@ fun <T> List<T>.join(
         start: String = "",
         end: String = "",
         startWithIfNotEmpty: String = "",
-        endWithIfNotEmpty: String = ""
+        endWithIfNotEmpty: String = "",
+        filter: ((T) -> Boolean)? = null
 ): String {
     if (this.isEmpty()) return start + end
 
     var s = ""
     var first = true
 
-
     for (e in this) {
+        if (filter != null && !filter(e)) continue
+
         if (!first) {
             s += delimiter
         }
@@ -70,8 +72,25 @@ fun <T> List<T>.join(
         s += e.toString()
     }
 
+    if (first) return start + end
+
     return start + startWithIfNotEmpty + s + endWithIfNotEmpty + end
 }
+
+fun <T> List<T>.plus(another: List<T>): List<T> = when {
+        this.isEmpty() -> {
+            another
+        }
+        another.isEmpty() -> {
+            this
+        }
+        else -> {
+            val list = ArrayList<T>()
+            list.addAll(this)
+            list.addAll(another)
+            list
+        }
+    }
 
 [suppress("UNUSED_PARAMETER")]
 native
