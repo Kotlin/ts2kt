@@ -129,10 +129,13 @@ class TypeScriptToKotlinWalker(
         val isExternalModule = node.moduleName == null && node.stringLiteral != null
 
         if (isExternalModule && tr.exportedByAssignment.isEmpty()) {
-            val areAllFake = tr.declarations.all { it.annotations.any { it == FAKE_ANNOTATION } }
+            val areAllFakeOrInterface = tr.declarations.all {
+                it.annotations.any { it == FAKE_ANNOTATION } ||
+                (it is Classifier && it.kind == ClassKind.TRAIT && it.annotations.all { it.name != MODULE })
+            }
             val areAllPartOfThisModule = { tr.declarations.all { it.annotations.any { it.name == MODULE && it.getFirstParamAsString() == name } } }
 
-            if (areAllFake) {
+            if (areAllFakeOrInterface) {
                 // unfake all
                 for (d in tr.declarations) {
                     d.annotations = d.annotations.filter { it != FAKE_ANNOTATION }
