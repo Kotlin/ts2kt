@@ -117,11 +117,12 @@ class Package(val name: String) : Node() {
 }
 
 trait Named : Node {
-    val name: String
+    // TODO: make it immutable
+    var name: String
 }
 
 trait Annotated : Node {
-    // TODO: fix this HACK
+    // TODO: make it immutable
     var annotations: List<Annotation>
 }
 
@@ -131,7 +132,7 @@ class Argument(val name: String? = null, val value: Any /* TODO ??? */) {
     override fun toString() = (if (name == null) "" else "$name = ") + value
 }
 
-class Annotation(override val name: String, val parameters: List<Argument> = listOf()) : Named, Node() {
+class Annotation(override var name: String, val parameters: List<Argument> = listOf()) : Named, Node() {
     override fun stringify(): String = "$name" + if (parameters.isEmpty()) "" else "(${parameters.join()})"
 }
 
@@ -144,7 +145,7 @@ enum class ClassKind(val name: String, val bracesAlwaysRequired: Boolean = false
 
 class Classifier(
         val kind: ClassKind,
-        override val name: String,
+        override var name: String,
         val paramsOfConstructors: List<List<FunParam>>,
         val typeParams: List<TypeParam>?,
         val parents: List<Type>,
@@ -167,7 +168,7 @@ class Classifier(
     val bracesRequired = kind.bracesAlwaysRequired || !members.isEmpty()
 }
 
-class FunParam(override val name: String, val `type`: TypeAnnotation, val defaultValue: Any? = null, val isVar: Boolean = false) : Named, Node() {
+class FunParam(override var name: String, val `type`: TypeAnnotation, val defaultValue: Any? = null, val isVar: Boolean = false) : Named, Node() {
     override fun stringify(): String =
             (if (isVar) "$PUBLIC $VAR " else "") +
             (if (`type`.isVararg) VARARG + " " else "") + name + `type` + if (defaultValue == null) "" else " = $defaultValue"
@@ -185,7 +186,7 @@ class CallSignature(
 }
 
 class Function(
-        override val name: String,
+        override var name: String,
         val callSignature: CallSignature,
         override var annotations: List<Annotation>,
         val needsNoImpl: Boolean = true
@@ -199,7 +200,7 @@ class Function(
 }
 
 class Variable(
-        override val name: String,
+        override var name: String,
         var `type`: TypeAnnotation,
         override var annotations: List<Annotation>,
         val typeParams: List<TypeParam>?,
@@ -216,15 +217,15 @@ class Variable(
             if (needsNoImpl) EQ_NO_IMPL else ""
 }
 
-class Type(override val name: String) : Named {
+class Type(override var name: String) : Named {
     override fun stringify(): String = "$name"
 }
 
-class TypeParam(override val name: String, val upperBound: String? = null) : Named {
+class TypeParam(override var name: String, val upperBound: String? = null) : Named {
     override fun stringify(): String = "$name" + if(upperBound == null) "" else " : $upperBound"
 }
 
-class TypeAnnotation(override val name: String,
+class TypeAnnotation(override var name: String,
                      val isNullable: Boolean = false,
                      val isLambda: Boolean = false,
                      val isVararg: Boolean = false
@@ -243,5 +244,3 @@ class TypeAnnotation(override val name: String,
             (if (isLambda && isNullable) ")" else "") +
             (if (isNullable) "?" else "")
 }
-
-fun <T> List<T>.stringify() = join("\n", endWithIfNotEmpty = "\n")

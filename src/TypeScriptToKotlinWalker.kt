@@ -124,8 +124,40 @@ class TypeScriptToKotlinWalker(
         val name = node.moduleName?.getText() ?: node.stringLiteral?.getText() ?: throw Exception("Anonimus module")
 
         val tr = TypeScriptToKotlinWalker(moduleName = name, defaultAnnotations = listOf(), requiredModifier = ExportKeyword)
-
         tr.visitList(node.moduleElements)
+
+        val isExternalModule = node.moduleName == null && node.stringLiteral != null
+
+        if (isExternalModule && tr.exportedByAssignment.isEmpty()) {
+            val areAllFake = tr.declarations.all { it.annotations.any { it == FAKE_ANNOTATION } }
+            val areAllPartOfThisModule = { tr.declarations.all { it.annotations.any { it.name == MODULE && it.getFirstParamAsString() == name } } }
+
+            if (areAllFake) {
+                // unfake all
+                for (d in tr.declarations) {
+                    d.annotations = d.annotations.filter { it != FAKE_ANNOTATION }
+                }
+            }
+            else if (areAllPartOfThisModule()) {
+                // TODO: is it right?
+                // extract all with rename
+                for (d in tr.declarations) {
+                    var s: String = d.name
+                    d.annotations = d.annotations.map {
+                        if (it.name == MODULE && !it.parameters.isEmpty()) {
+                            s = it.getFirstParamAsString()!!
+                            MODULE_ANNOTATION
+                        } else {
+                            it
+                        }
+                    }
+                    d.name = s
+                }
+
+                this.declarations.addAll(tr.declarations)
+                return
+            }
+        }
 
         addModule(name, tr.declarations, additionalAnnotations = additionalAnnotations)
 
@@ -149,14 +181,7 @@ class TypeScriptToKotlinWalker(
         for (declaration in declarations) {
             val annotation = exportedByAssignment[declaration.name]
             if (annotation != null) {
-                val annotationParamString =
-                        if (annotation.parameters.isEmpty()) {
-                            ""
-                        }
-                        else {
-                            val annotationParam = annotation.parameters[0].value as String
-                            annotationParam.substring(1, annotationParam.size - 1)
-                        }
+                val annotationParamString = annotation.getFirstParamAsString()
 
                 // TODO: fix in compiler
                 var needContinue = false;

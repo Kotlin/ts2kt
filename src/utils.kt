@@ -35,6 +35,7 @@ fun setOf<T>(vararg elements: T): Set<T> {
     return set
 }
 
+//TODO: unused?
 fun <T> List<T>.filter(f: (T) -> Boolean): List<T> {
     val list = ArrayList<T>()
 
@@ -45,6 +46,32 @@ fun <T> List<T>.filter(f: (T) -> Boolean): List<T> {
     }
 
     return list
+}
+
+fun <T, R> List<T>.map(f: (T) -> R): List<R> {
+    val list = ArrayList<R>()
+
+    for (e in this) {
+        list.add(f(e))
+    }
+
+    return list
+}
+
+fun <T> List<T>.all(f: (T) -> Boolean): Boolean {
+    for (e in this) {
+        if (!f(e)) return false
+    }
+
+    return true
+}
+
+fun <T> List<T>.any(f: (T) -> Boolean): Boolean {
+    for (e in this) {
+        if (f(e)) return true
+    }
+
+    return false
 }
 
 fun <T> List<T>.join(
