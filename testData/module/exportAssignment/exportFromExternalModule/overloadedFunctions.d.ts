@@ -1,4 +1,4 @@
-// for example see browserify.d.ts
+// based on browserify.d.ts
 interface BrowserifyObject extends NodeJS.EventEmitter {
 	add(file: string): BrowserifyObject;
 	require(file: string): BrowserifyObject;

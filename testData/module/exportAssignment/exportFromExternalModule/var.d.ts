@@ -1,4 +1,4 @@
-// for example see mixto.d.ts
+// based on mixto.d.ts
 declare module Mixto {
 	interface IMixinStatic {
 		includeInto(constructor:any):void;

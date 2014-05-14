@@ -1,4 +1,4 @@
-// for example see jquery.d.ts
+// based on jquery.d.ts
 interface JQueryStatic {
     ajax(settings: JQueryAjaxSettings): JQueryXHR;
     ajax(url: string, settings?: JQueryAjaxSettings): JQueryXHR;

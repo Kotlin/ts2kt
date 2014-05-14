@@ -1,4 +1,4 @@
-// for example see semver.d.ts
+// based on semver.d.ts
 declare module SemverModule {
 //...
 }

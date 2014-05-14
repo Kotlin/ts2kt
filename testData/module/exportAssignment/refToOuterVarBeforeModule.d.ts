@@ -1,4 +1,4 @@
-// for example see sinon.d.ts
+// based on sinon.d.ts
 interface SinonStatic {
     createStubInstance: (constructor: any) => SinonStub;
 	format: (obj: any) => string;
