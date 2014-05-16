@@ -5,7 +5,7 @@ public var varAsArrayOfAny: Array<Any> = noImpl
 native
 public var varAsArrayOfNumber: Array<Number> = noImpl
 native
-public var varAsArrayOfNumber: Array<Array<Number>> = noImpl
+public var varAsArrayOfArrayOfNumber: Array<Array<Number>> = noImpl
 native
 public var varAsArrayOfBoolean: Array<Boolean> = noImpl
 native

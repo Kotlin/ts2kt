@@ -58,6 +58,23 @@ fun <T, R> List<T>.map(f: (T) -> R): List<R> {
     return list
 }
 
+fun <T, R> List<T>.fold(first: R, f: (R, T) -> R): R {
+    var acc = first
+    for (e in this) {
+        acc = f(acc, e)
+    }
+
+    return acc
+}
+
+fun <T: Any> List<T>.find(f: (T) -> Boolean): T? {
+    for (e in this) {
+        if (f(e)) return e
+    }
+
+    return null
+}
+
 fun <T> List<T>.all(f: (T) -> Boolean): Boolean {
     for (e in this) {
         if (!f(e)) return false
@@ -118,6 +135,55 @@ fun <T> List<T>.plus(another: List<T>): List<T> = when {
             list
         }
     }
+
+fun <T: Any> MutableList<T>.merge(acceptor:(T) -> Boolean, comparator: (T, T) -> Boolean, merger: (T, T) -> T) {
+    var i = 0;
+    while (i < size()) {
+        val current = this[i]
+        if (!acceptor(current)) {
+            i++
+            continue
+        }
+
+        val candidates = ArrayList<Int>()
+
+        val size = size()
+        var j =  i + 1
+        while (j < size) {
+            val e = this[j]
+
+            if (!acceptor(e)) {
+                j++
+                continue
+            }
+
+            if (comparator(current, e)) {
+                candidates.add(j)
+            }
+
+            j++
+        }
+
+        if (!candidates.isEmpty()) {
+            this.mergeAllTo(i, candidates, merger)
+        }
+
+        i++
+    }
+}
+
+private fun <T: Any> MutableList<T>.mergeAllTo(mergeTo: Int, candidateIndexes: List<Int>, merger: (T, T) -> T) {
+    val merged = candidateIndexes.fold(this[mergeTo]) { a, bi -> merger(a, this[bi]) }
+
+    this[mergeTo] = merged
+
+    var i = candidateIndexes.size() - 1
+    while(i >= 0) {
+        this.remove(candidateIndexes[i])
+        i--
+    }
+
+}
 
 [suppress("UNUSED_PARAMETER")]
 native

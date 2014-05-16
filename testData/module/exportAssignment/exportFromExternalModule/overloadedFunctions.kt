@@ -10,9 +10,9 @@ public trait Options {
     public var entries: Array<String>?
     public var noParse: Array<String>?
 }
-module
+module("browserify")
 public fun browserify(): BrowserifyObject = noImpl
-module
+module("browserify")
 public fun browserify(files: Array<String>): BrowserifyObject = noImpl
-module
+module("browserify")
 public fun browserify(opts: Options): BrowserifyObject = noImpl

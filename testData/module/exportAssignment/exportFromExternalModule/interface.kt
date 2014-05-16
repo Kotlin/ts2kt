@@ -1,6 +1,6 @@
 package interface
 
-module
-public trait Boo {
+module("Boo")
+public trait IBaz {
     public fun doSomething(): Unit
 }

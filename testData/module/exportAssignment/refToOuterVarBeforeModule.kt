@@ -10,7 +10,3 @@ public trait SinonStatic {
 native
 module("sinon")
 public var sinon: SinonStatic = noImpl
-module
-public object sinon {
-
-}

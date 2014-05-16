@@ -32,6 +32,8 @@ private val INVOKE = "invoke"
 private val GET = "get"
 private val SET = "set"
 
+private val COMPARE_BY_NAME = { (a: Named, b: Named) -> a.name == b.name }
+
 abstract class TypeScriptToKotlinBase : SyntaxWalker() {
     abstract val result: Node?
 
@@ -143,8 +145,9 @@ class TypeScriptToKotlinWalker(
             }
             else if (areAllPartOfThisModule()) {
                 // TODO: is it right?
-                // extract all with rename
-                for (d in tr.declarations) {
+                if (tr.declarations.size() == 1 && tr.declarations[0] is Variable) {
+                    val d = tr.declarations[0]
+
                     var s: String = d.name
                     d.annotations = d.annotations.map {
                         if (it.name == MODULE && !it.parameters.isEmpty()) {
@@ -179,6 +182,11 @@ class TypeScriptToKotlinWalker(
     }
 
     fun finish() {
+        fixExportAssignments()
+        mergeDeclarationsWithSameNameIfNeed()
+    }
+
+    fun fixExportAssignments() {
         val found = HashSet<String>()
 
         for (declaration in declarations) {
@@ -217,6 +225,100 @@ class TypeScriptToKotlinWalker(
         for (key in found) {
             exportedByAssignment.remove(key)
         }
+    }
+
+    fun mergeDeclarationsWithSameNameIfNeed() {
+        declarations.merge({ it !is Function }, COMPARE_BY_NAME) { a, b ->
+            val result =
+                    if (a is Classifier) {
+                        when (b) {
+                            is Classifier -> mergeClassifiers(a, b)
+                            is Variable -> mergeClassifierAndVariable(a, b)
+                            else -> throw Exception("Merging ${a.kind} and ${a.kind} unsupported yet")
+                        }
+                    }
+                    else if (a is Variable) {
+                        if (b is Classifier) {
+                            mergeClassifierAndVariable(b, a)
+                        }
+                        else {
+                            throw Exception("Merging Variable and ??? unsupported yet, b: $b")
+                        }
+                    }
+                    else {
+                        throw Exception("Unsupported types for merging, a: $a,b: $b")
+                    }
+
+
+            result.annotations = mergeAnnotations(a.annotations, b.annotations)
+
+            result
+        }
+    }
+
+    fun mergeClassifiers(a: Classifier, b: Classifier): Classifier {
+        if (a.kind == ClassKind.CLASS || a.kind == ClassKind.TRAIT) {
+            if (b.kind == ClassKind.OBJECT) return mergeClassAndObject(a, b)
+        }
+        else if (a.kind == ClassKind.OBJECT) {
+            if (b.kind == ClassKind.CLASS || b.kind == ClassKind.TRAIT) return mergeClassAndObject(b, a)
+        }
+
+        throw Exception()
+    }
+
+    fun mergeClassifierAndVariable(a: Classifier, b: Variable): Member {
+        if (a.members.isEmpty()) return b
+
+//        if (a.kind == ClassKind.OBJECT) {
+//            // TODO drop hacks
+//            val merged = Classifier(ClassKind.TRAIT, "`${a.name}\$`", listOf(), listOf(), listOf(Type(b.`type`.name)), a.members, a.annotations.filter { it.name != MODULE })
+//            declarations.add(merged)
+//            b.`type`.name = merged.name
+//            return b
+//        }
+
+        throw Exception("Merging non-empty Classifier and Variable unsupported yet")
+    }
+
+    fun mergeAnnotations(a: List<Annotation>, b: List<Annotation>): List<Annotation> =
+            if (a.isEmpty()) {
+                b
+            }
+            else if (b.isEmpty()) {
+                a
+            }
+            else {
+                val merged = ArrayList<Annotation>()
+                merged.addAll(a)
+                merged.addAll(b)
+
+                merged.merge({ true }, COMPARE_BY_NAME) { a, b ->
+                    when {
+                        a.parameters.isEmpty() -> b
+                        b.parameters.isEmpty() -> a
+                        a.parameters == b.parameters -> a
+                        // TODO
+                        else -> throw Exception("Merging annotations with different arguments unsupported yet")
+                    }
+                }
+
+                merged
+            }
+
+    fun mergeClassAndObject(a: Classifier, b: Classifier): Classifier {
+        val classObject = a.members.find { it is Classifier && it.kind == ClassKind.CLASS_OBJECT } as? Classifier
+
+        if (classObject == null) {
+            // TODO drop hack
+            (a.members as ArrayList).add(Classifier(ClassKind.CLASS_OBJECT, "", listOf(), listOf(), listOf(), b.members, NO_ANNOTATIONS))
+        }
+        else {
+            // TODO drop hack
+            (classObject.members as ArrayList).addAll(b.members)
+        }
+
+        return a
     }
 }
 

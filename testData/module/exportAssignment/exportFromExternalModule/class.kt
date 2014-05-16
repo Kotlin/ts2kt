@@ -1,6 +1,6 @@
 package class
 
-module
-public class Boo {
+module("Boo")
+public class Klass {
     public fun method(s: Any): String = noImpl
 }
