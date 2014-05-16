@@ -1,0 +1,20 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="All tests" type="NodeunitConfigurationType" factoryName="Nodeunit">
+    <setting name="nodePath" value="/usr/local/bin/node" />
+    <envs />
+    <setting name="passParentEnvVars" value="true" />
+    <setting name="nodeunitModuleDir" value="$PROJECT_DIR$/node_modules/nodeunit" />
+    <setting name="workingDirectory" value="$PROJECT_DIR$" />
+    <setting name="testType" value="DIRECTORY" />
+    <setting name="directory" value="test/tests" />
+    <RunnerSettings RunnerId="Nodeunit.debug" />
+    <RunnerSettings RunnerId="Nodeunit.run" />
+    <ConfigurationWrapper RunnerId="Nodeunit.debug" />
+    <ConfigurationWrapper RunnerId="Nodeunit.run" />
+    <method>
+      <option name="BuildArtifacts" enabled="true">
+        <artifact name="ts2kt" />
+      </option>
+    </method>
+  </configuration>
+</component>

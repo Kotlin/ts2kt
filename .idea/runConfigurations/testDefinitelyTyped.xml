@@ -1,12 +1,12 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="tests" type="NodeunitConfigurationType" factoryName="Nodeunit">
+  <configuration default="false" name="testDefinitelyTyped" type="NodeunitConfigurationType" factoryName="Nodeunit">
     <setting name="nodePath" value="/usr/local/bin/node" />
     <envs />
     <setting name="passParentEnvVars" value="true" />
     <setting name="nodeunitModuleDir" value="$PROJECT_DIR$/node_modules/nodeunit" />
     <setting name="workingDirectory" value="$PROJECT_DIR$" />
     <setting name="testType" value="JS_FILE" />
-    <setting name="jsFile" value="test/test.js" />
+    <setting name="jsFile" value="test/tests/testDefinitelyTyped.js" />
     <RunnerSettings RunnerId="Nodeunit.debug" />
     <RunnerSettings RunnerId="Nodeunit.run" />
     <ConfigurationWrapper RunnerId="Nodeunit.debug" />
