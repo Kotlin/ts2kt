@@ -70,8 +70,14 @@ function generateTestFor(srcPath) {
 
         ts2kt.translateToFile(srcPath, outPath);
 
-        var expected = fs.readFileSync(expectedPath, {encoding: "utf8"});
         var actual = fs.readFileSync(outPath, {encoding: "utf8"});
+
+        if (!fs.existsSync(expectedPath)) {
+            fs.writeFileSync(expectedPath, "// OUT:\n");
+            fs.appendFileSync(expectedPath, actual);
+        }
+
+        var expected = fs.readFileSync(expectedPath, {encoding: "utf8"});
 
         test.equals(actual,  expected);
         test.done()
