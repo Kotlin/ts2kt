@@ -278,7 +278,7 @@ abstract class VariableDeclaratorSyntax(public val identifier: IIdentifierSyntax
                                         parsedInStrictMode: Boolean) : SyntaxNode(parsedInStrictMode)
 {
 
-    public fun update(identifier: IIdentifierSyntax, typeAnnotation: TypeAnnotationSyntax,
+    public fun update(identifier: IIdentifierSyntax, typeAnnotation: TypeAnnotationSyntax?,
                       equalsValueClause: EqualsValueClauseSyntax): VariableDeclaratorSyntax = noImpl
 
     public fun withIdentifier(identifier: IIdentifierSyntax): VariableDeclaratorSyntax = noImpl
@@ -643,7 +643,7 @@ abstract class ParameterSyntax(public val dotDotDotToken: ISyntaxToken?,
                       publicOrPrivateKeyword: ISyntaxToken,
                       identifier: IIdentifierSyntax,
                       questionToken: ISyntaxToken,
-                      typeAnnotation: TypeAnnotationSyntax,
+                      typeAnnotation: TypeAnnotationSyntax?,
                       equalsValueClause: EqualsValueClauseSyntax): ParameterSyntax = noImpl
 
     public override fun withLeadingTrivia(trivia: ISyntaxTriviaList): ParameterSyntax = noImpl
@@ -880,7 +880,7 @@ abstract class PropertySignatureSyntax(public val propertyName: IIdentifierSynta
                                        parsedInStrictMode: Boolean) : SyntaxNode(parsedInStrictMode), ITypeMemberSyntax {
     public fun update(propertyName: IIdentifierSyntax,
                       questionToken: ISyntaxToken,
-                      typeAnnotation: TypeAnnotationSyntax): PropertySignatureSyntax = noImpl
+                      typeAnnotation: TypeAnnotationSyntax?): PropertySignatureSyntax = noImpl
 
     public override fun withLeadingTrivia(trivia: ISyntaxTriviaList): PropertySignatureSyntax = noImpl
     public override fun withTrailingTrivia(trivia: ISyntaxTriviaList): PropertySignatureSyntax = noImpl
@@ -899,7 +899,7 @@ abstract class CallSignatureSyntax(public val typeParameterList: TypeParameterLi
 {
     public fun update(typeParameterList: TypeParameterListSyntax,
                       parameterList: ParameterListSyntax,
-                      typeAnnotation: TypeAnnotationSyntax): CallSignatureSyntax = noImpl
+                      typeAnnotation: TypeAnnotationSyntax?): CallSignatureSyntax = noImpl
 
     public override fun withLeadingTrivia(trivia: ISyntaxTriviaList): CallSignatureSyntax = noImpl
     public override fun withTrailingTrivia(trivia: ISyntaxTriviaList): CallSignatureSyntax = noImpl
@@ -1104,14 +1104,14 @@ abstract class GetMemberAccessorDeclarationSyntax(modifiers: ISyntaxList,
                                                   public val getKeyword: ISyntaxToken,
                                                   propertyName: IIdentifierSyntax,
                                                   parameterList: ParameterListSyntax,
-                                                  public val typeAnnotation: TypeAnnotationSyntax,
+                                                  public val typeAnnotation: TypeAnnotationSyntax?,
                                                   block: BlockSyntax,
                                                   parsedInStrictMode: Boolean) : MemberAccessorDeclarationSyntax(modifiers, propertyName, parameterList, block, parsedInStrictMode) {
     public fun update(modifiers: ISyntaxList,
                       getKeyword: ISyntaxToken,
                       propertyName: IIdentifierSyntax,
                       parameterList: ParameterListSyntax,
-                      typeAnnotation: TypeAnnotationSyntax,
+                      typeAnnotation: TypeAnnotationSyntax?,
                       block: BlockSyntax): GetMemberAccessorDeclarationSyntax = noImpl
 
     public override fun withLeadingTrivia(trivia: ISyntaxTriviaList): GetMemberAccessorDeclarationSyntax = noImpl
@@ -1647,14 +1647,14 @@ abstract class GetAccessorPropertyAssignmentSyntax(public val getKeyword: ISynta
                                                    propertyName: IIdentifierSyntax,
                                                    openParenToken: ISyntaxToken,
                                                    closeParenToken: ISyntaxToken,
-                                                   public val typeAnnotation: TypeAnnotationSyntax,
+                                                   public val typeAnnotation: TypeAnnotationSyntax?,
                                                    block: BlockSyntax,
                                                    parsedInStrictMode: Boolean) : AccessorPropertyAssignmentSyntax(propertyName, openParenToken, closeParenToken, block, parsedInStrictMode) {
     public fun update(getKeyword: ISyntaxToken,
                       propertyName: IIdentifierSyntax,
                       openParenToken: ISyntaxToken,
                       closeParenToken: ISyntaxToken,
-                      typeAnnotation: TypeAnnotationSyntax,
+                      typeAnnotation: TypeAnnotationSyntax?,
                       block: BlockSyntax): GetAccessorPropertyAssignmentSyntax = noImpl
 
     public override fun withLeadingTrivia(trivia: ISyntaxTriviaList): GetAccessorPropertyAssignmentSyntax = noImpl
@@ -1757,14 +1757,14 @@ native
 abstract class CatchClauseSyntax(public val catchKeyword: ISyntaxToken,
                                  public val openParenToken: ISyntaxToken,
                                  public val identifier: IIdentifierSyntax,
-                                 public val typeAnnotation: TypeAnnotationSyntax,
+                                 public val typeAnnotation: TypeAnnotationSyntax?,
                                  public val closeParenToken: ISyntaxToken,
                                  public val block: BlockSyntax,
                                  parsedInStrictMode: Boolean) : SyntaxNode(parsedInStrictMode) {
     public fun update(catchKeyword: ISyntaxToken,
                       openParenToken: ISyntaxToken,
                       identifier: IIdentifierSyntax,
-                      typeAnnotation: TypeAnnotationSyntax,
+                      typeAnnotation: TypeAnnotationSyntax?,
                       closeParenToken: ISyntaxToken,
                       block: BlockSyntax): CatchClauseSyntax = noImpl
 
