@@ -1,6 +1,8 @@
 package variables
 
 native
+public var varWithoutTypeAnnotation: Any = noImpl
+native
 public var varAsAny: Any = noImpl
 native
 public var varAsNumber: Number = noImpl

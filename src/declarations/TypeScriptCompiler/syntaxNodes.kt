@@ -876,7 +876,7 @@ abstract class IndexSignatureSyntax(public val openBracketToken: ISyntaxToken,
 native
 abstract class PropertySignatureSyntax(public val propertyName: IIdentifierSyntax,
                                        public val questionToken: ISyntaxToken?,
-                                       public val typeAnnotation: TypeAnnotationSyntax,
+                                       public val typeAnnotation: TypeAnnotationSyntax?,
                                        parsedInStrictMode: Boolean) : SyntaxNode(parsedInStrictMode), ITypeMemberSyntax {
     public fun update(propertyName: IIdentifierSyntax,
                       questionToken: ISyntaxToken,

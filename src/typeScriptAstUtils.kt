@@ -24,6 +24,7 @@ import ts2kt.kotlin.ast.TypeAnnotation
 import ts2kt.utils.join
 import ts2kt.kotlin.ast.TypeParam
 import ts2kt.kotlin.ast.CallSignature
+import ts2kt.utils.assert
 
 val ANY = "Any"
 val NUMBER = "Number"
@@ -61,9 +62,20 @@ fun ParameterSyntax.toKotlinParam(): FunParam {
     val isVararg: Boolean
     val nodeType =
             if (dotDotDotToken != null) {
-                if (originalNodeType?.kind() != ArrayType) throw Exception("Rest prarameter must be array types")
                 isVararg = true
-                (originalNodeType as? ArrayTypeSyntax)?.`type`
+
+                val originalNodeKind = originalNodeType?.kind()
+
+                if (originalNodeKind == ArrayType) {
+                    (originalNodeType as? ArrayTypeSyntax)?.`type`
+                } else if (originalNodeKind == GenericType && (originalNodeType as? GenericTypeSyntax)?.name?.getText() == "Array") {
+                    val typeArguments = (originalNodeType as GenericTypeSyntax).typeArgumentList.typeArguments
+                    assert(typeArguments.nonSeparatorCount() == 1, "Array should have one generic paramater, but have ${typeArguments.nonSeparatorCount()}.")
+
+                    typeArguments.nonSeparatorAt(0) as ITypeSyntax?
+                } else {
+                    throw Exception("Rest parameter must be array types")
+                }
             }
             else {
                 isVararg = false
@@ -113,6 +125,9 @@ private fun GenericTypeSyntax.toKotlinTypeName(): String {
     return "${name.getText()}<${typeArgs.join(", ")}>"
 }
 
+// TODO implement
+private fun ObjectTypeSyntax.toKotlinTypeName(): String = this.getText().trim()
+
 private fun ITypeSyntax.toKotlinTypeNameIfStandardType(): String? {
     return when (this.kind()) {
         AnyKeyword -> ANY
@@ -123,6 +138,7 @@ private fun ITypeSyntax.toKotlinTypeNameIfStandardType(): String? {
         ArrayType -> "$ARRAY<${(this as ArrayTypeSyntax).`type`.toKotlinTypeName()}>"
         GenericType -> (this as GenericTypeSyntax).toKotlinTypeName()
         FunctionType -> (this as FunctionTypeSyntax).toKotlinTypeName()
+        ObjectType -> (this as ObjectTypeSyntax).toKotlinTypeName()
         else -> null
     }
 }

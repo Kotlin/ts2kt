@@ -19,6 +19,7 @@ package ts2kt.kotlin.ast
 import ts2kt.utils.listOf
 import ts2kt.utils.join
 import ts2kt.utils.assert
+import ts2kt.utils.trimLeading
 
 val MODULE = "module"
 val NATIVE = "native"
@@ -87,7 +88,7 @@ abstract class Node(val needsFixIndent: Boolean = false) {
             }
 
             if (!lines[i].isEmpty() && indentIdx != 0) {
-                lines[i] = indent + lines[i].trim()
+                lines[i] = indent + lines[i].trimLeading()
             }
 
             if (lines[i].endsWith('{')) {
@@ -136,7 +137,7 @@ class Annotation(override var name: String, val parameters: List<Argument> = lis
     override fun stringify(): String = "$name" + if (parameters.isEmpty()) "" else "(${parameters.join()})"
 }
 
-enum class ClassKind(val name: String, val bracesAlwaysRequired: Boolean = false) {
+enum class ClassKind(val keyword: String, val bracesAlwaysRequired: Boolean = false) {
     CLASS : ClassKind("class")
     TRAIT : ClassKind("trait")
     OBJECT : ClassKind("object", bracesAlwaysRequired = true)
@@ -155,7 +156,7 @@ class Classifier(
     override fun stringify(): String =
             annotations.stringify() +
             PUBLIC + " " +
-            kind.name +
+            kind.keyword +
             (if (name.isEmpty()) "" else " ") +
             name +
             (typeParams?.join(", ", startWithIfNotEmpty = "<", endWithIfNotEmpty = ">") ?: "") +

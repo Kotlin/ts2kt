@@ -63,6 +63,9 @@ val GenericType: SyntaxKind = noImpl
 native("typescript.SyntaxKind.FunctionType")
 val FunctionType: SyntaxKind = noImpl
 
+native("typescript.SyntaxKind.ObjectType")
+val ObjectType: SyntaxKind = noImpl
+
 native("typescript.SyntaxKind")
 val syntaxKindToName: Map<SyntaxKind, String> = noImpl
 

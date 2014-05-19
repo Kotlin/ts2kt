@@ -121,6 +121,16 @@ fun <T> List<T>.join(
     return start + startWithIfNotEmpty + s + endWithIfNotEmpty + end
 }
 
+/** Returns a new String containing the everything but the leading whitespace characters */
+public fun String.trimLeading(): String {
+    var count = 0
+
+    while ((count < this.length) && (this[count] <= ' ')) {
+        count++
+    }
+    return if (count > 0) substring(count) else this
+}
+
 fun <T> List<T>.plus(another: List<T>): List<T> = when {
         this.isEmpty() -> {
             another

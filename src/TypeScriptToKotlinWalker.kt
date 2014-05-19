@@ -264,7 +264,7 @@ class TypeScriptToKotlinWalker(
             if (b.kind == ClassKind.CLASS || b.kind == ClassKind.TRAIT) return mergeClassAndObject(b, a)
         }
 
-        throw Exception()
+        throw Exception("Merging ${a.kind} and ${a.kind} unsupported yet")
     }
 
     fun mergeClassifierAndVariable(a: Classifier, b: Variable): Member {
@@ -278,7 +278,7 @@ class TypeScriptToKotlinWalker(
 //            return b
 //        }
 
-        throw Exception("Merging non-empty Classifier and Variable unsupported yet")
+        throw Exception("Merging non-empty Classifier(kind=${a.kind}) and Variable($b}) unsupported yet")
     }
 
     fun mergeAnnotations(a: List<Annotation>, b: List<Annotation>): List<Annotation> =
@@ -299,7 +299,7 @@ class TypeScriptToKotlinWalker(
                         b.parameters.isEmpty() -> a
                         a.parameters == b.parameters -> a
                         // TODO
-                        else -> throw Exception("Merging annotations with different arguments unsupported yet")
+                        else -> throw Exception("Merging annotations with different arguments unsupported yet, a: $a, b: $b")
                     }
                 }
 
@@ -377,9 +377,9 @@ class TsInterfaceToKt(val annotations: List<Annotation>) : TsClassifierToKt() {
 
     override fun visitPropertySignature(node: PropertySignatureSyntax) {
         val name = node.propertyName.getText()
-        val typeName = node.typeAnnotation.toKotlinTypeName()
+        val typeName = node.typeAnnotation?.toKotlinTypeName() ?: ANY
         val isNullable = node.questionToken != null
-        val isLambda = node.typeAnnotation.`type`.kind() == FunctionType
+        val isLambda = node.typeAnnotation?.`type`?.kind() == FunctionType
 
         addVariable(name, typeName, isNullable = isNullable, isLambda = isLambda, needsNoImpl = false)
     }
