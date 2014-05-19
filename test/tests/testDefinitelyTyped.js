@@ -19,4 +19,16 @@ var utils = require('./../utils');
 var TEST_DATA_DIR = "testDefinitelyTyped/DefinitelyTyped";
 var TEST_DATA_EXPECTED_DIR = "testDefinitelyTyped/expected";
 
-utils.collectTestFiles(TEST_DATA_DIR, exports, TEST_DATA_EXPECTED_DIR);
+var NEEDS_ONLY_RUN = true;
+
+//var fileToTest = "../../" +
+//    "testDefinitelyTyped/DefinitelyTyped/hellojs/hellojs.d.ts";
+
+var tests = exports;
+
+if (typeof fileToTest === "string" && fileToTest) {
+    utils.collectSingleFile(fileToTest, tests, TEST_DATA_DIR, TEST_DATA_EXPECTED_DIR, NEEDS_ONLY_RUN);
+    tests = tests["other"] = {};
+}
+
+utils.collectTestFiles(TEST_DATA_DIR, tests, TEST_DATA_EXPECTED_DIR, NEEDS_ONLY_RUN);

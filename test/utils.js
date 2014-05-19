@@ -30,15 +30,15 @@ function replaceExtension(path, expected, replacment) {
     return path;
 }
 
-function collectSingleFile (testFile, tests, testDataDir, testDataExpectedDir) {
+function collectSingleFile (testFile, tests, testDataDir, testDataExpectedDir, needsOnlyRun) {
     testDataDir = testDataDir || "";
     testDataExpectedDir = testDataExpectedDir || testDataDir;
 
     var expectedFile = replaceExtension(testFile, DTS_EXT, KT_EXT);
-    tests[testFile] = generateTestFor(testDataDir + "/" + testFile, testDataExpectedDir + "/" + expectedFile);
+    tests[testFile] = generateTestFor(testDataDir + "/" + testFile, testDataExpectedDir + "/" + expectedFile, needsOnlyRun);
 }
 
-function collectTestFiles(dir, tests, testDataExpectedDir, testDataDir) {
+function collectTestFiles(dir, tests, testDataExpectedDir, needsOnlyRun, testDataDir) {
     testDataExpectedDir = testDataExpectedDir || dir;
     testDataDir = testDataDir || dir;
 
@@ -54,12 +54,12 @@ function collectTestFiles(dir, tests, testDataExpectedDir, testDataDir) {
             var path = dir + '/' + file;
             var stat = fs.statSync(path);
             if (stat && stat.isDirectory()) {
-                collectTestFiles(path, tests[file] = {}, testDataExpectedDir, testDataDir);
+                collectTestFiles(path, tests[file] = {}, testDataExpectedDir, needsOnlyRun, testDataDir);
             }
             else {
                 if (file.endsWith(".d.ts")) {
                     var expectedFilePath = replaceExtension(path.substr(testDataDir.length), DTS_EXT, KT_EXT);
-                    tests[file] = generateTestFor(path, testDataExpectedDir + expectedFilePath);
+                    tests[file] = generateTestFor(path, testDataExpectedDir + expectedFilePath, needsOnlyRun);
                 }
             }
         }
@@ -82,7 +82,7 @@ function createDirsIfNeed(path) {
     }
 }
 
-function generateTestFor(srcPath, expectedPath) {
+function generateTestFor(srcPath, expectedPath, needsOnlyRun) {
     return function(test) {
         var outPath = expectedPath + ".out";
 
@@ -90,8 +90,10 @@ function generateTestFor(srcPath, expectedPath) {
 
         ts2kt.translateToFile(srcPath, outPath);
 
-//        test.done();
-//        return;
+        if (needsOnlyRun) {
+            test.done();
+            return;
+        }
 
         var actual = fs.readFileSync(outPath, {encoding: "utf8"});
 
