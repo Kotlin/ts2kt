@@ -36,7 +36,7 @@ val ARRAY = "Array"
 val SHOULD_BE_ESCAPED =
         setOf("val", "var", "is", "as", "trait", "package", "object", "when", "type", "fun", "in", "This")
 
-fun String.escapedIfNeed(): String {
+fun String.escapeIfNeed(): String {
     return if (this in SHOULD_BE_ESCAPED || this.contains("$")) {
         "`$this`"
     }
@@ -47,12 +47,12 @@ fun String.escapedIfNeed(): String {
 
 fun ISyntaxElement.getText(): String = if (this.isToken()) (this as ISyntaxToken).text() else this.fullText()
 
-fun ShouldBeEscaped.getText(): String = (this: ISyntaxElement).getText().escapedIfNeed()
+fun ShouldBeEscaped.getText(): String = (this: ISyntaxElement).getText().escapeIfNeed()
 
 fun NameAsStringLiteral.getText(): String {
     val quotedText = (this: ISyntaxElement).getText()
     val text = quotedText.substring(1, quotedText.size - 1)
-    return text.escapedIfNeed()
+    return text.escapeIfNeed()
 }
 
 ///

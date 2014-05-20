@@ -33,7 +33,6 @@ private val GET = "get"
 private val SET = "set"
 
 private val COMPARE_BY_NAME = { (a: Named, b: Named) -> a.name == b.name }
-private val IS_MODULE_ANNOTATION = { (a: Annotation) -> a.name == MODULE }
 
 abstract class TypeScriptToKotlinBase : SyntaxWalker() {
     abstract val result: Node?
@@ -268,12 +267,7 @@ class TypeScriptToKotlinWalker(
             }
             ClassKind.OBJECT -> {
                 if (b.kind == ClassKind.CLASS || b.kind == ClassKind.TRAIT) return mergeClassAndObject(b, a)
-                if (b.kind == ClassKind.OBJECT &&
-                    a.annotations.any(IS_MODULE_ANNOTATION) &&
-                    b.annotations.any(IS_MODULE_ANNOTATION)
-                ) {
-                    return mergeClassifierMembers(a, b)
-                }
+                if (a.hasModuleAnnotation() && b.isModule()) return mergeClassifierMembers(a, b)
             }
         }
 
@@ -283,13 +277,22 @@ class TypeScriptToKotlinWalker(
     fun mergeClassifierAndVariable(a: Classifier, b: Variable): Member {
         if (a.members.isEmpty()) return b
 
-//        if (a.kind == ClassKind.OBJECT) {
-//            // TODO drop hacks
-//            val merged = Classifier(ClassKind.TRAIT, "`${a.name}\$`", listOf(), listOf(), listOf(Type(b.`type`.name)), a.members, a.annotations.filter { it.name != MODULE })
-//            declarations.add(merged)
-//            b.`type`.name = merged.name
-//            return b
-//        }
+        // TODO is it right?
+        assert(a.getClassObject() == null, "Unxpected `class object` when merge Classifier(kind=${a.kind}) and Variable($b)")
+
+        if (a.kind == ClassKind.TRAIT || a.isModule()) {
+            val newTrait = Classifier(ClassKind.TRAIT, a.name, a.paramsOfConstructors, a.typeParams, a.parents, a.members, a.annotations)
+
+            val varTypeName = b.`type`.name
+            val delegation = listOf(Type("${varTypeName} by noImpl: ${varTypeName}"))
+
+            // TODO drop hacks
+            val classObject = Classifier(ClassKind.CLASS_OBJECT, "", listOf(), listOf(), delegation, listOf(), listOf())
+
+            (newTrait.members as ArrayList).add(classObject)
+
+            return newTrait
+        }
 
         throw Exception("Merging non-empty Classifier(kind=${a.kind}) and Variable unsupported yet, a: $a, b: $b")
     }
@@ -320,7 +323,7 @@ class TypeScriptToKotlinWalker(
             }
 
     fun mergeClassAndObject(a: Classifier, b: Classifier): Classifier {
-        val classObject = a.members.find { it is Classifier && it.kind == ClassKind.CLASS_OBJECT } as? Classifier
+        val classObject = a.getClassObject()
 
         if (classObject == null) {
             // TODO drop hack

@@ -1,12 +1,26 @@
 package module
 
-//native
-//module("lodash")
-//public var _: `_$` = noImpl
-//module
-//public object lodash {
-//
-//}
-//public trait `_$` : _.LoDashStatic {
-//    public trait LoDashStatic
-//}
+native
+module("lodash")
+public trait _ {
+    public trait LoDashStatic {
+        public fun invoke(value: Number): LoDashWrapper<Number>
+        public var VERSION: String
+        public var support: Support
+    }
+    public trait Support {
+        public var argsClass: Boolean
+        public var argsObject: Boolean
+    }
+    public trait LoDashArrayWrapper<T> {
+        public fun difference(vararg others: Array<T>): LoDashArrayWrapper<T>
+        public fun difference(vararg others: List<T>): LoDashArrayWrapper<T>
+    }
+    public class object : _.LoDashStatic by noImpl: _.LoDashStatic {
+
+    }
+}
+module
+public object lodash {
+
+}
