@@ -88,6 +88,11 @@ function generateTestFor(srcPath, expectedPath, needsOnlyRun) {
 
         createDirsIfNeed(outPath);
 
+        console.log("srcPath = " + srcPath +
+                    ", outPath = " + outPath +
+                    ", expectedPath = " + expectedPath +
+                    ", needsOnlyRun = " + needsOnlyRun + "\n");
+
         ts2kt.translateToFile(srcPath, outPath);
 
         if (needsOnlyRun) {

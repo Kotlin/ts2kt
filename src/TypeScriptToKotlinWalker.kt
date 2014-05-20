@@ -33,6 +33,7 @@ private val GET = "get"
 private val SET = "set"
 
 private val COMPARE_BY_NAME = { (a: Named, b: Named) -> a.name == b.name }
+private val IS_MODULE_ANNOTATION = { (a: Annotation) -> a.name == MODULE }
 
 abstract class TypeScriptToKotlinBase : SyntaxWalker() {
     abstract val result: Node?
@@ -234,7 +235,7 @@ class TypeScriptToKotlinWalker(
                         when (b) {
                             is Classifier -> mergeClassifiers(a, b)
                             is Variable -> mergeClassifierAndVariable(a, b)
-                            else -> throw Exception("Merging ${a.kind} and ${a.kind} unsupported yet")
+                            else -> throw Exception("Merging ${a.kind} and ??? unsupported yet, a: $a, b: $b")
                         }
                     }
                     else if (a is Variable) {
@@ -242,11 +243,11 @@ class TypeScriptToKotlinWalker(
                             mergeClassifierAndVariable(b, a)
                         }
                         else {
-                            throw Exception("Merging Variable and ??? unsupported yet, b: $b")
+                            throw Exception("Merging Variable and ??? unsupported yet, a: $a, b: $b")
                         }
                     }
                     else {
-                        throw Exception("Unsupported types for merging, a: $a,b: $b")
+                        throw Exception("Unsupported types for merging, a: $a, b: $b")
                     }
 
 
@@ -257,14 +258,26 @@ class TypeScriptToKotlinWalker(
     }
 
     fun mergeClassifiers(a: Classifier, b: Classifier): Classifier {
-        if (a.kind == ClassKind.CLASS || a.kind == ClassKind.TRAIT) {
-            if (b.kind == ClassKind.OBJECT) return mergeClassAndObject(a, b)
-        }
-        else if (a.kind == ClassKind.OBJECT) {
-            if (b.kind == ClassKind.CLASS || b.kind == ClassKind.TRAIT) return mergeClassAndObject(b, a)
+        when (a.kind) {
+             ClassKind.CLASS -> {
+                if (b.kind == ClassKind.OBJECT) return mergeClassAndObject(a, b)
+            }
+            ClassKind.TRAIT -> {
+                if (b.kind == ClassKind.OBJECT) return mergeClassAndObject(a, b)
+                if (b.kind == ClassKind.TRAIT) return mergeClassifierMembers(a, b)
+            }
+            ClassKind.OBJECT -> {
+                if (b.kind == ClassKind.CLASS || b.kind == ClassKind.TRAIT) return mergeClassAndObject(b, a)
+                if (b.kind == ClassKind.OBJECT &&
+                    a.annotations.any(IS_MODULE_ANNOTATION) &&
+                    b.annotations.any(IS_MODULE_ANNOTATION)
+                ) {
+                    return mergeClassifierMembers(a, b)
+                }
+            }
         }
 
-        throw Exception("Merging ${a.kind} and ${a.kind} unsupported yet")
+        throw Exception("Merging ${a.kind} and ${b.kind} unsupported yet, a: $a, b: $b")
     }
 
     fun mergeClassifierAndVariable(a: Classifier, b: Variable): Member {
@@ -278,7 +291,7 @@ class TypeScriptToKotlinWalker(
 //            return b
 //        }
 
-        throw Exception("Merging non-empty Classifier(kind=${a.kind}) and Variable($b}) unsupported yet")
+        throw Exception("Merging non-empty Classifier(kind=${a.kind}) and Variable unsupported yet, a: $a, b: $b")
     }
 
     fun mergeAnnotations(a: List<Annotation>, b: List<Annotation>): List<Annotation> =
@@ -318,6 +331,12 @@ class TypeScriptToKotlinWalker(
             (classObject.members as ArrayList).addAll(b.members)
         }
 
+        return a
+    }
+
+    fun mergeClassifierMembers(a: Classifier, b: Classifier): Classifier {
+        // TODO drop hack
+        (a.members as ArrayList).addAll(b.members)
         return a
     }
 }
