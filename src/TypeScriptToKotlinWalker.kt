@@ -64,7 +64,8 @@ class TypeScriptToKotlinWalker(
             return KotlinFile(if (packageFqName != null) Package(packageFqName) else null, declarations)
         }
 
-    val exportedByAssignment = HashMap<String, Annotation>()
+    // TODO fix PrimitiveHashMap for some special keys like 'hasOwnProperty'
+    val exportedByAssignment = HashMap<Any, Annotation>() as HashMap<String, Annotation>
 
     fun addModule(name: String, members: List<Member>, additionalAnnotations: List<Annotation> = listOf()) {
         val annotations = DEFAULT_MODULE_ANNOTATION + additionalAnnotations

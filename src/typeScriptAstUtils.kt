@@ -59,12 +59,10 @@ fun NameAsStringLiteral.getText(): String {
 
 fun ParameterSyntax.toKotlinParam(): FunParam {
     val originalNodeType = typeAnnotation?.`type`
-    val isVararg: Boolean
+    val isVararg: Boolean = dotDotDotToken != null
     val nodeType =
-            if (dotDotDotToken != null) {
-                isVararg = true
-
-                val originalNodeKind = originalNodeType?.kind()
+            if (isVararg && originalNodeType != null) {
+                val originalNodeKind = originalNodeType.kind()
 
                 if (originalNodeKind == ArrayType) {
                     (originalNodeType as? ArrayTypeSyntax)?.`type`
@@ -78,7 +76,6 @@ fun ParameterSyntax.toKotlinParam(): FunParam {
                 }
             }
             else {
-                isVararg = false
                 originalNodeType
             }
 

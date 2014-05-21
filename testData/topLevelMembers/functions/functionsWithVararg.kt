@@ -1,6 +1,8 @@
 package functionsWithVararg
 
 native
+public fun withVarargWithoutTypeAnnotation(vararg a: Any): Unit = noImpl
+native
 public fun withVarargAny(vararg a: Any): Any = noImpl
 native
 public fun withVarargNumber(vararg s: Number): String = noImpl
