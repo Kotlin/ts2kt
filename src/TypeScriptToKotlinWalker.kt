@@ -55,7 +55,7 @@ abstract class TypeScriptToKotlinBase : SyntaxWalker() {
 class TypeScriptToKotlinWalker(
         val packageFqName: String? = null,
         override val defaultAnnotations: List<Annotation> = DEFAULT_ANNOTATION,
-        val requiredModifier: SyntaxKind = DeclareKeyword,
+        val requiredModifier: SyntaxKind? = DeclareKeyword,
         val moduleName: String? = null
 ) : TypeScriptToKotlinBase() {
     override val result: KotlinFile
@@ -65,14 +65,31 @@ class TypeScriptToKotlinWalker(
         }
 
     // TODO fix PrimitiveHashMap for some special keys like 'hasOwnProperty'
+    [suppress("CAST_NEVER_SUCCEEDS")]
     val exportedByAssignment = HashMap<Any, Annotation>() as HashMap<String, Annotation>
+
+    val typeMapper = object : ObjectTypeToKotlinTypeMapper {
+        var n = 0
+        override fun getKotlinTypeNameForObjectType(objectType: ObjectTypeSyntax): String {
+            val translator = TsInterfaceToKt(annotations = defaultAnnotations, typeMapper = this)
+
+            translator.visitSeparatedList(objectType.typeMembers)
+
+            val traitName = "`T$${n++}`"
+            translator.name = traitName
+
+            declarations.add(translator.result)
+
+            return traitName
+        }
+    }
 
     fun addModule(name: String, members: List<Member>, additionalAnnotations: List<Annotation> = listOf()) {
         val annotations = DEFAULT_MODULE_ANNOTATION + additionalAnnotations
         declarations.add(Classifier(ClassKind.OBJECT, name, listOf(), listOf(), listOf(), members, annotations))
     }
 
-    fun isShouldSkip(node: SyntaxNode) = !node.modifiers.contains(requiredModifier)
+    fun isShouldSkip(node: SyntaxNode) = requiredModifier != null && !node.modifiers.contains(requiredModifier)
 
 
     fun getAdditionalAnnotations(node: SyntaxNode): List<Annotation> =
@@ -86,7 +103,7 @@ class TypeScriptToKotlinWalker(
         val declarators = node.variableDeclaration.variableDeclarators
         for (d in declarators) {
             val name = d.identifier.getText()
-            val varType = d.typeAnnotation?.toKotlinTypeName() ?: ANY
+            val varType = d.typeAnnotation?.toKotlinTypeName(typeMapper) ?: ANY
             addVariable(name, varType, additionalAnnotations = additionalAnnotations)
         }
     }
@@ -96,7 +113,7 @@ class TypeScriptToKotlinWalker(
 
 //      TODO  visitList(node.modifiers)
         val name = node.identifier.getText()
-        val callSignature = node.callSignature.toKotlinCallSignature()
+        val callSignature = node.callSignature.toKotlinCallSignature(typeMapper)
         addFunction(name, callSignature, additionalAnnotations = additionalAnnotations)
     }
 
@@ -104,7 +121,7 @@ class TypeScriptToKotlinWalker(
 //        // TODO: is it hack?
 //        if (requiredModifier != DeclareKeyword && isShouldSkip(node)) return
 
-        val translator = TsInterfaceToKt(annotations = defaultAnnotations)
+        val translator = TsInterfaceToKt(typeMapper, annotations = defaultAnnotations)
         translator.visitInterfaceDeclaration(node)
         declarations.add(translator.result)
     }
@@ -112,7 +129,7 @@ class TypeScriptToKotlinWalker(
     override fun visitClassDeclaration(node: ClassDeclarationSyntax) {
         val additionalAnnotations = getAdditionalAnnotations(node)
 
-        val translator = TsClassToKt(annotations = defaultAnnotations + additionalAnnotations)
+        val translator = TsClassToKt(typeMapper, annotations = defaultAnnotations + additionalAnnotations)
         translator.visitClassDeclaration(node)
 
         val result = translator.result
@@ -345,14 +362,13 @@ class TypeScriptToKotlinWalker(
     }
 }
 
-abstract class TsClassifierToKt : TypeScriptToKotlinBase() {
-
+abstract class TsClassifierToKt(val typeMapper: ObjectTypeToKotlinTypeMapper) : TypeScriptToKotlinBase() {
     abstract val needsNoImpl: Boolean
 
     var parents = ArrayList<Type>()
 
     override fun visitHeritageClause(node: HeritageClauseSyntax) {
-        val types = node.typeNames.map {(id: IIdentifierSyntax) -> Type(id.toKotlinTypeName()) }
+        val types = node.typeNames.map {(id: IIdentifierSyntax) -> Type(id.toKotlinTypeName(typeMapper)) }
         parents.addAll(types)
     }
 
@@ -362,8 +378,8 @@ abstract class TsClassifierToKt : TypeScriptToKotlinBase() {
     }
 
     private fun translateAccessor(node: IndexSignatureSyntax, isGetter: Boolean) {
-        val param = node.parameter.toKotlinParam()
-        val propType = node.typeAnnotation.toKotlinTypeName()
+        val param = node.parameter.toKotlinParam(typeMapper)
+        val propType = node.typeAnnotation.toKotlinTypeName(typeMapper)
 
         val callSignature: CallSignature
         val accessorName: String
@@ -380,7 +396,10 @@ abstract class TsClassifierToKt : TypeScriptToKotlinBase() {
     }
 }
 
-class TsInterfaceToKt(val annotations: List<Annotation>) : TsClassifierToKt() {
+class TsInterfaceToKt(
+        typeMapper: ObjectTypeToKotlinTypeMapper,
+        val annotations: List<Annotation>
+) : TsClassifierToKt(typeMapper) {
     override val result: Classifier
         get() = Classifier(ClassKind.TRAIT, name!!, listOf(), typeParams, parents, declarations, annotations)
 
@@ -392,7 +411,7 @@ class TsInterfaceToKt(val annotations: List<Annotation>) : TsClassifierToKt() {
     override fun visitInterfaceDeclaration(node: InterfaceDeclarationSyntax) {
 //      todo visitList(node.modifiers)
         name = node.identifier.getText()
-        typeParams = node.typeParameterList?.toKotlinTypeParams()
+        typeParams = node.typeParameterList?.toKotlinTypeParams(typeMapper)
 
         visitList(node.heritageClauses)
         visitNode(node.body)
@@ -400,7 +419,7 @@ class TsInterfaceToKt(val annotations: List<Annotation>) : TsClassifierToKt() {
 
     override fun visitPropertySignature(node: PropertySignatureSyntax) {
         val name = node.propertyName.getText()
-        val typeName = node.typeAnnotation?.toKotlinTypeName() ?: ANY
+        val typeName = node.typeAnnotation?.toKotlinTypeName(typeMapper) ?: ANY
         val isNullable = node.questionToken != null
         val isLambda = node.typeAnnotation?.`type`?.kind() == FunctionType
 
@@ -411,7 +430,7 @@ class TsInterfaceToKt(val annotations: List<Annotation>) : TsClassifierToKt() {
         val name = node.propertyName.getText()
         val isOptional = node.questionToken != null
 
-        val call = node.callSignature.toKotlinCallSignature()
+        val call = node.callSignature.toKotlinCallSignature(typeMapper)
 
         if (isOptional) {
             val typeAsString = "(${call.params.join(", ")}) -> ${call.returnType.name}"
@@ -423,14 +442,15 @@ class TsInterfaceToKt(val annotations: List<Annotation>) : TsClassifierToKt() {
     }
 
     override fun visitCallSignature(node: CallSignatureSyntax) {
-        addFunction(INVOKE, node.toKotlinCallSignature(), needsNoImpl = false)
+        addFunction(INVOKE, node.toKotlinCallSignature(typeMapper), needsNoImpl = false)
     }
 }
 
 class TsClassToKt(
+        typeMapper: ObjectTypeToKotlinTypeMapper,
         val kind: ClassKind = ClassKind.CLASS,
         val annotations: List<Annotation> = DEFAULT_ANNOTATION
-) : TsClassifierToKt() {
+) : TsClassifierToKt(typeMapper) {
     override val result: Classifier?
         get()  {
             if (name == null) return null
@@ -462,7 +482,7 @@ class TsClassToKt(
     fun getTranslator(node: IMemberDeclarationSyntax): TsClassToKt {
         if (node.modifiers.contains(StaticKeyword)) {
             if (staticTranslator == null) {
-                staticTranslator = TsClassToKt(ClassKind.CLASS_OBJECT, listOf())
+                staticTranslator = TsClassToKt(typeMapper, ClassKind.CLASS_OBJECT, listOf())
                 staticTranslator?.name = ""
             }
             return staticTranslator!!
@@ -474,7 +494,7 @@ class TsClassToKt(
     override fun visitClassDeclaration(node: ClassDeclarationSyntax) {
 //      todo visitList(node.modifiers)
         name = node.identifier.getText()
-        typeParams = node.typeParameterList?.toKotlinTypeParams()
+        typeParams = node.typeParameterList?.toKotlinTypeParams(typeMapper)
 
         visitList(node.heritageClauses)
         visitList(node.classElements)
@@ -484,7 +504,7 @@ class TsClassToKt(
         val declarator = node.variableDeclarator
 
         val name = declarator.identifier.getText()
-        val varType = declarator.typeAnnotation?.toKotlinTypeName() ?: ANY
+        val varType = declarator.typeAnnotation?.toKotlinTypeName(typeMapper) ?: ANY
 
         getTranslator(node).addVariable(name, varType)
     }
@@ -493,13 +513,13 @@ class TsClassToKt(
     override fun visitMemberFunctionDeclaration(node: MemberFunctionDeclarationSyntax) {
         val name = node.propertyName.getText()
 
-        getTranslator(node).addFunction(name, node.callSignature.toKotlinCallSignature())
+        getTranslator(node).addFunction(name, node.callSignature.toKotlinCallSignature(typeMapper))
 
         assert(node.block == null, "An function in declarations file should not have body, function '${this.name}.$name'")
     }
 
     override fun visitConstructorDeclaration(node: ConstructorDeclarationSyntax) {
-        val params = node.parameterList.toKotlinParams()
+        val params = node.parameterList.toKotlinParams(typeMapper)
         paramsOfConstructors.add(params)
 
         assert(node.block == null, "A constructor in declarations file should not have body, constructor in '${this.name}")

@@ -57,7 +57,7 @@ fun NameAsStringLiteral.getText(): String {
 
 ///
 
-fun ParameterSyntax.toKotlinParam(): FunParam {
+fun ParameterSyntax.toKotlinParam(typeMapper: ObjectTypeToKotlinTypeMapper): FunParam {
     val originalNodeType = typeAnnotation?.`type`
     val isVararg: Boolean = dotDotDotToken != null
     val nodeType =
@@ -80,7 +80,7 @@ fun ParameterSyntax.toKotlinParam(): FunParam {
             }
 
     val name = identifier.getText()
-    val typeName = nodeType?.toKotlinTypeName() ?: ANY
+    val typeName = nodeType?.toKotlinTypeName(typeMapper) ?: ANY
     val defaultValue = equalsValueClause?.value?.fullText()
     val isNullable = questionToken != null
     val isLambda = nodeType?.kind() == FunctionType
@@ -92,59 +92,65 @@ fun ParameterSyntax.toKotlinParam(): FunParam {
             isVar)
 }
 
-fun ParameterListSyntax.toKotlinParams(): List<FunParam>  =
-        parameters.map { (param: ParameterSyntax) -> param.toKotlinParam() }
+fun ParameterListSyntax.toKotlinParams(typeMapper: ObjectTypeToKotlinTypeMapper): List<FunParam>  =
+        parameters.map { (param: ParameterSyntax) -> param.toKotlinParam(typeMapper) }
 
-fun TypeParameterListSyntax.toKotlinTypeParams(): List<TypeParam>  =
+fun TypeParameterListSyntax.toKotlinTypeParams(typeMapper: ObjectTypeToKotlinTypeMapper): List<TypeParam>  =
         typeParameters.map { (typeParam: TypeParameterSyntax) ->
-            val typeName = typeParam.identifier.toKotlinTypeName()
-            val upperBound = typeParam.constraint?.`type`?.toKotlinTypeName()
+            val typeName = typeParam.identifier.toKotlinTypeName(typeMapper)
+            val upperBound = typeParam.constraint?.`type`?.toKotlinTypeName(typeMapper)
             TypeParam(typeName, upperBound)
         }
 
-fun CallSignatureSyntax.toKotlinCallSignature(): CallSignature {
-    val typeParams = typeParameterList?.toKotlinTypeParams()
-    val params = parameterList.toKotlinParams()
-    val returnType = typeAnnotation?.toKotlinTypeName() ?: UNIT
+fun CallSignatureSyntax.toKotlinCallSignature(typeMapper: ObjectTypeToKotlinTypeMapper): CallSignature {
+    val typeParams = typeParameterList?.toKotlinTypeParams(typeMapper)
+    val params = parameterList.toKotlinParams(typeMapper)
+    val returnType = typeAnnotation?.toKotlinTypeName(typeMapper) ?: UNIT
 
     return CallSignature(params, typeParams, TypeAnnotation(returnType))
 }
 
 
-//TODO: do we need LambdaType???
-private fun FunctionTypeSyntax.toKotlinTypeName(): String {
-    val params = parameterList.toKotlinParams()
-    return "${params.join(", ", start = "(", end = ")")} -> ${`type`.toKotlinTypeName()}"
+fun ArrayTypeSyntax.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper): String {
+    val typeArg = `type`.toKotlinTypeName(typeMapper)
+    return "$ARRAY<$typeArg>"
 }
 
-private fun GenericTypeSyntax.toKotlinTypeName(): String {
-    var typeArgs = typeArgumentList.typeArguments.map { (typeArg: ITypeSyntax) -> typeArg.toKotlinTypeName() }
+private fun GenericTypeSyntax.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper): String {
+    var typeArgs = typeArgumentList.typeArguments.map { (typeArg: ITypeSyntax) -> typeArg.toKotlinTypeName(typeMapper) }
     return "${name.getText()}<${typeArgs.join(", ")}>"
 }
 
-// TODO implement
-private fun ObjectTypeSyntax.toKotlinTypeName(): String = this.getText().trim()
+//TODO: do we need LambdaType???
+private fun FunctionTypeSyntax.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper): String {
+    val params = parameterList.toKotlinParams(typeMapper)
+    return "${params.join(", ", start = "(", end = ")")} -> ${`type`.toKotlinTypeName(typeMapper)}"
+}
 
-private fun ITypeSyntax.toKotlinTypeNameIfStandardType(): String? {
+// TODO implement
+private fun ObjectTypeSyntax.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper): String =
+        typeMapper.getKotlinTypeNameForObjectType(this)
+
+private fun ITypeSyntax.toKotlinTypeNameIfStandardType(typeMapper: ObjectTypeToKotlinTypeMapper): String? {
     return when (this.kind()) {
         AnyKeyword -> ANY
         NumberKeyword -> NUMBER
         StringKeyword -> STRING
         BooleanKeyword -> BOOLEAN
         VoidKeyword -> UNIT
-        ArrayType -> "$ARRAY<${(this as ArrayTypeSyntax).`type`.toKotlinTypeName()}>"
-        GenericType -> (this as GenericTypeSyntax).toKotlinTypeName()
-        FunctionType -> (this as FunctionTypeSyntax).toKotlinTypeName()
-        ObjectType -> (this as ObjectTypeSyntax).toKotlinTypeName()
+        ArrayType -> (this as ArrayTypeSyntax).toKotlinTypeName(typeMapper)
+        GenericType -> (this as GenericTypeSyntax).toKotlinTypeName(typeMapper)
+        FunctionType -> (this as FunctionTypeSyntax).toKotlinTypeName(typeMapper)
+        ObjectType -> (this as ObjectTypeSyntax).toKotlinTypeName(typeMapper)
         else -> null
     }
 }
 
-fun ITypeSyntax.toKotlinTypeName(): String {
-    return this.toKotlinTypeNameIfStandardType() ?: this.getText()
+fun ITypeSyntax.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper): String {
+    return this.toKotlinTypeNameIfStandardType(typeMapper) ?: this.getText()
 }
 
-fun TypeAnnotationSyntax.toKotlinTypeName(): String = `type`.toKotlinTypeName()
+fun TypeAnnotationSyntax.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper): String = `type`.toKotlinTypeName(typeMapper)
 
 ///
 
@@ -189,4 +195,8 @@ fun ISeparatedSyntaxList.iterator(): Iterator<VariableDeclaratorSyntax> {
         override fun next() = childAt(i++) as VariableDeclaratorSyntax
         override fun hasNext() = i < childCount()
     }
+}
+
+trait ObjectTypeToKotlinTypeMapper {
+    fun getKotlinTypeNameForObjectType(objectType: ObjectTypeSyntax): String
 }
