@@ -212,7 +212,7 @@ class TypeScriptToKotlinWalker(
             if (annotation != null) {
                 val annotationParamString = annotation.getFirstParamAsString()
 
-                // TODO: fix in compiler
+                // TODO: fix after KT-5257 will be fixed
                 var needContinue = false;
                 // TODO: fix this HACK
                 val t = ArrayList<Annotation>(declaration.annotations.size() + 1)
@@ -248,23 +248,22 @@ class TypeScriptToKotlinWalker(
     fun mergeDeclarationsWithSameNameIfNeed() {
         declarations.merge({ it !is Function }, COMPARE_BY_NAME) { a, b ->
             val result =
-                    if (a is Classifier) {
-                        when (b) {
-                            is Classifier -> mergeClassifiers(a, b)
-                            is Variable -> mergeClassifierAndVariable(a, b)
-                            else -> throw Exception("Merging ${a.kind} and ??? unsupported yet, a: $a, b: $b")
-                        }
-                    }
-                    else if (a is Variable) {
-                        if (b is Classifier) {
-                            mergeClassifierAndVariable(b, a)
-                        }
-                        else {
-                            throw Exception("Merging Variable and ??? unsupported yet, a: $a, b: $b")
-                        }
-                    }
-                    else {
-                        throw Exception("Unsupported types for merging, a: $a, b: $b")
+                    when (a) {
+                        is Classifier ->
+                            when (b) {
+                                is Classifier -> mergeClassifiers(a, b)
+                                is Variable -> mergeClassifierAndVariable(a, b)
+                                else -> throw Exception("Merging ${a.kind} and ??? unsupported yet, a: $a, b: $b")
+                            }
+
+                        is Variable ->
+                            when (b) {
+                                is Classifier -> mergeClassifierAndVariable(b, a)
+                                else -> throw Exception("Merging Variable and ??? unsupported yet, a: $a, b: $b")
+                            }
+
+                        else ->
+                            throw Exception("Unsupported types for merging, a: $a, b: $b")
                     }
 
 
