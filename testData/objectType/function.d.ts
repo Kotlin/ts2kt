@@ -8,6 +8,5 @@ declare function withObjectTypeParam(opt: {
 declare function returnsObjectType(): {
     bar(a): number;
     baz?;
-    boo?: any;
     show: (overrideChecks: boolean) => void;
 };

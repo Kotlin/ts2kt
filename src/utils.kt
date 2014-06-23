@@ -199,6 +199,20 @@ private fun <T: Any> MutableList<T>.mergeAllTo(mergeTo: Int, candidateIndexes: L
 native
 fun <T> Array<T>.join(delimiter: String = ","): String = noImpl
 
+[suppress("UNUSED_PARAMETER")]
+native
+fun <T> Array<T>.sort(): Array<T> = noImpl
+
+[suppress("UNUSED_PARAMETER")]
+native
+class RegExp(s: String, flags: String = "")
+
+[suppress("UNUSED_PARAMETER")]
+native
+fun String.replace(r: RegExp, s: String): String = noImpl
+
+fun String.replaceAll(r: String, s: String): String = replace(RegExp(r, "g"), s)
+
 fun assert(condition: Boolean, message: String) {
     if (!condition) throw Exception(message)
 }

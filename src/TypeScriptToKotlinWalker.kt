@@ -70,18 +70,36 @@ class TypeScriptToKotlinWalker(
 
     val typeMapper = object : ObjectTypeToKotlinTypeMapper {
         var n = 0
+        val cache = HashMap<String, String>();
+
+        {
+            cache[""] = "Any"
+
+            val jsonTypeKey = "public fun get(String): Any, public fun set(String, Any): Unit";
+            cache[jsonTypeKey] = "Json"
+        }
+
         override fun getKotlinTypeNameForObjectType(objectType: ObjectTypeSyntax): String {
             val translator = TsInterfaceToKt(annotations = defaultAnnotations, typeMapper = this)
 
             translator.visitSeparatedList(objectType.typeMembers)
+
+            val typeKey = translator.declarations.toStringKey()
+
+            val cachedTraitName = cache[typeKey]
+            if (cachedTraitName != null) return cachedTraitName
 
             val traitName = "`T$${n++}`"
             translator.name = traitName
 
             declarations.add(translator.result)
 
+            cache[typeKey] = traitName
             return traitName
         }
+
+        fun <T> List<T>.toStringKey(): String =
+                map { it.toString().replaceAll("(\\(|,\\s*)\\w+: ", "$1") }.copyToArray().sort().join(", ")
     }
 
     fun addModule(name: String, members: List<Member>, additionalAnnotations: List<Annotation> = listOf()) {
