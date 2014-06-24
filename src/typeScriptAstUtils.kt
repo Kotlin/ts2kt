@@ -196,7 +196,3 @@ fun ISeparatedSyntaxList.iterator(): Iterator<VariableDeclaratorSyntax> {
         override fun hasNext() = i < childCount()
     }
 }
-
-trait ObjectTypeToKotlinTypeMapper {
-    fun getKotlinTypeNameForObjectType(objectType: ObjectTypeSyntax): String
-}

@@ -56,7 +56,8 @@ class TypeScriptToKotlinWalker(
         val packageFqName: String? = null,
         override val defaultAnnotations: List<Annotation> = DEFAULT_ANNOTATION,
         val requiredModifier: SyntaxKind? = DeclareKeyword,
-        val moduleName: String? = null
+        val moduleName: String? = null,
+        typeMapper: ObjectTypeToKotlinTypeMapper? = null
 ) : TypeScriptToKotlinBase() {
     override val result: KotlinFile
         get()  {
@@ -68,39 +69,7 @@ class TypeScriptToKotlinWalker(
     [suppress("CAST_NEVER_SUCCEEDS")]
     val exportedByAssignment = HashMap<Any, Annotation>() as HashMap<String, Annotation>
 
-    val typeMapper = object : ObjectTypeToKotlinTypeMapper {
-        var n = 0
-        val cache = HashMap<String, String>();
-
-        {
-            cache[""] = "Any"
-
-            val jsonTypeKey = "public fun get(String): Any, public fun set(String, Any): Unit";
-            cache[jsonTypeKey] = "Json"
-        }
-
-        override fun getKotlinTypeNameForObjectType(objectType: ObjectTypeSyntax): String {
-            val translator = TsInterfaceToKt(annotations = defaultAnnotations, typeMapper = this)
-
-            translator.visitSeparatedList(objectType.typeMembers)
-
-            val typeKey = translator.declarations.toStringKey()
-
-            val cachedTraitName = cache[typeKey]
-            if (cachedTraitName != null) return cachedTraitName
-
-            val traitName = "`T$${n++}`"
-            translator.name = traitName
-
-            declarations.add(translator.result)
-
-            cache[typeKey] = traitName
-            return traitName
-        }
-
-        fun <T> List<T>.toStringKey(): String =
-                map { it.toString().replaceAll("(\\(|,\\s*)\\w+: ", "$1") }.copyToArray().sort().join(", ")
-    }
+    val typeMapper = typeMapper ?: ObjectTypeToKotlinTypeMapperImpl(defaultAnnotations, declarations)
 
     fun addModule(name: String, members: List<Member>, additionalAnnotations: List<Annotation> = listOf()) {
         val annotations = DEFAULT_MODULE_ANNOTATION + additionalAnnotations
@@ -161,7 +130,13 @@ class TypeScriptToKotlinWalker(
 
         val name = node.moduleName?.getText() ?: node.stringLiteral?.getText() ?: throw Exception("Anonimus module")
 
-        val tr = TypeScriptToKotlinWalker(moduleName = name, defaultAnnotations = listOf(), requiredModifier = ExportKeyword)
+        val tr =
+                TypeScriptToKotlinWalker(
+                        moduleName = name,
+                        defaultAnnotations = listOf(),
+                        requiredModifier = ExportKeyword,
+                        typeMapper = typeMapper)
+
         tr.visitList(node.moduleElements)
 
         val isExternalModule = node.moduleName == null && node.stringLiteral != null

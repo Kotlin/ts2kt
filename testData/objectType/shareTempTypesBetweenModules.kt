@@ -1,4 +1,4 @@
-package inModuleMembers
+package shareTempTypesBetweenModules
 
 native
 public trait `T$0` {
@@ -23,3 +23,15 @@ public object Foo {
     public fun returnsObjectType(): `T$1` = noImpl
     public var foo: `T$2` = noImpl
 }
+module
+public object Bar {
+    public fun someFunction(opt: `T$0`): Unit = noImpl
+    public fun anotherReturnsObjectType(): `T$1` = noImpl
+    public var foo: `T$2` = noImpl
+}
+native
+public fun withObjectTypeParam(opt: `T$0`): Unit = noImpl
+native
+public fun returnsObjectType(): `T$1` = noImpl
+native
+public var foo: `T$2` = noImpl
