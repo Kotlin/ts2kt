@@ -34,7 +34,9 @@ val UNIT = "Unit"
 val ARRAY = "Array"
 
 val SHOULD_BE_ESCAPED =
-        setOf("val", "var", "is", "as", "trait", "package", "object", "when", "type", "fun", "in", "This")
+        setOf("as", "break", "class", "continue", "do", "else", "false", "for", "fun", "if",
+              "in", "is", "null", "object", "package", "return", "super", "this", "This", "throw",
+              "trait", "true", "try", "type", "val", "var", "when", "while")
 
 fun String.escapeIfNeed(): String {
     return if (this in SHOULD_BE_ESCAPED || this.contains("$")) {
