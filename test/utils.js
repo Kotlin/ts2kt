@@ -21,6 +21,7 @@ var fs = require('fs');
 var DTS_EXT = ".d.ts";
 var KT_EXT = ".kt";
 
+var UNVERIFIED_FILE_PREFIX = "// OUT:";
 
 function replaceExtension(path, expected, replacment) {
     if (path.endsWith(expected)) {
@@ -30,15 +31,15 @@ function replaceExtension(path, expected, replacment) {
     return path;
 }
 
-function collectSingleFile (testFile, tests, testDataDir, testDataExpectedDir, needsOnlyRun) {
+function collectSingleFile (testFile, tests, testDataDir, testDataExpectedDir, testOnlyVerified) {
     testDataDir = testDataDir || "";
     testDataExpectedDir = testDataExpectedDir || testDataDir;
 
     var expectedFile = replaceExtension(testFile, DTS_EXT, KT_EXT);
-    tests[testFile] = generateTestFor(testDataDir + "/" + testFile, testDataExpectedDir + "/" + expectedFile, needsOnlyRun);
+    tests[testFile] = generateTestFor(testDataDir + "/" + testFile, testDataExpectedDir + "/" + expectedFile, testOnlyVerified);
 }
 
-function collectTestFiles(dir, tests, testDataExpectedDir, needsOnlyRun, testDataDir) {
+function collectTestFiles(dir, tests, testDataExpectedDir, testOnlyVerified, testDataDir) {
     testDataExpectedDir = testDataExpectedDir || dir;
     testDataDir = testDataDir || dir;
 
@@ -54,12 +55,12 @@ function collectTestFiles(dir, tests, testDataExpectedDir, needsOnlyRun, testDat
             var path = dir + '/' + file;
             var stat = fs.statSync(path);
             if (stat && stat.isDirectory()) {
-                collectTestFiles(path, tests[file] = {}, testDataExpectedDir, needsOnlyRun, testDataDir);
+                collectTestFiles(path, tests[file] = {}, testDataExpectedDir, testOnlyVerified, testDataDir);
             }
             else {
                 if (file.endsWith(".d.ts")) {
                     var expectedFilePath = replaceExtension(path.substr(testDataDir.length), DTS_EXT, KT_EXT);
-                    tests[file] = generateTestFor(path, testDataExpectedDir + expectedFilePath, needsOnlyRun);
+                    tests[file] = generateTestFor(path, testDataExpectedDir + expectedFilePath, testOnlyVerified);
                 }
             }
         }
@@ -82,7 +83,7 @@ function createDirsIfNeed(path) {
     }
 }
 
-function generateTestFor(srcPath, expectedPath, needsOnlyRun) {
+function generateTestFor(srcPath, expectedPath, testOnlyVerified) {
     return function(test) {
         var outPath = expectedPath + ".out";
 
@@ -91,25 +92,23 @@ function generateTestFor(srcPath, expectedPath, needsOnlyRun) {
         console.log("srcPath = " + srcPath +
                     ", outPath = " + outPath +
                     ", expectedPath = " + expectedPath +
-                    ", needsOnlyRun = " + needsOnlyRun + "\n");
+                    ", testOnlyVerified = " + testOnlyVerified + "\n");
 
         ts2kt.translateToFile(srcPath, outPath);
-
-        if (needsOnlyRun) {
-            test.done();
-            return;
-        }
 
         var actual = fs.readFileSync(outPath, {encoding: "utf8"});
 
         if (!fs.existsSync(expectedPath)) {
-            fs.writeFileSync(expectedPath, "// OUT:\n");
+            fs.writeFileSync(expectedPath, UNVERIFIED_FILE_PREFIX + "\n");
             fs.appendFileSync(expectedPath, actual);
         }
 
         var expected = fs.readFileSync(expectedPath, {encoding: "utf8"});
 
-        test.equals(actual,  expected);
+        if (!(testOnlyVerified && expected.startsWith(UNVERIFIED_FILE_PREFIX))) {
+            test.equals(actual,  expected);
+        }
+
         test.done()
     }
 }
