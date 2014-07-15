@@ -19,4 +19,3 @@ fun Classifier.hasModuleAnnotation() = annotations.any { it.name == MODULE }
 
 fun Classifier.getClassObject(): Classifier? =
         this.members.find { it is Classifier && it.kind == ClassKind.CLASS_OBJECT } as? Classifier
-

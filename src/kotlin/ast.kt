@@ -180,29 +180,38 @@ class CallSignature(
         val typeParams: List<TypeParam>?,
         val returnType: TypeAnnotation
 ) : Node() {
-    override fun stringify(): String =
-            (typeParams?.join(startWithIfNotEmpty = "<", endWithIfNotEmpty = ">") ?: "") +
+    override fun stringify(): String = stringify(withTypeParams = true)
+
+    fun stringify(withTypeParams: Boolean): String =
+            (if (withTypeParams) stringifyTypeParams() else  "") +
             params.join(start = "(", end = ")") +
             returnType
+
+    fun stringifyTypeParams(withSpaceAfter: Boolean = false) =
+            typeParams?.join(startWithIfNotEmpty = "<", endWithIfNotEmpty = ">" + if (withSpaceAfter) " " else "") ?:  ""
 }
 
 class Function(
         override var name: String,
         val callSignature: CallSignature,
+        val extendsType: Type? = null,
         override var annotations: List<Annotation>,
         val needsNoImpl: Boolean = true
 ) : Member, Node() {
     override fun stringify(): String =
             annotations.stringify() +
             "$PUBLIC $FUN " +
+            // TODO refactor this
+            (if (extendsType == null) "" else callSignature.stringifyTypeParams(withSpaceAfter = true) + extendsType.toString() + "." ) +
             name +
-            callSignature +
+            callSignature.stringify(withTypeParams = extendsType == null) +
             if (needsNoImpl) EQ_NO_IMPL else ""
 }
 
 class Variable(
         override var name: String,
         var `type`: TypeAnnotation,
+        val extendsType: Type? = null,
         override var annotations: List<Annotation>,
         val typeParams: List<TypeParam>?,
         val isVar: Boolean,
@@ -213,6 +222,7 @@ class Variable(
             "$PUBLIC " +
             (if (isVar) VAR else VAL) + " " +
             (typeParams?.join(", ", startWithIfNotEmpty = "<", endWithIfNotEmpty = "> ") ?: "") +
+            (if (extendsType == null) "" else extendsType.toString() + "." ) +
             name +
             `type`.stringify() +
             if (needsNoImpl) EQ_NO_IMPL else ""
@@ -227,6 +237,7 @@ class TypeParam(override var name: String, val upperBound: String? = null) : Nam
 }
 
 class TypeAnnotation(override var name: String,
+                     // TODO move to isNullable and isLambda to `Type` class
                      val isNullable: Boolean = false,
                      val isLambda: Boolean = false,
                      val isVararg: Boolean = false

@@ -33,6 +33,7 @@ private val GET = "get"
 private val SET = "set"
 
 private val COMPARE_BY_NAME = { (a: Named, b: Named) -> a.name == b.name }
+private val IS_NATIVE_ANNOTATION = { (a: Annotation) -> a.name == NATIVE }
 
 abstract class TypeScriptToKotlinBase : SyntaxWalker() {
     abstract val result: Node?
@@ -41,14 +42,14 @@ abstract class TypeScriptToKotlinBase : SyntaxWalker() {
 
     val declarations = ArrayList<Member>()
 
-    fun addVariable(name: String, `type`: String, typeParams: List<TypeParam>? = null, isVar: Boolean = true, isNullable: Boolean = false, isLambda: Boolean = false, needsNoImpl: Boolean = true, additionalAnnotations: List<Annotation> = listOf()) {
+    open fun addVariable(name: String, `type`: String, extendsType: String? = null, typeParams: List<TypeParam>? = null, isVar: Boolean = true, isNullable: Boolean = false, isLambda: Boolean = false, needsNoImpl: Boolean = true, additionalAnnotations: List<Annotation> = listOf()) {
         val annotations = defaultAnnotations + additionalAnnotations
-        declarations.add(Variable(name, TypeAnnotation(`type`, isNullable = isNullable, isLambda = isLambda), annotations, typeParams, isVar = isVar, needsNoImpl = needsNoImpl))
+        declarations.add(Variable(name, TypeAnnotation(`type`, isNullable = isNullable, isLambda = isLambda), extendsType?.let { Type(it) }, annotations, typeParams, isVar = isVar, needsNoImpl = needsNoImpl))
     }
 
-    fun addFunction(name: String, callSignature: CallSignature, needsNoImpl: Boolean = true, additionalAnnotations: List<Annotation> = listOf()) {
+    open fun addFunction(name: String, callSignature: CallSignature, extendsType: String? = null, needsNoImpl: Boolean = true, additionalAnnotations: List<Annotation> = listOf()) {
         val annotations = defaultAnnotations + additionalAnnotations
-        declarations.add(Function(name, callSignature, annotations, needsNoImpl = needsNoImpl))
+        declarations.add(Function(name, callSignature, extendsType?.let { Type(it) }, annotations, needsNoImpl = needsNoImpl))
     }
 }
 
@@ -57,7 +58,8 @@ class TypeScriptToKotlinWalker(
         override val defaultAnnotations: List<Annotation> = DEFAULT_ANNOTATION,
         val requiredModifier: SyntaxKind? = DeclareKeyword,
         val moduleName: String? = null,
-        typeMapper: ObjectTypeToKotlinTypeMapper? = null
+        typeMapper: ObjectTypeToKotlinTypeMapper? = null,
+        val isOwnDeclaration: (PositionedElement) -> Boolean = { true }
 ) : TypeScriptToKotlinBase() {
     override val result: KotlinFile
         get()  {
@@ -108,9 +110,16 @@ class TypeScriptToKotlinWalker(
 //        // TODO: is it hack?
 //        if (requiredModifier != DeclareKeyword && isShouldSkip(node)) return
 
-        val translator = TsInterfaceToKt(typeMapper, annotations = defaultAnnotations)
-        translator.visitInterfaceDeclaration(node)
-        declarations.add(translator.result)
+        if (!isOwnDeclaration(node.identifier)) {
+            val translator = TsInterfaceToKtExtensions(typeMapper, annotations = defaultAnnotations)
+            translator.visitInterfaceDeclaration(node)
+            declarations.addAll(translator.declarations)
+        }
+        else {
+            val translator = TsInterfaceToKt(typeMapper, annotations = defaultAnnotations)
+            translator.visitInterfaceDeclaration(node)
+            declarations.add(translator.result)
+        }
     }
 
     override fun visitClassDeclaration(node: ClassDeclarationSyntax) {
@@ -135,7 +144,8 @@ class TypeScriptToKotlinWalker(
                         moduleName = name,
                         defaultAnnotations = listOf(),
                         requiredModifier = ExportKeyword,
-                        typeMapper = typeMapper)
+                        typeMapper = typeMapper,
+                        isOwnDeclaration = isOwnDeclaration)
 
         tr.visitList(node.moduleElements)
 
@@ -384,11 +394,11 @@ abstract class TsClassifierToKt(val typeMapper: ObjectTypeToKotlinTypeMapper) : 
             accessorName = SET
         }
 
-        addFunction(accessorName, callSignature, needsNoImpl)
+        addFunction(accessorName, callSignature, needsNoImpl = needsNoImpl)
     }
 }
 
-class TsInterfaceToKt(
+open class TsInterfaceToKt(
         typeMapper: ObjectTypeToKotlinTypeMapper,
         val annotations: List<Annotation>
 ) : TsClassifierToKt(typeMapper) {
@@ -426,7 +436,7 @@ class TsInterfaceToKt(
 
         if (isOptional) {
             val typeAsString = "(${call.params.join(", ")}) -> ${call.returnType.name}"
-            addVariable(name, typeAsString, call.typeParams, isVar = false, isNullable = true, isLambda = true, needsNoImpl = false)
+            addVariable(name, typeAsString, typeParams = call.typeParams, isVar = false, isNullable = true, isLambda = true, needsNoImpl = false)
         }
         else {
             addFunction(name, call, needsNoImpl = false)
@@ -436,6 +446,69 @@ class TsInterfaceToKt(
     override fun visitCallSignature(node: CallSignatureSyntax) {
         addFunction(INVOKE, node.toKotlinCallSignature(typeMapper), needsNoImpl = false)
     }
+}
+
+class TsInterfaceToKtExtensions(
+        typeMapper: ObjectTypeToKotlinTypeMapper,
+        annotations: List<Annotation>
+) : TsInterfaceToKt(typeMapper, annotations){
+
+    val cachedExtendsType by lazy { getExtendsType(typeParams) }
+
+    fun getExtendsType(typeParams: List<TypeParam>?) = name!! + (typeParams?.join(startWithIfNotEmpty = "<", endWithIfNotEmpty = ">") ?: "")
+
+    fun List<TypeParam>?.fixIfClashWith(another: List<TypeParam>?): List<TypeParam>? {
+        if (this == null || another == null) return this
+
+        assert(!(this identityEquals another), "expected this !== another, this = $this, another = $another")
+
+        val extendsTypeParams = ArrayList<TypeParam>()
+        for (e in this) {
+            var toAdd = e.name
+            var i = 0;
+            while (another.any { it.name == toAdd }) toAdd = e.name + i++
+
+            extendsTypeParams.add(TypeParam(toAdd, e.upperBound))
+        }
+
+        return extendsTypeParams
+    }
+
+    fun List<TypeParam>?.merge(another: List<TypeParam>?): List<TypeParam>? = when {
+                this == null -> another
+                another == null -> this
+                else -> this + another
+            }
+
+    fun List<Annotation>.withNativeAnnotation() = when {
+                defaultAnnotations.any(IS_NATIVE_ANNOTATION),
+                this.any(IS_NATIVE_ANNOTATION) -> {
+                    this
+                }
+                else -> {
+                    val list = ArrayList<Annotation>()
+                    list.add(NATIVE_ANNOTATION)
+                    list.addAll(this)
+                    list
+                }
+            }
+
+    override fun addVariable(name: String, `type`: String, extendsType: String?, typeParams: List<TypeParam>?, isVar: Boolean, isNullable: Boolean, isLambda: Boolean, needsNoImpl: Boolean, additionalAnnotations: List<Annotation>) {
+        val typeParamsWithoutClashes = this.typeParams.fixIfClashWith(typeParams)
+        val actualExtendsType = if (typeParamsWithoutClashes identityEquals this.typeParams) cachedExtendsType else getExtendsType(typeParamsWithoutClashes)
+        val annotations = additionalAnnotations.withNativeAnnotation()
+
+        super.addVariable(name, `type`, actualExtendsType, typeParamsWithoutClashes merge typeParams, isVar, isNullable, isLambda, true, annotations)
+    }
+
+    override fun addFunction(name: String, callSignature: CallSignature, extendsType: String?, needsNoImpl: Boolean, additionalAnnotations: List<Annotation>) {
+        val typeParamsWithoutClashes = this.typeParams.fixIfClashWith(callSignature.typeParams)
+        val actualExtendsType = if (typeParamsWithoutClashes identityEquals this.typeParams) cachedExtendsType else getExtendsType(typeParamsWithoutClashes)
+        val annotations = additionalAnnotations.withNativeAnnotation()
+
+        super.addFunction(name, CallSignature(callSignature.params, typeParamsWithoutClashes merge callSignature.typeParams, callSignature.returnType), actualExtendsType, true, annotations)
+    }
+
 }
 
 class TsClassToKt(

@@ -35,6 +35,8 @@ fun setOf<T>(vararg elements: T): Set<T> {
     return set
 }
 
+public inline fun <T : Any, R> T.let(f: (T) -> R): R = f(this)
+
 //TODO: unused?
 fun <T> List<T>.filter(f: (T) -> Boolean): List<T> {
     val list = ArrayList<T>()
@@ -146,7 +148,7 @@ fun <T> List<T>.plus(another: List<T>): List<T> = when {
         }
     }
 
-fun <T: Any> MutableList<T>.merge(acceptor:(T) -> Boolean, comparator: (T, T) -> Boolean, merger: (T, T) -> T) {
+fun <T: Any> MutableList<T>.merge(acceptor: (T) -> Boolean, comparator: (T, T) -> Boolean, merger: (T, T) -> T) {
     var i = 0;
     while (i < size()) {
         val current = this[i]
@@ -195,6 +197,18 @@ private fun <T: Any> MutableList<T>.mergeAllTo(mergeTo: Int, candidateIndexes: L
 
 }
 
+// JS Array utils
+
+fun <T> Array<T>.all(f: (T) -> Boolean): Boolean {
+    for (e in this) {
+        if (!f(e)) return false
+    }
+
+    return true
+}
+
+// JS Array methods
+
 [suppress("UNUSED_PARAMETER")]
 native
 fun <T> Array<T>.join(delimiter: String = ","): String = noImpl
@@ -205,7 +219,19 @@ fun <T> Array<T>.sort(): Array<T> = noImpl
 
 [suppress("UNUSED_PARAMETER")]
 native
+fun <T> Array<T>.push(vararg element: T): Unit = noImpl
+
+[suppress("UNUSED_PARAMETER")]
+native
+fun <T> Array<T>.splice(index: Int, removeCount: Int, vararg newItems: T): Array<T> = noImpl
+
+//
+
+[suppress("UNUSED_PARAMETER")]
+native
 class RegExp(s: String, flags: String = "")
+
+// JS String methods
 
 [suppress("UNUSED_PARAMETER")]
 native
@@ -213,6 +239,30 @@ fun String.replace(r: RegExp, s: String): String = noImpl
 
 fun String.replaceAll(r: String, s: String): String = replace(RegExp(r, "g"), s)
 
+
+[suppress("UNUSED_PARAMETER")]
+native
+fun eval<T>(code: String): T = noImpl
+
+// Assert
+
 fun assert(condition: Boolean, message: String) {
     if (!condition) throw Exception(message)
+}
+
+fun lazy<T>(initializer: () -> T) = LazyVal(initializer)
+
+class LazyVal<T : Any>(private val initializer: () -> T) {
+    private var value: T? = null
+
+    fun get(thisRef: Any?, desc: PropertyMetadata): T {
+        var result = value
+
+        if (result == null) {
+            result = initializer()
+            value = result
+        }
+
+        return result!!
+    }
 }

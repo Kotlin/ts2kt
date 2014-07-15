@@ -128,7 +128,13 @@ native
 trait ShouldBeEscaped : ISyntaxElement
 
 native
-trait IIdentifierSyntax : ShouldBeEscaped, ISyntaxToken
+trait IIdentifierSyntax : ShouldBeEscaped, ISyntaxToken, PositionedElement
 
 native
 trait NameAsStringLiteral : ShouldBeEscaped, ISyntaxToken
+
+native
+trait PositionedElement {
+    fun start(): Int
+    fun end(): Int
+}

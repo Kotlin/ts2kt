@@ -18,31 +18,52 @@ package ts2kt
 
 import js.debug.console
 import typescript.typescript
+import ts2kt.utils.*
 
 [suppress("UNUSED_PARAMETER")]
 native
 fun require(name: String): Any = noImpl
 
-//val Kotlin = require("./kotlin")
-//val SyntaxWalker = require("./SyntaxWalker");
-//val typescript = require("../../../script/typescript")
-
 val SRC_FILE_PATH_ARG_INDEX = 2;
 val OUT_FILE_PATH_ARG_INDEX = 3;
 val TYPESCRIPT_DEFINITION_FILE_EXT = ".d.ts";
+//val LIB_D_TS = "testDefinitelyTyped/DefinitelyTyped/_infrastructure/tests/typescript/1.0.0/lib.d.ts"
+//val LIB_D_TS_RESOLVED_FILE: typescript.IResolvedFile = eval("""({ path:"$LIB_D_TS", referencedFiles: [], importedFiles: [] })""")
+
+fun typescript.TypeScriptCompiler.addFile(resolvedFile: typescript.IResolvedFile, batch: typescript.BatchCompiler) {
+    var sourceFile = batch.getSourceFile(resolvedFile.path);
+    addSourceUnit(resolvedFile.path, sourceFile.scriptSnapshot, sourceFile.byteOrderMark, 0, false, resolvedFile.referencedFiles);
+}
 
 fun translate(srcPath: String): String {
     val compiler = typescript.TypeScriptCompiler(typescript.DiagnosticsLogger(typescript.IO));
     val batch = typescript.BatchCompiler(typescript.IO);
-    val sourceFile = batch.getSourceFile(srcPath);
-    compiler.addSourceUnit(srcPath, sourceFile.scriptSnapshot, sourceFile.byteOrderMark, 0, false);
+    batch.compilationSettings.noLib = true
+    batch.inputFiles = array(srcPath);
+    batch.resolve();
+
+//    batch.resolvedFiles.splice(0, 0, LIB_D_TS_RESOLVED_FILE)
+
+//    var compiler = typescript.TypeScriptCompiler(batch.logger, batch.compilationSettings);
+
+    for (resolvedFile in batch.resolvedFiles) {
+        compiler.addFile(resolvedFile, batch);
+    }
+
+    compiler.pullTypeCheck();
+
+    // TODO report diagnostics and exit here?
 
     val path = require("path") as node.path
     val srcName = path.basename(srcPath, TYPESCRIPT_DEFINITION_FILE_EXT)
+    val srcResolvedPath = batch.resolvePath(srcPath)
 
-    val typeScriptToKotlinWalker = TypeScriptToKotlinWalker(srcName);
+    val typeScriptToKotlinWalker = TypeScriptToKotlinWalker(srcName, isOwnDeclaration = {
+        val resolveResult = compiler.resolvePosition(it.start(), compiler.getDocument(srcResolvedPath)!!)
+        resolveResult.symbol.getDeclarations().all { it.scriptName == srcResolvedPath }
+    });
 
-    val tsTree = compiler.getSyntaxTree(srcPath);
+    val tsTree = compiler.getSyntaxTree(srcResolvedPath);
     tsTree.sourceUnit().accept(typeScriptToKotlinWalker)
 
     val ktTree = typeScriptToKotlinWalker.result

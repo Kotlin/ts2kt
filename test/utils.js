@@ -89,7 +89,7 @@ function generateTestFor(srcPath, expectedPath, testOnlyVerified) {
 
         createDirsIfNeed(outPath);
 
-        console.log("srcPath = " + srcPath +
+        console.log("\n--------\nsrcPath = " + srcPath +
                     ", outPath = " + outPath +
                     ", expectedPath = " + expectedPath +
                     ", testOnlyVerified = " + testOnlyVerified + "\n");
