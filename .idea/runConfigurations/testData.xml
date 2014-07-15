@@ -9,8 +9,10 @@
     <setting name="jsFile" value="test/tests/testData.js" />
     <RunnerSettings RunnerId="Nodeunit.debug" />
     <RunnerSettings RunnerId="Nodeunit.run" />
+    <RunnerSettings RunnerId="debuggableProgram" />
     <ConfigurationWrapper RunnerId="Nodeunit.debug" />
     <ConfigurationWrapper RunnerId="Nodeunit.run" />
+    <ConfigurationWrapper RunnerId="debuggableProgram" />
     <method>
       <option name="BuildArtifacts" enabled="true">
         <artifact name="ts2kt" />
