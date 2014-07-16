@@ -5,7 +5,7 @@ public trait `T$0` {
     public var warn: Boolean
 }
 module("bufferstream")
-public class BufferStream(options: BufferStream.Opts? = null) : stream.Duplex  {
+public class BufferStream(options: BufferStream.Opts? = null) : stream.Duplex() {
     public fun setSize(size: String): Unit = noImpl
     public fun setSize(size: Number): Unit = noImpl
     public fun enable(): Unit = noImpl
@@ -24,17 +24,17 @@ public class BufferStream(options: BufferStream.Opts? = null) : stream.Duplex  {
     public var length: Number = noImpl
     public class object {
         public trait Opts {
-            public var encoding: String?
-            public var blocking: Boolean?
-            public var size: Any?
-            public var disabled: Boolean?
-            public var split: Any?
+            public var encoding: String? = noImpl
+            public var blocking: Boolean? = noImpl
+            public var size: Any? = noImpl
+            public var disabled: Boolean? = noImpl
+            public var split: Any? = noImpl
         }
         public var fn: `T$0` = noImpl
     }
 }
 module("bufferstream/postbuffer")
-public class PostBuffer(req: http.ServerRequest) : BufferStream {
+public class PostBuffer(req: http.ServerRequest) : BufferStream() {
     public fun onEnd(callback: (data: Any) -> Unit): Unit = noImpl
     public fun pipe(stream: NodeJS.WritableStream, options: BufferStream.Opts? = null): NodeJS.ReadableStream = noImpl
 }

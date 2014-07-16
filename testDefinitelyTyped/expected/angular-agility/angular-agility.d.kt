@@ -1,3 +1,4 @@
+// OUT:
 // WRONG
 // TODO fix package
 package angular-agility
@@ -67,13 +68,13 @@ public object aa {
     }
     public trait INotifyConfig {
         public var name: String
-        public var template: String?
-        public var templateName: String?
+        public var template: String? = noImpl
+        public var templateName: String? = noImpl
         public var options: INotifyOptions
         public var namedDefaults: INotifyDefaults
     }
     public trait INotifyOptions {
-        public var cssClasses: String?
+        public var cssClasses: String? = noImpl
         public var messageType: String
         public var allowHtml: Boolean
         public var message: String
@@ -87,9 +88,9 @@ public object aa {
     }
     public trait IExternalFormValidationConfig {
         public var validations: Any
-        public var ignore: Any?
-        public var globals: Any?
-        public var resolve: Any?
-        public var resolveFn: ((modelValue: String) -> String)?
+        public var ignore: Any? = noImpl
+        public var globals: Any? = noImpl
+        public var resolve: Any? = noImpl
+        public var resolveFn: ((modelValue: String) -> String)? = noImpl
     }
 }

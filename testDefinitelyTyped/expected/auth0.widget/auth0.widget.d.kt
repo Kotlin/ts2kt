@@ -12,27 +12,27 @@ public trait Auth0WidgetStatic {
 }
 native
 public trait Auth0Constructor : Auth0ClientOptions {
-    public var assetsUrl: String?
-    public var cdn: String?
-    public var dict: Any?
+    public var assetsUrl: String? = noImpl
+    public var cdn: String? = noImpl
+    public var dict: Any? = noImpl
 }
 native
 public trait Auth0Options {
-    public var access_token: String?
-    public var connections: Array<String>?
-    public var container: String?
-    public var enableReturnUserExperience: Boolean?
-    public var extraParameters: Any?
-    public var icon: String?
-    public var protocol: String?
-    public var request_id: String?
-    public var scope: String?
-    public var showIcon: Boolean?
-    public var showForgot: Boolean?
-    public var showSignup: Boolean?
-    public var state: Any?
-    public var userPwdConnectionName: String?
-    public var username_style: String?
+    public var access_token: String? = noImpl
+    public var connections: Array<String>? = noImpl
+    public var container: String? = noImpl
+    public var enableReturnUserExperience: Boolean? = noImpl
+    public var extraParameters: Any? = noImpl
+    public var icon: String? = noImpl
+    public var protocol: String? = noImpl
+    public var request_id: String? = noImpl
+    public var scope: String? = noImpl
+    public var showIcon: Boolean? = noImpl
+    public var showForgot: Boolean? = noImpl
+    public var showSignup: Boolean? = noImpl
+    public var state: Any? = noImpl
+    public var userPwdConnectionName: String? = noImpl
+    public var username_style: String? = noImpl
 }
 native
 module("Auth0Widget")

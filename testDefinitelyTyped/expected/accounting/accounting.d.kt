@@ -3,22 +3,22 @@ package accounting
 native
 public trait IAccountingCurrencyFormat {
     public var pos: String
-    public var neg: String?
-    public var zero: String?
+    public var neg: String? = noImpl
+    public var zero: String? = noImpl
 }
 native
 public trait IAccountingCurrencySettings<TFormat> {
-    public var symbol: String?
-    public var format: TFormat?
-    public var decimal: String?
-    public var thousand: String?
-    public var precision: Number?
+    public var symbol: String? = noImpl
+    public var format: TFormat? = noImpl
+    public var decimal: String? = noImpl
+    public var thousand: String? = noImpl
+    public var precision: Number? = noImpl
 }
 native
 public trait IAccountingNumberSettings {
-    public var precision: Number?
-    public var thousand: String?
-    public var decimal: String?
+    public var precision: Number? = noImpl
+    public var thousand: String? = noImpl
+    public var decimal: String? = noImpl
 }
 native
 public trait IAccountingSettings {

@@ -3,9 +3,9 @@ package amplifyjs
 native
 public trait amplifyRequestSettings {
     public var resourceId: String
-    public var data: Any?
-    public var success: ((vararg args: Any) -> Unit)?
-    public var error: ((vararg args: Any) -> Unit)?
+    public var data: Any? = noImpl
+    public var success: ((vararg args: Any) -> Unit)? = noImpl
+    public var error: ((vararg args: Any) -> Unit)? = noImpl
 }
 native
 public trait amplifyDecoder {
@@ -19,8 +19,8 @@ public trait amplifyDecoders {
 }
 native
 public trait amplifyAjaxSettings : JQueryAjaxSettings {
-    public var cache: Any?
-    public var decoder: Any?
+    public var cache: Any? = noImpl
+    public var decoder: Any? = noImpl
 }
 native
 public trait amplifyRequest {

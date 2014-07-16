@@ -15,7 +15,7 @@ public trait BootboxIcons {
 native
 public trait BootboxHandler {
     public var label: String
-    public var class: String
+    public var `class`: String
     public var callback: (result: Any? = null) -> Unit
 }
 native

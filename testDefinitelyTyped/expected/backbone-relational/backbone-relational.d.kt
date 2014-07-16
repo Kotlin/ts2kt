@@ -2,8 +2,7 @@ package backbone-relational
 
 module
 public object Backbone {
-    // missed non-exported RelationalModel
-    public class Relation : Model {
+    public class Relation : Model() {
         public var options: Any = noImpl
         public var instance: Any = noImpl
         public var key: Any = noImpl
@@ -18,7 +17,7 @@ public object Backbone {
         public fun getReverseRelations(model: RelationalModel): Relation = noImpl
         public fun destroy(): Unit = noImpl
     }
-    public class HasOne : Relation {
+    public class HasOne : Relation() {
         public var collectionType: Any = noImpl
         public fun findRelated(options: Any): Model = noImpl
         public fun setKeyContents(keyContents: String): Unit = noImpl
@@ -34,7 +33,7 @@ public object Backbone {
         public fun addRelated(model: Model, options: Any): Unit = noImpl
         public fun removeRelated(model: Model, coll: Any, options: Any): Unit = noImpl
     }
-    public class HasMany : Relation {
+    public class HasMany : Relation() {
         public var collectionType: Any = noImpl
         public fun findRelated(options: Any): Model = noImpl
         public fun setKeyContents(keyContents: String): Unit = noImpl
@@ -45,7 +44,7 @@ public object Backbone {
         public fun addRelated(model: Model, options: Any): Unit = noImpl
         public fun removeRelated(model: Model, coll: Any, options: Any): Unit = noImpl
     }
-    public class Store : Events {
+    public class Store : Events() {
         public fun initializeRelation(model: Any, relation: Any, options: Any): Unit = noImpl
         public fun addModelScope(scope: Any): Unit = noImpl
         public fun removeModelScope(scope: Any): Unit = noImpl

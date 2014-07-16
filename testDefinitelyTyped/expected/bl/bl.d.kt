@@ -1,8 +1,9 @@
+// OUT:
 package bl
 
 // WRONG import
 module("bl")
-public class BufferList : stream.Duplex  {
+public class BufferList : stream.Duplex() {
     public fun new(callback: ((err: Error, buffer: Buffer) -> Unit)? = null): Unit = noImpl
     public fun append(buffer: Buffer): Unit = noImpl
     public fun get(index: Number): Number = noImpl

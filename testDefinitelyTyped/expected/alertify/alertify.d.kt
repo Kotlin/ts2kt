@@ -17,14 +17,14 @@ public trait alertify {
         public fun debug(): Unit
     }
     public trait IProperties {
-        public var delay: Number?
-        public var labels: ILabels?
-        public var buttonFocus: String?
-        public var buttonReverse: Boolean?
+        public var delay: Number? = noImpl
+        public var labels: ILabels? = noImpl
+        public var buttonFocus: String? = noImpl
+        public var buttonReverse: Boolean? = noImpl
     }
     public trait ILabels {
-        public var ok: String?
-        public var cancel: String?
+        public var ok: String? = noImpl
+        public var cancel: String? = noImpl
     }
     public class object : alertify.IAlertifyStatic by noImpl: alertify.IAlertifyStatic {
 

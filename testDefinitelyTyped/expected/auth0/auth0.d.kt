@@ -1,3 +1,4 @@
+// OUT:
 package auth0
 
 native
@@ -32,9 +33,9 @@ native
 public trait Auth0ClientOptions {
     public var clientID: String
     public var callbackURL: String
-    public var callbackOnLoactionHash: Boolean?
+    public var callbackOnLoactionHash: Boolean? = noImpl
     public var domain: String
-    public var forceJSONP: Boolean?
+    public var forceJSONP: Boolean? = noImpl
 }
 native
 public trait Auth0UserProfile {
@@ -84,13 +85,13 @@ public trait Auth0PopupOptions {
 }
 native
 public trait Auth0LoginOptions {
-    public var auto_login: Boolean?
-    public var connection: String?
-    public var email: String?
-    public var username: String?
-    public var password: String?
-    public var popup: Boolean?
-    public var popupOptions: Auth0PopupOptions?
+    public var auto_login: Boolean? = noImpl
+    public var connection: String? = noImpl
+    public var email: String? = noImpl
+    public var username: String? = noImpl
+    public var password: String? = noImpl
+    public var popup: Boolean? = noImpl
+    public var popupOptions: Auth0PopupOptions? = noImpl
 }
 native
 public trait Auth0SignupOptions : Auth0LoginOptions {

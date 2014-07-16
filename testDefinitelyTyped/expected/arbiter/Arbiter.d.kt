@@ -6,14 +6,14 @@ public object ArbiterDef {
         public fun invoke(data: Any, message: String, subscriber_context: Any): Unit
     }
     public trait SubscribeOptions {
-        public var priority: Number?
-        public var async: Boolean?
-        public var persist: Boolean?
+        public var priority: Number? = noImpl
+        public var async: Boolean? = noImpl
+        public var persist: Boolean? = noImpl
     }
     public trait PublishOptions {
-        public var cancelable: Boolean?
-        public var persist: Boolean?
-        public var async: Boolean?
+        public var cancelable: Boolean? = noImpl
+        public var persist: Boolean? = noImpl
+        public var async: Boolean? = noImpl
     }
     public trait ArbiterStatic {
         public var version: String

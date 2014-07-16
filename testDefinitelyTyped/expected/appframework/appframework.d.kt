@@ -193,19 +193,19 @@ public trait appFrameworkCollection {
 }
 native
 public trait appFrameworkAjaxSettings {
-    public var `type`: String?
-    public var beforeSend: ((xhr: XMLHttpRequest, settings: appFrameworkAjaxSettings) -> Boolean)?
-    public var success: ((data: Any, status: String, xhr: XMLHttpRequest) -> Unit)?
-    public var error: ((xhr: XMLHttpRequest, errorType: String, error: Error) -> Unit)?
-    public var complete: ((xhr: XMLHttpRequest, status: String) -> Unit)?
-    public var timeout: Number?
-    public var url: String?
-    public var contentType: String?
-    public var headers: Any?
-    public var dataType: String?
-    public var data: Any?
-    public var context: Any?
-    public var crossDomain: Boolean?
+    public var `type`: String? = noImpl
+    public var beforeSend: ((xhr: XMLHttpRequest, settings: appFrameworkAjaxSettings) -> Boolean)? = noImpl
+    public var success: ((data: Any, status: String, xhr: XMLHttpRequest) -> Unit)? = noImpl
+    public var error: ((xhr: XMLHttpRequest, errorType: String, error: Error) -> Unit)? = noImpl
+    public var complete: ((xhr: XMLHttpRequest, status: String) -> Unit)? = noImpl
+    public var timeout: Number? = noImpl
+    public var url: String? = noImpl
+    public var contentType: String? = noImpl
+    public var headers: Any? = noImpl
+    public var dataType: String? = noImpl
+    public var data: Any? = noImpl
+    public var context: Any? = noImpl
+    public var crossDomain: Boolean? = noImpl
 }
 native
 public trait appFrameworkCssMatrix {
