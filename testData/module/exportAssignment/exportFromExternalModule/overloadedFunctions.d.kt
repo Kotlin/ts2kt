@@ -7,8 +7,8 @@ public trait BrowserifyObject : NodeJS.EventEmitter {
 }
 native
 public trait Options {
-    public var entries: Array<String>?
-    public var noParse: Array<String>?
+    public var entries: Array<String>? = noImpl
+    public var noParse: Array<String>? = noImpl
 }
 module("browserify")
 public fun browserify(): BrowserifyObject = noImpl

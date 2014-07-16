@@ -209,7 +209,7 @@ class Function(
 }
 
 class Variable(
-        override var name: String,
+        name: String,
         var `type`: TypeAnnotation,
         val extendsType: Type? = null,
         override var annotations: List<Annotation>,
@@ -217,13 +217,19 @@ class Variable(
         val isVar: Boolean,
         val needsNoImpl: Boolean = true
 ) : Member {
+
+    // TODO is it HACK???
+    override var name = name
+        get() = (if (extendsType == null) "" else extendsType.stringify() + ".") + $name
+        set(value) { $name = value }
+
     override fun stringify(): String =
             annotations.stringify() +
             "$PUBLIC " +
             (if (isVar) VAR else VAL) + " " +
             (typeParams?.join(", ", startWithIfNotEmpty = "<", endWithIfNotEmpty = "> ") ?: "") +
             (if (extendsType == null) "" else extendsType.toString() + "." ) +
-            name +
+            $name +
             `type`.stringify() +
             if (needsNoImpl) EQ_NO_IMPL else ""
 }

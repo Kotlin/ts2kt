@@ -426,10 +426,10 @@ open class TsInterfaceToKt(
     override fun visitPropertySignature(node: PropertySignatureSyntax) {
         val name = node.propertyName.getText()
         val typeName = node.typeAnnotation?.toKotlinTypeName(typeMapper) ?: ANY
-        val isNullable = node.questionToken != null
+        val isOptional = node.questionToken != null
         val isLambda = node.typeAnnotation?.`type`?.kind() == FunctionType
 
-        addVariable(name, typeName, isNullable = isNullable, isLambda = isLambda, needsNoImpl = false)
+        addVariable(name, typeName, isNullable = isOptional, isLambda = isLambda, needsNoImpl = isOptional)
     }
 
     override fun visitMethodSignature(node: MethodSignatureSyntax) {
@@ -440,7 +440,7 @@ open class TsInterfaceToKt(
 
         if (isOptional) {
             val typeAsString = "(${call.params.join(", ")}) -> ${call.returnType.name}"
-            addVariable(name, typeAsString, typeParams = call.typeParams, isVar = false, isNullable = true, isLambda = true, needsNoImpl = false)
+            addVariable(name, typeAsString, typeParams = call.typeParams, isVar = false, isNullable = true, isLambda = true, needsNoImpl = true)
         }
         else {
             addFunction(name, call, needsNoImpl = false)
