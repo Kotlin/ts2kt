@@ -1,4 +1,4 @@
-declare class BaseJQueryEventObject extends Event {
+declare class BaseJQueryEventObject implements Event {
     data: any;
     delegateTarget: Element;
     isDefaultPrevented(): boolean;

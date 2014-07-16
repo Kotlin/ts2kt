@@ -1,7 +1,7 @@
 package classWhenItContainsClass
 
 module("ws")
-public class WebSocket(address: String) : events.EventEmitter  {
+public class WebSocket(address: String) : events.EventEmitter() {
     public fun connect(): Boolean = noImpl
     public class object {
         public class Server {

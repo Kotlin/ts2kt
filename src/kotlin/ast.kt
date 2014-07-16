@@ -228,8 +228,8 @@ class Variable(
             if (needsNoImpl) EQ_NO_IMPL else ""
 }
 
-class Type(override var name: String) : Named {
-    override fun stringify(): String = "$name"
+class Type(override var name: String, val needParens: Boolean = false) : Named {
+    override fun stringify(): String = "$name" + if (needParens) "()" else ""
 }
 
 class TypeParam(override var name: String, val upperBound: String? = null) : Named {

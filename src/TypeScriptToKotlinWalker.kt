@@ -370,7 +370,11 @@ abstract class TsClassifierToKt(val typeMapper: ObjectTypeToKotlinTypeMapper) : 
     var parents = ArrayList<Type>()
 
     override fun visitHeritageClause(node: HeritageClauseSyntax) {
-        val types = node.typeNames.map {(id: IIdentifierSyntax) -> Type(id.toKotlinTypeName(typeMapper)) }
+        val containingInInterface = this is TsInterfaceToKt
+        val isExtends = node.extendsOrImplementsKeyword.kind() == ExtendsKeyword
+        val needParens = !containingInInterface && isExtends
+
+        val types = node.typeNames.map {(id: IIdentifierSyntax) -> Type(id.toKotlinTypeName(typeMapper), needParens) }
         parents.addAll(types)
     }
 

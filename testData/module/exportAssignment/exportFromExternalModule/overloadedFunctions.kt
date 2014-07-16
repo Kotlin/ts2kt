@@ -1,7 +1,7 @@
 package overloadedFunctions
 
 native
-public trait BrowserifyObject : NodeJS.EventEmitter  {
+public trait BrowserifyObject : NodeJS.EventEmitter {
     public fun add(file: String): BrowserifyObject
     public fun require(file: String): BrowserifyObject
 }

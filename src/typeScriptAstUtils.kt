@@ -47,7 +47,13 @@ fun String.escapeIfNeed(): String {
     }
 }
 
-fun ISyntaxElement.getText(): String = if (this.isToken()) (this as ISyntaxToken).text() else this.fullText()
+fun ISyntaxElement.getText(): String = when {
+        this.isToken() ->
+            (this as ISyntaxToken).text()
+        else ->
+            this.fullText().substring(this.leadingTriviaWidth(), width())
+    }
+
 
 fun ShouldBeEscaped.getText(): String = (this: ISyntaxElement).getText().escapeIfNeed()
 
