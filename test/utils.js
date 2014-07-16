@@ -18,7 +18,7 @@ var WORKING_DIR = "../compiled/";
 var ts2kt = require(WORKING_DIR + "ts2kt");
 var fs = require('fs');
 
-var DTS_EXT = ".d.ts";
+var TS_EXT = ".ts";
 var KT_EXT = ".kt";
 
 var UNVERIFIED_FILE_PREFIX = "// OUT:";
@@ -35,7 +35,7 @@ function collectSingleFile (testFile, tests, testDataDir, testDataExpectedDir, t
     testDataDir = testDataDir || "";
     testDataExpectedDir = testDataExpectedDir || testDataDir;
 
-    var expectedFile = replaceExtension(testFile, DTS_EXT, KT_EXT);
+    var expectedFile = replaceExtension(testFile, TS_EXT, KT_EXT);
     tests[testFile] = generateTestFor(testDataDir + "/" + testFile, testDataExpectedDir + "/" + expectedFile, testOnlyVerified);
 }
 
@@ -59,7 +59,7 @@ function collectTestFiles(dir, tests, testDataExpectedDir, testOnlyVerified, tes
             }
             else {
                 if (file.endsWith(".d.ts")) {
-                    var expectedFilePath = replaceExtension(path.substr(testDataDir.length), DTS_EXT, KT_EXT);
+                    var expectedFilePath = replaceExtension(path.substr(testDataDir.length), TS_EXT, KT_EXT);
                     tests[file] = generateTestFor(path, testDataExpectedDir + expectedFilePath, testOnlyVerified);
                 }
             }
