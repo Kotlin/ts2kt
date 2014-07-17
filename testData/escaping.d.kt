@@ -13,7 +13,7 @@ module
 public trait `This` {
     public var `when`: String
     public var `type`: Number
-    public fun `in`(`object`: Foo): Unit
+    public fun `in`(`object`: Foo)
     public class object {
         public var `$foo`: Boolean = noImpl
         public fun `bar$`(`ba$z`: Number): Unit = noImpl

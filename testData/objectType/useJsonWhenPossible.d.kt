@@ -13,7 +13,7 @@ public object Module {
 native
 public trait `T$0` {
     public fun get(s: Number): Any
-    public fun set(s: Number, value: Any): Unit
+    public fun set(s: Number, value: Any)
 }
 native
 public trait Foo {

@@ -5,7 +5,7 @@ public object Foo {
     module
     public object Bar {
         public trait A {
-            public fun baz(): Unit
+            public fun baz()
         }
         public class B {
             public fun boo(): Unit = noImpl

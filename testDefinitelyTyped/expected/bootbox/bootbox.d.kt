@@ -25,22 +25,22 @@ public trait BootboxOption {
 }
 native
 public trait BootboxStatic {
-    public fun alert(message: String, callback: () -> Unit): Unit
-    public fun alert(message: String, customButtonText: String? = null, callback: (() -> Unit)? = null): Unit
-    public fun confirm(message: String, callback: (result: Boolean) -> Unit): Unit
-    public fun confirm(message: String, cancelButtonText: String? = null, confirmButtonText: String? = null, callback: ((result: Boolean) -> Unit)? = null): Unit
-    public fun prompt(message: String, callback: (result: String) -> Unit, defaultValue: String? = null): Unit
-    public fun prompt(message: String, cancelButtonText: String? = null, confirmButtonText: String? = null, callback: ((result: String) -> Unit)? = null, defaultValue: String? = null): Unit
-    public fun dialog(message: String, handlers: Array<BootboxHandler>, options: Any? = null): Unit
-    public fun dialog(message: String, handler: BootboxHandler): Unit
-    public fun dialog(message: String): Unit
-    public fun hideAll(): Unit
-    public fun animate(shouldAnimate: Boolean): Unit
-    public fun backdrop(backdropValue: String): Unit
-    public fun classes(customCssClasses: String): Unit
-    public fun setIcons(icons: BootboxIcons): Unit
-    public fun setLocale(localeName: String): Unit
-    public fun addLocale(localeName: String, translations: BootboxLocale): Unit
+    public fun alert(message: String, callback: () -> Unit)
+    public fun alert(message: String, customButtonText: String? = null, callback: (() -> Unit)? = null)
+    public fun confirm(message: String, callback: (result: Boolean) -> Unit)
+    public fun confirm(message: String, cancelButtonText: String? = null, confirmButtonText: String? = null, callback: ((result: Boolean) -> Unit)? = null)
+    public fun prompt(message: String, callback: (result: String) -> Unit, defaultValue: String? = null)
+    public fun prompt(message: String, cancelButtonText: String? = null, confirmButtonText: String? = null, callback: ((result: String) -> Unit)? = null, defaultValue: String? = null)
+    public fun dialog(message: String, handlers: Array<BootboxHandler>, options: Any? = null)
+    public fun dialog(message: String, handler: BootboxHandler)
+    public fun dialog(message: String)
+    public fun hideAll()
+    public fun animate(shouldAnimate: Boolean)
+    public fun backdrop(backdropValue: String)
+    public fun classes(customCssClasses: String)
+    public fun setIcons(icons: BootboxIcons)
+    public fun setLocale(localeName: String)
+    public fun addLocale(localeName: String, translations: BootboxLocale)
 }
 native
 public var bootbox: BootboxStatic = noImpl

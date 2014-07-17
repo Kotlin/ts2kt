@@ -3,7 +3,7 @@ package withMembers
 module
 public object Foo {
     public trait A {
-        public fun baz(): Unit
+        public fun baz()
     }
     public class B {
         public fun boo(): Unit = noImpl

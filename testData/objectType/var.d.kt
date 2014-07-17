@@ -12,7 +12,7 @@ public trait `T$1` {
     public var show: (overrideChecks: Boolean) -> Unit
     public fun invoke(foo: `T$0`): Any
     public fun get(s: String): Any
-    public fun set(s: String, value: Any): Unit
+    public fun set(s: String, value: Any)
 }
 native
 public var foo: `T$1` = noImpl

@@ -7,7 +7,7 @@ public trait `T$0` {
     public var boo: String
     public var show: (overrideChecks: Boolean) -> Unit
     public fun get(s: String): Any
-    public fun set(s: String, value: Any): Unit
+    public fun set(s: String, value: Any)
 }
 native
 public var foo: `T$0` = noImpl
@@ -20,7 +20,7 @@ public trait `T$1` {
     public var boo: String
     public var show: (flag: Boolean) -> Unit
     public fun get(s: String): Number
-    public fun set(s: String, value: Number): Unit
+    public fun set(s: String, value: Number)
 }
 native
 public var baz: `T$1` = noImpl

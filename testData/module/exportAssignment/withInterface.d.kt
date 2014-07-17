@@ -3,7 +3,7 @@ package withInterface
 module
 public object LazyJS {
     public trait LazyStatic {
-        public fun foo(a: Number): Unit
+        public fun foo(a: Number)
     }
     public var a: Any = noImpl
 }

@@ -37,8 +37,8 @@ public trait appFrameworkStatic {
     public fun invoke(`object`: Any): appFrameworkCollection
     public fun `is$`(obj: Any): Boolean
     public fun map(collection: Array<Any>, fn: (item: Any, index: Number) -> Any): Array<Any>
-    public fun each(collection: Array<Any>, fn: (index: Number, item: Any) -> Any): Unit
-    public fun each(collection: Any, fn: (key: String, value: Any) -> Any): Unit
+    public fun each(collection: Array<Any>, fn: (index: Number, item: Any) -> Any)
+    public fun each(collection: Any, fn: (key: String, value: Any) -> Any)
     public fun extend(target: Any, vararg sources: Any): Any
     public fun isArray(`object`: Any): Boolean
     public fun isFunction(`object`: Any): Boolean
@@ -61,14 +61,14 @@ public trait appFrameworkStatic {
     public fun create(`type`: String, params: Any? = null): appFrameworkCollection
     public fun query(selector: String, context: Any? = null): appFrameworkCollection
     public fun Event(`type`: String, props: Any): Any
-    public fun bind(`object`: Any, event: String, fn: Function): Unit
-    public fun trigger(`object`: Any, event: String, args: Array<Any>? = null): Unit
-    public fun unbind(`object`: Any, event: String, fn: Function): Unit
-    public fun proxy(callback: Function, context: Any): Unit
-    public fun cleanUpContent(node: HTMLElement, itself: Boolean? = null, kill: Boolean? = null): Unit
-    public fun asap(callback: Function, context: Any? = null, args: Array<Any>? = null): Unit
-    public fun parseJS(content: String): Unit
-    public fun parseJS(content: HTMLElement): Unit
+    public fun bind(`object`: Any, event: String, fn: Function)
+    public fun trigger(`object`: Any, event: String, args: Array<Any>? = null)
+    public fun unbind(`object`: Any, event: String, fn: Function)
+    public fun proxy(callback: Function, context: Any)
+    public fun cleanUpContent(node: HTMLElement, itself: Boolean? = null, kill: Boolean? = null)
+    public fun asap(callback: Function, context: Any? = null, args: Array<Any>? = null)
+    public fun parseJS(content: String)
+    public fun parseJS(content: HTMLElement)
     public var os: `T$0`
     public var feat: `T$1`
 }
@@ -91,7 +91,7 @@ public trait appFrameworkCollection {
     public var length: Number
     public fun map(fn: (index: Number, item: Any) -> Any): appFrameworkCollection
     public fun each(fn: (index: Number, item: Any) -> Any): appFrameworkCollection
-    public fun forEach(fn: (item: Any, index: Number) -> Any): Unit
+    public fun forEach(fn: (item: Any, index: Number) -> Any)
     public fun ready(fn: Function): appFrameworkStatic
     public fun find(selector: String): appFrameworkCollection
     public fun html(): String
@@ -135,7 +135,7 @@ public trait appFrameworkCollection {
     public fun prependTo(target: Any): appFrameworkCollection
     public fun prepend(content: Any): appFrameworkCollection
     public fun insertBefore(target: Any): appFrameworkCollection
-    public fun insertAfter(target: Any): Unit
+    public fun insertAfter(target: Any)
     public fun get(): Array<HTMLElement>
     public fun get(index: Number): HTMLElement
     public fun offset(): `T$2`

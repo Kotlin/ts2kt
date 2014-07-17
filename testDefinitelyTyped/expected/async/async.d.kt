@@ -6,39 +6,39 @@ public trait AsyncMultipleResultsCallback<T> {
 }
 native
 public trait AsyncSingleResultCallback<T> {
-    public fun invoke(err: Error, result: T): Unit
+    public fun invoke(err: Error, result: T)
 }
 native
 public trait AsyncTimesCallback<T> {
-    public fun invoke(n: Number, callback: AsyncMultipleResultsCallback<T>): Unit
+    public fun invoke(n: Number, callback: AsyncMultipleResultsCallback<T>)
 }
 native
 public trait AsyncIterator<T, R> {
-    public fun invoke(item: T, callback: AsyncSingleResultCallback<R>): Unit
+    public fun invoke(item: T, callback: AsyncSingleResultCallback<R>)
 }
 native
 public trait AsyncMemoIterator<T, R> {
-    public fun invoke(memo: R, item: T, callback: AsyncSingleResultCallback<R>): Unit
+    public fun invoke(memo: R, item: T, callback: AsyncSingleResultCallback<R>)
 }
 native
 public trait AsyncWorker<T> {
-    public fun invoke(task: T, callback: Function): Unit
+    public fun invoke(task: T, callback: Function)
 }
 native
 public trait AsyncQueue<T> {
     public fun length(): Number
     public var concurrency: Number
-    public fun push(task: T, callback: AsyncMultipleResultsCallback<T>? = null): Unit
-    public fun push(task: Array<T>, callback: AsyncMultipleResultsCallback<T>? = null): Unit
+    public fun push(task: T, callback: AsyncMultipleResultsCallback<T>? = null)
+    public fun push(task: Array<T>, callback: AsyncMultipleResultsCallback<T>? = null)
     public var saturated: AsyncMultipleResultsCallback<T>
     public var empty: AsyncMultipleResultsCallback<T>
     public var drain: AsyncMultipleResultsCallback<T>
 }
 native
 public trait Async {
-    public fun forEach<T, R>(arr: Array<T>, iterator: AsyncIterator<T, R>, callback: AsyncMultipleResultsCallback<R>): Unit
-    public fun forEachSeries<T, R>(arr: Array<T>, iterator: AsyncIterator<T, R>, callback: AsyncMultipleResultsCallback<R>): Unit
-    public fun forEachLimit<T, R>(arr: Array<T>, limit: Number, iterator: AsyncIterator<T, R>, callback: AsyncMultipleResultsCallback<R>): Unit
+    public fun forEach<T, R>(arr: Array<T>, iterator: AsyncIterator<T, R>, callback: AsyncMultipleResultsCallback<R>)
+    public fun forEachSeries<T, R>(arr: Array<T>, iterator: AsyncIterator<T, R>, callback: AsyncMultipleResultsCallback<R>)
+    public fun forEachLimit<T, R>(arr: Array<T>, limit: Number, iterator: AsyncIterator<T, R>, callback: AsyncMultipleResultsCallback<R>)
     public fun map<T, R>(arr: Array<T>, iterator: AsyncIterator<T, R>, callback: AsyncMultipleResultsCallback<R>): Any
     public fun mapSeries<T, R>(arr: Array<T>, iterator: AsyncIterator<T, R>, callback: AsyncMultipleResultsCallback<R>): Any
     public fun filter<T>(arr: Array<T>, iterator: AsyncIterator<T, Boolean>, callback: AsyncMultipleResultsCallback<T>): Any
@@ -61,27 +61,27 @@ public trait Async {
     public fun all<T>(arr: Array<T>, iterator: AsyncIterator<T, Boolean>, callback: (result: Boolean) -> Any): Any
     public fun concat<T, R>(arr: Array<T>, iterator: AsyncIterator<T, Array<R>>, callback: AsyncMultipleResultsCallback<R>): Any
     public fun concatSeries<T, R>(arr: Array<T>, iterator: AsyncIterator<T, Array<R>>, callback: AsyncMultipleResultsCallback<R>): Any
-    public fun series<T>(tasks: Array<T>, callback: AsyncMultipleResultsCallback<T>? = null): Unit
-    public fun series<T>(tasks: T, callback: AsyncMultipleResultsCallback<T>? = null): Unit
-    public fun parallel<T>(tasks: Array<T>, callback: AsyncMultipleResultsCallback<T>? = null): Unit
-    public fun parallel<T>(tasks: T, callback: AsyncMultipleResultsCallback<T>? = null): Unit
-    public fun parallelLimit<T>(tasks: Array<T>, limit: Number, callback: AsyncMultipleResultsCallback<T>? = null): Unit
-    public fun parallelLimit<T>(tasks: T, limit: Number, callback: AsyncMultipleResultsCallback<T>? = null): Unit
-    public fun whilst(test: Function, fn: Function, callback: Function): Unit
-    public fun until(test: Function, fn: Function, callback: Function): Unit
-    public fun waterfall<T>(tasks: Array<T>, callback: AsyncMultipleResultsCallback<T>? = null): Unit
-    public fun waterfall<T>(tasks: T, callback: AsyncMultipleResultsCallback<T>? = null): Unit
+    public fun series<T>(tasks: Array<T>, callback: AsyncMultipleResultsCallback<T>? = null)
+    public fun series<T>(tasks: T, callback: AsyncMultipleResultsCallback<T>? = null)
+    public fun parallel<T>(tasks: Array<T>, callback: AsyncMultipleResultsCallback<T>? = null)
+    public fun parallel<T>(tasks: T, callback: AsyncMultipleResultsCallback<T>? = null)
+    public fun parallelLimit<T>(tasks: Array<T>, limit: Number, callback: AsyncMultipleResultsCallback<T>? = null)
+    public fun parallelLimit<T>(tasks: T, limit: Number, callback: AsyncMultipleResultsCallback<T>? = null)
+    public fun whilst(test: Function, fn: Function, callback: Function)
+    public fun until(test: Function, fn: Function, callback: Function)
+    public fun waterfall<T>(tasks: Array<T>, callback: AsyncMultipleResultsCallback<T>? = null)
+    public fun waterfall<T>(tasks: T, callback: AsyncMultipleResultsCallback<T>? = null)
     public fun queue<T>(worker: AsyncWorker<T>, concurrency: Number): AsyncQueue<T>
-    public fun auto(tasks: Any, callback: AsyncMultipleResultsCallback<Any>? = null): Unit
+    public fun auto(tasks: Any, callback: AsyncMultipleResultsCallback<Any>? = null)
     public fun iterator(tasks: Array<Function>): Function
-    public fun apply(fn: Function, vararg arguments: Any): Unit
-    public fun nextTick<T>(callback: Function): Unit
-    public fun times<T>(n: Number, callback: AsyncTimesCallback<T>): Unit
-    public fun timesSeries<T>(n: Number, callback: AsyncTimesCallback<T>): Unit
+    public fun apply(fn: Function, vararg arguments: Any)
+    public fun nextTick<T>(callback: Function)
+    public fun times<T>(n: Number, callback: AsyncTimesCallback<T>)
+    public fun timesSeries<T>(n: Number, callback: AsyncTimesCallback<T>)
     public fun memoize(fn: Function, hasher: Function? = null): Function
     public fun unmemoize(fn: Function): Function
-    public fun log(fn: Function, vararg arguments: Any): Unit
-    public fun dir(fn: Function, vararg arguments: Any): Unit
+    public fun log(fn: Function, vararg arguments: Any)
+    public fun dir(fn: Function, vararg arguments: Any)
     public fun noConflict(): Async
 }
 native

@@ -14,7 +14,7 @@ public object BgiFrame {
     public trait IBgiframe {
         public var s: ISettings
         public fun createIframe(): HTMLElement
-        public fun fire(element: HTMLElement): Unit
+        public fun fire(element: HTMLElement)
         public fun getIframe(element: HTMLElement): HTMLElement
         public fun prop(n: Any): String
     }

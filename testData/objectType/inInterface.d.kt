@@ -19,7 +19,7 @@ public trait `T$2` {
 }
 native
 public trait Foo {
-    public fun withObjectTypeParam(opt: `T$0`): Unit
+    public fun withObjectTypeParam(opt: `T$0`)
     public fun returnsObjectType(): `T$1`
     public var foo: `T$2`
 }

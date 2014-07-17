@@ -16,10 +16,8 @@
 
 package ts2kt.kotlin.ast
 
-import ts2kt.utils.listOf
-import ts2kt.utils.join
-import ts2kt.utils.assert
-import ts2kt.utils.trimLeading
+import ts2kt.utils.*
+import ts2kt.UNIT
 
 val MODULE = "module"
 val NATIVE = "native"
@@ -180,12 +178,12 @@ class CallSignature(
         val typeParams: List<TypeParam>?,
         val returnType: TypeAnnotation
 ) : Node() {
-    override fun stringify(): String = stringify(withTypeParams = true)
+    override fun stringify(): String = stringify(withTypeParams = true, printUnitReturnType = true)
 
-    fun stringify(withTypeParams: Boolean): String =
+    fun stringify(withTypeParams: Boolean, printUnitReturnType: Boolean): String =
             (if (withTypeParams) stringifyTypeParams() else  "") +
             params.join(start = "(", end = ")") +
-            returnType
+            returnType.stringify(printUnitType = printUnitReturnType)
 
     fun stringifyTypeParams(withSpaceAfter: Boolean = false) =
             typeParams?.join(startWithIfNotEmpty = "<", endWithIfNotEmpty = ">" + if (withSpaceAfter) " " else "") ?:  ""
@@ -204,7 +202,7 @@ class Function(
             // TODO refactor this
             (if (extendsType == null) "" else callSignature.stringifyTypeParams(withSpaceAfter = true) + extendsType.toString() + "." ) +
             name +
-            callSignature.stringify(withTypeParams = extendsType == null) +
+            callSignature.stringify(withTypeParams = extendsType == null, printUnitReturnType = needsNoImpl) +
             if (needsNoImpl) EQ_NO_IMPL else ""
 }
 
@@ -230,7 +228,7 @@ class Variable(
             (typeParams?.join(", ", startWithIfNotEmpty = "<", endWithIfNotEmpty = "> ") ?: "") +
             (if (extendsType == null) "" else extendsType.toString() + "." ) +
             $name +
-            `type`.stringify() +
+            `type`.stringify(printUnitType = !needsNoImpl) +
             if (needsNoImpl) EQ_NO_IMPL else ""
 }
 
@@ -249,10 +247,17 @@ class TypeAnnotation(
         val isLambda: Boolean = false,
         val isVararg: Boolean = false
 ) : Named {
-    override fun stringify(): String =
-            ": " +
-            (if (isLambda && isNullable) "(" else "") +
-            name +
-            (if (isLambda && isNullable) ")" else "") +
-            (if (isNullable) "?" else "")
+    override fun stringify(): String = stringify(printUnitType = true)
+
+    fun stringify(printUnitType: Boolean): String {
+        if (!printUnitType && isUnit()) return ""
+
+        return  ": " +
+                (if (isLambda && isNullable) "(" else "") +
+                name +
+                (if (isLambda && isNullable) ")" else "") +
+                (if (isNullable) "?" else "")
+    }
+
+    fun isUnit() = name == UNIT && !isNullable && !isLambda && !isVararg
 }

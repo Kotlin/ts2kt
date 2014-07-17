@@ -3,7 +3,7 @@ package Arbiter
 module
 public object ArbiterDef {
     public trait SubscribeHandler {
-        public fun invoke(data: Any, message: String, subscriber_context: Any): Unit
+        public fun invoke(data: Any, message: String, subscriber_context: Any)
     }
     public trait SubscribeOptions {
         public var priority: Number? = noImpl
