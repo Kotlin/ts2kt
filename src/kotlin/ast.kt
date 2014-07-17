@@ -242,20 +242,14 @@ class TypeParam(override var name: String, val upperBound: String? = null) : Nam
     override fun stringify(): String = "$name" + if(upperBound == null) "" else " : $upperBound"
 }
 
-class TypeAnnotation(override var name: String,
-                     // TODO move to isNullable and isLambda to `Type` class
-                     val isNullable: Boolean = false,
-                     val isLambda: Boolean = false,
-                     val isVararg: Boolean = false
+class TypeAnnotation(
+        override var name: String,
+        // TODO move to isNullable and isLambda to `Type` class
+        val isNullable: Boolean = false,
+        val isLambda: Boolean = false,
+        val isVararg: Boolean = false
 ) : Named {
-    // TODO: drop this temporary fix of indentation
-    override fun stringify(): String {
-        val result = stringify_()
-        // Add space to the end when results ends with '}' to avoid to detect a wrong indentation
-        return result + if (result.endsWith("}")) " " else ""
-    }
-
-    fun stringify_(): String =
+    override fun stringify(): String =
             ": " +
             (if (isLambda && isNullable) "(" else "") +
             name +
