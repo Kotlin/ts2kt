@@ -73,16 +73,26 @@ class TypeScriptToKotlinWalker(
 
     val typeMapper = typeMapper ?: ObjectTypeToKotlinTypeMapperImpl(defaultAnnotations, declarations)
 
-    fun addModule(name: String, members: List<Member>, additionalAnnotations: List<Annotation> = listOf()) {
+    fun addModule(qualifier: List<String>, name: String, members: List<Member>, additionalAnnotations: List<Annotation> = listOf()) {
         val annotations = DEFAULT_MODULE_ANNOTATION + additionalAnnotations
-        declarations.add(Classifier(ClassKind.OBJECT, name, listOf(), listOf(), listOf(), members, annotations))
+        val module = Classifier(ClassKind.OBJECT, name, listOf(), listOf(), listOf(), members, annotations)
+
+        var nestedModules = module
+
+        var i = qualifier.size()
+        while (i --> 0) {
+            nestedModules = Classifier(ClassKind.OBJECT, qualifier[i], listOf(), listOf(), listOf(), listOf(nestedModules), annotations)
+        }
+
+        declarations.add(nestedModules)
     }
 
-    fun isShouldSkip(node: SyntaxNode) = requiredModifier != null && !node.modifiers.contains(requiredModifier)
+    fun getAdditionalAnnotations(node: SyntaxNode): List<Annotation> {
+        val isShouldSkip = requiredModifier == DeclareKeyword && !node.modifiers.contains(requiredModifier)
+        if (isShouldSkip) return DEFAULT_FAKE_ANNOTATION
 
-
-    fun getAdditionalAnnotations(node: SyntaxNode): List<Annotation> =
-            if (isShouldSkip(node)) DEFAULT_FAKE_ANNOTATION else NO_ANNOTATIONS
+        return NO_ANNOTATIONS
+    }
 
     override fun visitVariableStatement(node: VariableStatementSyntax) {
         val additionalAnnotations = getAdditionalAnnotations(node)
@@ -137,7 +147,17 @@ class TypeScriptToKotlinWalker(
     override fun visitModuleDeclaration(node: ModuleDeclarationSyntax) {
         val additionalAnnotations = getAdditionalAnnotations(node)
 
-        val name = node.moduleName?.getText() ?: node.stringLiteral?.getText() ?: throw Exception("Anonimus module")
+        val name = when(node.moduleName) {
+            null -> { // TODO w/o braces compiler generated wrong code
+                node.stringLiteral?.getText() ?: throw Exception("Anonimus module")
+            }
+            is QualifiedNameSyntax -> {
+                node.moduleName.right.getText()
+            }
+            else  -> {
+                node.moduleName.getText()
+            }
+        }
 
         val tr =
                 TypeScriptToKotlinWalker(
@@ -186,7 +206,26 @@ class TypeScriptToKotlinWalker(
             }
         }
 
-        addModule(name, tr.declarations, additionalAnnotations = additionalAnnotations)
+        fun INameSyntax.getQualifier(qualifier: MutableList<String>) {
+            if (this is QualifiedNameSyntax) {
+                this.left.getQualifier(qualifier)
+                qualifier.add(this.right.getText())
+            }
+            else {
+                qualifier.add(this.getText())
+            }
+        }
+
+        fun INameSyntax?.getQualifier(): List<String> {
+            if (this !is QualifiedNameSyntax) return listOf()
+
+            val result = ArrayList<String>()
+            this.left.getQualifier(result)
+            return result
+        }
+        val qualifier = node.moduleName.getQualifier()
+
+        addModule(qualifier, name, tr.declarations, additionalAnnotations = additionalAnnotations)
 
         exportedByAssignment.putAll(tr.exportedByAssignment)
     }
@@ -204,7 +243,7 @@ class TypeScriptToKotlinWalker(
 
     fun finish() {
         fixExportAssignments()
-        mergeDeclarationsWithSameNameIfNeed()
+        declarations.mergeDeclarationsWithSameNameIfNeed()
     }
 
     fun fixExportAssignments() {
@@ -248,8 +287,8 @@ class TypeScriptToKotlinWalker(
         }
     }
 
-    fun mergeDeclarationsWithSameNameIfNeed() {
-        declarations.merge({ it !is Function }, COMPARE_BY_NAME) { a, b ->
+    fun MutableList<Member>.mergeDeclarationsWithSameNameIfNeed() {
+        this.merge({ it !is Function }, COMPARE_BY_NAME) { a, b ->
             val result =
                     when (a) {
                         is Classifier ->
@@ -304,7 +343,7 @@ class TypeScriptToKotlinWalker(
             val newTrait = Classifier(ClassKind.TRAIT, a.name, a.paramsOfConstructors, a.typeParams, a.parents, a.members, a.annotations)
 
             val varTypeName = b.`type`.name
-            val delegation = listOf(Type("${varTypeName} by noImpl: ${varTypeName}"))
+            val delegation = listOf(Type("${varTypeName} by $NO_IMPL: ${varTypeName}"))
 
             // TODO drop hacks
             val classObject = Classifier(ClassKind.CLASS_OBJECT, "", listOf(), listOf(), delegation, listOf(), listOf())
@@ -352,6 +391,7 @@ class TypeScriptToKotlinWalker(
         else {
             // TODO drop hack
             (classObject.members as ArrayList).addAll(b.members)
+            (classObject.members as ArrayList).mergeDeclarationsWithSameNameIfNeed()
         }
 
         return a
@@ -360,6 +400,7 @@ class TypeScriptToKotlinWalker(
     fun mergeClassifierMembers(a: Classifier, b: Classifier): Classifier {
         // TODO drop hack
         (a.members as ArrayList).addAll(b.members)
+        (a.members as ArrayList).mergeDeclarationsWithSameNameIfNeed()
         return a
     }
 }

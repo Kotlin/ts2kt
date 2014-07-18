@@ -411,7 +411,7 @@ abstract class ParenthesizedArrowFunctionExpressionSyntax(public val callSignatu
 }
 
 [suppress("UNUSED_PARAMETER")]
-native
+native("typescript.QualifiedNameSyntax")
 abstract class QualifiedNameSyntax(public val left: INameSyntax,
                                    public val dotToken: ISyntaxToken,
                                    public val right: ISyntaxToken,

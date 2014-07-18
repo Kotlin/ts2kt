@@ -2,6 +2,24 @@ package backbone-relational
 
 module
 public object Backbone {
+    public class RelationalModel : Model() {
+        public var relations: Any = noImpl
+        public var subModelTypes: Any = noImpl
+        public var subModelTypeAttribute: Any = noImpl
+        public fun initializeRelations(options: Any): Unit = noImpl
+        public fun updateRelations(options: Any): Unit = noImpl
+        public fun queue(func: Any): Unit = noImpl
+        public fun processQueue(): Unit = noImpl
+        public fun getRelation(name: String): Relation = noImpl
+        public fun getRelations(): Array<Relation> = noImpl
+        public fun fetchRelated(key: String, options: Any? = null, update: Boolean? = null): Any = noImpl
+        public fun toJSON(): Any = noImpl
+        public fun setup(): Unit = noImpl
+        public fun build(attributes: Any, options: Any? = null): Unit = noImpl
+        public fun findOrCreate(attributes: String, options: Any? = null): Unit = noImpl
+        public fun findOrCreate(attributes: Number, options: Any? = null): Unit = noImpl
+        public fun findOrCreate(attributes: Any, options: Any? = null): Unit = noImpl
+    }
     public class Relation : Model() {
         public var options: Any = noImpl
         public var instance: Any = noImpl

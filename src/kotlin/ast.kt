@@ -26,7 +26,8 @@ val FAKE = "fake"
 val FAKE_ANNOTATION = Annotation(FAKE)
 val DEFAULT_FAKE_ANNOTATION = listOf(FAKE_ANNOTATION)
 
-private val EQ_NO_IMPL = " = noImpl"
+val NO_IMPL = "noImpl"
+private val EQ_NO_IMPL = " = $NO_IMPL"
 private val PUBLIC = "public"
 private val VAR = "var"
 private val VAL = "val"
