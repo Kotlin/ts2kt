@@ -5537,7 +5537,7 @@ var TypeScript;
       if (kind >= 15 /* FirstFixedWidth */) {
         if (leadingTriviaInfo === 0) {
           if (trailingTriviaInfo === 0) {
-            return new TypeScript.Syntax.FixedWidthTokenWithNoTrivia(kind);
+            return new TypeScript.Syntax.FixedWidthTokenWithNoTrivia(kind, fullStart);
           } else {
             return new TypeScript.Syntax.FixedWidthTokenWithTrailingTrivia(this.text, fullStart, kind, trailingTriviaInfo);
           }
@@ -18215,11 +18215,16 @@ var TypeScript;
     Syntax.VariableWidthTokenWithLeadingAndTrailingTrivia = VariableWidthTokenWithLeadingAndTrailingTrivia;
 
     var FixedWidthTokenWithNoTrivia = (function () {
-      function FixedWidthTokenWithNoTrivia(kind) {
+      function FixedWidthTokenWithNoTrivia(kind, fullStart) {
         this.tokenKind = kind;
+        this._fullStart = fullStart;
       }
+      FixedWidthTokenWithNoTrivia.prototype.start = function () {
+        return this._fullStart;
+      };
+
       FixedWidthTokenWithNoTrivia.prototype.clone = function () {
-        return new FixedWidthTokenWithNoTrivia(this.tokenKind);
+        return new FixedWidthTokenWithNoTrivia(this.tokenKind, this._fullStart);
       };
 
       FixedWidthTokenWithNoTrivia.prototype.isNode = function () {
@@ -18782,7 +18787,7 @@ var TypeScript;
     function fixedWidthToken(sourceText, fullStart, kind, leadingTriviaInfo, trailingTriviaInfo) {
       if (leadingTriviaInfo === 0) {
         if (trailingTriviaInfo === 0) {
-          return new FixedWidthTokenWithNoTrivia(kind);
+          return new FixedWidthTokenWithNoTrivia(kind, fullStart);
         } else {
           return new FixedWidthTokenWithTrailingTrivia(sourceText, fullStart, kind, trailingTriviaInfo);
         }
@@ -18827,13 +18832,13 @@ var TypeScript;
 (function (TypeScript) {
   (function (Syntax) {
     function realizeToken(token) {
-      return new RealizedToken(token.tokenKind, token.leadingTrivia(), token.text(), token.value(), token.valueText(), token.trailingTrivia());
+      return new RealizedToken(token.tokenKind, token.leadingTrivia(), token.text(), token.value(), token.valueText(), token.trailingTrivia(), token.start && token.start());
     }
     Syntax.realizeToken = realizeToken;
 
     function convertToIdentifierName(token) {
       TypeScript.Debug.assert(TypeScript.SyntaxFacts.isAnyKeyword(token.tokenKind));
-      return new RealizedToken(11 /* IdentifierName */, token.leadingTrivia(), token.text(), token.text(), token.text(), token.trailingTrivia());
+      return new RealizedToken(11 /* IdentifierName */, token.leadingTrivia(), token.text(), token.text(), token.text(), token.trailingTrivia(), token.start && token.start());
     }
     Syntax.convertToIdentifierName = convertToIdentifierName;
 
@@ -19194,18 +19199,25 @@ var TypeScript;
     Syntax.emptyToken = emptyToken;
 
     var RealizedToken = (function () {
-      function RealizedToken(tokenKind, leadingTrivia, text, value, valueText, trailingTrivia) {
+      function RealizedToken(tokenKind, leadingTrivia, text, value, valueText, trailingTrivia, start) {
+          if (start == null) {
+              1
+          }
         this.tokenKind = tokenKind;
         this._leadingTrivia = leadingTrivia;
         this._text = text;
         this._value = value;
         this._valueText = valueText;
         this._trailingTrivia = trailingTrivia;
+        this._start = start;
       }
-      RealizedToken.prototype.clone = function () {
-        return new RealizedToken(this.tokenKind, this._leadingTrivia, this._text, this._value, this._valueText, this._trailingTrivia);
+      // HACK for ts2kt
+      RealizedToken.prototype.start = function () {
+        return this._start;
       };
-
+      RealizedToken.prototype.clone = function () {
+        return new RealizedToken(this.tokenKind, this._leadingTrivia, this._text, this._value, this._valueText, this._trailingTrivia, this._start);
+      };
       RealizedToken.prototype.kind = function () {
         return this.tokenKind;
       };
@@ -19332,11 +19344,11 @@ var TypeScript;
       };
 
       RealizedToken.prototype.withLeadingTrivia = function (leadingTrivia) {
-        return new RealizedToken(this.tokenKind, leadingTrivia, this._text, this._value, this._valueText, this._trailingTrivia);
+        return new RealizedToken(this.tokenKind, leadingTrivia, this._text, this._value, this._valueText, this._trailingTrivia, this._start);
       };
 
       RealizedToken.prototype.withTrailingTrivia = function (trailingTrivia) {
-        return new RealizedToken(this.tokenKind, this._leadingTrivia, this._text, this._value, this._valueText, trailingTrivia);
+        return new RealizedToken(this.tokenKind, this._leadingTrivia, this._text, this._value, this._valueText, trailingTrivia, this._start);
       };
       return RealizedToken;
     })();
