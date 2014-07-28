@@ -38,6 +38,8 @@ val SHOULD_BE_ESCAPED =
               "in", "is", "null", "object", "package", "return", "super", "this", "This", "throw",
               "trait", "true", "try", "type", "val", "var", "when", "while")
 
+val NOT_OVERRIDE: (PositionedElement) -> Boolean = { false }
+
 fun String.escapeIfNeed(): String {
     return if (this in SHOULD_BE_ESCAPED || this.contains("$")) {
         "`$this`"

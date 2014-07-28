@@ -23,6 +23,7 @@ import ts2kt.utils.replaceAll
 import ts2kt.utils.sort
 import ts2kt.utils.join
 import ts2kt.kotlin.ast.*
+import typescript.PositionedElement
 
 trait ObjectTypeToKotlinTypeMapper {
     fun getKotlinTypeNameForObjectType(objectType: ObjectTypeSyntax): String
@@ -44,7 +45,7 @@ class ObjectTypeToKotlinTypeMapperImpl(
     }
 
     override fun getKotlinTypeNameForObjectType(objectType: ObjectTypeSyntax): String {
-        val translator = TsInterfaceToKt(annotations = defaultAnnotations, typeMapper = this)
+        val translator = TsInterfaceToKt(annotations = defaultAnnotations, typeMapper = this, isOverride = NOT_OVERRIDE, isOverrideProperty = NOT_OVERRIDE)
 
         translator.visitSeparatedList(objectType.typeMembers)
 

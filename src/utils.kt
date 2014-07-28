@@ -207,6 +207,14 @@ fun <T> Array<T>.all(f: (T) -> Boolean): Boolean {
     return true
 }
 
+fun <T> Array<T>.any(f: (T) -> Boolean): Boolean {
+    for (e in this) {
+        if (f(e)) return true
+    }
+
+    return false
+}
+
 // JS Array methods
 
 [suppress("UNUSED_PARAMETER")]
@@ -255,6 +263,7 @@ fun lazy<T>(initializer: () -> T) = LazyVal(initializer)
 class LazyVal<T : Any>(private val initializer: () -> T) {
     private var value: T? = null
 
+    [suppress("UNUSED_PARAMETER")]
     fun get(thisRef: Any?, desc: PropertyMetadata): T {
         var result = value
 

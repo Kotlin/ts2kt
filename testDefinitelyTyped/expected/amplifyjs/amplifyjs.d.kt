@@ -19,7 +19,7 @@ public trait amplifyDecoders {
 }
 native
 public trait amplifyAjaxSettings : JQueryAjaxSettings {
-    public var cache: Any? = noImpl
+    override var cache: Any? = noImpl
     public var decoder: Any? = noImpl
 }
 native

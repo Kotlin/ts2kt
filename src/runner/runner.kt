@@ -19,6 +19,7 @@ package ts2kt
 import js.debug.console
 import typescript.typescript
 import ts2kt.utils.*
+import typescript.PositionedElement
 
 [suppress("UNUSED_PARAMETER")]
 native
@@ -58,10 +59,47 @@ fun translate(srcPath: String): String {
     val srcName = path.basename(srcPath, TYPESCRIPT_DEFINITION_FILE_EXT)
     val srcResolvedPath = batch.resolvePath(srcPath)
 
-    val typeScriptToKotlinWalker = TypeScriptToKotlinWalker(srcName, isOwnDeclaration = {
-        val resolveResult = compiler.resolvePosition(it.start(), compiler.getDocument(srcResolvedPath)!!)
-        resolveResult.symbol.getDeclarations().all { it.scriptName == srcResolvedPath }
-    });
+    fun isAnyMember(name: String, signature: typescript.PullSignatureSymbol): Boolean = when (name) {
+                "equals" ->
+                    signature.parameters.size == 1 && signature.parameters[0].`type`.name == "any"
+                // TODO check return type ???
+                "hashCode", "toString" ->
+                    signature.parameters.size == 0
+                else ->
+                    false
+            }
+
+    fun getOverrideChecker(isOverridesBy: typescript.PullSymbol.(signature: typescript.PullSignatureSymbol) -> Boolean): (PositionedElement) -> Boolean {
+        return {
+            val resolveResult = compiler.resolvePosition(it.start(), compiler.getDocument(srcResolvedPath)!!)
+            val signature = resolveResult.candidateSignature
+
+            val name = resolveResult.symbol.name
+
+            val f: (typescript.PullTypeSymbol) -> Boolean = {
+                    it.findMember(name)?.isOverridesBy(signature) ?: false
+                }
+
+            isAnyMember(name,  signature) ||
+                resolveResult.enclosingScopeSymbol.getExtendedTypes().any(f) ||
+                resolveResult.enclosingScopeSymbol.getImplementedTypes().any(f)
+        }
+    }
+
+    val typeScriptToKotlinWalker = TypeScriptToKotlinWalker(srcName,
+            isOwnDeclaration = {
+                val resolveResult = compiler.resolvePosition(it.start(), compiler.getDocument(srcResolvedPath)!!)
+                resolveResult.symbol.getDeclarations().all { it.scriptName == srcResolvedPath }
+            },
+            isOverride = getOverrideChecker { signature ->
+                this.`type`.getCallSignatures().any {
+                    // TODO can use share it with many checks?
+                    val pullTypeResolutionContext = typescript.PullTypeResolutionContext()
+                    compiler.resolver.signatureIsAssignableToTarget(signature, it, pullTypeResolutionContext)
+                }
+            },
+            isOverrideProperty = getOverrideChecker { true }
+    );
 
     val tsTree = compiler.getSyntaxTree(srcResolvedPath);
     tsTree.sourceUnit().accept(typeScriptToKotlinWalker)

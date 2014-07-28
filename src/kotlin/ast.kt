@@ -29,6 +29,7 @@ val DEFAULT_FAKE_ANNOTATION = listOf(FAKE_ANNOTATION)
 val NO_IMPL = "noImpl"
 private val EQ_NO_IMPL = " = $NO_IMPL"
 private val PUBLIC = "public"
+private val OVERRIDE = "override"
 private val VAR = "var"
 private val VAL = "val"
 private val FUN = "fun"
@@ -195,11 +196,13 @@ class Function(
         val callSignature: CallSignature,
         val extendsType: Type? = null,
         override var annotations: List<Annotation>,
-        val needsNoImpl: Boolean = true
+        val needsNoImpl: Boolean = true,
+        val isOverride: Boolean = false
 ) : Member, Node() {
     override fun stringify(): String =
             annotations.stringify() +
-            "$PUBLIC $FUN " +
+            (if (isOverride) OVERRIDE else PUBLIC) +
+            " $FUN " +
             // TODO refactor this
             (if (extendsType == null) "" else callSignature.stringifyTypeParams(withSpaceAfter = true) + extendsType.toString() + "." ) +
             name +
@@ -214,7 +217,8 @@ class Variable(
         override var annotations: List<Annotation>,
         val typeParams: List<TypeParam>?,
         val isVar: Boolean,
-        val needsNoImpl: Boolean = true
+        val needsNoImpl: Boolean = true,
+        val isOverride: Boolean = false
 ) : Member {
 
     // TODO is it HACK???
@@ -224,7 +228,7 @@ class Variable(
 
     override fun stringify(): String =
             annotations.stringify() +
-            "$PUBLIC " +
+            (if (isOverride) OVERRIDE else PUBLIC) + " " +
             (if (isVar) VAR else VAL) + " " +
             (typeParams?.join(", ", startWithIfNotEmpty = "<", endWithIfNotEmpty = "> ") ?: "") +
             (if (extendsType == null) "" else extendsType.toString() + "." ) +

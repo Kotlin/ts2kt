@@ -30,6 +30,7 @@ object typescript {
 
     native("typescript.TypeScriptCompiler")
     class TypeScriptCompiler(logger: DiagnosticsLogger) {
+        val resolver: PullTypeResolver = noImpl
         fun addSourceUnit(path: String, scriptSnapshot: IScriptSnapshot, byteOrderMark: ByteOrderMark,
                           version: Int, isOpen: Boolean , referencedFiles: Array<String>): Unit = noImpl
         fun updateSourceUnit(path: String, scriptSnapshot: IScriptSnapshot,
@@ -101,13 +102,42 @@ object typescript {
     trait ResolveResult {
 //        val ast: AST
         val symbol: PullTypeSymbol
+        val enclosingScopeSymbol: PullTypeSymbol
+        val candidateSignature: PullSignatureSymbol
+    }
+
+    class PullSignatureSymbol {
+        val parameters: Array<PullSymbol> = noImpl
+        val returnType: PullTypeSymbol = noImpl
     }
 
     class PullTypeSymbol {
+        public val name: String = noImpl
         public fun getDeclarations(): Array<PullDecl> = noImpl
+        public fun getExtendedTypes(): Array<PullTypeSymbol> = noImpl
+        public fun getImplementedTypes(): Array<PullTypeSymbol> = noImpl
+        public fun findMember(name: String, lookInParent: Boolean = true): PullSymbol? = noImpl
+        public fun getMembers(): Array<PullSymbol> = noImpl
+        public fun getAllMembers(searchDeclKind: PullElementKind, memberVisiblity: GetAllMembersVisiblity): Array<PullSymbol> = noImpl
+        public fun getCallSignatures(collectBaseSignatures: Boolean = true): Array<PullSignatureSymbol> = noImpl
     }
 
     class PullDecl {
         val scriptName: String = noImpl
     }
+
+    class PullSymbol {
+        public val name: String = noImpl
+        public val `type`: PullTypeSymbol = noImpl
+    }
+
+    enum class PullElementKind
+    enum class GetAllMembersVisiblity
+
+    class PullTypeResolver {
+        public fun signatureIsAssignableToTarget(s1: Any, s2: Any, context: Any, comparisonInfo: Any? = null): Boolean = noImpl
+    }
+
+    native("typescript.PullTypeResolutionContext")
+    class PullTypeResolutionContext
 }
