@@ -20,7 +20,7 @@ public class BufferStream(options: BufferStream.Opts? = null) : stream.Duplex() 
     public fun split(tokens: Array<Buffer>): Unit = noImpl
     public fun getBuffer(): Buffer = noImpl
     public var buffer: Buffer = noImpl
-    public fun toString(): String = noImpl
+    override fun toString(): String = noImpl
     public var length: Number = noImpl
     public class object {
         public trait Opts {
@@ -36,5 +36,5 @@ public class BufferStream(options: BufferStream.Opts? = null) : stream.Duplex() 
 module("bufferstream/postbuffer")
 public class PostBuffer(req: http.ServerRequest) : BufferStream() {
     public fun onEnd(callback: (data: Any) -> Unit): Unit = noImpl
-    public fun pipe(stream: NodeJS.WritableStream, options: BufferStream.Opts? = null): NodeJS.ReadableStream = noImpl
+    override fun pipe(stream: NodeJS.WritableStream, options: BufferStream.Opts?): NodeJS.ReadableStream = noImpl
 }

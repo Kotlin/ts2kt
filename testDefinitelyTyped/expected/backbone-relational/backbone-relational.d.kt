@@ -13,7 +13,7 @@ public object Backbone {
         public fun getRelation(name: String): Relation = noImpl
         public fun getRelations(): Array<Relation> = noImpl
         public fun fetchRelated(key: String, options: Any? = null, update: Boolean? = null): Any = noImpl
-        public fun toJSON(): Any = noImpl
+        override fun toJSON(): Any = noImpl
         public fun setup(): Unit = noImpl
         public fun build(attributes: Any, options: Any? = null): Unit = noImpl
         public fun findOrCreate(attributes: String, options: Any? = null): Unit = noImpl
@@ -33,7 +33,7 @@ public object Backbone {
         public fun setRelated(related: Model): Unit = noImpl
         public fun setRelated(related: Collection<Model>): Unit = noImpl
         public fun getReverseRelations(model: RelationalModel): Relation = noImpl
-        public fun destroy(): Unit = noImpl
+        override fun destroy(): Unit = noImpl
     }
     public class HasOne : Relation() {
         public var collectionType: Any = noImpl

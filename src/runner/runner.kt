@@ -59,9 +59,11 @@ fun translate(srcPath: String): String {
     val srcName = path.basename(srcPath, TYPESCRIPT_DEFINITION_FILE_EXT)
     val srcResolvedPath = batch.resolvePath(srcPath)
 
-    fun isAnyMember(name: String, signature: typescript.PullSignatureSymbol): Boolean = when (name) {
+    fun isAnyMember(name: String, signature: typescript.PullSignatureSymbol): Boolean =
+            signature.parameters != null &&
+            when (name) {
                 "equals" ->
-                    signature.parameters.size == 1 && signature.parameters[0].`type`.name == "any"
+                    signature.parameters.size == 1 && signature.parameters[0].`type`?.name == "any"
                 // TODO check return type ???
                 "hashCode", "toString" ->
                     signature.parameters.size == 0
@@ -92,6 +94,7 @@ fun translate(srcPath: String): String {
                 resolveResult.symbol.getDeclarations().all { it.scriptName == srcResolvedPath }
             },
             isOverride = getOverrideChecker { signature ->
+                this.`type` != null &&
                 this.`type`.getCallSignatures().any {
                     // TODO can use share it with many checks?
                     val pullTypeResolutionContext = typescript.PullTypeResolutionContext()

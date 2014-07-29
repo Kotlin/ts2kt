@@ -99,7 +99,8 @@ fun <T> List<T>.join(
         end: String = "",
         startWithIfNotEmpty: String = "",
         endWithIfNotEmpty: String = "",
-        filter: ((T) -> Boolean)? = null
+        filter: ((T) -> Boolean)? = null,
+        stringify: ((T) -> String)? = null
 ): String {
     if (this.isEmpty()) return start + end
 
@@ -115,7 +116,7 @@ fun <T> List<T>.join(
         else {
             first = false
         }
-        s += e.toString()
+        s += if (stringify == null) e.toString() else stringify(e)
     }
 
     if (first) return start + end

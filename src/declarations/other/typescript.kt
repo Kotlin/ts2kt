@@ -107,7 +107,7 @@ object typescript {
     }
 
     class PullSignatureSymbol {
-        val parameters: Array<PullSymbol> = noImpl
+        val parameters: Array<PullSymbol>? = noImpl
         val returnType: PullTypeSymbol = noImpl
     }
 
@@ -128,7 +128,7 @@ object typescript {
 
     class PullSymbol {
         public val name: String = noImpl
-        public val `type`: PullTypeSymbol = noImpl
+        public val `type`: PullTypeSymbol? = noImpl
     }
 
     enum class PullElementKind

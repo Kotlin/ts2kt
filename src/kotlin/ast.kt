@@ -170,9 +170,12 @@ class Classifier(
 }
 
 class FunParam(override var name: String, val `type`: TypeAnnotation, val defaultValue: Any? = null, val isVar: Boolean = false) : Named, Node() {
-    override fun stringify(): String =
+    override fun stringify(): String = stringify(printDefaultValue = true)
+
+    fun stringify(printDefaultValue: Boolean): String =
             (if (isVar) "$PUBLIC $VAR " else "") +
-            (if (`type`.isVararg) VARARG + " " else "") + name + `type` + if (defaultValue == null) "" else " = $defaultValue"
+            (if (`type`.isVararg) VARARG + " " else "") + name + `type` +
+            if (defaultValue == null || !printDefaultValue) "" else " = $defaultValue"
 }
 
 class CallSignature(
@@ -180,11 +183,11 @@ class CallSignature(
         val typeParams: List<TypeParam>?,
         val returnType: TypeAnnotation
 ) : Node() {
-    override fun stringify(): String = stringify(withTypeParams = true, printUnitReturnType = true)
+    override fun stringify(): String = stringify(withTypeParams = true, printUnitReturnType = true, printDefaultValues = true)
 
-    fun stringify(withTypeParams: Boolean, printUnitReturnType: Boolean): String =
+    fun stringify(withTypeParams: Boolean, printUnitReturnType: Boolean, printDefaultValues: Boolean): String =
             (if (withTypeParams) stringifyTypeParams() else  "") +
-            params.join(start = "(", end = ")") +
+            params.join(start = "(", end = ")", stringify = { it.stringify(printDefaultValues) }) +
             returnType.stringify(printUnitType = printUnitReturnType)
 
     fun stringifyTypeParams(withSpaceAfter: Boolean = false) =
@@ -206,7 +209,7 @@ class Function(
             // TODO refactor this
             (if (extendsType == null) "" else callSignature.stringifyTypeParams(withSpaceAfter = true) + extendsType.toString() + "." ) +
             name +
-            callSignature.stringify(withTypeParams = extendsType == null, printUnitReturnType = needsNoImpl) +
+            callSignature.stringify(withTypeParams = extendsType == null, printUnitReturnType = needsNoImpl, printDefaultValues = !isOverride) +
             if (needsNoImpl) EQ_NO_IMPL else ""
 }
 
