@@ -59,19 +59,21 @@ fun translate(srcPath: String): String {
     val srcName = path.basename(srcPath, TYPESCRIPT_DEFINITION_FILE_EXT)
     val srcResolvedPath = batch.resolvePath(srcPath)
 
-    fun isAnyMember(name: String, signature: typescript.PullSignatureSymbol): Boolean =
-            signature.parameters != null &&
-            when (name) {
-                "equals" ->
-                    signature.parameters.size == 1 && signature.parameters[0].`type`?.name == "any"
-                // TODO check return type ???
-                "hashCode", "toString" ->
-                    signature.parameters.size == 0
-                else ->
-                    false
-            }
+    fun isAnyMember(name: String, signature: typescript.PullSignatureSymbol?): Boolean {
+        if (signature == null || signature.parameters == null) return false
 
-    fun getOverrideChecker(isOverridesBy: typescript.PullSymbol.(signature: typescript.PullSignatureSymbol) -> Boolean): (PositionedElement) -> Boolean {
+        return when (name) {
+            "equals" ->
+                signature.parameters.size == 1 && signature.parameters[0].`type`?.name == "any"
+            // TODO check return type ???
+            "hashCode", "toString" ->
+                signature.parameters.size == 0
+            else ->
+                false
+        }
+    }
+
+    fun getOverrideChecker(isOverridesBy: typescript.PullSymbol.(signature: typescript.PullSignatureSymbol?) -> Boolean): (PositionedElement) -> Boolean {
         return {
             val resolveResult = compiler.resolvePosition(it.start(), compiler.getDocument(srcResolvedPath)!!)
             val signature = resolveResult.candidateSignature
@@ -82,9 +84,9 @@ fun translate(srcPath: String): String {
                     it.findMember(name)?.isOverridesBy(signature) ?: false
                 }
 
-            isAnyMember(name,  signature) ||
-                resolveResult.enclosingScopeSymbol.getExtendedTypes().any(f) ||
-                resolveResult.enclosingScopeSymbol.getImplementedTypes().any(f)
+            (isAnyMember(name,  signature) ||
+                    resolveResult.enclosingScopeSymbol.getExtendedTypes().any(f) ||
+                    resolveResult.enclosingScopeSymbol.getImplementedTypes().any(f))
         }
     }
 
@@ -98,7 +100,7 @@ fun translate(srcPath: String): String {
                 this.`type`.getCallSignatures().any {
                     // TODO can use share it with many checks?
                     val pullTypeResolutionContext = typescript.PullTypeResolutionContext()
-                    compiler.resolver.signatureIsAssignableToTarget(signature, it, pullTypeResolutionContext)
+                    compiler.resolver.signatureIsAssignableToTarget(signature!!, it, pullTypeResolutionContext)
                 }
             },
             isOverrideProperty = getOverrideChecker { true }

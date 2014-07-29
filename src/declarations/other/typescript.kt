@@ -103,7 +103,7 @@ object typescript {
 //        val ast: AST
         val symbol: PullTypeSymbol
         val enclosingScopeSymbol: PullTypeSymbol
-        val candidateSignature: PullSignatureSymbol
+        val candidateSignature: PullSignatureSymbol?
     }
 
     class PullSignatureSymbol {
