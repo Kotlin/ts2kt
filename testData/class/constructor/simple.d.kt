@@ -1,6 +1,6 @@
 package simple
 
 native
-public class Foo
+public open class Foo
 native
-public class Bar(a: Number)
+public open class Bar(a: Number)

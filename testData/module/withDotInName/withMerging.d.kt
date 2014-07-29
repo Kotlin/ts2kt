@@ -8,16 +8,16 @@ public object Foo {
         public object Baz {
             public var variableFooBarBaz: Number = noImpl
             public fun funcFooBarBaz(): Unit = noImpl
-            public class AFooBarBaz
+            public open class AFooBarBaz
             public var anotherVariableFooBarBaz: Number = noImpl
             public fun anotherFuncFooBarBaz(): Unit = noImpl
-            public class AnotherAFooBarBaz
+            public open class AnotherAFooBarBaz
         }
         public var variableFooBar: Number = noImpl
         public fun funcFooBar(): Unit = noImpl
-        public class AFooBar
+        public open class AFooBar
     }
     public var variableFoo: Number = noImpl
     public fun funcFoo(): Unit = noImpl
-    public class AFoo
+    public open class AFoo
 }

@@ -1,10 +1,10 @@
 package justOverload
 
 native
-public class Foo {
-    public fun bar(a: Number): Unit = noImpl
+public open class Foo {
+    public open fun bar(a: Number): Unit = noImpl
 }
 native
-public class Boo : Foo() {
-    public fun bar(a: String): Unit = noImpl
+public open class Boo : Foo() {
+    public open fun bar(a: String): Unit = noImpl
 }

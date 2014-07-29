@@ -4,7 +4,7 @@ module
 public object TypeScript {
     module
     public object Syntax {
-        public class EmptySyntaxList : ISyntaxList {
+        public open class EmptySyntaxList : ISyntaxList {
             override fun kind(): SyntaxKind = noImpl
         }
     }

@@ -1,6 +1,6 @@
 package withPropertyDeclaration
 
 native
-public class Foo(public var x: Any)
+public open class Foo(public open var x: Any)
 native
-public class Bar(public var n: Number, public var a: Any)
+public open class Bar(public open var n: Number, public open var a: Any)

@@ -6,4 +6,4 @@ public trait `T$0` {
     public var bar: Any
 }
 native
-public class Foo(p: `T$0`)
+public open class Foo(p: `T$0`)

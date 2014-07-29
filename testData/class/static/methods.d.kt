@@ -1,7 +1,7 @@
 package methods
 
 native
-public class Foo {
+public open class Foo {
     public class object {
         public fun methodWithOutArgs(): Unit = noImpl
         public fun methodWithString(s: String): String = noImpl

@@ -18,8 +18,8 @@ public trait `T$2` {
     public fun baz(a: Any, b: Any, c: String): Boolean
 }
 native
-public class Foo {
-    public fun withObjectTypeParam(opt: `T$0`): Unit = noImpl
-    public fun returnsObjectType(): `T$1` = noImpl
-    public var foo: `T$2` = noImpl
+public open class Foo {
+    public open fun withObjectTypeParam(opt: `T$0`): Unit = noImpl
+    public open fun returnsObjectType(): `T$1` = noImpl
+    public open var foo: `T$2` = noImpl
 }

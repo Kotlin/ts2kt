@@ -7,7 +7,7 @@ public object Boo {
     public trait IBaz {
         public fun doSomething()
     }
-    public class Klass {
-        public fun method(s: Any): String = noImpl
+    public open class Klass {
+        public open fun method(s: Any): String = noImpl
     }
 }

@@ -1,9 +1,9 @@
 package indexSignature
 
 native
-public class Foo {
-    public fun get(n: Number): Bar = noImpl
-    public fun set(n: Number, value: Bar): Unit = noImpl
-    public fun get(s: String): String = noImpl
-    public fun set(s: String, value: String): Unit = noImpl
+public open class Foo {
+    public open fun get(n: Number): Bar = noImpl
+    public open fun set(n: Number, value: Bar): Unit = noImpl
+    public open fun get(s: String): String = noImpl
+    public open fun set(s: String, value: String): Unit = noImpl
 }

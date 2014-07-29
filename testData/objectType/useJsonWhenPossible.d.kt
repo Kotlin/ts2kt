@@ -6,8 +6,8 @@ module
 public object Module {
     public var bar: Json = noImpl
     public fun withObjectTypeParam(bar: Json): Unit = noImpl
-    public class Foo {
-        public var prop: Json = noImpl
+    public open class Foo {
+        public open var prop: Json = noImpl
     }
 }
 native

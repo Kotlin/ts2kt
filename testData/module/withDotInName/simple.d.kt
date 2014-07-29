@@ -8,7 +8,7 @@ public object Foo {
         public object Baz {
             public var variable: Number = noImpl
             public fun func(): Unit = noImpl
-            public class A
+            public open class A
         }
     }
 }

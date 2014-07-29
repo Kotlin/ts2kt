@@ -20,9 +20,9 @@ public trait `This` {
     }
 }
 native
-public class `is`<`trait`> {
-    public var `as`: Number = noImpl
-    public fun `package`(a: Any): Boolean = noImpl
+public open class `is`<`trait`> {
+    public open var `as`: Number = noImpl
+    public open fun `package`(a: Any): Boolean = noImpl
 }
 module
 public object `when` {
