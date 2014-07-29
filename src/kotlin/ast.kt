@@ -29,6 +29,7 @@ val DEFAULT_FAKE_ANNOTATION = listOf(FAKE_ANNOTATION)
 val NO_IMPL = "noImpl"
 private val EQ_NO_IMPL = " = $NO_IMPL"
 private val PUBLIC = "public"
+private val OPEN = "open"
 private val OVERRIDE = "override"
 private val VAR = "var"
 private val VAL = "val"
@@ -151,11 +152,13 @@ class Classifier(
         val typeParams: List<TypeParam>?,
         val parents: List<Type>,
         val members: List<Member>,
-        override var annotations: List<Annotation>
+        override var annotations: List<Annotation>,
+        val hasOpenModifier: Boolean
 ) : Member, Node(needsFixIndent = true) {
     override fun stringify(): String =
             annotations.stringify() +
             PUBLIC + " " +
+            (if (hasOpenModifier) OPEN + " " else "") +
             kind.keyword +
             (if (name.isEmpty()) "" else " ") +
             name +
@@ -169,11 +172,16 @@ class Classifier(
     val bracesRequired = kind.bracesAlwaysRequired || !members.isEmpty()
 }
 
-class FunParam(override var name: String, val `type`: TypeAnnotation, val defaultValue: Any? = null, val isVar: Boolean = false) : Named, Node() {
+class FunParam(
+        override var name: String,
+        val `type`: TypeAnnotation,
+        val defaultValue: Any? = null,
+        val isVar: Boolean = false
+) : Named, Node() {
     override fun stringify(): String = stringify(printDefaultValue = true)
 
     fun stringify(printDefaultValue: Boolean): String =
-            (if (isVar) "$PUBLIC $VAR " else "") +
+            (if (isVar) "$PUBLIC $OPEN $VAR " else "") +
             (if (`type`.isVararg) VARARG + " " else "") + name + `type` +
             if (defaultValue == null || !printDefaultValue) "" else " = $defaultValue"
 }
@@ -200,11 +208,12 @@ class Function(
         val extendsType: Type? = null,
         override var annotations: List<Annotation>,
         val needsNoImpl: Boolean = true,
-        val isOverride: Boolean = false
+        val isOverride: Boolean = false,
+        val hasOpenModifier: Boolean
 ) : Member, Node() {
     override fun stringify(): String =
             annotations.stringify() +
-            (if (isOverride) OVERRIDE else PUBLIC) +
+            (if (isOverride) OVERRIDE else PUBLIC + (if (hasOpenModifier) " " + OPEN else "")) +
             " $FUN " +
             // TODO refactor this
             (if (extendsType == null) "" else callSignature.stringifyTypeParams(withSpaceAfter = true) + extendsType.toString() + "." ) +
@@ -221,7 +230,8 @@ class Variable(
         val typeParams: List<TypeParam>?,
         val isVar: Boolean,
         val needsNoImpl: Boolean = true,
-        val isOverride: Boolean = false
+        val isOverride: Boolean = false,
+        val hasOpenModifier: Boolean
 ) : Member {
 
     // TODO is it HACK???
@@ -231,7 +241,7 @@ class Variable(
 
     override fun stringify(): String =
             annotations.stringify() +
-            (if (isOverride) OVERRIDE else PUBLIC) + " " +
+            (if (isOverride) OVERRIDE else PUBLIC + (if (hasOpenModifier) " " + OPEN else "")) + " " +
             (if (isVar) VAR else VAL) + " " +
             (typeParams?.join(", ", startWithIfNotEmpty = "<", endWithIfNotEmpty = "> ") ?: "") +
             (if (extendsType == null) "" else extendsType.toString() + "." ) +

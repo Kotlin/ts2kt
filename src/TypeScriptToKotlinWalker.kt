@@ -37,6 +37,7 @@ private val IS_NATIVE_ANNOTATION = { (a: Annotation) -> a.name == NATIVE }
 
 abstract class TypeScriptToKotlinBase : SyntaxWalker() {
     abstract val result: Node?
+    abstract val hasMembersOpenModifier: Boolean
 
     open val defaultAnnotations: List<Annotation> = listOf()
 
@@ -44,12 +45,12 @@ abstract class TypeScriptToKotlinBase : SyntaxWalker() {
 
     open fun addVariable(name: String, `type`: String, extendsType: String? = null, typeParams: List<TypeParam>? = null, isVar: Boolean = true, isNullable: Boolean = false, isLambda: Boolean = false, needsNoImpl: Boolean = true, additionalAnnotations: List<Annotation> = listOf(), isOverride: Boolean = false) {
         val annotations = defaultAnnotations + additionalAnnotations
-        declarations.add(Variable(name, TypeAnnotation(`type`, isNullable = isNullable, isLambda = isLambda), extendsType?.let { Type(it) }, annotations, typeParams, isVar = isVar, needsNoImpl = needsNoImpl, isOverride = isOverride))
+        declarations.add(Variable(name, TypeAnnotation(`type`, isNullable = isNullable, isLambda = isLambda), extendsType?.let { Type(it) }, annotations, typeParams, isVar = isVar, needsNoImpl = needsNoImpl, isOverride = isOverride, hasOpenModifier = hasMembersOpenModifier))
     }
 
     open fun addFunction(name: String, callSignature: CallSignature, extendsType: String? = null, needsNoImpl: Boolean = true, additionalAnnotations: List<Annotation> = listOf(), isOverride: Boolean = false) {
         val annotations = defaultAnnotations + additionalAnnotations
-        declarations.add(Function(name, callSignature, extendsType?.let { Type(it) }, annotations, needsNoImpl = needsNoImpl, isOverride = isOverride))
+        declarations.add(Function(name, callSignature, extendsType?.let { Type(it) }, annotations, needsNoImpl = needsNoImpl, isOverride = isOverride, hasOpenModifier = hasMembersOpenModifier))
     }
 }
 
@@ -69,6 +70,8 @@ class TypeScriptToKotlinWalker(
             return KotlinFile(if (packageFqName != null) Package(packageFqName) else null, declarations)
         }
 
+    override val hasMembersOpenModifier = false
+
     // TODO fix PrimitiveHashMap for some special keys like 'hasOwnProperty'
     [suppress("CAST_NEVER_SUCCEEDS")]
     val exportedByAssignment = HashMap<Any, Annotation>() as HashMap<String, Annotation>
@@ -77,13 +80,13 @@ class TypeScriptToKotlinWalker(
 
     fun addModule(qualifier: List<String>, name: String, members: List<Member>, additionalAnnotations: List<Annotation> = listOf()) {
         val annotations = DEFAULT_MODULE_ANNOTATION + additionalAnnotations
-        val module = Classifier(ClassKind.OBJECT, name, listOf(), listOf(), listOf(), members, annotations)
+        val module = Classifier(ClassKind.OBJECT, name, listOf(), listOf(), listOf(), members, annotations, hasOpenModifier = false)
 
         var nestedModules = module
 
         var i = qualifier.size()
         while (i --> 0) {
-            nestedModules = Classifier(ClassKind.OBJECT, qualifier[i], listOf(), listOf(), listOf(), listOf(nestedModules), annotations)
+            nestedModules = Classifier(ClassKind.OBJECT, qualifier[i], listOf(), listOf(), listOf(), listOf(nestedModules), annotations, hasOpenModifier = false)
         }
 
         declarations.add(nestedModules)
@@ -344,13 +347,13 @@ class TypeScriptToKotlinWalker(
         assert(a.getClassObject() == null, "Unxpected `class object` when merge Classifier(kind=${a.kind}) and Variable($b)")
 
         if (a.kind == ClassKind.TRAIT || a.isModule()) {
-            val newTrait = Classifier(ClassKind.TRAIT, a.name, a.paramsOfConstructors, a.typeParams, a.parents, a.members, a.annotations)
+            val newTrait = Classifier(ClassKind.TRAIT, a.name, a.paramsOfConstructors, a.typeParams, a.parents, a.members, a.annotations, hasOpenModifier = false)
 
             val varTypeName = b.`type`.name
             val delegation = listOf(Type("${varTypeName} by $NO_IMPL: ${varTypeName}"))
 
             // TODO drop hacks
-            val classObject = Classifier(ClassKind.CLASS_OBJECT, "", listOf(), listOf(), delegation, listOf(), listOf())
+            val classObject = Classifier(ClassKind.CLASS_OBJECT, "", listOf(), listOf(), delegation, listOf(), listOf(), hasOpenModifier = false)
 
             (newTrait.members as ArrayList).add(classObject)
 
@@ -390,7 +393,7 @@ class TypeScriptToKotlinWalker(
 
         if (classObject == null) {
             // TODO drop hack
-            (a.members as ArrayList).add(Classifier(ClassKind.CLASS_OBJECT, "", listOf(), listOf(), listOf(), b.members, NO_ANNOTATIONS))
+            (a.members as ArrayList).add(Classifier(ClassKind.CLASS_OBJECT, "", listOf(), listOf(), listOf(), b.members, NO_ANNOTATIONS, hasOpenModifier = false))
         }
         else {
             // TODO drop hack
@@ -454,7 +457,9 @@ open class TsInterfaceToKt(
         val isOverrideProperty: (PositionedElement) -> Boolean
 ) : TsClassifierToKt(typeMapper) {
     override val result: Classifier
-        get() = Classifier(ClassKind.TRAIT, name!!, listOf(), typeParams, parents, declarations, annotations)
+        get() = Classifier(ClassKind.TRAIT, name!!, listOf(), typeParams, parents, declarations, annotations, hasOpenModifier = false)
+
+    override val hasMembersOpenModifier = false
 
     override val needsNoImpl = false
 
@@ -572,7 +577,8 @@ class TsClassToKt(
         val kind: ClassKind = ClassKind.CLASS,
         val annotations: List<Annotation> = DEFAULT_ANNOTATION,
         val isOverride: (PositionedElement) -> Boolean,
-        val isOverrideProperty: (PositionedElement) -> Boolean
+        val isOverrideProperty: (PositionedElement) -> Boolean,
+        override val hasMembersOpenModifier: Boolean = true
 ) : TsClassifierToKt(typeMapper) {
     override val result: Classifier?
         get()  {
@@ -590,7 +596,7 @@ class TsClassToKt(
                         }
             }
 
-            return Classifier(kind, name!!, paramsOfConstructors, typeParams, parents, cachedDeclarations!!, annotations)
+            return Classifier(kind, name!!, paramsOfConstructors, typeParams, parents, cachedDeclarations!!, annotations, hasOpenModifier = kind == ClassKind.CLASS)
         }
 
     var cachedDeclarations: List<Member>? = null
@@ -606,7 +612,7 @@ class TsClassToKt(
         if (node.modifiers.contains(StaticKeyword)) {
             if (staticTranslator == null) {
                 // TODO support override for static members
-                staticTranslator = TsClassToKt(typeMapper, ClassKind.CLASS_OBJECT, listOf(), NOT_OVERRIDE, NOT_OVERRIDE)
+                staticTranslator = TsClassToKt(typeMapper, ClassKind.CLASS_OBJECT, listOf(), NOT_OVERRIDE, NOT_OVERRIDE, hasMembersOpenModifier = false)
                 staticTranslator?.name = ""
             }
             return staticTranslator!!
