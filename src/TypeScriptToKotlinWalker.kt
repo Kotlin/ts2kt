@@ -64,6 +64,12 @@ class TypeScriptToKotlinWalker(
         val isOverride: (PositionedElement) -> Boolean,
         val isOverrideProperty: (PositionedElement) -> Boolean
 ) : TypeScriptToKotlinBase() {
+
+    {
+        // TODO drop hack for reset temp class indexer for each file
+        if (packageFqName != null) ObjectTypeToKotlinTypeMapperImpl.reset()
+    }
+
     override val result: KotlinFile
         get()  {
             assert(exportedByAssignment.isEmpty(), "exportedByAssignment should be empty, but it contains: $exportedByAssignment")
@@ -169,7 +175,6 @@ class TypeScriptToKotlinWalker(
                         moduleName = name,
                         defaultAnnotations = listOf(),
                         requiredModifier = ExportKeyword,
-                        typeMapper = typeMapper,
                         isOwnDeclaration = isOwnDeclaration,
                         isOverride = isOverride,
                         isOverrideProperty = isOverrideProperty)

@@ -22,14 +22,17 @@ public trait BrowserifyObject : NodeJS.EventEmitter {
     public fun transform(tr: String): BrowserifyObject
     public fun transform(tr: Function): BrowserifyObject
 }
-native
-public trait `T$2` {
-    public var entries: Array<String>? = noImpl
-    public var noParse: Array<String>? = noImpl
+module
+public object browserify {
+    module("browserify")
+    public fun browserify(): BrowserifyObject = noImpl
+    module("browserify")
+    public fun browserify(files: Array<String>): BrowserifyObject = noImpl
+    public trait `T$2` {
+        public var entries: Array<String>? = noImpl
+        public var noParse: Array<String>? = noImpl
+    }
+    // ???
+    module("browserify")
+    public fun browserify(opts: `T$2`): BrowserifyObject = noImpl
 }
-module("browserify")
-public fun browserify(): BrowserifyObject = noImpl
-module("browserify")
-public fun browserify(files: Array<String>): BrowserifyObject = noImpl
-module("browserify")
-public fun browserify(opts: `T$2`): BrowserifyObject = noImpl

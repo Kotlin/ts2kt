@@ -1,9 +1,5 @@
 package bufferstream
 
-native
-public trait `T$0` {
-    public var warn: Boolean
-}
 module("bufferstream")
 public open class BufferStream(options: BufferStream.Opts? = null) : stream.Duplex() {
     public open fun setSize(size: String): Unit = noImpl
@@ -29,6 +25,9 @@ public open class BufferStream(options: BufferStream.Opts? = null) : stream.Dupl
             public var size: Any? = noImpl
             public var disabled: Boolean? = noImpl
             public var split: Any? = noImpl
+        }
+        public trait `T$0` {
+            public var warn: Boolean
         }
         public var fn: `T$0` = noImpl
     }
