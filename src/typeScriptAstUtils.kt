@@ -70,24 +70,25 @@ fun NameAsStringLiteral.getText(): String {
 fun ParameterSyntax.toKotlinParam(typeMapper: ObjectTypeToKotlinTypeMapper): FunParam {
     val originalNodeType = typeAnnotation?.`type`
     val isVararg: Boolean = dotDotDotToken != null
-    val nodeType =
-            if (isVararg && originalNodeType != null) {
-                val originalNodeKind = originalNodeType.kind()
 
-                if (originalNodeKind == ArrayType) {
-                    (originalNodeType as? ArrayTypeSyntax)?.`type`
-                } else if (originalNodeKind == GenericType && (originalNodeType as? GenericTypeSyntax)?.name?.getText() == "Array") {
-                    val typeArguments = (originalNodeType as GenericTypeSyntax).typeArgumentList.typeArguments
-                    assert(typeArguments.nonSeparatorCount() == 1, "Array should have one generic paramater, but have ${typeArguments.nonSeparatorCount()}.")
+    val nodeType: ITypeSyntax?
+    if (isVararg && originalNodeType != null) {
+        val originalNodeKind = originalNodeType.kind()
 
-                    typeArguments.nonSeparatorAt(0) as ITypeSyntax?
-                } else {
-                    throw Exception("Rest parameter must be array types")
-                }
-            }
-            else {
-                originalNodeType
-            }
+        if (originalNodeKind == ArrayType) {
+            nodeType = (originalNodeType as? ArrayTypeSyntax)?.`type`
+        } else if (originalNodeKind == GenericType && (originalNodeType as? GenericTypeSyntax)?.name?.getText() == "Array") {
+            val typeArguments = (originalNodeType as GenericTypeSyntax).typeArgumentList.typeArguments
+            assert(typeArguments.nonSeparatorCount() == 1, "Array should have one generic paramater, but have ${typeArguments.nonSeparatorCount()}.")
+
+            nodeType = typeArguments.nonSeparatorAt(0) as ITypeSyntax?
+        } else {
+            throw Exception("Rest parameter must be array types")
+        }
+    }
+    else {
+        nodeType = originalNodeType
+    }
 
     val name = identifier.getText()
     val typeName = nodeType?.toKotlinTypeName(typeMapper) ?: ANY
