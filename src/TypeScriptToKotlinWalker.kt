@@ -155,6 +155,18 @@ class TypeScriptToKotlinWalker(
         }
     }
 
+    override fun visitEnumDeclaration(node: EnumDeclarationSyntax) {
+        val entries = node.enumElements.map {(entry: EnumElementSyntax) ->
+            EnumEntry(entry.propertyName.getText(), entry.equalsValueClause?.value?.getText())
+        }
+
+        val enumClass =
+                Classifier(ClassKind.ENUM, node.identifier.getText(), listOf(), listOf(), listOf(),
+                        entries, listOf(), hasOpenModifier = false)
+
+        declarations.add(enumClass)
+    }
+
     override fun visitModuleDeclaration(node: ModuleDeclarationSyntax) {
         val additionalAnnotations = getAdditionalAnnotations(node)
 

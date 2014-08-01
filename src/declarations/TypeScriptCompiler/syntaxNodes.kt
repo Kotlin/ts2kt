@@ -1527,7 +1527,7 @@ abstract class EnumDeclarationSyntax(public override val modifiers: ISyntaxList,
 [suppress("UNUSED_PARAMETER")]
 native
 abstract class EnumElementSyntax(public val propertyName: IIdentifierSyntax,
-                                 public val equalsValueClause: EqualsValueClauseSyntax,
+                                 public val equalsValueClause: EqualsValueClauseSyntax?,
                                  parsedInStrictMode: Boolean) : SyntaxNode(parsedInStrictMode) {
     public fun update(propertyName: IIdentifierSyntax,
                       equalsValueClause: EqualsValueClauseSyntax): EnumElementSyntax = noImpl

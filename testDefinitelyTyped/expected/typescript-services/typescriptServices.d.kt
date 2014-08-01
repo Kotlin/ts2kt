@@ -6,446 +6,445 @@ native class RegExp
 //non standard
 native class ITextWriter
 
-native
-public trait `T$0` {
-    public var error_TS_0_1: String
-    public var warning_TS_0_1: String
-    public var Unrecognized_escape_sequence: String
-    public var Unexpected_character_0: String
-    public var Missing_close_quote_character: String
-    public var Identifier_expected: String
-    public var _0_keyword_expected: String
-    public var _0_expected: String
-    public var Identifier_expected_0_is_a_keyword: String
-    public var Automatic_semicolon_insertion_not_allowed: String
-    public var Unexpected_token_0_expected: String
-    public var Trailing_separator_not_allowed: String
-    public var AsteriskSlash_expected: String
-    public var public_or_private_modifier_must_precede_static: String
-    public var Unexpected_token: String
-    public var Catch_clause_parameter_cannot_have_a_type_annotation: String
-    public var Rest_parameter_must_be_last_in_list: String
-    public var Parameter_cannot_have_question_mark_and_initializer: String
-    public var Required_parameter_cannot_follow_optional_parameter: String
-    public var Index_signatures_cannot_have_rest_parameters: String
-    public var Index_signature_parameter_cannot_have_accessibility_modifiers: String
-    public var Index_signature_parameter_cannot_have_a_question_mark: String
-    public var Index_signature_parameter_cannot_have_an_initializer: String
-    public var Index_signature_must_have_a_type_annotation: String
-    public var Index_signature_parameter_must_have_a_type_annotation: String
-    public var Index_signature_parameter_type_must_be_string_or_number: String
-    public var extends_clause_already_seen: String
-    public var extends_clause_must_precede_implements_clause: String
-    public var Classes_can_only_extend_a_single_class: String
-    public var implements_clause_already_seen: String
-    public var Accessibility_modifier_already_seen: String
-    public var _0_modifier_must_precede_1_modifier: String
-    public var _0_modifier_already_seen: String
-    public var _0_modifier_cannot_appear_on_a_class_element: String
-    public var Interface_declaration_cannot_have_implements_clause: String
-    public var super_invocation_cannot_have_type_arguments: String
-    public var Only_ambient_modules_can_use_quoted_names: String
-    public var Statements_are_not_allowed_in_ambient_contexts: String
-    public var Implementations_are_not_allowed_in_ambient_contexts: String
-    public var declare_modifier_not_allowed_for_code_already_in_an_ambient_context: String
-    public var Initializers_are_not_allowed_in_ambient_contexts: String
-    public var Parameter_property_declarations_can_only_be_used_in_a_non_ambient_constructor_declaration: String
-    public var Function_implementation_expected: String
-    public var Constructor_implementation_expected: String
-    public var Function_overload_name_must_be_0: String
-    public var _0_modifier_cannot_appear_on_a_module_element: String
-    public var declare_modifier_cannot_appear_on_an_interface_declaration: String
-    public var declare_modifier_required_for_top_level_element: String
-    public var Rest_parameter_cannot_be_optional: String
-    public var Rest_parameter_cannot_have_an_initializer: String
-    public var set_accessor_must_have_one_and_only_one_parameter: String
-    public var set_accessor_parameter_cannot_be_optional: String
-    public var set_accessor_parameter_cannot_have_an_initializer: String
-    public var set_accessor_cannot_have_rest_parameter: String
-    public var get_accessor_cannot_have_parameters: String
-    public var Modifiers_cannot_appear_here: String
-    public var Accessors_are_only_available_when_targeting_ECMAScript_5_and_higher: String
-    public var Class_name_cannot_be_0: String
-    public var Interface_name_cannot_be_0: String
-    public var Enum_name_cannot_be_0: String
-    public var Module_name_cannot_be_0: String
-    public var Enum_member_must_have_initializer: String
-    public var Export_assignment_cannot_be_used_in_internal_modules: String
-    public var Export_assignment_not_allowed_in_module_with_exported_element: String
-    public var Module_cannot_have_multiple_export_assignments: String
-    public var Ambient_enum_elements_can_only_have_integer_literal_initializers: String
-    public var module_class_interface_enum_import_or_statement: String
-    public var constructor_function_accessor_or_variable: String
-    public var statement: String
-    public var case_or_default_clause: String
-    public var identifier: String
-    public var call_construct_index_property_or_function_signature: String
-    public var expression: String
-    public var type_name: String
-    public var property_or_accessor: String
-    public var parameter: String
-    public var `type`: String
-    public var type_parameter: String
-    public var declare_modifier_not_allowed_on_import_declaration: String
-    public var Function_overload_must_be_static: String
-    public var Function_overload_must_not_be_static: String
-    public var Parameter_property_declarations_cannot_be_used_in_a_constructor_overload: String
-    public var Invalid_reference_directive_syntax: String
-    public var Octal_literals_are_not_available_when_targeting_ECMAScript_5_and_higher: String
-    public var Accessors_are_not_allowed_in_ambient_contexts: String
-    public var _0_modifier_cannot_appear_on_a_constructor_declaration: String
-    public var _0_modifier_cannot_appear_on_a_parameter: String
-    public var Only_a_single_variable_declaration_is_allowed_in_a_for_in_statement: String
-    public var Type_parameters_cannot_appear_on_a_constructor_declaration: String
-    public var Type_annotation_cannot_appear_on_a_constructor_declaration: String
-    public var Duplicate_identifier_0: String
-    public var The_name_0_does_not_exist_in_the_current_scope: String
-    public var The_name_0_does_not_refer_to_a_value: String
-    public var super_can_only_be_used_inside_a_class_instance_method: String
-    public var The_left_hand_side_of_an_assignment_expression_must_be_a_variable_property_or_indexer: String
-    public var Value_of_type_0_is_not_callable_Did_you_mean_to_include_new: String
-    public var Value_of_type_0_is_not_callable: String
-    public var Value_of_type_0_is_not_newable: String
-    public var Value_of_type_0_is_not_indexable_by_type_1: String
-    public var Operator_0_cannot_be_applied_to_types_1_and_2: String
-    public var Operator_0_cannot_be_applied_to_types_1_and_2_3: String
-    public var Cannot_convert_0_to_1: String
-    public var Cannot_convert_0_to_1_NL_2: String
-    public var Expected_var_class_interface_or_module: String
-    public var Operator_0_cannot_be_applied_to_type_1: String
-    public var Getter_0_already_declared: String
-    public var Setter_0_already_declared: String
-    public var Exported_class_0_extends_private_class_1: String
-    public var Exported_class_0_implements_private_interface_1: String
-    public var Exported_interface_0_extends_private_interface_1: String
-    public var Exported_class_0_extends_class_from_inaccessible_module_1: String
-    public var Exported_class_0_implements_interface_from_inaccessible_module_1: String
-    public var Exported_interface_0_extends_interface_from_inaccessible_module_1: String
-    public var Public_static_property_0_of_exported_class_has_or_is_using_private_type_1: String
-    public var Public_property_0_of_exported_class_has_or_is_using_private_type_1: String
-    public var Property_0_of_exported_interface_has_or_is_using_private_type_1: String
-    public var Exported_variable_0_has_or_is_using_private_type_1: String
-    public var Public_static_property_0_of_exported_class_is_using_inaccessible_module_1: String
-    public var Public_property_0_of_exported_class_is_using_inaccessible_module_1: String
-    public var Property_0_of_exported_interface_is_using_inaccessible_module_1: String
-    public var Exported_variable_0_is_using_inaccessible_module_1: String
-    public var Parameter_0_of_constructor_from_exported_class_has_or_is_using_private_type_1: String
-    public var Parameter_0_of_public_static_property_setter_from_exported_class_has_or_is_using_private_type_1: String
-    public var Parameter_0_of_public_property_setter_from_exported_class_has_or_is_using_private_type_1: String
-    public var Parameter_0_of_constructor_signature_from_exported_interface_has_or_is_using_private_type_1: String
-    public var Parameter_0_of_call_signature_from_exported_interface_has_or_is_using_private_type_1: String
-    public var Parameter_0_of_public_static_method_from_exported_class_has_or_is_using_private_type_1: String
-    public var Parameter_0_of_public_method_from_exported_class_has_or_is_using_private_type_1: String
-    public var Parameter_0_of_method_from_exported_interface_has_or_is_using_private_type_1: String
-    public var Parameter_0_of_exported_function_has_or_is_using_private_type_1: String
-    public var Parameter_0_of_constructor_from_exported_class_is_using_inaccessible_module_1: String
-    public var Parameter_0_of_public_static_property_setter_from_exported_class_is_using_inaccessible_module_1: String
-    public var Parameter_0_of_public_property_setter_from_exported_class_is_using_inaccessible_module_1: String
-    public var Parameter_0_of_constructor_signature_from_exported_interface_is_using_inaccessible_module_1: String
-    public var Parameter_0_of_call_signature_from_exported_interface_is_using_inaccessible_module_1: String
-    public var Parameter_0_of_public_static_method_from_exported_class_is_using_inaccessible_module_1: String
-    public var Parameter_0_of_public_method_from_exported_class_is_using_inaccessible_module_1: String
-    public var Parameter_0_of_method_from_exported_interface_is_using_inaccessible_module_1: String
-    public var Parameter_0_of_exported_function_is_using_inaccessible_module_1: String
-    public var Return_type_of_public_static_property_getter_from_exported_class_has_or_is_using_private_type_0: String
-    public var Return_type_of_public_property_getter_from_exported_class_has_or_is_using_private_type_0: String
-    public var Return_type_of_constructor_signature_from_exported_interface_has_or_is_using_private_type_0: String
-    public var Return_type_of_call_signature_from_exported_interface_has_or_is_using_private_type_0: String
-    public var Return_type_of_index_signature_from_exported_interface_has_or_is_using_private_type_0: String
-    public var Return_type_of_public_static_method_from_exported_class_has_or_is_using_private_type_0: String
-    public var Return_type_of_public_method_from_exported_class_has_or_is_using_private_type_0: String
-    public var Return_type_of_method_from_exported_interface_has_or_is_using_private_type_0: String
-    public var Return_type_of_exported_function_has_or_is_using_private_type_0: String
-    public var Return_type_of_public_static_property_getter_from_exported_class_is_using_inaccessible_module_0: String
-    public var Return_type_of_public_property_getter_from_exported_class_is_using_inaccessible_module_0: String
-    public var Return_type_of_constructor_signature_from_exported_interface_is_using_inaccessible_module_0: String
-    public var Return_type_of_call_signature_from_exported_interface_is_using_inaccessible_module_0: String
-    public var Return_type_of_index_signature_from_exported_interface_is_using_inaccessible_module_0: String
-    public var Return_type_of_public_static_method_from_exported_class_is_using_inaccessible_module_0: String
-    public var Return_type_of_public_method_from_exported_class_is_using_inaccessible_module_0: String
-    public var Return_type_of_method_from_exported_interface_is_using_inaccessible_module_0: String
-    public var Return_type_of_exported_function_is_using_inaccessible_module_0: String
-    public var new_T_cannot_be_used_to_create_an_array_Use_new_Array_T_instead: String
-    public var A_parameter_list_must_follow_a_generic_type_argument_list_expected: String
-    public var Multiple_constructor_implementations_are_not_allowed: String
-    public var Unable_to_resolve_external_module_0: String
-    public var Module_cannot_be_aliased_to_a_non_module_type: String
-    public var A_class_may_only_extend_another_class: String
-    public var A_class_may_only_implement_another_class_or_interface: String
-    public var An_interface_may_only_extend_another_class_or_interface: String
-    public var Unable_to_resolve_type: String
-    public var Unable_to_resolve_type_of_0: String
-    public var Unable_to_resolve_type_parameter_constraint: String
-    public var Type_parameter_constraint_cannot_be_a_primitive_type: String
-    public var Supplied_parameters_do_not_match_any_signature_of_call_target: String
-    public var Supplied_parameters_do_not_match_any_signature_of_call_target_NL_0: String
-    public var Invalid_new_expression: String
-    public var Call_signatures_used_in_a_new_expression_must_have_a_void_return_type: String
-    public var Could_not_select_overload_for_new_expression: String
-    public var Type_0_does_not_satisfy_the_constraint_1_for_type_parameter_2: String
-    public var Could_not_select_overload_for_call_expression: String
-    public var Cannot_invoke_an_expression_whose_type_lacks_a_call_signature: String
-    public var Calls_to_super_are_only_valid_inside_a_class: String
-    public var Generic_type_0_requires_1_type_argument_s: String
-    public var Type_of_array_literal_cannot_be_determined_Best_common_type_could_not_be_found_for_array_elements: String
-    public var Could_not_find_enclosing_symbol_for_dotted_name_0: String
-    public var The_property_0_does_not_exist_on_value_of_type_1: String
-    public var Could_not_find_symbol_0: String
-    public var get_and_set_accessor_must_have_the_same_type: String
-    public var this_cannot_be_referenced_in_current_location: String
-    public var Static_members_cannot_reference_class_type_parameters: String
-    public var Class_0_is_recursively_referenced_as_a_base_type_of_itself: String
-    public var Interface_0_is_recursively_referenced_as_a_base_type_of_itself: String
-    public var super_property_access_is_permitted_only_in_a_constructor_member_function_or_member_accessor_of_a_derived_class: String
-    public var super_cannot_be_referenced_in_non_derived_classes: String
-    public var A_super_call_must_be_the_first_statement_in_the_constructor_when_a_class_contains_initialized_properties_or_has_parameter_properties: String
-    public var Constructors_for_derived_classes_must_contain_a_super_call: String
-    public var Super_calls_are_not_permitted_outside_constructors_or_in_nested_functions_inside_constructors: String
-    public var _0_1_is_inaccessible: String
-    public var this_cannot_be_referenced_within_module_bodies: String
-    public var Invalid_expression_types_not_known_to_support_the_addition_operator: String
-    public var The_right_hand_side_of_an_arithmetic_operation_must_be_of_type_any_number_or_an_enum_type: String
-    public var The_left_hand_side_of_an_arithmetic_operation_must_be_of_type_any_number_or_an_enum_type: String
-    public var The_type_of_a_unary_arithmetic_operation_operand_must_be_of_type_any_number_or_an_enum_type: String
-    public var Variable_declarations_of_a_for_statement_cannot_use_a_type_annotation: String
-    public var Variable_declarations_of_a_for_statement_must_be_of_types_string_or_any: String
-    public var The_right_hand_side_of_a_for_in_statement_must_be_of_type_any_an_object_type_or_a_type_parameter: String
-    public var The_left_hand_side_of_an_in_expression_must_be_of_types_any_string_or_number: String
-    public var The_right_hand_side_of_an_in_expression_must_be_of_type_any_an_object_type_or_a_type_parameter: String
-    public var The_left_hand_side_of_an_instanceof_expression_must_be_of_type_any_an_object_type_or_a_type_parameter: String
-    public var The_right_hand_side_of_an_instanceof_expression_must_be_of_type_any_or_of_a_type_assignable_to_the_Function_interface_type: String
-    public var Setters_cannot_return_a_value: String
-    public var Tried_to_query_type_of_uninitialized_module_0: String
-    public var Tried_to_set_variable_type_to_uninitialized_module_type_0: String
-    public var Type_0_does_not_have_type_parameters: String
-    public var Getters_must_return_a_value: String
-    public var Getter_and_setter_accessors_do_not_agree_in_visibility: String
-    public var Invalid_left_hand_side_of_assignment_expression: String
-    public var Function_declared_a_non_void_return_type_but_has_no_return_expression: String
-    public var Cannot_resolve_return_type_reference: String
-    public var Constructors_cannot_have_a_return_type_of_void: String
-    public var Subsequent_variable_declarations_must_have_the_same_type_Variable_0_must_be_of_type_1_but_here_has_type_2: String
-    public var All_symbols_within_a_with_block_will_be_resolved_to_any: String
-    public var Import_declarations_in_an_internal_module_cannot_reference_an_external_module: String
-    public var Class_0_declares_interface_1_but_does_not_implement_it_NL_2: String
-    public var Class_0_declares_class_1_as_an_interface_but_does_not_implement_it_NL_2: String
-    public var The_operand_of_an_increment_or_decrement_operator_must_be_a_variable_property_or_indexer: String
-    public var this_cannot_be_referenced_in_static_initializers_in_a_class_body: String
-    public var Class_0_cannot_extend_class_1_NL_2: String
-    public var Interface_0_cannot_extend_class_1_NL_2: String
-    public var Interface_0_cannot_extend_interface_1_NL_2: String
-    public var Duplicate_overload_signature_for_0: String
-    public var Duplicate_constructor_overload_signature: String
-    public var Duplicate_overload_call_signature: String
-    public var Duplicate_overload_construct_signature: String
-    public var Overload_signature_is_not_compatible_with_function_definition: String
-    public var Overload_signature_is_not_compatible_with_function_definition_NL_0: String
-    public var Overload_signatures_must_all_be_public_or_private: String
-    public var Overload_signatures_must_all_be_exported_or_not_exported: String
-    public var Overload_signatures_must_all_be_ambient_or_non_ambient: String
-    public var Overload_signatures_must_all_be_optional_or_required: String
-    public var Specialized_overload_signature_is_not_assignable_to_any_non_specialized_signature: String
-    public var this_cannot_be_referenced_in_constructor_arguments: String
-    public var Instance_member_cannot_be_accessed_off_a_class: String
-    public var Untyped_function_calls_may_not_accept_type_arguments: String
-    public var Non_generic_functions_may_not_accept_type_arguments: String
-    public var A_generic_type_may_not_reference_itself_with_a_wrapped_form_of_its_own_type_parameters: String
-    public var Rest_parameters_must_be_array_types: String
-    public var Overload_signature_implementation_cannot_use_specialized_type: String
-    public var Export_assignments_may_only_be_used_at_the_top_level_of_external_modules: String
-    public var Export_assignments_may_only_be_made_with_variables_functions_classes_interfaces_enums_and_internal_modules: String
-    public var Only_public_methods_of_the_base_class_are_accessible_via_the_super_keyword: String
-    public var Numeric_indexer_type_0_must_be_assignable_to_string_indexer_type_1: String
-    public var Numeric_indexer_type_0_must_be_assignable_to_string_indexer_type_1_NL_2: String
-    public var All_numerically_named_properties_must_be_assignable_to_numeric_indexer_type_0: String
-    public var All_numerically_named_properties_must_be_assignable_to_numeric_indexer_type_0_NL_1: String
-    public var All_named_properties_must_be_assignable_to_string_indexer_type_0: String
-    public var All_named_properties_must_be_assignable_to_string_indexer_type_0_NL_1: String
-    public var Generic_type_references_must_include_all_type_arguments: String
-    public var Default_arguments_are_only_allowed_in_implementation: String
-    public var Overloads_cannot_differ_only_by_return_type: String
-    public var Function_expression_declared_a_non_void_return_type_but_has_no_return_expression: String
-    public var Import_declaration_referencing_identifier_from_internal_module_can_only_be_made_with_variables_functions_classes_interfaces_enums_and_internal_modules: String
-    public var Could_not_find_symbol_0_in_module_1: String
-    public var Unable_to_resolve_module_reference_0: String
-    public var Could_not_find_module_0_in_module_1: String
-    public var Exported_import_declaration_0_is_assigned_value_with_type_that_has_or_is_using_private_type_1: String
-    public var Exported_import_declaration_0_is_assigned_value_with_type_that_is_using_inaccessible_module_1: String
-    public var Exported_import_declaration_0_is_assigned_type_that_has_or_is_using_private_type_1: String
-    public var Exported_import_declaration_0_is_assigned_type_that_is_using_inaccessible_module_1: String
-    public var Exported_import_declaration_0_is_assigned_container_that_is_or_is_using_inaccessible_module_1: String
-    public var Type_name_0_in_extends_clause_does_not_reference_constructor_function_for_1: String
-    public var Internal_module_reference_0_in_import_declaration_does_not_reference_module_instance_for_1: String
-    public var Module_0_cannot_merge_with_previous_declaration_of_1_in_a_different_file_2: String
-    public var Interface_0_cannot_simultaneously_extend_types_1_and_2_NL_3: String
-    public var Initializer_of_parameter_0_cannot_reference_identifier_1_declared_after_it: String
-    public var Ambient_external_module_declaration_cannot_be_reopened: String
-    public var All_declarations_of_merged_declaration_0_must_be_exported_or_not_exported: String
-    public var super_cannot_be_referenced_in_constructor_arguments: String
-    public var Return_type_of_constructor_signature_must_be_assignable_to_the_instance_type_of_the_class: String
-    public var Ambient_external_module_declaration_must_be_defined_in_global_context: String
-    public var Ambient_external_module_declaration_cannot_specify_relative_module_name: String
-    public var Import_declaration_in_an_ambient_external_module_declaration_cannot_reference_external_module_through_relative_external_module_name: String
-    public var Could_not_find_the_best_common_type_of_types_of_all_return_statement_expressions: String
-    public var Import_declaration_cannot_refer_to_external_module_reference_when_noResolve_option_is_set: String
-    public var Duplicate_identifier_this_Compiler_uses_variable_declaration_this_to_capture_this_reference: String
-    public var continue_statement_can_only_be_used_within_an_enclosing_iteration_statement: String
-    public var break_statement_can_only_be_used_within_an_enclosing_iteration_or_switch_statement: String
-    public var Jump_target_not_found: String
-    public var Jump_target_cannot_cross_function_boundary: String
-    public var Duplicate_identifier_super_Compiler_uses_super_to_capture_base_class_reference: String
-    public var Expression_resolves_to_variable_declaration_this_that_compiler_uses_to_capture_this_reference: String
-    public var Expression_resolves_to_super_that_compiler_uses_to_capture_base_class_reference: String
-    public var TypeParameter_0_of_constructor_signature_from_exported_interface_has_or_is_using_private_type_1: String
-    public var TypeParameter_0_of_call_signature_from_exported_interface_has_or_is_using_private_type_1: String
-    public var TypeParameter_0_of_public_static_method_from_exported_class_has_or_is_using_private_type_1: String
-    public var TypeParameter_0_of_public_method_from_exported_class_has_or_is_using_private_type_1: String
-    public var TypeParameter_0_of_method_from_exported_interface_has_or_is_using_private_type_1: String
-    public var TypeParameter_0_of_exported_function_has_or_is_using_private_type_1: String
-    public var TypeParameter_0_of_constructor_signature_from_exported_interface_is_using_inaccessible_module_1: String
-    public var TypeParameter_0_of_call_signature_from_exported_interface_is_using_inaccessible_module_1: String
-    public var TypeParameter_0_of_public_static_method_from_exported_class_is_using_inaccessible_module_1: String
-    public var TypeParameter_0_of_public_method_from_exported_class_is_using_inaccessible_module_1: String
-    public var TypeParameter_0_of_method_from_exported_interface_is_using_inaccessible_module_1: String
-    public var TypeParameter_0_of_exported_function_is_using_inaccessible_module_1: String
-    public var TypeParameter_0_of_exported_class_has_or_is_using_private_type_1: String
-    public var TypeParameter_0_of_exported_interface_has_or_is_using_private_type_1: String
-    public var TypeParameter_0_of_exported_class_is_using_inaccessible_module_1: String
-    public var TypeParameter_0_of_exported_interface_is_using_inaccessible_module_1: String
-    public var Duplicate_identifier_i_Compiler_uses_i_to_initialize_rest_parameter: String
-    public var Duplicate_identifier_arguments_Compiler_uses_arguments_to_initialize_rest_parameters: String
-    public var Type_of_conditional_0_must_be_identical_to_1_or_2: String
-    public var Type_of_conditional_0_must_be_identical_to_1_2_or_3: String
-    public var Duplicate_identifier_0_Compiler_reserves_name_1_in_top_level_scope_of_an_external_module: String
-    public var Constraint_of_a_type_parameter_cannot_reference_any_type_parameter_from_the_same_type_parameter_list: String
-    public var Initializer_of_instance_member_variable_0_cannot_reference_identifier_1_declared_in_the_constructor: String
-    public var Parameter_0_cannot_be_referenced_in_its_initializer: String
-    public var Duplicate_string_index_signature: String
-    public var Duplicate_number_index_signature: String
-    public var All_declarations_of_an_interface_must_have_identical_type_parameters: String
-    public var Expression_resolves_to_variable_declaration_i_that_compiler_uses_to_initialize_rest_parameter: String
-    public var Type_0_is_missing_property_1_from_type_2: String
-    public var Types_of_property_0_of_types_1_and_2_are_incompatible: String
-    public var Types_of_property_0_of_types_1_and_2_are_incompatible_NL_3: String
-    public var Property_0_defined_as_private_in_type_1_is_defined_as_public_in_type_2: String
-    public var Property_0_defined_as_public_in_type_1_is_defined_as_private_in_type_2: String
-    public var Types_0_and_1_define_property_2_as_private: String
-    public var Call_signatures_of_types_0_and_1_are_incompatible: String
-    public var Call_signatures_of_types_0_and_1_are_incompatible_NL_2: String
-    public var Type_0_requires_a_call_signature_but_type_1_lacks_one: String
-    public var Construct_signatures_of_types_0_and_1_are_incompatible: String
-    public var Construct_signatures_of_types_0_and_1_are_incompatible_NL_2: String
-    public var Type_0_requires_a_construct_signature_but_type_1_lacks_one: String
-    public var Index_signatures_of_types_0_and_1_are_incompatible: String
-    public var Index_signatures_of_types_0_and_1_are_incompatible_NL_2: String
-    public var Call_signature_expects_0_or_fewer_parameters: String
-    public var Could_not_apply_type_0_to_argument_1_which_is_of_type_2: String
-    public var Class_0_defines_instance_member_accessor_1_but_extended_class_2_defines_it_as_instance_member_function: String
-    public var Class_0_defines_instance_member_property_1_but_extended_class_2_defines_it_as_instance_member_function: String
-    public var Class_0_defines_instance_member_function_1_but_extended_class_2_defines_it_as_instance_member_accessor: String
-    public var Class_0_defines_instance_member_function_1_but_extended_class_2_defines_it_as_instance_member_property: String
-    public var Types_of_static_property_0_of_class_1_and_class_2_are_incompatible: String
-    public var Types_of_static_property_0_of_class_1_and_class_2_are_incompatible_NL_3: String
-    public var Type_reference_cannot_refer_to_container_0: String
-    public var Type_reference_must_refer_to_type: String
-    public var In_enums_with_multiple_declarations_only_one_declaration_can_omit_an_initializer_for_the_first_enum_element: String
-    public var _0_overload_s: String
-    public var Variable_declaration_cannot_have_the_same_name_as_an_import_declaration: String
-    public var Signature_expected_0_type_arguments_got_1_instead: String
-    public var Property_0_defined_as_optional_in_type_1_but_is_required_in_type_2: String
-    public var Types_0_and_1_originating_in_infinitely_expanding_type_reference_do_not_refer_to_same_named_type: String
-    public var Types_0_and_1_originating_in_infinitely_expanding_type_reference_have_incompatible_type_arguments: String
-    public var Types_0_and_1_originating_in_infinitely_expanding_type_reference_have_incompatible_type_arguments_NL_2: String
-    public var Named_properties_0_of_types_1_and_2_are_not_identical: String
-    public var Types_of_string_indexer_of_types_0_and_1_are_not_identical: String
-    public var Types_of_number_indexer_of_types_0_and_1_are_not_identical: String
-    public var Type_of_number_indexer_in_type_0_is_not_assignable_to_string_indexer_type_in_type_1_NL_2: String
-    public var Type_of_property_0_in_type_1_is_not_assignable_to_string_indexer_type_in_type_2_NL_3: String
-    public var Type_of_property_0_in_type_1_is_not_assignable_to_number_indexer_type_in_type_2_NL_3: String
-    public var Static_property_0_defined_as_private_in_type_1_is_defined_as_public_in_type_2: String
-    public var Static_property_0_defined_as_public_in_type_1_is_defined_as_private_in_type_2: String
-    public var Types_0_and_1_define_static_property_2_as_private: String
-    public var Current_host_does_not_support_0_option: String
-    public var ECMAScript_target_version_0_not_supported_Specify_a_valid_target_version_1_default_or_2: String
-    public var Module_code_generation_0_not_supported: String
-    public var Could_not_find_file_0: String
-    public var A_file_cannot_have_a_reference_to_itself: String
-    public var Cannot_resolve_referenced_file_0: String
-    public var Cannot_find_the_common_subdirectory_path_for_the_input_files: String
-    public var Emit_Error_0: String
-    public var Cannot_read_file_0_1: String
-    public var Unsupported_file_encoding: String
-    public var Locale_must_be_of_the_form_language_or_language_territory_For_example_0_or_1: String
-    public var Unsupported_locale_0: String
-    public var Execution_Failed_NL: String
-    public var Invalid_call_to_up: String
-    public var Invalid_call_to_down: String
-    public var Base64_value_0_finished_with_a_continuation_bit: String
-    public var Unknown_option_0: String
-    public var Expected_0_arguments_to_message_got_1_instead: String
-    public var Expected_the_message_0_to_have_1_arguments_but_it_had_2: String
-    public var Could_not_delete_file_0: String
-    public var Could_not_create_directory_0: String
-    public var Error_while_executing_file_0: String
-    public var Cannot_compile_external_modules_unless_the_module_flag_is_provided: String
-    public var Option_mapRoot_cannot_be_specified_without_specifying_sourcemap_option: String
-    public var Option_sourceRoot_cannot_be_specified_without_specifying_sourcemap_option: String
-    public var Options_mapRoot_and_sourceRoot_cannot_be_specified_without_specifying_sourcemap_option: String
-    public var Option_0_specified_without_1: String
-    public var codepage_option_not_supported_on_current_platform: String
-    public var Concatenate_and_emit_output_to_single_file: String
-    public var Generates_corresponding_0_file: String
-    public var Specifies_the_location_where_debugger_should_locate_map_files_instead_of_generated_locations: String
-    public var Specifies_the_location_where_debugger_should_locate_TypeScript_files_instead_of_source_locations: String
-    public var Watch_input_files: String
-    public var Redirect_output_structure_to_the_directory: String
-    public var Do_not_emit_comments_to_output: String
-    public var Skip_resolution_and_preprocessing: String
-    public var Specify_ECMAScript_target_version_0_default_or_1: String
-    public var Specify_module_code_generation_0_or_1: String
-    public var Print_this_message: String
-    public var Print_the_compiler_s_version_0: String
-    public var Allow_use_of_deprecated_0_keyword_when_referencing_an_external_module: String
-    public var Specify_locale_for_errors_and_messages_For_example_0_or_1: String
-    public var Syntax_0: String
-    public var options: String
-    public var file1: String
-    public var Examples: String
-    public var Options: String
-    public var Insert_command_line_options_and_files_from_a_file: String
-    public var Version_0: String
-    public var Use_the_0_flag_to_see_options: String
-    public var NL_Recompiling_0: String
-    public var STRING: String
-    public var KIND: String
-    public var file2: String
-    public var VERSION: String
-    public var LOCATION: String
-    public var DIRECTORY: String
-    public var NUMBER: String
-    public var Specify_the_codepage_to_use_when_opening_source_files: String
-    public var Additional_locations: String
-    public var This_version_of_the_Javascript_runtime_does_not_support_the_0_function: String
-    public var Unknown_rule: String
-    public var Invalid_line_number_0: String
-    public var Warn_on_expressions_and_declarations_with_an_implied_any_type: String
-    public var Variable_0_implicitly_has_an_any_type: String
-    public var Parameter_0_of_1_implicitly_has_an_any_type: String
-    public var Parameter_0_of_function_type_implicitly_has_an_any_type: String
-    public var Member_0_of_object_type_implicitly_has_an_any_type: String
-    public var new_expression_which_lacks_a_constructor_signature_implicitly_has_an_any_type: String
-    public var _0_which_lacks_return_type_annotation_implicitly_has_an_any_return_type: String
-    public var Function_expression_which_lacks_return_type_annotation_implicitly_has_an_any_return_type: String
-    public var Parameter_0_of_lambda_function_implicitly_has_an_any_type: String
-    public var Constructor_signature_which_lacks_return_type_annotation_implicitly_has_an_any_return_type: String
-    public var Lambda_Function_which_lacks_return_type_annotation_implicitly_has_an_any_return_type: String
-    public var Array_Literal_implicitly_has_an_any_type_from_widening: String
-    public var _0_which_lacks_get_accessor_and_parameter_type_annotation_on_set_accessor_implicitly_has_an_any_type: String
-    public var Index_signature_of_object_type_implicitly_has_an_any_type: String
-    public var Object_literal_s_property_0_implicitly_has_an_any_type_from_widening: String
-}
 module("typescript-services")
 public object TypeScript {
+    public trait `T$0` {
+        public var error_TS_0_1: String
+        public var warning_TS_0_1: String
+        public var Unrecognized_escape_sequence: String
+        public var Unexpected_character_0: String
+        public var Missing_close_quote_character: String
+        public var Identifier_expected: String
+        public var _0_keyword_expected: String
+        public var _0_expected: String
+        public var Identifier_expected_0_is_a_keyword: String
+        public var Automatic_semicolon_insertion_not_allowed: String
+        public var Unexpected_token_0_expected: String
+        public var Trailing_separator_not_allowed: String
+        public var AsteriskSlash_expected: String
+        public var public_or_private_modifier_must_precede_static: String
+        public var Unexpected_token: String
+        public var Catch_clause_parameter_cannot_have_a_type_annotation: String
+        public var Rest_parameter_must_be_last_in_list: String
+        public var Parameter_cannot_have_question_mark_and_initializer: String
+        public var Required_parameter_cannot_follow_optional_parameter: String
+        public var Index_signatures_cannot_have_rest_parameters: String
+        public var Index_signature_parameter_cannot_have_accessibility_modifiers: String
+        public var Index_signature_parameter_cannot_have_a_question_mark: String
+        public var Index_signature_parameter_cannot_have_an_initializer: String
+        public var Index_signature_must_have_a_type_annotation: String
+        public var Index_signature_parameter_must_have_a_type_annotation: String
+        public var Index_signature_parameter_type_must_be_string_or_number: String
+        public var extends_clause_already_seen: String
+        public var extends_clause_must_precede_implements_clause: String
+        public var Classes_can_only_extend_a_single_class: String
+        public var implements_clause_already_seen: String
+        public var Accessibility_modifier_already_seen: String
+        public var _0_modifier_must_precede_1_modifier: String
+        public var _0_modifier_already_seen: String
+        public var _0_modifier_cannot_appear_on_a_class_element: String
+        public var Interface_declaration_cannot_have_implements_clause: String
+        public var super_invocation_cannot_have_type_arguments: String
+        public var Only_ambient_modules_can_use_quoted_names: String
+        public var Statements_are_not_allowed_in_ambient_contexts: String
+        public var Implementations_are_not_allowed_in_ambient_contexts: String
+        public var declare_modifier_not_allowed_for_code_already_in_an_ambient_context: String
+        public var Initializers_are_not_allowed_in_ambient_contexts: String
+        public var Parameter_property_declarations_can_only_be_used_in_a_non_ambient_constructor_declaration: String
+        public var Function_implementation_expected: String
+        public var Constructor_implementation_expected: String
+        public var Function_overload_name_must_be_0: String
+        public var _0_modifier_cannot_appear_on_a_module_element: String
+        public var declare_modifier_cannot_appear_on_an_interface_declaration: String
+        public var declare_modifier_required_for_top_level_element: String
+        public var Rest_parameter_cannot_be_optional: String
+        public var Rest_parameter_cannot_have_an_initializer: String
+        public var set_accessor_must_have_one_and_only_one_parameter: String
+        public var set_accessor_parameter_cannot_be_optional: String
+        public var set_accessor_parameter_cannot_have_an_initializer: String
+        public var set_accessor_cannot_have_rest_parameter: String
+        public var get_accessor_cannot_have_parameters: String
+        public var Modifiers_cannot_appear_here: String
+        public var Accessors_are_only_available_when_targeting_ECMAScript_5_and_higher: String
+        public var Class_name_cannot_be_0: String
+        public var Interface_name_cannot_be_0: String
+        public var Enum_name_cannot_be_0: String
+        public var Module_name_cannot_be_0: String
+        public var Enum_member_must_have_initializer: String
+        public var Export_assignment_cannot_be_used_in_internal_modules: String
+        public var Export_assignment_not_allowed_in_module_with_exported_element: String
+        public var Module_cannot_have_multiple_export_assignments: String
+        public var Ambient_enum_elements_can_only_have_integer_literal_initializers: String
+        public var module_class_interface_enum_import_or_statement: String
+        public var constructor_function_accessor_or_variable: String
+        public var statement: String
+        public var case_or_default_clause: String
+        public var identifier: String
+        public var call_construct_index_property_or_function_signature: String
+        public var expression: String
+        public var type_name: String
+        public var property_or_accessor: String
+        public var parameter: String
+        public var `type`: String
+        public var type_parameter: String
+        public var declare_modifier_not_allowed_on_import_declaration: String
+        public var Function_overload_must_be_static: String
+        public var Function_overload_must_not_be_static: String
+        public var Parameter_property_declarations_cannot_be_used_in_a_constructor_overload: String
+        public var Invalid_reference_directive_syntax: String
+        public var Octal_literals_are_not_available_when_targeting_ECMAScript_5_and_higher: String
+        public var Accessors_are_not_allowed_in_ambient_contexts: String
+        public var _0_modifier_cannot_appear_on_a_constructor_declaration: String
+        public var _0_modifier_cannot_appear_on_a_parameter: String
+        public var Only_a_single_variable_declaration_is_allowed_in_a_for_in_statement: String
+        public var Type_parameters_cannot_appear_on_a_constructor_declaration: String
+        public var Type_annotation_cannot_appear_on_a_constructor_declaration: String
+        public var Duplicate_identifier_0: String
+        public var The_name_0_does_not_exist_in_the_current_scope: String
+        public var The_name_0_does_not_refer_to_a_value: String
+        public var super_can_only_be_used_inside_a_class_instance_method: String
+        public var The_left_hand_side_of_an_assignment_expression_must_be_a_variable_property_or_indexer: String
+        public var Value_of_type_0_is_not_callable_Did_you_mean_to_include_new: String
+        public var Value_of_type_0_is_not_callable: String
+        public var Value_of_type_0_is_not_newable: String
+        public var Value_of_type_0_is_not_indexable_by_type_1: String
+        public var Operator_0_cannot_be_applied_to_types_1_and_2: String
+        public var Operator_0_cannot_be_applied_to_types_1_and_2_3: String
+        public var Cannot_convert_0_to_1: String
+        public var Cannot_convert_0_to_1_NL_2: String
+        public var Expected_var_class_interface_or_module: String
+        public var Operator_0_cannot_be_applied_to_type_1: String
+        public var Getter_0_already_declared: String
+        public var Setter_0_already_declared: String
+        public var Exported_class_0_extends_private_class_1: String
+        public var Exported_class_0_implements_private_interface_1: String
+        public var Exported_interface_0_extends_private_interface_1: String
+        public var Exported_class_0_extends_class_from_inaccessible_module_1: String
+        public var Exported_class_0_implements_interface_from_inaccessible_module_1: String
+        public var Exported_interface_0_extends_interface_from_inaccessible_module_1: String
+        public var Public_static_property_0_of_exported_class_has_or_is_using_private_type_1: String
+        public var Public_property_0_of_exported_class_has_or_is_using_private_type_1: String
+        public var Property_0_of_exported_interface_has_or_is_using_private_type_1: String
+        public var Exported_variable_0_has_or_is_using_private_type_1: String
+        public var Public_static_property_0_of_exported_class_is_using_inaccessible_module_1: String
+        public var Public_property_0_of_exported_class_is_using_inaccessible_module_1: String
+        public var Property_0_of_exported_interface_is_using_inaccessible_module_1: String
+        public var Exported_variable_0_is_using_inaccessible_module_1: String
+        public var Parameter_0_of_constructor_from_exported_class_has_or_is_using_private_type_1: String
+        public var Parameter_0_of_public_static_property_setter_from_exported_class_has_or_is_using_private_type_1: String
+        public var Parameter_0_of_public_property_setter_from_exported_class_has_or_is_using_private_type_1: String
+        public var Parameter_0_of_constructor_signature_from_exported_interface_has_or_is_using_private_type_1: String
+        public var Parameter_0_of_call_signature_from_exported_interface_has_or_is_using_private_type_1: String
+        public var Parameter_0_of_public_static_method_from_exported_class_has_or_is_using_private_type_1: String
+        public var Parameter_0_of_public_method_from_exported_class_has_or_is_using_private_type_1: String
+        public var Parameter_0_of_method_from_exported_interface_has_or_is_using_private_type_1: String
+        public var Parameter_0_of_exported_function_has_or_is_using_private_type_1: String
+        public var Parameter_0_of_constructor_from_exported_class_is_using_inaccessible_module_1: String
+        public var Parameter_0_of_public_static_property_setter_from_exported_class_is_using_inaccessible_module_1: String
+        public var Parameter_0_of_public_property_setter_from_exported_class_is_using_inaccessible_module_1: String
+        public var Parameter_0_of_constructor_signature_from_exported_interface_is_using_inaccessible_module_1: String
+        public var Parameter_0_of_call_signature_from_exported_interface_is_using_inaccessible_module_1: String
+        public var Parameter_0_of_public_static_method_from_exported_class_is_using_inaccessible_module_1: String
+        public var Parameter_0_of_public_method_from_exported_class_is_using_inaccessible_module_1: String
+        public var Parameter_0_of_method_from_exported_interface_is_using_inaccessible_module_1: String
+        public var Parameter_0_of_exported_function_is_using_inaccessible_module_1: String
+        public var Return_type_of_public_static_property_getter_from_exported_class_has_or_is_using_private_type_0: String
+        public var Return_type_of_public_property_getter_from_exported_class_has_or_is_using_private_type_0: String
+        public var Return_type_of_constructor_signature_from_exported_interface_has_or_is_using_private_type_0: String
+        public var Return_type_of_call_signature_from_exported_interface_has_or_is_using_private_type_0: String
+        public var Return_type_of_index_signature_from_exported_interface_has_or_is_using_private_type_0: String
+        public var Return_type_of_public_static_method_from_exported_class_has_or_is_using_private_type_0: String
+        public var Return_type_of_public_method_from_exported_class_has_or_is_using_private_type_0: String
+        public var Return_type_of_method_from_exported_interface_has_or_is_using_private_type_0: String
+        public var Return_type_of_exported_function_has_or_is_using_private_type_0: String
+        public var Return_type_of_public_static_property_getter_from_exported_class_is_using_inaccessible_module_0: String
+        public var Return_type_of_public_property_getter_from_exported_class_is_using_inaccessible_module_0: String
+        public var Return_type_of_constructor_signature_from_exported_interface_is_using_inaccessible_module_0: String
+        public var Return_type_of_call_signature_from_exported_interface_is_using_inaccessible_module_0: String
+        public var Return_type_of_index_signature_from_exported_interface_is_using_inaccessible_module_0: String
+        public var Return_type_of_public_static_method_from_exported_class_is_using_inaccessible_module_0: String
+        public var Return_type_of_public_method_from_exported_class_is_using_inaccessible_module_0: String
+        public var Return_type_of_method_from_exported_interface_is_using_inaccessible_module_0: String
+        public var Return_type_of_exported_function_is_using_inaccessible_module_0: String
+        public var new_T_cannot_be_used_to_create_an_array_Use_new_Array_T_instead: String
+        public var A_parameter_list_must_follow_a_generic_type_argument_list_expected: String
+        public var Multiple_constructor_implementations_are_not_allowed: String
+        public var Unable_to_resolve_external_module_0: String
+        public var Module_cannot_be_aliased_to_a_non_module_type: String
+        public var A_class_may_only_extend_another_class: String
+        public var A_class_may_only_implement_another_class_or_interface: String
+        public var An_interface_may_only_extend_another_class_or_interface: String
+        public var Unable_to_resolve_type: String
+        public var Unable_to_resolve_type_of_0: String
+        public var Unable_to_resolve_type_parameter_constraint: String
+        public var Type_parameter_constraint_cannot_be_a_primitive_type: String
+        public var Supplied_parameters_do_not_match_any_signature_of_call_target: String
+        public var Supplied_parameters_do_not_match_any_signature_of_call_target_NL_0: String
+        public var Invalid_new_expression: String
+        public var Call_signatures_used_in_a_new_expression_must_have_a_void_return_type: String
+        public var Could_not_select_overload_for_new_expression: String
+        public var Type_0_does_not_satisfy_the_constraint_1_for_type_parameter_2: String
+        public var Could_not_select_overload_for_call_expression: String
+        public var Cannot_invoke_an_expression_whose_type_lacks_a_call_signature: String
+        public var Calls_to_super_are_only_valid_inside_a_class: String
+        public var Generic_type_0_requires_1_type_argument_s: String
+        public var Type_of_array_literal_cannot_be_determined_Best_common_type_could_not_be_found_for_array_elements: String
+        public var Could_not_find_enclosing_symbol_for_dotted_name_0: String
+        public var The_property_0_does_not_exist_on_value_of_type_1: String
+        public var Could_not_find_symbol_0: String
+        public var get_and_set_accessor_must_have_the_same_type: String
+        public var this_cannot_be_referenced_in_current_location: String
+        public var Static_members_cannot_reference_class_type_parameters: String
+        public var Class_0_is_recursively_referenced_as_a_base_type_of_itself: String
+        public var Interface_0_is_recursively_referenced_as_a_base_type_of_itself: String
+        public var super_property_access_is_permitted_only_in_a_constructor_member_function_or_member_accessor_of_a_derived_class: String
+        public var super_cannot_be_referenced_in_non_derived_classes: String
+        public var A_super_call_must_be_the_first_statement_in_the_constructor_when_a_class_contains_initialized_properties_or_has_parameter_properties: String
+        public var Constructors_for_derived_classes_must_contain_a_super_call: String
+        public var Super_calls_are_not_permitted_outside_constructors_or_in_nested_functions_inside_constructors: String
+        public var _0_1_is_inaccessible: String
+        public var this_cannot_be_referenced_within_module_bodies: String
+        public var Invalid_expression_types_not_known_to_support_the_addition_operator: String
+        public var The_right_hand_side_of_an_arithmetic_operation_must_be_of_type_any_number_or_an_enum_type: String
+        public var The_left_hand_side_of_an_arithmetic_operation_must_be_of_type_any_number_or_an_enum_type: String
+        public var The_type_of_a_unary_arithmetic_operation_operand_must_be_of_type_any_number_or_an_enum_type: String
+        public var Variable_declarations_of_a_for_statement_cannot_use_a_type_annotation: String
+        public var Variable_declarations_of_a_for_statement_must_be_of_types_string_or_any: String
+        public var The_right_hand_side_of_a_for_in_statement_must_be_of_type_any_an_object_type_or_a_type_parameter: String
+        public var The_left_hand_side_of_an_in_expression_must_be_of_types_any_string_or_number: String
+        public var The_right_hand_side_of_an_in_expression_must_be_of_type_any_an_object_type_or_a_type_parameter: String
+        public var The_left_hand_side_of_an_instanceof_expression_must_be_of_type_any_an_object_type_or_a_type_parameter: String
+        public var The_right_hand_side_of_an_instanceof_expression_must_be_of_type_any_or_of_a_type_assignable_to_the_Function_interface_type: String
+        public var Setters_cannot_return_a_value: String
+        public var Tried_to_query_type_of_uninitialized_module_0: String
+        public var Tried_to_set_variable_type_to_uninitialized_module_type_0: String
+        public var Type_0_does_not_have_type_parameters: String
+        public var Getters_must_return_a_value: String
+        public var Getter_and_setter_accessors_do_not_agree_in_visibility: String
+        public var Invalid_left_hand_side_of_assignment_expression: String
+        public var Function_declared_a_non_void_return_type_but_has_no_return_expression: String
+        public var Cannot_resolve_return_type_reference: String
+        public var Constructors_cannot_have_a_return_type_of_void: String
+        public var Subsequent_variable_declarations_must_have_the_same_type_Variable_0_must_be_of_type_1_but_here_has_type_2: String
+        public var All_symbols_within_a_with_block_will_be_resolved_to_any: String
+        public var Import_declarations_in_an_internal_module_cannot_reference_an_external_module: String
+        public var Class_0_declares_interface_1_but_does_not_implement_it_NL_2: String
+        public var Class_0_declares_class_1_as_an_interface_but_does_not_implement_it_NL_2: String
+        public var The_operand_of_an_increment_or_decrement_operator_must_be_a_variable_property_or_indexer: String
+        public var this_cannot_be_referenced_in_static_initializers_in_a_class_body: String
+        public var Class_0_cannot_extend_class_1_NL_2: String
+        public var Interface_0_cannot_extend_class_1_NL_2: String
+        public var Interface_0_cannot_extend_interface_1_NL_2: String
+        public var Duplicate_overload_signature_for_0: String
+        public var Duplicate_constructor_overload_signature: String
+        public var Duplicate_overload_call_signature: String
+        public var Duplicate_overload_construct_signature: String
+        public var Overload_signature_is_not_compatible_with_function_definition: String
+        public var Overload_signature_is_not_compatible_with_function_definition_NL_0: String
+        public var Overload_signatures_must_all_be_public_or_private: String
+        public var Overload_signatures_must_all_be_exported_or_not_exported: String
+        public var Overload_signatures_must_all_be_ambient_or_non_ambient: String
+        public var Overload_signatures_must_all_be_optional_or_required: String
+        public var Specialized_overload_signature_is_not_assignable_to_any_non_specialized_signature: String
+        public var this_cannot_be_referenced_in_constructor_arguments: String
+        public var Instance_member_cannot_be_accessed_off_a_class: String
+        public var Untyped_function_calls_may_not_accept_type_arguments: String
+        public var Non_generic_functions_may_not_accept_type_arguments: String
+        public var A_generic_type_may_not_reference_itself_with_a_wrapped_form_of_its_own_type_parameters: String
+        public var Rest_parameters_must_be_array_types: String
+        public var Overload_signature_implementation_cannot_use_specialized_type: String
+        public var Export_assignments_may_only_be_used_at_the_top_level_of_external_modules: String
+        public var Export_assignments_may_only_be_made_with_variables_functions_classes_interfaces_enums_and_internal_modules: String
+        public var Only_public_methods_of_the_base_class_are_accessible_via_the_super_keyword: String
+        public var Numeric_indexer_type_0_must_be_assignable_to_string_indexer_type_1: String
+        public var Numeric_indexer_type_0_must_be_assignable_to_string_indexer_type_1_NL_2: String
+        public var All_numerically_named_properties_must_be_assignable_to_numeric_indexer_type_0: String
+        public var All_numerically_named_properties_must_be_assignable_to_numeric_indexer_type_0_NL_1: String
+        public var All_named_properties_must_be_assignable_to_string_indexer_type_0: String
+        public var All_named_properties_must_be_assignable_to_string_indexer_type_0_NL_1: String
+        public var Generic_type_references_must_include_all_type_arguments: String
+        public var Default_arguments_are_only_allowed_in_implementation: String
+        public var Overloads_cannot_differ_only_by_return_type: String
+        public var Function_expression_declared_a_non_void_return_type_but_has_no_return_expression: String
+        public var Import_declaration_referencing_identifier_from_internal_module_can_only_be_made_with_variables_functions_classes_interfaces_enums_and_internal_modules: String
+        public var Could_not_find_symbol_0_in_module_1: String
+        public var Unable_to_resolve_module_reference_0: String
+        public var Could_not_find_module_0_in_module_1: String
+        public var Exported_import_declaration_0_is_assigned_value_with_type_that_has_or_is_using_private_type_1: String
+        public var Exported_import_declaration_0_is_assigned_value_with_type_that_is_using_inaccessible_module_1: String
+        public var Exported_import_declaration_0_is_assigned_type_that_has_or_is_using_private_type_1: String
+        public var Exported_import_declaration_0_is_assigned_type_that_is_using_inaccessible_module_1: String
+        public var Exported_import_declaration_0_is_assigned_container_that_is_or_is_using_inaccessible_module_1: String
+        public var Type_name_0_in_extends_clause_does_not_reference_constructor_function_for_1: String
+        public var Internal_module_reference_0_in_import_declaration_does_not_reference_module_instance_for_1: String
+        public var Module_0_cannot_merge_with_previous_declaration_of_1_in_a_different_file_2: String
+        public var Interface_0_cannot_simultaneously_extend_types_1_and_2_NL_3: String
+        public var Initializer_of_parameter_0_cannot_reference_identifier_1_declared_after_it: String
+        public var Ambient_external_module_declaration_cannot_be_reopened: String
+        public var All_declarations_of_merged_declaration_0_must_be_exported_or_not_exported: String
+        public var super_cannot_be_referenced_in_constructor_arguments: String
+        public var Return_type_of_constructor_signature_must_be_assignable_to_the_instance_type_of_the_class: String
+        public var Ambient_external_module_declaration_must_be_defined_in_global_context: String
+        public var Ambient_external_module_declaration_cannot_specify_relative_module_name: String
+        public var Import_declaration_in_an_ambient_external_module_declaration_cannot_reference_external_module_through_relative_external_module_name: String
+        public var Could_not_find_the_best_common_type_of_types_of_all_return_statement_expressions: String
+        public var Import_declaration_cannot_refer_to_external_module_reference_when_noResolve_option_is_set: String
+        public var Duplicate_identifier_this_Compiler_uses_variable_declaration_this_to_capture_this_reference: String
+        public var continue_statement_can_only_be_used_within_an_enclosing_iteration_statement: String
+        public var break_statement_can_only_be_used_within_an_enclosing_iteration_or_switch_statement: String
+        public var Jump_target_not_found: String
+        public var Jump_target_cannot_cross_function_boundary: String
+        public var Duplicate_identifier_super_Compiler_uses_super_to_capture_base_class_reference: String
+        public var Expression_resolves_to_variable_declaration_this_that_compiler_uses_to_capture_this_reference: String
+        public var Expression_resolves_to_super_that_compiler_uses_to_capture_base_class_reference: String
+        public var TypeParameter_0_of_constructor_signature_from_exported_interface_has_or_is_using_private_type_1: String
+        public var TypeParameter_0_of_call_signature_from_exported_interface_has_or_is_using_private_type_1: String
+        public var TypeParameter_0_of_public_static_method_from_exported_class_has_or_is_using_private_type_1: String
+        public var TypeParameter_0_of_public_method_from_exported_class_has_or_is_using_private_type_1: String
+        public var TypeParameter_0_of_method_from_exported_interface_has_or_is_using_private_type_1: String
+        public var TypeParameter_0_of_exported_function_has_or_is_using_private_type_1: String
+        public var TypeParameter_0_of_constructor_signature_from_exported_interface_is_using_inaccessible_module_1: String
+        public var TypeParameter_0_of_call_signature_from_exported_interface_is_using_inaccessible_module_1: String
+        public var TypeParameter_0_of_public_static_method_from_exported_class_is_using_inaccessible_module_1: String
+        public var TypeParameter_0_of_public_method_from_exported_class_is_using_inaccessible_module_1: String
+        public var TypeParameter_0_of_method_from_exported_interface_is_using_inaccessible_module_1: String
+        public var TypeParameter_0_of_exported_function_is_using_inaccessible_module_1: String
+        public var TypeParameter_0_of_exported_class_has_or_is_using_private_type_1: String
+        public var TypeParameter_0_of_exported_interface_has_or_is_using_private_type_1: String
+        public var TypeParameter_0_of_exported_class_is_using_inaccessible_module_1: String
+        public var TypeParameter_0_of_exported_interface_is_using_inaccessible_module_1: String
+        public var Duplicate_identifier_i_Compiler_uses_i_to_initialize_rest_parameter: String
+        public var Duplicate_identifier_arguments_Compiler_uses_arguments_to_initialize_rest_parameters: String
+        public var Type_of_conditional_0_must_be_identical_to_1_or_2: String
+        public var Type_of_conditional_0_must_be_identical_to_1_2_or_3: String
+        public var Duplicate_identifier_0_Compiler_reserves_name_1_in_top_level_scope_of_an_external_module: String
+        public var Constraint_of_a_type_parameter_cannot_reference_any_type_parameter_from_the_same_type_parameter_list: String
+        public var Initializer_of_instance_member_variable_0_cannot_reference_identifier_1_declared_in_the_constructor: String
+        public var Parameter_0_cannot_be_referenced_in_its_initializer: String
+        public var Duplicate_string_index_signature: String
+        public var Duplicate_number_index_signature: String
+        public var All_declarations_of_an_interface_must_have_identical_type_parameters: String
+        public var Expression_resolves_to_variable_declaration_i_that_compiler_uses_to_initialize_rest_parameter: String
+        public var Type_0_is_missing_property_1_from_type_2: String
+        public var Types_of_property_0_of_types_1_and_2_are_incompatible: String
+        public var Types_of_property_0_of_types_1_and_2_are_incompatible_NL_3: String
+        public var Property_0_defined_as_private_in_type_1_is_defined_as_public_in_type_2: String
+        public var Property_0_defined_as_public_in_type_1_is_defined_as_private_in_type_2: String
+        public var Types_0_and_1_define_property_2_as_private: String
+        public var Call_signatures_of_types_0_and_1_are_incompatible: String
+        public var Call_signatures_of_types_0_and_1_are_incompatible_NL_2: String
+        public var Type_0_requires_a_call_signature_but_type_1_lacks_one: String
+        public var Construct_signatures_of_types_0_and_1_are_incompatible: String
+        public var Construct_signatures_of_types_0_and_1_are_incompatible_NL_2: String
+        public var Type_0_requires_a_construct_signature_but_type_1_lacks_one: String
+        public var Index_signatures_of_types_0_and_1_are_incompatible: String
+        public var Index_signatures_of_types_0_and_1_are_incompatible_NL_2: String
+        public var Call_signature_expects_0_or_fewer_parameters: String
+        public var Could_not_apply_type_0_to_argument_1_which_is_of_type_2: String
+        public var Class_0_defines_instance_member_accessor_1_but_extended_class_2_defines_it_as_instance_member_function: String
+        public var Class_0_defines_instance_member_property_1_but_extended_class_2_defines_it_as_instance_member_function: String
+        public var Class_0_defines_instance_member_function_1_but_extended_class_2_defines_it_as_instance_member_accessor: String
+        public var Class_0_defines_instance_member_function_1_but_extended_class_2_defines_it_as_instance_member_property: String
+        public var Types_of_static_property_0_of_class_1_and_class_2_are_incompatible: String
+        public var Types_of_static_property_0_of_class_1_and_class_2_are_incompatible_NL_3: String
+        public var Type_reference_cannot_refer_to_container_0: String
+        public var Type_reference_must_refer_to_type: String
+        public var In_enums_with_multiple_declarations_only_one_declaration_can_omit_an_initializer_for_the_first_enum_element: String
+        public var _0_overload_s: String
+        public var Variable_declaration_cannot_have_the_same_name_as_an_import_declaration: String
+        public var Signature_expected_0_type_arguments_got_1_instead: String
+        public var Property_0_defined_as_optional_in_type_1_but_is_required_in_type_2: String
+        public var Types_0_and_1_originating_in_infinitely_expanding_type_reference_do_not_refer_to_same_named_type: String
+        public var Types_0_and_1_originating_in_infinitely_expanding_type_reference_have_incompatible_type_arguments: String
+        public var Types_0_and_1_originating_in_infinitely_expanding_type_reference_have_incompatible_type_arguments_NL_2: String
+        public var Named_properties_0_of_types_1_and_2_are_not_identical: String
+        public var Types_of_string_indexer_of_types_0_and_1_are_not_identical: String
+        public var Types_of_number_indexer_of_types_0_and_1_are_not_identical: String
+        public var Type_of_number_indexer_in_type_0_is_not_assignable_to_string_indexer_type_in_type_1_NL_2: String
+        public var Type_of_property_0_in_type_1_is_not_assignable_to_string_indexer_type_in_type_2_NL_3: String
+        public var Type_of_property_0_in_type_1_is_not_assignable_to_number_indexer_type_in_type_2_NL_3: String
+        public var Static_property_0_defined_as_private_in_type_1_is_defined_as_public_in_type_2: String
+        public var Static_property_0_defined_as_public_in_type_1_is_defined_as_private_in_type_2: String
+        public var Types_0_and_1_define_static_property_2_as_private: String
+        public var Current_host_does_not_support_0_option: String
+        public var ECMAScript_target_version_0_not_supported_Specify_a_valid_target_version_1_default_or_2: String
+        public var Module_code_generation_0_not_supported: String
+        public var Could_not_find_file_0: String
+        public var A_file_cannot_have_a_reference_to_itself: String
+        public var Cannot_resolve_referenced_file_0: String
+        public var Cannot_find_the_common_subdirectory_path_for_the_input_files: String
+        public var Emit_Error_0: String
+        public var Cannot_read_file_0_1: String
+        public var Unsupported_file_encoding: String
+        public var Locale_must_be_of_the_form_language_or_language_territory_For_example_0_or_1: String
+        public var Unsupported_locale_0: String
+        public var Execution_Failed_NL: String
+        public var Invalid_call_to_up: String
+        public var Invalid_call_to_down: String
+        public var Base64_value_0_finished_with_a_continuation_bit: String
+        public var Unknown_option_0: String
+        public var Expected_0_arguments_to_message_got_1_instead: String
+        public var Expected_the_message_0_to_have_1_arguments_but_it_had_2: String
+        public var Could_not_delete_file_0: String
+        public var Could_not_create_directory_0: String
+        public var Error_while_executing_file_0: String
+        public var Cannot_compile_external_modules_unless_the_module_flag_is_provided: String
+        public var Option_mapRoot_cannot_be_specified_without_specifying_sourcemap_option: String
+        public var Option_sourceRoot_cannot_be_specified_without_specifying_sourcemap_option: String
+        public var Options_mapRoot_and_sourceRoot_cannot_be_specified_without_specifying_sourcemap_option: String
+        public var Option_0_specified_without_1: String
+        public var codepage_option_not_supported_on_current_platform: String
+        public var Concatenate_and_emit_output_to_single_file: String
+        public var Generates_corresponding_0_file: String
+        public var Specifies_the_location_where_debugger_should_locate_map_files_instead_of_generated_locations: String
+        public var Specifies_the_location_where_debugger_should_locate_TypeScript_files_instead_of_source_locations: String
+        public var Watch_input_files: String
+        public var Redirect_output_structure_to_the_directory: String
+        public var Do_not_emit_comments_to_output: String
+        public var Skip_resolution_and_preprocessing: String
+        public var Specify_ECMAScript_target_version_0_default_or_1: String
+        public var Specify_module_code_generation_0_or_1: String
+        public var Print_this_message: String
+        public var Print_the_compiler_s_version_0: String
+        public var Allow_use_of_deprecated_0_keyword_when_referencing_an_external_module: String
+        public var Specify_locale_for_errors_and_messages_For_example_0_or_1: String
+        public var Syntax_0: String
+        public var options: String
+        public var file1: String
+        public var Examples: String
+        public var Options: String
+        public var Insert_command_line_options_and_files_from_a_file: String
+        public var Version_0: String
+        public var Use_the_0_flag_to_see_options: String
+        public var NL_Recompiling_0: String
+        public var STRING: String
+        public var KIND: String
+        public var file2: String
+        public var VERSION: String
+        public var LOCATION: String
+        public var DIRECTORY: String
+        public var NUMBER: String
+        public var Specify_the_codepage_to_use_when_opening_source_files: String
+        public var Additional_locations: String
+        public var This_version_of_the_Javascript_runtime_does_not_support_the_0_function: String
+        public var Unknown_rule: String
+        public var Invalid_line_number_0: String
+        public var Warn_on_expressions_and_declarations_with_an_implied_any_type: String
+        public var Variable_0_implicitly_has_an_any_type: String
+        public var Parameter_0_of_1_implicitly_has_an_any_type: String
+        public var Parameter_0_of_function_type_implicitly_has_an_any_type: String
+        public var Member_0_of_object_type_implicitly_has_an_any_type: String
+        public var new_expression_which_lacks_a_constructor_signature_implicitly_has_an_any_type: String
+        public var _0_which_lacks_return_type_annotation_implicitly_has_an_any_return_type: String
+        public var Function_expression_which_lacks_return_type_annotation_implicitly_has_an_any_return_type: String
+        public var Parameter_0_of_lambda_function_implicitly_has_an_any_type: String
+        public var Constructor_signature_which_lacks_return_type_annotation_implicitly_has_an_any_return_type: String
+        public var Lambda_Function_which_lacks_return_type_annotation_implicitly_has_an_any_return_type: String
+        public var Array_Literal_implicitly_has_an_any_type_from_widening: String
+        public var _0_which_lacks_get_accessor_and_parameter_type_annotation_on_set_accessor_implicitly_has_an_any_type: String
+        public var Index_signature_of_object_type_implicitly_has_an_any_type: String
+        public var Object_literal_s_property_0_implicitly_has_an_any_type_from_widening: String
+    }
     public var DiagnosticCode: `T$0` = noImpl
     public open class ArrayUtilities {
         public class object {
@@ -490,9 +489,16 @@ public object TypeScript {
     public object BitMatrix {
         public fun getBitMatrix(allowUndefinedValues: Boolean): IBitMatrix = noImpl
     }
-
-    enum class AssertionLevel
-
+    public enum class Constants {
+        Max31BitInteger // = 1073741823
+        Min31BitInteger // = -1073741824
+    }
+    public enum class AssertionLevel {
+        None // = 0
+        Normal // = 1
+        Aggressive // = 2
+        VeryAggressive // = 3
+    }
     public open class Debug {
         public class object {
             public var currentAssertionLevel: Any = noImpl
@@ -600,12 +606,18 @@ public object TypeScript {
     public var nodeMakeDirectoryTime: Number = noImpl
     public var nodeCreateBufferTime: Number = noImpl
     public var nodeWriteFileSyncTime: Number = noImpl
-
-    enum class ByteOrderMark
-
+    public enum class ByteOrderMark {
+        None // = 0
+        Utf8 // = 1
+        Utf16BigEndian // = 2
+        Utf16LittleEndian // = 3
+    }
     public open class FileInformation(contents: String, byteOrderMark: ByteOrderMark) {
         public open var contents: String = noImpl
         public open var byteOrderMark: ByteOrderMark = noImpl
+    }
+    public trait `T$1` {
+        public var recursive: Boolean? = noImpl
     }
     public trait IEnvironment {
         public fun supportsCodePage(): Boolean
@@ -640,6 +652,10 @@ public object TypeScript {
     public trait ILineAndCharacter {
         public var line: Number
         public var character: Number
+    }
+    public trait `T$2` {
+        public var lineStarts: Array<Number>
+        public var length: Number
     }
     public open class LineMap(_computeLineStarts: () -> Array<Number>, length: Number) {
         public open var _computeLineStarts: Any = noImpl
@@ -687,7 +703,106 @@ public object TypeScript {
         public open fun start(): Unit = noImpl
         public open fun end(): Unit = noImpl
     }
+    public enum class DiagnosticCategory {
+        Warning // = 0
+        Error // = 1
+        Message // = 2
+        NoPrefix // = 3
+    }
     public var diagnosticInformationMap: IIndexable<Any> = noImpl
+    public enum class CharacterCodes {
+        nullCharacter // = 0
+        maxAsciiCharacter // = 127
+        lineFeed // = 10
+        carriageReturn // = 13
+        lineSeparator // = 8232
+        paragraphSeparator // = 8233
+        nextLine // = 133
+        space // = 32
+        nonBreakingSpace // = 160
+        enQuad // = 8192
+        emQuad // = 8193
+        enSpace // = 8194
+        emSpace // = 8195
+        threePerEmSpace // = 8196
+        fourPerEmSpace // = 8197
+        sixPerEmSpace // = 8198
+        figureSpace // = 8199
+        punctuationSpace // = 8200
+        thinSpace // = 8201
+        hairSpace // = 8202
+        zeroWidthSpace // = 8203
+        narrowNoBreakSpace // = 8239
+        ideographicSpace // = 12288
+        _ // = 95
+        `$` // = 36
+        _0 // = 48
+        _7 // = 55
+        _9 // = 57
+        a // = 97
+        b // = 98
+        c // = 99
+        d // = 100
+        e // = 101
+        f // = 102
+        g // = 103
+        h // = 104
+        i // = 105
+        k // = 107
+        l // = 108
+        m // = 109
+        n // = 110
+        o // = 111
+        p // = 112
+        q // = 113
+        r // = 114
+        s // = 115
+        t // = 116
+        u // = 117
+        v // = 118
+        w // = 119
+        x // = 120
+        y // = 121
+        z // = 122
+        A // = 65
+        E // = 69
+        F // = 70
+        X // = 88
+        Z // = 90
+        ampersand // = 38
+        asterisk // = 42
+        at // = 64
+        backslash // = 92
+        bar // = 124
+        caret // = 94
+        closeBrace // = 125
+        closeBracket // = 93
+        closeParen // = 41
+        colon // = 58
+        comma // = 44
+        dot // = 46
+        doubleQuote // = 34
+        equals // = 61
+        exclamation // = 33
+        greaterThan // = 62
+        lessThan // = 60
+        minus // = 45
+        openBrace // = 123
+        openBracket // = 91
+        openParen // = 40
+        percent // = 37
+        plus // = 43
+        question // = 63
+        semicolon // = 59
+        singleQuote // = 39
+        slash // = 47
+        tilde // = 126
+        backspace // = 8
+        formFeed // = 12
+        byteOrderMark // = 65279
+        tab // = 9
+        verticalTab // = 11
+    }
     public trait IScriptSnapshot {
         public fun getText(start: Number, end: Number): String
         public fun getLength(): Number
@@ -793,6 +908,16 @@ public object TypeScript {
             public fun isLineTerminator(ch: Number): Boolean = noImpl
         }
     }
+    public enum class SyntaxConstants {
+        TriviaNewLineMask // = 1
+        TriviaCommentMask // = 2
+        TriviaFullWidthShift // = 2
+        NodeDataComputed // = 1
+        NodeIncrementallyUnusableMask // = 2
+        NodeParsedInStrictModeMask // = 4
+        NodeFullWidthShift // = 3
+        IsVariableWidthKeyword // = -2147483648
+    }
     module
     public object Indentation {
         public fun columnForEndOfToken(token: ISyntaxToken, syntaxInformationMap: SyntaxInformationMap, options: FormattingOptions): Number = noImpl
@@ -803,8 +928,13 @@ public object TypeScript {
         public fun indentationTrivia(column: Number, options: FormattingOptions): ISyntaxTrivia = noImpl
         public fun firstNonWhitespacePosition(value: String): Number = noImpl
     }
-
-    enum class LanguageVersion
+    public enum class LanguageVersion {
+        EcmaScript3 // = 0
+        EcmaScript5 // = 1
+    }
+    public trait `T$3` {
+        public var allowAutomaticSemicolonInsertion: Boolean
+    }
     public open class ParseOptions(languageVersion: LanguageVersion, allowAutomaticSemicolonInsertion: Boolean) {
         public open var _languageVersion: Any = noImpl
         public open var _allowAutomaticSemicolonInsertion: Any = noImpl
@@ -861,6 +991,274 @@ public object TypeScript {
         public open fun parentToken(): PositionedToken = noImpl
         override fun previousToken(includeSkippedTokens: Boolean?): PositionedToken = noImpl
         override fun nextToken(includeSkippedTokens: Boolean?): PositionedToken = noImpl
+    }
+    public enum class SyntaxKind {
+        None // = 0
+        List // = 1
+        SeparatedList // = 2
+        TriviaList // = 3
+        WhitespaceTrivia // = 4
+        NewLineTrivia // = 5
+        MultiLineCommentTrivia // = 6
+        SingleLineCommentTrivia // = 7
+        SkippedTokenTrivia // = 8
+        ErrorToken // = 9
+        EndOfFileToken // = 10
+        IdentifierName // = 11
+        RegularExpressionLiteral // = 12
+        NumericLiteral // = 13
+        StringLiteral // = 14
+        BreakKeyword // = 15
+        CaseKeyword // = 16
+        CatchKeyword // = 17
+        ContinueKeyword // = 18
+        DebuggerKeyword // = 19
+        DefaultKeyword // = 20
+        DeleteKeyword // = 21
+        DoKeyword // = 22
+        ElseKeyword // = 23
+        FalseKeyword // = 24
+        FinallyKeyword // = 25
+        ForKeyword // = 26
+        FunctionKeyword // = 27
+        IfKeyword // = 28
+        InKeyword // = 29
+        InstanceOfKeyword // = 30
+        NewKeyword // = 31
+        NullKeyword // = 32
+        ReturnKeyword // = 33
+        SwitchKeyword // = 34
+        ThisKeyword // = 35
+        ThrowKeyword // = 36
+        TrueKeyword // = 37
+        TryKeyword // = 38
+        TypeOfKeyword // = 39
+        VarKeyword // = 40
+        VoidKeyword // = 41
+        WhileKeyword // = 42
+        WithKeyword // = 43
+        ClassKeyword // = 44
+        ConstKeyword // = 45
+        EnumKeyword // = 46
+        ExportKeyword // = 47
+        ExtendsKeyword // = 48
+        ImportKeyword // = 49
+        SuperKeyword // = 50
+        ImplementsKeyword // = 51
+        InterfaceKeyword // = 52
+        LetKeyword // = 53
+        PackageKeyword // = 54
+        PrivateKeyword // = 55
+        ProtectedKeyword // = 56
+        PublicKeyword // = 57
+        StaticKeyword // = 58
+        YieldKeyword // = 59
+        AnyKeyword // = 60
+        BooleanKeyword // = 61
+        ConstructorKeyword // = 62
+        DeclareKeyword // = 63
+        GetKeyword // = 64
+        ModuleKeyword // = 65
+        RequireKeyword // = 66
+        NumberKeyword // = 67
+        SetKeyword // = 68
+        StringKeyword // = 69
+        OpenBraceToken // = 70
+        CloseBraceToken // = 71
+        OpenParenToken // = 72
+        CloseParenToken // = 73
+        OpenBracketToken // = 74
+        CloseBracketToken // = 75
+        DotToken // = 76
+        DotDotDotToken // = 77
+        SemicolonToken // = 78
+        CommaToken // = 79
+        LessThanToken // = 80
+        GreaterThanToken // = 81
+        LessThanEqualsToken // = 82
+        GreaterThanEqualsToken // = 83
+        EqualsEqualsToken // = 84
+        EqualsGreaterThanToken // = 85
+        ExclamationEqualsToken // = 86
+        EqualsEqualsEqualsToken // = 87
+        ExclamationEqualsEqualsToken // = 88
+        PlusToken // = 89
+        MinusToken // = 90
+        AsteriskToken // = 91
+        PercentToken // = 92
+        PlusPlusToken // = 93
+        MinusMinusToken // = 94
+        LessThanLessThanToken // = 95
+        GreaterThanGreaterThanToken // = 96
+        GreaterThanGreaterThanGreaterThanToken // = 97
+        AmpersandToken // = 98
+        BarToken // = 99
+        CaretToken // = 100
+        ExclamationToken // = 101
+        TildeToken // = 102
+        AmpersandAmpersandToken // = 103
+        BarBarToken // = 104
+        QuestionToken // = 105
+        ColonToken // = 106
+        EqualsToken // = 107
+        PlusEqualsToken // = 108
+        MinusEqualsToken // = 109
+        AsteriskEqualsToken // = 110
+        PercentEqualsToken // = 111
+        LessThanLessThanEqualsToken // = 112
+        GreaterThanGreaterThanEqualsToken // = 113
+        GreaterThanGreaterThanGreaterThanEqualsToken // = 114
+        AmpersandEqualsToken // = 115
+        BarEqualsToken // = 116
+        CaretEqualsToken // = 117
+        SlashToken // = 118
+        SlashEqualsToken // = 119
+        SourceUnit // = 120
+        QualifiedName // = 121
+        ObjectType // = 122
+        FunctionType // = 123
+        ArrayType // = 124
+        ConstructorType // = 125
+        GenericType // = 126
+        TypeQuery // = 127
+        InterfaceDeclaration // = 128
+        FunctionDeclaration // = 129
+        ModuleDeclaration // = 130
+        ClassDeclaration // = 131
+        EnumDeclaration // = 132
+        ImportDeclaration // = 133
+        ExportAssignment // = 134
+        MemberFunctionDeclaration // = 135
+        MemberVariableDeclaration // = 136
+        ConstructorDeclaration // = 137
+        IndexMemberDeclaration // = 138
+        GetAccessor // = 139
+        SetAccessor // = 140
+        PropertySignature // = 141
+        CallSignature // = 142
+        ConstructSignature // = 143
+        IndexSignature // = 144
+        MethodSignature // = 145
+        Block // = 146
+        IfStatement // = 147
+        VariableStatement // = 148
+        ExpressionStatement // = 149
+        ReturnStatement // = 150
+        SwitchStatement // = 151
+        BreakStatement // = 152
+        ContinueStatement // = 153
+        ForStatement // = 154
+        ForInStatement // = 155
+        EmptyStatement // = 156
+        ThrowStatement // = 157
+        WhileStatement // = 158
+        TryStatement // = 159
+        LabeledStatement // = 160
+        DoStatement // = 161
+        DebuggerStatement // = 162
+        WithStatement // = 163
+        PlusExpression // = 164
+        NegateExpression // = 165
+        BitwiseNotExpression // = 166
+        LogicalNotExpression // = 167
+        PreIncrementExpression // = 168
+        PreDecrementExpression // = 169
+        DeleteExpression // = 170
+        TypeOfExpression // = 171
+        VoidExpression // = 172
+        CommaExpression // = 173
+        AssignmentExpression // = 174
+        AddAssignmentExpression // = 175
+        SubtractAssignmentExpression // = 176
+        MultiplyAssignmentExpression // = 177
+        DivideAssignmentExpression // = 178
+        ModuloAssignmentExpression // = 179
+        AndAssignmentExpression // = 180
+        ExclusiveOrAssignmentExpression // = 181
+        OrAssignmentExpression // = 182
+        LeftShiftAssignmentExpression // = 183
+        SignedRightShiftAssignmentExpression // = 184
+        UnsignedRightShiftAssignmentExpression // = 185
+        ConditionalExpression // = 186
+        LogicalOrExpression // = 187
+        LogicalAndExpression // = 188
+        BitwiseOrExpression // = 189
+        BitwiseExclusiveOrExpression // = 190
+        BitwiseAndExpression // = 191
+        EqualsWithTypeConversionExpression // = 192
+        NotEqualsWithTypeConversionExpression // = 193
+        EqualsExpression // = 194
+        NotEqualsExpression // = 195
+        LessThanExpression // = 196
+        GreaterThanExpression // = 197
+        LessThanOrEqualExpression // = 198
+        GreaterThanOrEqualExpression // = 199
+        InstanceOfExpression // = 200
+        InExpression // = 201
+        LeftShiftExpression // = 202
+        SignedRightShiftExpression // = 203
+        UnsignedRightShiftExpression // = 204
+        MultiplyExpression // = 205
+        DivideExpression // = 206
+        ModuloExpression // = 207
+        AddExpression // = 208
+        SubtractExpression // = 209
+        PostIncrementExpression // = 210
+        PostDecrementExpression // = 211
+        MemberAccessExpression // = 212
+        InvocationExpression // = 213
+        ArrayLiteralExpression // = 214
+        ObjectLiteralExpression // = 215
+        ObjectCreationExpression // = 216
+        ParenthesizedExpression // = 217
+        ParenthesizedArrowFunctionExpression // = 218
+        SimpleArrowFunctionExpression // = 219
+        CastExpression // = 220
+        ElementAccessExpression // = 221
+        FunctionExpression // = 222
+        OmittedExpression // = 223
+        VariableDeclaration // = 224
+        VariableDeclarator // = 225
+        ArgumentList // = 226
+        ParameterList // = 227
+        TypeArgumentList // = 228
+        TypeParameterList // = 229
+        ExtendsHeritageClause // = 230
+        ImplementsHeritageClause // = 231
+        EqualsValueClause // = 232
+        CaseSwitchClause // = 233
+        DefaultSwitchClause // = 234
+        ElseClause // = 235
+        CatchClause // = 236
+        FinallyClause // = 237
+        TypeParameter // = 238
+        Constraint // = 239
+        SimplePropertyAssignment // = 240
+        FunctionPropertyAssignment // = 241
+        Parameter // = 242
+        EnumElement // = 243
+        TypeAnnotation // = 244
+        ExternalModuleReference // = 245
+        ModuleNameModuleReference // = 246
+        Last // = 246
+        FirstStandardKeyword // = 15
+        LastStandardKeyword // = 43
+        FirstFutureReservedKeyword // = 44
+        LastFutureReservedKeyword // = 50
+        FirstFutureReservedStrictKeyword // = 51
+        LastFutureReservedStrictKeyword // = 59
+        FirstTypeScriptKeyword // = 60
+        LastTypeScriptKeyword // = 69
+        FirstKeyword // = 15
+        LastKeyword // = 69
+        FirstToken // = 9
+        LastToken // = 119
+        FirstPunctuation // = 70
+        LastPunctuation // = 119
+        FirstFixedWidth // = 15
+        LastFixedWidth // = 119
+        FirstTrivia // = 4
+        LastTrivia // = 8
     }
     module
     public object SyntaxFacts {
@@ -3138,7 +3536,7 @@ public object TypeScript {
             public fun create1(): ReturnStatementSyntax = noImpl
         }
     }
-    public class objectCreationExpressionSyntax(newKeyword: ISyntaxToken, expression: IMemberExpressionSyntax, argumentList: ArgumentListSyntax, parsedInStrictMode: Boolean) : SyntaxNode(noImpl), IMemberExpressionSyntax {
+    public open class ObjectCreationExpressionSyntax(newKeyword: ISyntaxToken, expression: IMemberExpressionSyntax, argumentList: ArgumentListSyntax, parsedInStrictMode: Boolean) : SyntaxNode(noImpl), IMemberExpressionSyntax {
         public open var newKeyword: ISyntaxToken = noImpl
         public open var expression: IMemberExpressionSyntax = noImpl
         public open var argumentList: ArgumentListSyntax = noImpl
@@ -3317,7 +3715,7 @@ public object TypeScript {
         override fun isTypeScriptSpecific(): Boolean = noImpl
         public class object {
             public fun create(forKeyword: ISyntaxToken, openParenToken: ISyntaxToken, firstSemicolonToken: ISyntaxToken, secondSemicolonToken: ISyntaxToken, closeParenToken: ISyntaxToken, statement: IStatementSyntax): ForStatementSyntax = noImpl
-            public open fun create1(statement: IStatementSyntax): ForStatementSyntax = noImpl
+            public fun create1(statement: IStatementSyntax): ForStatementSyntax = noImpl
         }
     }
     public open class ForInStatementSyntax(forKeyword: ISyntaxToken, openParenToken: ISyntaxToken, variableDeclaration: VariableDeclarationSyntax, left: IExpressionSyntax, inKeyword: ISyntaxToken, expression: IExpressionSyntax, closeParenToken: ISyntaxToken, statement: IStatementSyntax, parsedInStrictMode: Boolean) : SyntaxNode(noImpl), IIterationStatementSyntax {
@@ -3350,7 +3748,7 @@ public object TypeScript {
         override fun isTypeScriptSpecific(): Boolean = noImpl
         public class object {
             public fun create(forKeyword: ISyntaxToken, openParenToken: ISyntaxToken, inKeyword: ISyntaxToken, expression: IExpressionSyntax, closeParenToken: ISyntaxToken, statement: IStatementSyntax): ForInStatementSyntax = noImpl
-            public open fun create1(expression: IExpressionSyntax, statement: IStatementSyntax): ForInStatementSyntax = noImpl
+            public fun create1(expression: IExpressionSyntax, statement: IStatementSyntax): ForInStatementSyntax = noImpl
         }
     }
     public open class WhileStatementSyntax(whileKeyword: ISyntaxToken, openParenToken: ISyntaxToken, condition: IExpressionSyntax, closeParenToken: ISyntaxToken, statement: IStatementSyntax, parsedInStrictMode: Boolean) : SyntaxNode(noImpl), IIterationStatementSyntax {
@@ -3430,7 +3828,7 @@ public object TypeScript {
         override fun isTypeScriptSpecific(): Boolean = noImpl
         public class object {
             public fun create(enumKeyword: ISyntaxToken, identifier: ISyntaxToken, openBraceToken: ISyntaxToken, closeBraceToken: ISyntaxToken): EnumDeclarationSyntax = noImpl
-            public open fun create1(identifier: ISyntaxToken): EnumDeclarationSyntax = noImpl
+            public fun create1(identifier: ISyntaxToken): EnumDeclarationSyntax = noImpl
         }
     }
     public open class EnumElementSyntax(propertyName: ISyntaxToken, equalsValueClause: EqualsValueClauseSyntax, parsedInStrictMode: Boolean) : SyntaxNode(noImpl) {
@@ -3448,7 +3846,7 @@ public object TypeScript {
         override fun isTypeScriptSpecific(): Boolean = noImpl
         public class object {
             public fun create(propertyName: ISyntaxToken): EnumElementSyntax = noImpl
-            public open fun create1(propertyName: ISyntaxToken): EnumElementSyntax = noImpl
+            public fun create1(propertyName: ISyntaxToken): EnumElementSyntax = noImpl
         }
     }
     public open class CastExpressionSyntax(lessThanToken: ISyntaxToken, `type`: ITypeSyntax, greaterThanToken: ISyntaxToken, expression: IUnaryExpressionSyntax, parsedInStrictMode: Boolean) : SyntaxNode(noImpl), IUnaryExpressionSyntax {
@@ -3631,7 +4029,7 @@ public object TypeScript {
         override fun isTypeScriptSpecific(): Boolean = noImpl
         public class object {
             public fun create(catchKeyword: ISyntaxToken, openParenToken: ISyntaxToken, identifier: ISyntaxToken, closeParenToken: ISyntaxToken, block: BlockSyntax): CatchClauseSyntax = noImpl
-            public open fun create1(identifier: ISyntaxToken): CatchClauseSyntax = noImpl
+            public fun create1(identifier: ISyntaxToken): CatchClauseSyntax = noImpl
         }
     }
     public open class FinallyClauseSyntax(finallyKeyword: ISyntaxToken, block: BlockSyntax, parsedInStrictMode: Boolean) : SyntaxNode(noImpl) {
@@ -3883,7 +4281,7 @@ public object TypeScript {
         public open fun dedentWhitespace(trivia: Any, hasFollowingNewLineTrivia: Any): Unit = noImpl
         public open fun dedentMultiLineComment(trivia: Any): Unit = noImpl
         public class object {
-            public open fun dedentNode(node: ISyntaxNode, dedentFirstToken: Boolean, dedentAmount: Number, minimumIndent: Number, options: FormattingOptions): ISyntaxNode = noImpl
+            public fun dedentNode(node: ISyntaxNode, dedentFirstToken: Boolean, dedentAmount: Number, minimumIndent: Number, options: FormattingOptions): ISyntaxNode = noImpl
         }
     }
     public open class SyntaxIndenter(indentFirstToken: Boolean, indentationAmount: Number, options: FormattingOptions) : SyntaxRewriter() {
@@ -4279,7 +4677,7 @@ public object TypeScript {
         public open var tokenTable: Any = noImpl
         override fun visitToken(token: ISyntaxToken): Unit = noImpl
         public class object {
-            public open fun checkInvariants(node: SyntaxNode): Unit = noImpl
+            public fun checkInvariants(node: SyntaxNode): Unit = noImpl
         }
     }
     public open class DepthLimitedWalker(maximumDepth: Number) : PositionTrackingWalker() {
@@ -4397,6 +4795,21 @@ public object TypeScript {
         }
     }
     public fun hasFlag(`val`: Number, flag: Number): Boolean = noImpl
+    public enum class TypeRelationshipFlags {
+        SuccessfulComparison // = 0
+        RequiredPropertyIsMissing // = 2
+        IncompatibleSignatures // = 4
+        SourceSignatureHasTooManyParameters // = 3
+        IncompatibleReturnTypes // = 16
+        IncompatiblePropertyTypes // = 32
+        IncompatibleParameterTypes // = 64
+        InconsistantPropertyAccesibility // = 128
+    }
+    public enum class ModuleGenTarget {
+        Unspecified // = 0
+        Synchronous // = 1
+        Asynchronous // = 2
+    }
     public fun createIntrinsicsObject<T>(): IIndexable<T> = noImpl
     public trait IHashTable<T> {
         public fun getAllKeys(): Array<String>
@@ -4487,6 +4900,10 @@ public object TypeScript {
         public open fun simpleWalk(ast: AST, pre: (ast: AST, state: Any) -> Unit, post: ((ast: AST, state: Any) -> Unit)? = null, state: Any? = null): Unit = noImpl
     }
     public fun getAstWalkerFactory(): AstWalkerFactory = noImpl
+    public trait `T$4` {
+        public var value: Number
+        public var rest: String
+    }
     public open class Base64VLQFormat {
         public class object {
             public fun encode(inValue: Number): String = noImpl
@@ -4539,9 +4956,16 @@ public object TypeScript {
             public var MapFileExtension: String = noImpl
         }
     }
-
-    enum class EmitContainer
-
+    public enum class EmitContainer {
+        Prog // = 0
+        Module // = 1
+        DynamicModule // = 2
+        Class // = 3
+        Constructor // = 4
+        Function // = 5
+        Args // = 6
+        Interface // = 7
+    }
     public open class EmitState {
         public open var column: Number = noImpl
         public open var line: Number = noImpl
@@ -4577,6 +5001,10 @@ public object TypeScript {
         }
     }
     public fun lastParameterIsRest(parameterList: ParameterList): Boolean = noImpl
+    public trait `T$5` {
+        public var importList: String
+        public var dependencyList: String
+    }
     public open class Emitter(emittingFileName: String, outfile: TextWriter, emitOptions: EmitOptions, semanticInfoChain: SemanticInfoChain) {
         public open var emittingFileName: String = noImpl
         public open var outfile: TextWriter = noImpl
@@ -4850,9 +5278,6 @@ public object TypeScript {
             public fun resolve(inputFileNames: Array<String>, host: IReferenceResolverHost, useCaseSensitiveFileResolution: Boolean): ReferenceResolutionResult = noImpl
         }
     }
-
-    enum class OutputFileType
-
     public open class TextWriter(name: String, writeByteOrderMark: Boolean, outputFileType: OutputFileType) {
         public open var name: Any = noImpl
         public open var writeByteOrderMark: Any = noImpl
@@ -4969,9 +5394,6 @@ public object TypeScript {
         public open var codepage: Number = noImpl
         public open var createFileLog: Boolean = noImpl
     }
-
-    enum class ModuleGenTarget
-
     public open class ImmutableCompilationSettings(propagateEnumConstants: Boolean, removeComments: Boolean, watch: Boolean, noResolve: Boolean, allowAutomaticSemicolonInsertion: Boolean, noImplicitAny: Boolean, noLib: Boolean, codeGenTarget: LanguageVersion, moduleGenTarget: ModuleGenTarget, outFileOption: String, outDirOption: String, mapSourceFiles: Boolean, mapRoot: String, sourceRoot: String, generateDeclarationFiles: Boolean, useCaseSensitiveFileResolution: Boolean, gatherDiagnostics: Boolean, codepage: Number, createFileLog: Boolean) {
         public open var _propagateEnumConstants: Any = noImpl
         public open var _removeComments: Any = noImpl
@@ -5018,10 +5440,73 @@ public object TypeScript {
             public fun fromCompilationSettings(settings: CompilationSettings): ImmutableCompilationSettings = noImpl
         }
     }
-
-    enum class PullElementKind
-
+    public enum class PullElementFlags {
+        None // = 0
+        Exported // = 1
+        Private // = 2
+        Public // = 4
+        Ambient // = 8
+        Static // = 16
+        Optional // = 128
+        Signature // = 2048
+        Enum // = 4096
+        ArrowFunction // = 8192
+        ClassConstructorVariable // = 16384
+        InitializedModule // = 32768
+        InitializedDynamicModule // = 65536
+        MustCaptureThis // = 262144
+        DeclaredInAWithBlock // = 2097152
+        HasReturnStatement // = 4194304
+        PropertyParameter // = 8388608
+        IsAnnotatedWithAny // = 16777216
+        HasDefaultArgs // = 33554432
+        ConstructorParameter // = 67108864
+        ImplicitVariable // = 118784
+        SomeInitializedModule // = 102400
+    }
     public fun hasModifier(modifiers: Array<PullElementFlags>, flag: PullElementFlags): Boolean = noImpl
+    public enum class PullElementKind {
+        None // = 0
+        Global // = 0
+        Script // = 1
+        Primitive // = 2
+        Container // = 4
+        Class // = 8
+        Interface // = 16
+        DynamicModule // = 32
+        Enum // = 64
+        TypeAlias // = 128
+        ObjectLiteral // = 256
+        Variable // = 512
+        CatchVariable // = 1024
+        Parameter // = 2048
+        Property // = 4096
+        TypeParameter // = 8192
+        Function // = 16384
+        ConstructorMethod // = 32768
+        Method // = 65536
+        FunctionExpression // = 131072
+        GetAccessor // = 262144
+        SetAccessor // = 524288
+        CallSignature // = 1048576
+        ConstructSignature // = 2097152
+        IndexSignature // = 4194304
+        ObjectType // = 8388608
+        FunctionType // = 16777216
+        ConstructorType // = 33554432
+        EnumMember // = 67108864
+        WithBlock // = 134217728
+        CatchBlock // = 268435456
+        All // = 536869887
+        SomeFunction // = 1032192
+        SomeValue // = 68147712
+        SomeType // = 58728795
+        AcceptableAlias // = 59753052
+        SomeContainer // = 164
+        SomeSignature // = 7340032
+        SomeTypeReference // = 58720272
+        SomeInstantiatableType // = 8216
+    }
     public open class PullDecl(declName: String, displayName: String, kind: PullElementKind, declFlags: PullElementFlags, semanticInfoChain: SemanticInfoChain) {
         public open var kind: PullElementKind = noImpl
         public open var name: String = noImpl
@@ -5245,10 +5730,6 @@ public object TypeScript {
             public fun getSignaturesTypeNameEx(signatures: Array<PullSignatureSymbol>, prefix: String, shortform: Boolean, brackets: Boolean, scopeSymbol: PullSymbol? = null, getPrettyTypeName: Boolean? = null, candidateSignature: PullSignatureSymbol? = null): Array<MemberName> = noImpl
         }
     }
-
-    enum class GetAllMembersVisiblity
-    enum class GenerativeTypeClassification
-
     public open class PullTypeSymbol(name: String, kind: PullElementKind) : PullSymbol(noImpl, noImpl), InstantiableSymbol {
         public open var _members: Any = noImpl
         public open var _enclosedMemberTypes: Any = noImpl
@@ -5507,6 +5988,11 @@ public object TypeScript {
     }
     public fun getIDForTypeSubstitutions(instantiatingType: PullTypeSymbol, typeArgumentMap: TypeArgumentMap): String = noImpl
     public fun getIDForTypeSubstitutions(instantiatingSignature: PullSignatureSymbol, typeArgumentMap: TypeArgumentMap): String = noImpl
+    public enum class GetAllMembersVisiblity {
+        all // = 0
+        internallyVisible // = 1
+        externallyVisible // = 2
+    }
     public open class EnclosingTypeWalkerState {
         public open var _hasSetEnclosingType: Boolean = noImpl
         public open var _currentSymbols: Array<PullSymbol> = noImpl
@@ -5603,6 +6089,18 @@ public object TypeScript {
         public open fun invalidateProvisionallyTypedSymbols(): Unit = noImpl
         public open fun setSymbolForAST(ast: AST, symbol: PullSymbol): Unit = noImpl
         public open fun getSymbolForAST(ast: AST): PullSymbol = noImpl
+    }
+    public trait `T$6` {
+        public var stateWhenStartedWalkingTypes1: EnclosingTypeWalkerState
+        public var stateWhenStartedWalkingTypes2: EnclosingTypeWalkerState
+    }
+    public trait `T$7` {
+        public var enclosingTypeWalkerState1: EnclosingTypeWalkerState
+        public var enclosingTypeWalkerState2: EnclosingTypeWalkerState
+    }
+    public trait `T$8` {
+        public var indexSigs1: IndexSignatureInfo
+        public var indexSigs2: IndexSignatureInfo
     }
     public open class PullTypeResolutionContext(resolver: PullTypeResolver, inTypeCheck: Boolean? = null, fileName: String? = null) {
         public open var resolver: Any = noImpl
@@ -6112,7 +6610,6 @@ public object TypeScript {
             public fun typeCheck(compilationSettings: ImmutableCompilationSettings, semanticInfoChain: SemanticInfoChain, document: Document): Unit = noImpl
         }
     }
-    enum class TypeRelationshipFlags
     public open class TypeComparisonInfo(sourceComparisonInfo: TypeComparisonInfo? = null, useSameIndent: Boolean? = null) {
         public open var onlyCaptureFirstError: Boolean = noImpl
         public open var flags: TypeRelationshipFlags = noImpl
@@ -6121,6 +6618,10 @@ public object TypeScript {
         public open var indent: Any = noImpl
         public open fun indentString(): Unit = noImpl
         public open fun addMessage(message: String): Unit = noImpl
+    }
+    public trait `T$9` {
+        public var actualText: String
+        public var memberName: String
     }
     public fun getPropertyAssignmentNameTextFromIdentifier(identifier: AST): `T$9` = noImpl
     public fun isTypesOnlyLocation(ast: AST): Boolean = noImpl
@@ -6263,8 +6764,16 @@ public object TypeScript {
             public var signature: PullSignatureSymbol
             public var allSignatures: Array<PullSignatureSymbol>
         }
+        public trait `T$10` {
+            public var signature: PullSignatureSymbol
+            public var allSignatures: Array<PullSignatureSymbol>
+        }
         public fun getSignatureForFuncDecl(functionDecl: PullDecl): `T$10` = noImpl
         public fun getAccessorSymbol(getterOrSetter: AST, semanticInfoChain: SemanticInfoChain): PullAccessorSymbol = noImpl
+        public trait `T$11` {
+            public var getter: GetAccessor
+            public var setter: SetAccessor
+        }
         public fun getGetterAndSetterFunction(funcDecl: AST, semanticInfoChain: SemanticInfoChain): `T$11` = noImpl
         public fun symbolIsEnum(source: PullSymbol): Boolean = noImpl
         public fun symbolIsModule(symbol: PullSymbol): Boolean = noImpl
@@ -6356,10 +6865,20 @@ public object TypeScript {
         public var symbols: Array<PullSymbol>
         public var enclosingScopeSymbol: PullSymbol
     }
-    enum class EmitOutputResult
+    public enum class EmitOutputResult {
+        Succeeded // = 0
+        FailedBecauseOfSyntaxErrors // = 1
+        FailedBecauseOfCompilerOptionsErrors // = 2
+        FailedToGenerateDeclarationsBecauseOfSemanticErrors // = 3
+    }
     public open class EmitOutput(emitOutputResult: EmitOutputResult? = null) {
         public open var outputFiles: Array<OutputFile> = noImpl
         public open var emitOutputResult: EmitOutputResult = noImpl
+    }
+    public enum class OutputFileType {
+        JavaScript // = 0
+        SourceMap // = 1
+        Declaration // = 2
     }
     public open class OutputFile(name: String, writeByteOrderMark: Boolean, text: String, fileType: OutputFileType, sourceMapEntries: Array<SourceMapEntry>? = null) {
         public open var name: String = noImpl
@@ -6430,6 +6949,12 @@ public object TypeScript {
         }
     }
     public fun compareDataObjects(dst: Any, src: Any): Boolean = noImpl
+    public enum class GenerativeTypeClassification {
+        Unknown // = 0
+        Open // = 1
+        Closed // = 2
+        InfinitelyExpanding // = 3
+    }
     public trait TypeArgumentMap {
         public fun get(n: Number): PullTypeSymbol
         public fun set(n: Number, value: PullTypeSymbol)
@@ -6665,7 +7190,7 @@ public object TypeScript {
         override fun visitVoidExpression(node: VoidExpressionSyntax): VoidExpression = noImpl
         override fun visitDebuggerStatement(node: DebuggerStatementSyntax): DebuggerStatement = noImpl
         public class object {
-            public open fun visit(syntaxTree: SyntaxTree, fileName: String, compilationSettings: ImmutableCompilationSettings, incrementalAST: Boolean): SourceUnit = noImpl
+            public fun visit(syntaxTree: SyntaxTree, fileName: String, compilationSettings: ImmutableCompilationSettings, incrementalAST: Boolean): SourceUnit = noImpl
         }
     }
     public trait IASTSpan {
@@ -7142,8 +7667,6 @@ public object TypeScript {
         public open var block: Block = noImpl
         override fun kind(): SyntaxKind = noImpl
     }
-    enum class PullElementFlags
-    enum class SyntaxKind
 
     public open class MemberVariableDeclaration(modifiers: Array<PullElementFlags>, variableDeclarator: VariableDeclarator) : AST() {
         public open var modifiers: Array<PullElementFlags> = noImpl
@@ -7340,8 +7863,23 @@ public object TypeScript {
     }
     module
     public object Services {
-        enum class EndOfLineState
-
+        public enum class EndOfLineState {
+            Start // = 0
+            InMultiLineCommentTrivia // = 1
+            InSingleQuoteStringLiteral // = 2
+            InDoubleQuoteStringLiteral // = 3
+        }
+        public enum class TokenClass {
+            Punctuation // = 0
+            Keyword // = 1
+            Operator // = 2
+            Comment // = 3
+            Whitespace // = 4
+            Identifier // = 5
+            NumberLiteral // = 6
+            StringLiteral // = 7
+            RegExpLiteral // = 8
+        }
         public open class Classifier(host: IClassifierHost) {
             public open var host: IClassifierHost = noImpl
             public open var scanner: Any = noImpl
@@ -7358,9 +7896,6 @@ public object TypeScript {
             public open var finalLexState: EndOfLineState = noImpl
             public open var entries: Array<ClassificationInfo> = noImpl
         }
-
-        enum class TokenClass
-
         public open class ClassificationInfo(length: Number, classification: TokenClass) {
             public open var length: Number = noImpl
             public open var classification: TokenClass = noImpl
@@ -7631,9 +8166,6 @@ public object TypeScript {
                 public open fun getContainingLine(): ITextSnapshotLine = noImpl
                 public open fun add(offset: Number): SnapshotPoint = noImpl
             }
-
-            enum class FormattingRequestKind
-
             public open class FormattingContext(snapshot: ITextSnapshot, formattingRequestKind: FormattingRequestKind) {
                 public open var snapshot: Any = noImpl
                 public open var formattingRequestKind: FormattingRequestKind = noImpl
@@ -7669,14 +8201,25 @@ public object TypeScript {
                 public open fun formatOnEnter(caretPosition: Number): Array<TextEdit> = noImpl
                 public open fun formatSpan(span: Any, formattingRequestKind: Any): Unit = noImpl
             }
-
-            enum class RuleFlags
-
+            public enum class FormattingRequestKind {
+                FormatDocument // = 0
+                FormatSelection // = 1
+                FormatOnEnter // = 2
+                FormatOnSemicolon // = 3
+                FormatOnClosingCurlyBrace // = 4
+                FormatOnPaste // = 5
+            }
             public open class Rule(Descriptor: RuleDescriptor, Operation: RuleOperation, Flag: RuleFlags? = null) {
                 public open var Descriptor: RuleDescriptor = noImpl
                 public open var Operation: RuleOperation = noImpl
                 public open var Flag: RuleFlags = noImpl
                 override fun toString(): String = noImpl
+            }
+            public enum class RuleAction {
+                Ignore // = 0
+                Space // = 1
+                NewLine // = 2
+                Delete // = 3
             }
             public open class RuleDescriptor(LeftTokenRange: Shared.TokenRange, RightTokenRange: Shared.TokenRange) {
                 public open var LeftTokenRange: Shared.TokenRange = noImpl
@@ -7689,9 +8232,10 @@ public object TypeScript {
                     public fun create4(left: Shared.TokenRange, right: Shared.TokenRange): RuleDescriptor = noImpl
                 }
             }
-
-            enum class RuleAction
-
+            public enum class RuleFlags {
+                None // = 0
+                CanDeleteNewLines // = 1
+            }
             public open class RuleOperation {
                 public open var Context: RuleOperationContext = noImpl
                 public open var Action: RuleAction = noImpl
@@ -7700,6 +8244,9 @@ public object TypeScript {
                     public fun create1(action: RuleAction): RuleOperation = noImpl
                     public fun create2(context: RuleOperationContext, action: RuleAction): RuleOperation = noImpl
                 }
+            }
+            public trait `T$12` {
+                public fun invoke(context: FormattingContext): Boolean
             }
             public open class RuleOperationContext(vararg funcs: `T$12`) {
                 public open var customContextChecks: Any = noImpl
@@ -7843,9 +8390,14 @@ public object TypeScript {
                     public fun create(rules: Array<Rule>): RulesMap = noImpl
                 }
             }
-
-            enum class RulesPosition
-
+            public enum class RulesPosition {
+                IgnoreRulesSpecific // = 0
+                IgnoreRulesAny
+                ContextRulesSpecific
+                ContextRulesAny
+                NoContextRulesSpecific
+                NoContextRulesAny
+            }
             public open class RulesBucketConstructionState {
                 public open var rulesInsertionIndexBitmap: Any = noImpl
                 public open fun GetInsertionIndex(maskPosition: RulesPosition): Number = noImpl
@@ -8474,15 +9026,6 @@ public open class Enumerator(o: Any) {
     public open fun item(): Any = noImpl
 }
 native
-public trait `T$1` {
-    public var recursive: Boolean?// = noImpl
-}
-native
-public trait `T$2` {
-    public var lineStarts: Array<Number>
-    public var length: Number
-}
-native
 public open class FormattingOptions(useTabs: Boolean, spacesPerTab: Number, indentSpaces: Number, newLineCharacter: String) {
     public open var useTabs: Boolean = noImpl
     public open var spacesPerTab: Number = noImpl
@@ -8491,54 +9034,6 @@ public open class FormattingOptions(useTabs: Boolean, spacesPerTab: Number, inde
     public class object {
         public var defaultOptions: FormattingOptions = noImpl
     }
-}
-native
-public trait `T$3` {
-    public var allowAutomaticSemicolonInsertion: Boolean
-}
-native
-public trait `T$4` {
-    public var value: Number
-    public var rest: String
-}
-native
-public trait `T$5` {
-    public var importList: String
-    public var dependencyList: String
-}
-native
-public trait `T$6` {
-    public var stateWhenStartedWalkingTypes1: TypeScript.EnclosingTypeWalkerState
-    public var stateWhenStartedWalkingTypes2: TypeScript.EnclosingTypeWalkerState
-}
-native
-public trait `T$7` {
-    public var enclosingTypeWalkerState1: TypeScript.EnclosingTypeWalkerState
-    public var enclosingTypeWalkerState2: TypeScript.EnclosingTypeWalkerState
-}
-native
-public trait `T$8` {
-    public var indexSigs1: TypeScript.IndexSignatureInfo
-    public var indexSigs2: TypeScript.IndexSignatureInfo
-}
-native
-public trait `T$9` {
-    public var actualText: String
-    public var memberName: String
-}
-native
-public trait `T$10` {
-    public var signature: TypeScript.PullSignatureSymbol
-    public var allSignatures: Array<TypeScript.PullSignatureSymbol>
-}
-native
-public trait `T$11` {
-    public var getter: TypeScript.GetAccessor
-    public var setter: TypeScript.SetAccessor
-}
-native
-public trait `T$12` {
-    public open fun invoke(context: TypeScript.Services.Formatting.FormattingContext): Boolean
 }
 native
 public var debugObjectHost: Any = noImpl

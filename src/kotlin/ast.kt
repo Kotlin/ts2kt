@@ -141,8 +141,9 @@ class Annotation(override var name: String, val parameters: List<Argument> = lis
 enum class ClassKind(val keyword: String, val bracesAlwaysRequired: Boolean = false) {
     CLASS : ClassKind("class")
     TRAIT : ClassKind("trait")
+    ENUM : ClassKind("enum class")
     OBJECT : ClassKind("object", bracesAlwaysRequired = true)
-    CLASS_OBJECT: ClassKind("class object", bracesAlwaysRequired = true)
+    CLASS_OBJECT : ClassKind("class object", bracesAlwaysRequired = true)
 }
 
 class Classifier(
@@ -248,6 +249,11 @@ class Variable(
             $name +
             `type`.stringify(printUnitType = !needsNoImpl) +
             if (needsNoImpl) EQ_NO_IMPL else ""
+}
+
+class EnumEntry(override var name: String, val value: String? = null) : Member, Node() {
+    override var annotations = listOf<Annotation>()
+    override fun stringify(): String = name + if (value == null) "" else " // = $value"
 }
 
 class Type(override var name: String, val needParens: Boolean = false) : Named {
