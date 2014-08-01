@@ -28,11 +28,20 @@ native
 public trait AsyncQueue<T> {
     public fun length(): Number
     public var concurrency: Number
+    public var started: Boolean
+    public var paused: Boolean
     public fun push(task: T, callback: AsyncMultipleResultsCallback<T>? = null)
     public fun push(task: Array<T>, callback: AsyncMultipleResultsCallback<T>? = null)
-    public var saturated: AsyncMultipleResultsCallback<T>
-    public var empty: AsyncMultipleResultsCallback<T>
-    public var drain: AsyncMultipleResultsCallback<T>
+    public fun unshift(task: T, callback: AsyncMultipleResultsCallback<T>? = null)
+    public fun unshift(task: Array<T>, callback: AsyncMultipleResultsCallback<T>? = null)
+    public var saturated: () -> Any
+    public var empty: () -> Any
+    public var drain: () -> Any
+    public fun running(): Number
+    public fun idle(): Boolean
+    public fun pause()
+    public fun resume()
+    public fun kill()
 }
 native
 public trait Async {
