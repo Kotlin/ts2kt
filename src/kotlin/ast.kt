@@ -233,7 +233,7 @@ class Variable(
         val needsNoImpl: Boolean = true,
         val isOverride: Boolean = false,
         val hasOpenModifier: Boolean
-) : Member {
+) : Member, Node() {
 
     // TODO is it HACK???
     override var name = name
@@ -256,11 +256,11 @@ class EnumEntry(override var name: String, val value: String? = null) : Member, 
     override fun stringify(): String = name + if (value == null) "" else " // = $value"
 }
 
-class Type(override var name: String, val needParens: Boolean = false) : Named {
+class Type(override var name: String, val needParens: Boolean = false) : Named, Node() {
     override fun stringify(): String = "$name" + if (needParens) "()" else ""
 }
 
-class TypeParam(override var name: String, val upperBound: String? = null) : Named {
+class TypeParam(override var name: String, val upperBound: String? = null) : Named, Node() {
     override fun stringify(): String = "$name" + if(upperBound == null) "" else " : $upperBound"
 }
 
@@ -270,7 +270,7 @@ class TypeAnnotation(
         val isNullable: Boolean = false,
         val isLambda: Boolean = false,
         val isVararg: Boolean = false
-) : Named {
+) : Named, Node() {
     override fun stringify(): String = stringify(printUnitType = true)
 
     fun stringify(printUnitType: Boolean): String {
