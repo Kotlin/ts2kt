@@ -16,7 +16,6 @@
 
 package ts2kt
 
-import js.debug.console
 import typescript.typescript
 import ts2kt.utils.*
 import typescript.PositionedElement
