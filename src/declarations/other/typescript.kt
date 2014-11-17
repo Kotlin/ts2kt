@@ -28,7 +28,6 @@ object typescript {
         fun sourceUnit(): SourceUnitSyntax = noImpl
     }
 
-    native("typescript.TypeScriptCompiler")
     class TypeScriptCompiler(logger: DiagnosticsLogger) {
         val resolver: PullTypeResolver = noImpl
         fun addSourceUnit(path: String, scriptSnapshot: IScriptSnapshot, byteOrderMark: ByteOrderMark,
@@ -83,7 +82,6 @@ object typescript {
     }
 
 
-    native("typescript.BatchCompiler")
     class BatchCompiler(io: typescript.IO) {
         val compilationSettings: CompilationSettings = noImpl
         var inputFiles: Array<String>? = null
@@ -96,7 +94,6 @@ object typescript {
         public fun getSourceFile(path: String): SourceFile = noImpl
     }
 
-    native("typescript.DiagnosticsLogger")
     class DiagnosticsLogger(io: typescript.IO)
 
     trait ResolveResult {
@@ -138,6 +135,5 @@ object typescript {
         public fun signatureIsAssignableToTarget(s1: Any, s2: Any, context: Any, comparisonInfo: Any? = null): Boolean = noImpl
     }
 
-    native("typescript.PullTypeResolutionContext")
     class PullTypeResolutionContext
 }
