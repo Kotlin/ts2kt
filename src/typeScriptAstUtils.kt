@@ -18,7 +18,6 @@ package ts2kt
 
 import typescript.*
 import java.util.ArrayList
-import ts2kt.utils.setOf
 import ts2kt.kotlin.ast.FunParam
 import ts2kt.kotlin.ast.TypeAnnotation
 import ts2kt.utils.join

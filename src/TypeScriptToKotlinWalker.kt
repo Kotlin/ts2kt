@@ -19,6 +19,7 @@ package ts2kt
 import typescript.*
 import ts2kt.utils.*
 import ts2kt.kotlin.ast.*
+import kotlin.properties.Delegates
 import java.util.ArrayList
 import java.util.HashSet
 import java.util.HashMap
@@ -531,7 +532,7 @@ class TsInterfaceToKtExtensions(
         isOverrideProperty: (PositionedElement) -> Boolean
 ) : TsInterfaceToKt(typeMapper, annotations, isOverride, isOverrideProperty){
 
-    val cachedExtendsType by lazy { getExtendsType(typeParams) }
+    val cachedExtendsType by Delegates.lazy { getExtendsType(typeParams) }
 
     fun getExtendsType(typeParams: List<TypeParam>?) = name!! + (typeParams?.join(startWithIfNotEmpty = "<", endWithIfNotEmpty = ">") ?: "")
 

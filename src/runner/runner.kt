@@ -63,10 +63,10 @@ fun translate(srcPath: String): String {
 
         return when (name) {
             "equals" ->
-                signature.parameters.size == 1 && signature.parameters[0].`type`?.name == "any"
+                signature.parameters.size() == 1 && signature.parameters[0].`type`?.name == "any"
             // TODO check return type ???
             "hashCode", "toString" ->
-                signature.parameters.size == 0
+                signature.parameters.size() == 0
             else ->
                 false
         }

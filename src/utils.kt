@@ -19,80 +19,6 @@ package ts2kt.utils
 import java.util.ArrayList
 import java.util.HashSet
 
-fun listOf<T>(vararg elements: T): List<T> {
-    val list = ArrayList<T>(elements.size)
-    for (e in elements) {
-        list.add(e)
-    }
-    return list
-}
-
-fun setOf<T>(vararg elements: T): Set<T> {
-    val set = HashSet<T>(elements.size)
-    for (e in elements) {
-        set.add(e)
-    }
-    return set
-}
-
-public inline fun <T : Any, R> T.let(f: (T) -> R): R = f(this)
-
-//TODO: unused?
-fun <T> List<T>.filter(f: (T) -> Boolean): List<T> {
-    val list = ArrayList<T>()
-
-    for (e in this) {
-        if (f(e)) {
-            list.add(e)
-        }
-    }
-
-    return list
-}
-
-fun <T, R> List<T>.map(f: (T) -> R): List<R> {
-    val list = ArrayList<R>()
-
-    for (e in this) {
-        list.add(f(e))
-    }
-
-    return list
-}
-
-fun <T, R> List<T>.fold(first: R, f: (R, T) -> R): R {
-    var acc = first
-    for (e in this) {
-        acc = f(acc, e)
-    }
-
-    return acc
-}
-
-fun <T: Any> List<T>.find(f: (T) -> Boolean): T? {
-    for (e in this) {
-        if (f(e)) return e
-    }
-
-    return null
-}
-
-fun <T> List<T>.all(f: (T) -> Boolean): Boolean {
-    for (e in this) {
-        if (!f(e)) return false
-    }
-
-    return true
-}
-
-fun <T> List<T>.any(f: (T) -> Boolean): Boolean {
-    for (e in this) {
-        if (f(e)) return true
-    }
-
-    return false
-}
-
 fun <T> List<T>.join(
         delimiter: String = ", ",
         start: String = "",
@@ -124,6 +50,7 @@ fun <T> List<T>.join(
     return start + startWithIfNotEmpty + s + endWithIfNotEmpty + end
 }
 
+// TODO drop
 /** Returns a new String containing the everything but the leading whitespace characters */
 public fun String.trimLeading(): String {
     var count = 0
@@ -133,21 +60,6 @@ public fun String.trimLeading(): String {
     }
     return if (count > 0) substring(count) else this
 }
-
-fun <T> List<T>.plus(another: List<T>): List<T> = when {
-        this.isEmpty() -> {
-            another
-        }
-        another.isEmpty() -> {
-            this
-        }
-        else -> {
-            val list = ArrayList<T>()
-            list.addAll(this)
-            list.addAll(another)
-            list
-        }
-    }
 
 fun <T: Any> MutableList<T>.merge(acceptor: (T) -> Boolean, comparator: (T, T) -> Boolean, merger: (T, T) -> T) {
     var i = 0;
@@ -198,58 +110,33 @@ private fun <T: Any> MutableList<T>.mergeAllTo(mergeTo: Int, candidateIndexes: L
 
 }
 
-// JS Array utils
-
-fun <T> Array<T>.all(f: (T) -> Boolean): Boolean {
-    for (e in this) {
-        if (!f(e)) return false
-    }
-
-    return true
-}
-
-fun <T> Array<T>.any(f: (T) -> Boolean): Boolean {
-    for (e in this) {
-        if (f(e)) return true
-    }
-
-    return false
-}
-
 // JS Array methods
 
-[suppress("UNUSED_PARAMETER")]
 native
 fun <T> Array<T>.join(delimiter: String = ","): String = noImpl
 
-[suppress("UNUSED_PARAMETER")]
 native
 fun <T> Array<T>.sort(): Array<T> = noImpl
 
-[suppress("UNUSED_PARAMETER")]
 native
 fun <T> Array<T>.push(vararg element: T): Unit = noImpl
 
-[suppress("UNUSED_PARAMETER")]
 native
 fun <T> Array<T>.splice(index: Int, removeCount: Int, vararg newItems: T): Array<T> = noImpl
 
 //
 
-[suppress("UNUSED_PARAMETER")]
 native
 class RegExp(s: String, flags: String = "")
 
 // JS String methods
 
-[suppress("UNUSED_PARAMETER")]
 native
 fun String.replace(r: RegExp, s: String): String = noImpl
 
 fun String.replaceAll(r: String, s: String): String = replace(RegExp(r, "g"), s)
 
 
-[suppress("UNUSED_PARAMETER")]
 native
 fun eval<T>(code: String): T = noImpl
 
@@ -257,22 +144,4 @@ fun eval<T>(code: String): T = noImpl
 
 fun assert(condition: Boolean, message: String) {
     if (!condition) throw Exception(message)
-}
-
-fun lazy<T>(initializer: () -> T) = LazyVal(initializer)
-
-class LazyVal<T : Any>(private val initializer: () -> T) {
-    private var value: T? = null
-
-    [suppress("UNUSED_PARAMETER")]
-    fun get(thisRef: Any?, desc: PropertyMetadata): T {
-        var result = value
-
-        if (result == null) {
-            result = initializer()
-            value = result
-        }
-
-        return result!!
-    }
 }

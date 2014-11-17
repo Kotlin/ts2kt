@@ -18,7 +18,6 @@ package ts2kt
 
 import java.util.HashMap
 import typescript.ObjectTypeSyntax
-import ts2kt.utils.map
 import ts2kt.utils.replaceAll
 import ts2kt.utils.sort
 import ts2kt.utils.join

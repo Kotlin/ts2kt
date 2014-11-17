@@ -1,8 +1,6 @@
 package ts2kt.kotlin.ast
 
 import ts2kt.utils.join
-import ts2kt.utils.any
-import ts2kt.utils.find
 
 fun <T> List<T>.stringify() = join("\n", endWithIfNotEmpty = "\n")
 
