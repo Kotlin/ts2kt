@@ -50,17 +50,6 @@ fun <T> List<T>.join(
     return start + startWithIfNotEmpty + s + endWithIfNotEmpty + end
 }
 
-// TODO drop
-/** Returns a new String containing the everything but the leading whitespace characters */
-public fun String.trimLeading(): String {
-    var count = 0
-
-    while ((count < this.length) && (this[count] <= ' ')) {
-        count++
-    }
-    return if (count > 0) substring(count) else this
-}
-
 fun <T: Any> MutableList<T>.merge(acceptor: (T) -> Boolean, comparator: (T, T) -> Boolean, merger: (T, T) -> T) {
     var i = 0;
     while (i < size()) {
