@@ -373,7 +373,7 @@ class TypeScriptToKotlinWalker(
             // TODO drop hacks
             val classObject = Classifier(ClassKind.CLASS_OBJECT, "", listOf(), listOf(), delegation, listOf(), listOf(), hasOpenModifier = false)
 
-            (newTrait.members as ArrayList).add(classObject)
+            newTrait.addMember(classObject)
 
             return newTrait
         }
@@ -411,12 +411,11 @@ class TypeScriptToKotlinWalker(
 
         if (classObject == null) {
             // TODO drop hack
-            (a.members as ArrayList).add(Classifier(ClassKind.CLASS_OBJECT, "", listOf(), listOf(), listOf(), b.members, NO_ANNOTATIONS, hasOpenModifier = false))
+            a.addMember(Classifier(ClassKind.CLASS_OBJECT, "", listOf(), listOf(), listOf(), b.members, NO_ANNOTATIONS, hasOpenModifier = false))
         }
         else {
             // TODO drop hack
-            (classObject.members as ArrayList).addAll(b.members)
-            (classObject.members as ArrayList).mergeDeclarationsWithSameNameIfNeed()
+            classObject.addMembersFrom(b)
         }
 
         return a
@@ -424,9 +423,18 @@ class TypeScriptToKotlinWalker(
 
     fun mergeClassifierMembers(a: Classifier, b: Classifier): Classifier {
         // TODO drop hack
-        (a.members as ArrayList).addAll(b.members)
-        (a.members as ArrayList).mergeDeclarationsWithSameNameIfNeed()
+        a.addMembersFrom(b)
         return a
+    }
+
+    private fun Classifier.addMembersFrom(another: Classifier) {
+        val members = members as ArrayList
+        members.addAll(another.members)
+        members.mergeDeclarationsWithSameNameIfNeed()
+    }
+
+    private fun Classifier.addMember(member: Member) {
+        (members as ArrayList).add(member)
     }
 }
 
