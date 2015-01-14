@@ -1,5 +1,5 @@
-var SCRIPT_DIR = "../script/";
+var LIB_DIR = "./lib/";
 
-var Kotlin = require(SCRIPT_DIR + "kotlin");
-var SyntaxWalker = require(SCRIPT_DIR + "SyntaxWalker");
-var typescript = require(SCRIPT_DIR + "typescript");
+var Kotlin = require(LIB_DIR + "kotlin");
+var SyntaxWalker = require(LIB_DIR + "SyntaxWalker");
+var typescript = require(LIB_DIR + "typescript");
