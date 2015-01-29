@@ -19,6 +19,7 @@ package ts2kt
 import typescript.*
 import ts2kt.utils.*
 import ts2kt.kotlin.ast.*
+import ts2kt.kotlin.ast.Annotation
 import kotlin.properties.Delegates
 import java.util.ArrayList
 import java.util.HashSet

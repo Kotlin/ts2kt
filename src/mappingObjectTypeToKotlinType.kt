@@ -22,6 +22,7 @@ import ts2kt.utils.replaceAll
 import ts2kt.utils.sort
 import ts2kt.utils.join
 import ts2kt.kotlin.ast.*
+import ts2kt.kotlin.ast.Annotation
 import typescript.PositionedElement
 
 trait ObjectTypeToKotlinTypeMapper {
