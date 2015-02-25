@@ -35,7 +35,7 @@ val ARRAY = "Array"
 val SHOULD_BE_ESCAPED =
         setOf("as", "break", "class", "continue", "do", "else", "false", "for", "fun", "if",
               "in", "is", "null", "object", "package", "return", "super", "this", "This", "throw",
-              "trait", "true", "try", "type", "val", "var", "when", "while")
+              "trait", "true", "try", "typealias", "val", "var", "when", "while")
 
 val NOT_OVERRIDE: (PositionedElement) -> Boolean = { false }
 

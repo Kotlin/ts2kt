@@ -5,7 +5,7 @@ declare function bar$(ba$z: number);
 declare function fun();
 interface This {
     when: string;
-    type: number;
+    typealias: number;
     in(object: Foo);
 }
 declare class is<trait> {
@@ -47,12 +47,12 @@ declare module AllKeywords {
     export module "trait" {}
     export module "true" {}
     export module "try" {}
-    export module "type" {}
+    export module "typealias" {}
     export module "val" {}
     export module "var" {}
     export module "when" {}
     export module "while" {}
 }
 
-// val var is as trait package object when type fun in This
+// val var is as trait package object when typealias fun in This
 // contains any of: $ \s

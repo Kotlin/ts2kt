@@ -12,7 +12,7 @@ native
 module
 public trait `This` {
     public var `when`: String
-    public var `type`: Number
+    public var `typealias`: Number
     public fun `in`(`object`: Foo)
     public class object {
         public var `$foo`: Boolean = noImpl
@@ -124,7 +124,7 @@ public object AllKeywords {
 
     }
     module
-    public object `type` {
+    public object `typealias` {
 
     }
     module
