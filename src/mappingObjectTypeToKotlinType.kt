@@ -17,20 +17,18 @@
 package ts2kt
 
 import java.util.HashMap
-import typescript.ObjectTypeSyntax
 import ts2kt.utils.replaceAll
 import ts2kt.utils.sort
-import ts2kt.utils.join
 import ts2kt.kotlin.ast.*
-import ts2kt.kotlin.ast.Annotation
-import typescript.PositionedElement
+import ts2kt.kotlin.ast
+import typescript.*
 
 trait ObjectTypeToKotlinTypeMapper {
-    fun getKotlinTypeNameForObjectType(objectType: ObjectTypeSyntax): String
+    fun getKotlinTypeNameForObjectType(objectType: TS.TypeLiteralNode): String
 }
 
 class ObjectTypeToKotlinTypeMapperImpl(
-        val defaultAnnotations: List<Annotation>,
+        val defaultAnnotations: List<ast.Annotation>,
         val declarations: MutableList<Member>
 ) : ObjectTypeToKotlinTypeMapper {
 
@@ -52,17 +50,17 @@ class ObjectTypeToKotlinTypeMapperImpl(
         cache[jsonTypeKey] = "Json"
     }
 
-    override fun getKotlinTypeNameForObjectType(objectType: ObjectTypeSyntax): String {
+    override fun getKotlinTypeNameForObjectType(objectType: TS.TypeLiteralNode): String {
         val translator = TsInterfaceToKt(annotations = defaultAnnotations, typeMapper = this, isOverride = NOT_OVERRIDE, isOverrideProperty = NOT_OVERRIDE)
 
-        translator.visitSeparatedList(objectType.typeMembers)
+        forEachChild(translator, objectType)
 
         val typeKey = translator.declarations.toStringKey()
 
         val cachedTraitName = cache[typeKey]
         if (cachedTraitName != null) return cachedTraitName
 
-        val traitName = "`T$${n++}`"
+        val traitName = "T$${n++}"
         translator.name = traitName
 
         declarations.add(translator.result)

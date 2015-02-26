@@ -14,9 +14,21 @@
  * limitations under the License.
  */
 
-package typescript
+package node
 
 native
-trait ISyntaxTriviaList
+class path private () {
+    fun basename(path: String, postfix: String): String = noImpl
+}
+
 native
-trait ISyntaxTrivia
+class process private() {
+    val argv: Array<String?> = noImpl
+}
+
+native
+class fs private() {
+    fun argv(index: Int): String = noImpl
+    fun writeFileSync(path: String, text: String): Unit = noImpl
+    fun readFileSync(path: String): String = noImpl
+}

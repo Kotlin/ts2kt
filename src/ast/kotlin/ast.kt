@@ -17,7 +17,7 @@
 package ts2kt.kotlin.ast
 
 import ts2kt.utils.*
-import ts2kt.UNIT
+import ts2kt.*
 
 val MODULE = "module"
 val NATIVE = "native"
@@ -130,12 +130,14 @@ trait Annotated : Node {
 
 trait Member : Named, Annotated
 
+// TODO should be Named?
+// TODO should we escape name here?
 class Argument(val name: String? = null, val value: Any /* TODO ??? */) {
     override fun toString() = (if (name == null) "" else "$name = ") + value
 }
 
 class Annotation(override var name: String, val parameters: List<Argument> = listOf()) : Named, Node() {
-    override fun stringify(): String = "$name" + if (parameters.isEmpty()) "" else "(${parameters.join()})"
+    override fun stringify(): String = "$escapedName" + if (parameters.isEmpty()) "" else "(${parameters.join()})"
 }
 
 enum class ClassKind(val keyword: String, val bracesAlwaysRequired: Boolean = false) {
@@ -162,7 +164,7 @@ class Classifier(
             (if (hasOpenModifier) OPEN + " " else "") +
             kind.keyword +
             (if (name.isEmpty()) "" else " ") +
-            name +
+            escapedName +
             (typeParams?.join(", ", startWithIfNotEmpty = "<", endWithIfNotEmpty = ">") ?: "") +
             (if (paramsOfConstructors.isEmpty()) "" else paramsOfConstructors[0].join(", ", startWithIfNotEmpty = "(", endWithIfNotEmpty = ")")) +
             parents.join(", ", startWithIfNotEmpty = " : ") +
@@ -175,7 +177,7 @@ class Classifier(
 
 class FunParam(
         override var name: String,
-        val `type`: TypeAnnotation,
+        val type: TypeAnnotation,
         val defaultValue: Any? = null,
         val isVar: Boolean = false
 ) : Named, Node() {
@@ -183,7 +185,7 @@ class FunParam(
 
     fun stringify(printDefaultValue: Boolean): String =
             (if (isVar) "$PUBLIC $OPEN $VAR " else "") +
-            (if (`type`.isVararg) VARARG + " " else "") + name + `type` +
+            (if (type.isVararg) VARARG + " " else "") + escapedName + type +
             if (defaultValue == null || !printDefaultValue) "" else " = $defaultValue"
 }
 
@@ -218,14 +220,14 @@ class Function(
             " $FUN " +
             // TODO refactor this
             (if (extendsType == null) "" else callSignature.stringifyTypeParams(withSpaceAfter = true) + extendsType.toString() + "." ) +
-            name +
+            escapedName +
             callSignature.stringify(withTypeParams = extendsType == null, printUnitReturnType = needsNoImpl, printDefaultValues = !isOverride) +
             if (needsNoImpl) EQ_NO_IMPL else ""
 }
 
 class Variable(
         name: String,
-        var `type`: TypeAnnotation,
+        var type: TypeAnnotation,
         val extendsType: Type? = null,
         override var annotations: List<Annotation>,
         val typeParams: List<TypeParam>?,
@@ -246,22 +248,22 @@ class Variable(
             (if (isVar) VAR else VAL) + " " +
             (typeParams?.join(", ", startWithIfNotEmpty = "<", endWithIfNotEmpty = "> ") ?: "") +
             (if (extendsType == null) "" else extendsType.toString() + "." ) +
-            $name +
-            `type`.stringify(printUnitType = !needsNoImpl) +
+            $name.escapeIfNeed() +
+            type.stringify(printUnitType = !needsNoImpl) +
             if (needsNoImpl) EQ_NO_IMPL else ""
 }
 
 class EnumEntry(override var name: String, val value: String? = null) : Member, Node() {
     override var annotations = listOf<Annotation>()
-    override fun stringify(): String = name + if (value == null) "" else " // = $value"
+    override fun stringify(): String = escapedName + if (value == null) "" else " // = $value"
 }
 
 class Type(override var name: String, val needParens: Boolean = false) : Named, Node() {
-    override fun stringify(): String = "$name" + if (needParens) "()" else ""
+    override fun stringify(): String = "$escapedName" + if (needParens) "()" else ""
 }
 
 class TypeParam(override var name: String, val upperBound: String? = null) : Named, Node() {
-    override fun stringify(): String = "$name" + if(upperBound == null) "" else " : $upperBound"
+    override fun stringify(): String = "$escapedName" + if(upperBound == null) "" else " : $upperBound"
 }
 
 class TypeAnnotation(
@@ -278,10 +280,10 @@ class TypeAnnotation(
 
         return  ": " +
                 (if (isLambda && isNullable) "(" else "") +
-                name +
+                escapedName +
                 (if (isLambda && isNullable) ")" else "") +
                 (if (isNullable) "?" else "")
     }
 
-    fun isUnit() = name == UNIT && !isNullable && !isLambda && !isVararg
+    fun isUnit() = escapedName == UNIT && !isNullable && !isLambda && !isVararg
 }

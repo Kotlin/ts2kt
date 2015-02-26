@@ -16,107 +16,110 @@
 
 package ts2kt
 
-import typescript.typescript
-import ts2kt.utils.*
-import typescript.PositionedElement
+import typescript.*
+import java.util.*
 
-[suppress("UNUSED_PARAMETER")]
 native
 fun require(name: String): Any = noImpl
 
-val SRC_FILE_PATH_ARG_INDEX = 2;
-val OUT_FILE_PATH_ARG_INDEX = 3;
-val TYPESCRIPT_DEFINITION_FILE_EXT = ".d.ts";
-//val LIB_D_TS = "testDefinitelyTyped/DefinitelyTyped/_infrastructure/tests/typescript/1.0.0/lib.d.ts"
-//val LIB_D_TS_RESOLVED_FILE: typescript.IResolvedFile = eval("""({ path:"$LIB_D_TS", referencedFiles: [], importedFiles: [] })""")
+val SRC_FILE_PATH_ARG_INDEX = 2
+val OUT_FILE_PATH_ARG_INDEX = 3
+val TYPESCRIPT_DEFINITION_FILE_EXT = ".d.ts"
+// TODO fix
+val PATH_TO_LIB_D_TS = "/Users/user/dev/ts2kt/lib/lib.d.ts"
 
-fun typescript.TypeScriptCompiler.addFile(resolvedFile: typescript.IResolvedFile, batch: typescript.BatchCompiler) {
-    var sourceFile = batch.getSourceFile(resolvedFile.path);
-    addSourceUnit(resolvedFile.path, sourceFile.scriptSnapshot, sourceFile.byteOrderMark, 0, false, resolvedFile.referencedFiles);
-}
+val fs = require("fs") as node.fs
+
+val file2scriptSnapshot: MutableMap<String, dynamic> = hashMapOf("lib.d.ts" to getScriptSnapshotFromFile(PATH_TO_LIB_D_TS))
+var currentVersion = 0
+val version: () -> Int = { currentVersion }
+
+private val reportedKinds = HashSet<Int>()
+
+// todo move to utils?
+fun getScriptSnapshotFromFile(path: String) = ts.ScriptSnapshot.fromString(fs.readFileSync(path).toString())
 
 fun translate(srcPath: String): String {
-    val compiler = typescript.TypeScriptCompiler(typescript.DiagnosticsLogger(typescript.IO));
-    val batch = typescript.BatchCompiler(typescript.IO);
-    batch.compilationSettings.noLib = true
-    batch.inputFiles = array(srcPath);
-    batch.resolve();
+    currentVersion++
+    val host = FileSystemBasedLSH(file2scriptSnapshot, version)
 
-//    batch.resolvedFiles.splice(0, 0, LIB_D_TS_RESOLVED_FILE)
+    file2scriptSnapshot[srcPath] = getScriptSnapshotFromFile(srcPath)
 
-//    var compiler = typescript.TypeScriptCompiler(batch.logger, batch.compilationSettings);
+    val documentRegistry = ts.createDocumentRegistry()
+    val languageService = ts.createLanguageService(host, documentRegistry)
 
-    for (resolvedFile in batch.resolvedFiles) {
-        compiler.addFile(resolvedFile, batch);
-    }
+//    languageService.getSyntacticDiagnostics("foo.d.ts")
+//    languageService.getSemanticDiagnostics("foo.d.ts")
 
-    compiler.pullTypeCheck();
-
-    // TODO report diagnostics and exit here?
+    val fileNode = languageService.getSourceFile(srcPath)
 
     val path = require("path") as node.path
     val srcName = path.basename(srcPath, TYPESCRIPT_DEFINITION_FILE_EXT)
-    val srcResolvedPath = batch.resolvePath(srcPath)
 
-    fun isAnyMember(name: String, signature: typescript.PullSignatureSymbol?): Boolean {
-        if (signature == null || signature.parameters == null) return false
+//    fun isAnyMember(name: String, signature: typescript.PullSignatureSymbol?): Boolean {
+//        if (signature == null || signature.parameters == null) return false
+//
+//        return when (name) {
+//            "equals" ->
+//                signature.parameters.size() == 1 && signature.parameters[0].type?.name == "any"
+//            // TODO check return type ???
+//            "hashCode", "toString" ->
+//                signature.parameters.size() == 0
+//            else ->
+//                false
+//        }
+//    }
 
-        return when (name) {
-            "equals" ->
-                signature.parameters.size() == 1 && signature.parameters[0].`type`?.name == "any"
-            // TODO check return type ???
-            "hashCode", "toString" ->
-                signature.parameters.size() == 0
-            else ->
-                false
-        }
-    }
-
-    fun getOverrideChecker(isOverridesBy: typescript.PullSymbol.(signature: typescript.PullSignatureSymbol?) -> Boolean): (PositionedElement) -> Boolean {
+    fun getOverrideChecker(isOverridesBy: /*typescript.PullSymbol.(signature: typescript.PullSignatureSymbol?)*/(Any) -> Boolean): (TS.Node) -> Boolean {
         return {
-            val resolveResult = compiler.resolvePosition(it.start(), compiler.getDocument(srcResolvedPath)!!)
-            val signature = resolveResult.candidateSignature
-
-            val name = resolveResult.symbol.name
-
-            val f: (typescript.PullTypeSymbol) -> Boolean = {
-                    it.findMember(name)?.isOverridesBy(signature) ?: false
-                }
-
-            (isAnyMember(name,  signature) ||
-                    resolveResult.enclosingScopeSymbol.getExtendedTypes().any(f) ||
-                    resolveResult.enclosingScopeSymbol.getImplementedTypes().any(f))
+            false
+//            val resolveResult = compiler.resolvePosition(it.start(), compiler.getDocument(srcResolvedPath)!!)
+//            val signature = resolveResult.candidateSignature
+//
+//            val name = resolveResult.symbol.name
+//
+//            val f: (typescript.PullTypeSymbol) -> Boolean = {
+//                    it.findMember(name)?.isOverridesBy(signature) ?: false
+//                }
+//
+//            (isAnyMember(name,  signature) ||
+//                    resolveResult.enclosingScopeSymbol.getExtendedTypes().any(f) ||
+//                    resolveResult.enclosingScopeSymbol.getImplementedTypes().any(f))
         }
     }
 
     val typeScriptToKotlinWalker = TypeScriptToKotlinWalker(srcName,
             isOwnDeclaration = {
-                val resolveResult = compiler.resolvePosition(it.start(), compiler.getDocument(srcResolvedPath)!!)
-                resolveResult.symbol.getDeclarations().all { it.scriptName == srcResolvedPath }
+                true
+//                val resolveResult = compiler.resolvePosition(it.start(), compiler.getDocument(srcResolvedPath)!!)
+//                resolveResult.symbol.getDeclarations().all { it.scriptName == srcResolvedPath }
             },
             isOverride = getOverrideChecker { signature ->
-                this.`type` != null &&
-                this.`type`.getCallSignatures().any {
-                    // TODO can use share it with many checks?
-                    val pullTypeResolutionContext = typescript.PullTypeResolutionContext()
-                    compiler.resolver.signatureIsAssignableToTarget(signature!!, it, pullTypeResolutionContext)
-                }
+                false
+//                this.type != null &&
+//                this.type.getCallSignatures().any {
+//                    // TODO can use share it with many checks?
+//                    val pullTypeResolutionContext = typescript.PullTypeResolutionContext()
+//                    compiler.resolver.signatureIsAssignableToTarget(signature!!, it, pullTypeResolutionContext)
+//                }
             },
             isOverrideProperty = getOverrideChecker { true }
     );
 
-    val tsTree = compiler.getSyntaxTree(srcResolvedPath);
-    tsTree.sourceUnit().accept(typeScriptToKotlinWalker)
+    // TODO fix
+    // note we have side effect here
+    typeScriptToKotlinWalker.visitList(fileNode)
 
     val ktTree = typeScriptToKotlinWalker.result
 
     var out = ktTree.toString()
 
+    file2scriptSnapshot.remove(srcPath)
+
     return out
 }
 
 fun translateToFile(srcPath: String, outPath: String) {
-    val fs = require("fs") as node.fs
     fs.writeFileSync(outPath, translate(srcPath));
 }
 
