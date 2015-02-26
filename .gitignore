@@ -1,5 +1,6 @@
 out
 .idea/workspace.xml
+.idea/shelf
 .DS_Store
 *.out
 tmp
