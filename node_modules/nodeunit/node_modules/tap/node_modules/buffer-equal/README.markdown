@@ -9,7 +9,7 @@ example
 =======
 
 ``` js
-var bufferEqual = require('bufferEqual');
+var bufferEqual = require('buffer-equal');
 
 console.dir(bufferEqual(
     new Buffer([253,254,255]),
