@@ -111,6 +111,9 @@ native
 fun <T> Array<T>.push(vararg element: T): Unit = noImpl
 
 native
+fun <T> Array<T>.shift(): T = noImpl
+
+native
 fun <T> Array<T>.splice(index: Int, removeCount: Int, vararg newItems: T): Array<T> = noImpl
 
 //

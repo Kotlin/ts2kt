@@ -18,6 +18,8 @@ package ts2kt
 
 import typescript.*
 import java.util.*
+import node.*
+import ts2kt.utils.*
 
 native
 fun require(name: String): Any = noImpl
@@ -30,20 +32,32 @@ val PATH_TO_LIB_D_TS = "/Users/user/dev/ts2kt/lib/lib.d.ts"
 
 val fs = require("fs") as node.fs
 
-val file2scriptSnapshot: MutableMap<String, dynamic> = hashMapOf("lib.d.ts" to getScriptSnapshotFromFile(PATH_TO_LIB_D_TS))
-var currentVersion = 0
-val version: () -> Int = { currentVersion }
-
 private val reportedKinds = HashSet<Int>()
 
+val file2scriptSnapshotCache: MutableMap<String, dynamic> = hashMapOf()
+
 // todo move to utils?
-fun getScriptSnapshotFromFile(path: String) = ts.ScriptSnapshot.fromString(fs.readFileSync(path).toString())
+fun getScriptSnapshotFromFile(path: String): dynamic {
+    var scriptSnapshot  = file2scriptSnapshotCache[path]
+
+    if (scriptSnapshot == null) {
+        scriptSnapshot = ts.ScriptSnapshot.fromString(fs.readFileSync(path).toString())
+        file2scriptSnapshotCache[path] = scriptSnapshot
+    }
+
+    return scriptSnapshot
+}
 
 fun translate(srcPath: String): String {
-    currentVersion++
-    val host = FileSystemBasedLSH(file2scriptSnapshot, version)
+    val file2scriptSnapshot: MutableMap<String, dynamic> = hashMapOf("lib.d.ts" to getScriptSnapshotFromFile(PATH_TO_LIB_D_TS))
+    var currentVersion = 1
+    val version: () -> Int = { currentVersion }
 
-    file2scriptSnapshot[srcPath] = getScriptSnapshotFromFile(srcPath)
+    val normalizeSrcPath = ts.normalizePath(srcPath)
+    val dir = ts.getDirectoryPath(normalizeSrcPath)
+    val host = FileSystemBasedLSH(file2scriptSnapshot, dir, version)
+
+    file2scriptSnapshot[normalizeSrcPath] = getScriptSnapshotFromFile(normalizeSrcPath)
 
     val documentRegistry = ts.createDocumentRegistry()
     val languageService = ts.createLanguageService(host, documentRegistry)
@@ -51,10 +65,27 @@ fun translate(srcPath: String): String {
 //    languageService.getSyntacticDiagnostics("foo.d.ts")
 //    languageService.getSemanticDiagnostics("foo.d.ts")
 
-    val fileNode = languageService.getSourceFile(srcPath)
+    val fileNode = languageService.getSourceFile(normalizeSrcPath)
+
+    val filesToProcess = array(normalizeSrcPath)
+    while(filesToProcess.isNotEmpty()) {
+        val curFile = filesToProcess.shift()
+        val curDir = ts.getDirectoryPath(curFile) + "/"
+
+        var result = ts.preProcessFile(file2scriptSnapshot[curFile].getText());
+
+        for (referencedFile in result.referencedFiles: Array<dynamic>) {
+            val referencedFilePath = ts.normalizePath(curDir + referencedFile.filename)
+            filesToProcess.push(referencedFilePath)
+            file2scriptSnapshot[referencedFilePath] = getScriptSnapshotFromFile(referencedFilePath)
+        }
+//        currentVersion++
+    }
+    // replace with `refresh()`?
+    currentVersion++
 
     val path = require("path") as node.path
-    val srcName = path.basename(srcPath, TYPESCRIPT_DEFINITION_FILE_EXT)
+    val srcName = path.basename(normalizeSrcPath, TYPESCRIPT_DEFINITION_FILE_EXT)
 
 //    fun isAnyMember(name: String, signature: typescript.PullSignatureSymbol?): Boolean {
 //        if (signature == null || signature.parameters == null) return false
@@ -90,9 +121,8 @@ fun translate(srcPath: String): String {
 
     val typeScriptToKotlinWalker = TypeScriptToKotlinWalker(srcName,
             isOwnDeclaration = {
-                true
-//                val resolveResult = compiler.resolvePosition(it.start(), compiler.getDocument(srcResolvedPath)!!)
-//                resolveResult.symbol.getDeclarations().all { it.scriptName == srcResolvedPath }
+                val definitions: Array<dynamic> = languageService.getDefinitionAtPosition(normalizeSrcPath, it.end)
+                definitions.all { it.fileName === normalizeSrcPath }
             },
             isOverride = getOverrideChecker { signature ->
                 false
@@ -114,7 +144,8 @@ fun translate(srcPath: String): String {
 
     var out = ktTree.toString()
 
-    file2scriptSnapshot.remove(srcPath)
+    // TODO drop?
+    file2scriptSnapshot.remove(normalizeSrcPath)
 
     return out
 }

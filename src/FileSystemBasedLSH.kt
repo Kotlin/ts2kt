@@ -2,7 +2,7 @@ package ts2kt
 
 import typescript.ts
 
-public class FileSystemBasedLSH(val file2scriptSnapshot: Map<String, dynamic>, val version: () -> Int) {
+public class FileSystemBasedLSH(val file2scriptSnapshot: Map<String, dynamic>, val currentDirectory: String, val version: () -> Int) {
     var filesCache = array<String>()
     var versionCache = -1
 
@@ -35,7 +35,7 @@ public class FileSystemBasedLSH(val file2scriptSnapshot: Map<String, dynamic>, v
 //                fun isCancellationRequested() = false
 //            }
 
-    fun getCurrentDirectory() = ""
+    fun getCurrentDirectory() = currentDirectory
     fun getDefaultLibFilename(options: dynamic) = "lib.d.ts"
 
     fun log(message: Any) = console.log(message)
