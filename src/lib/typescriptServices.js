@@ -10931,7 +10931,10 @@ var ts;
             isImplementationOfOverload: isImplementationOfOverload,
             getAliasedSymbol: resolveImport,
             hasEarlyErrors: hasEarlyErrors,
-            isEmitBlocked: isEmitBlocked
+            isEmitBlocked: isEmitBlocked,
+            isSignatureAssignableTo: isSignatureAssignableTo,
+            isTypeSubtypeOf: isTypeSubtypeOf,
+            isTypeAssignableTo: isTypeAssignableTo
         };
         var undefinedSymbol = createSymbol(4 /* Property */ | 268435456 /* Transient */, "undefined");
         var argumentsSymbol = createSymbol(4 /* Property */ | 268435456 /* Transient */, "arguments");
@@ -25200,7 +25203,15 @@ var ts;
             getFormattingEditsForDocument: getFormattingEditsForDocument,
             getFormattingEditsAfterKeystroke: getFormattingEditsAfterKeystroke,
             getEmitOutput: getEmitOutput,
-            getSourceFile: getCurrentSourceFile
+            getSourceFile: getCurrentSourceFile,
+
+            getTypecheker: function() { return typeInfoResolver; },
+            getFullTypecheker: getFullTypeCheckChecker,
+
+            getProgram: function() {
+                synchronizeHostData();
+                return program;
+            }
         };
     }
     ts.createLanguageService = createLanguageService;
