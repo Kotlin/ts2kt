@@ -3,6 +3,7 @@ package Arbiter
 module
 public object ArbiterDef {
     public trait SubscribeHandler {
+        nativeInvoke
         public fun invoke(data: Any, message: String, subscriber_context: Any)
     }
     public trait SubscribeOptions {

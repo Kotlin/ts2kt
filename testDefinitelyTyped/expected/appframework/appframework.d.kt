@@ -30,10 +30,15 @@ public trait `T$1` {
 }
 native
 public trait appFrameworkStatic {
+    nativeInvoke
     public fun invoke(selector: String, context: Any? = null): appFrameworkCollection
+    nativeInvoke
     public fun invoke(collection: appFrameworkCollection): appFrameworkCollection
+    nativeInvoke
     public fun invoke(element: HTMLElement): appFrameworkCollection
+    nativeInvoke
     public fun invoke(htmlString: String): appFrameworkCollection
+    nativeInvoke
     public fun invoke(`object`: Any): appFrameworkCollection
     public fun `is$`(obj: Any): Boolean
     public fun map(collection: Array<Any>, fn: (item: Any, index: Number) -> Any): Array<Any>
@@ -58,9 +63,9 @@ public trait appFrameworkStatic {
     public fun uuid(): String
     public fun getCssMatrix(node: HTMLElement): appFrameworkCssMatrix
     public fun getCssMatrix(elem: appFrameworkCollection): appFrameworkCssMatrix
-    public fun create(`type`: String, params: Any? = null): appFrameworkCollection
+    public fun create(type: String, params: Any? = null): appFrameworkCollection
     public fun query(selector: String, context: Any? = null): appFrameworkCollection
-    public fun Event(`type`: String, props: Any): Any
+    public fun Event(type: String, props: Any): Any
     public fun bind(`object`: Any, event: String, fn: Function)
     public fun trigger(`object`: Any, event: String, args: Array<Any>? = null)
     public fun unbind(`object`: Any, event: String, fn: Function)
@@ -193,7 +198,7 @@ public trait appFrameworkCollection {
 }
 native
 public trait appFrameworkAjaxSettings {
-    public var `type`: String? = noImpl
+    public var type: String? = noImpl
     public var beforeSend: ((xhr: XMLHttpRequest, settings: appFrameworkAjaxSettings) -> Boolean)? = noImpl
     public var success: ((data: Any, status: String, xhr: XMLHttpRequest) -> Unit)? = noImpl
     public var error: ((xhr: XMLHttpRequest, errorType: String, error: Error) -> Unit)? = noImpl

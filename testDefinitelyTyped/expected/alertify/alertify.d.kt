@@ -6,9 +6,9 @@ public trait alertify {
     public trait IAlertifyStatic {
         public fun alert(message: String, fn: Function? = null, cssClass: String? = null): IAlertifyStatic
         public fun confirm(message: String, fn: Function? = null, cssClass: String? = null): IAlertifyStatic
-        public fun extend(`type`: String): (message: String, wait: Number? = null) -> IAlertifyStatic
+        public fun extend(type: String): (message: String, wait: Number? = null) -> IAlertifyStatic
         public fun init()
-        public fun log(message: String, `type`: String? = null, wait: Number? = null): IAlertifyStatic
+        public fun log(message: String, type: String? = null, wait: Number? = null): IAlertifyStatic
         public fun prompt(message: String, fn: Function? = null, placeholder: String? = null, cssClass: String? = null): IAlertifyStatic
         public fun success(message: String): IAlertifyStatic
         public fun error(message: String): IAlertifyStatic

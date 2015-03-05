@@ -12,13 +12,16 @@ public object Q {
 module
 public object ref-array {
     native
+    nativeGetter
     public fun <T> ArrayType<T>.get(prop: String): Number = noImpl
     native
+    nativeSetter
     public fun <T> ArrayType<T>.set(prop: String, value: Number): Unit = noImpl
     native
     public var <T> ArrayType<T>.someField: String = noImpl
     native
     public var <T> ArrayType<T>.optionalField: T? = noImpl
     native
+    nativeInvoke
     public fun <T> ArrayType<T>.invoke(resourceId: String, hash: Any? = null, callback: Function? = null): Unit = noImpl
 }

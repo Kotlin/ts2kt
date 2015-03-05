@@ -46,7 +46,7 @@ class ObjectTypeToKotlinTypeMapperImpl(
         // TODO better declaration for known classes
         cache[""] = "Any"
 
-        val jsonTypeKey = "public fun get(String): Any, public fun set(String, Any)";
+        val jsonTypeKey = "nativeGetter\npublic fun get(String): Any, nativeSetter\npublic fun set(String, Any)";
         cache[jsonTypeKey] = "Json"
     }
 

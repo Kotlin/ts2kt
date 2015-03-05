@@ -12,7 +12,9 @@ public object Module {
 }
 native
 public trait `T$0` {
+    nativeGetter
     public fun get(s: Number): Any
+    nativeSetter
     public fun set(s: Number, value: Any)
 }
 native

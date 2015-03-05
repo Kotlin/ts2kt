@@ -10,8 +10,11 @@ public trait `T$1` {
     public var baz: Any
     public var boo: String
     public var show: (overrideChecks: Boolean) -> Unit
+    nativeInvoke
     public fun invoke(foo: `T$0`): Any
+    nativeGetter
     public fun get(s: String): Any
+    nativeSetter
     public fun set(s: String, value: Any)
 }
 native

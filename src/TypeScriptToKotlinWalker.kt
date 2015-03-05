@@ -26,6 +26,9 @@ import java.util.HashSet
 import java.util.HashMap
 
 private val NATIVE_ANNOTATION = ast.Annotation(NATIVE)
+private val NATIVE_GETTER_ANNOTATION = ast.Annotation("nativeGetter")
+private val NATIVE_SETTER_ANNOTATION = ast.Annotation("nativeSetter")
+private val NATIVE_INVOKE_ANNOTATION = ast.Annotation("nativeInvoke")
 private val MODULE_ANNOTATION = ast.Annotation(MODULE)
 private val DEFAULT_ANNOTATION = listOf(NATIVE_ANNOTATION)
 private val DEFAULT_MODULE_ANNOTATION = listOf(MODULE_ANNOTATION)
@@ -472,16 +475,19 @@ abstract class TsClassifierToKt(
 
         val callSignature: CallSignature
         val accessorName: String
+        val annotation: ast.Annotation
         if (isGetter) {
             callSignature = CallSignature(params, listOf(), TypeAnnotation(propType))
             accessorName = GET
+            annotation = NATIVE_GETTER_ANNOTATION
         }
         else {
             callSignature = CallSignature(listOf(params[0], FunParam("value", TypeAnnotation(propType))), listOf(), TypeAnnotation(UNIT))
             accessorName = SET
+            annotation = NATIVE_SETTER_ANNOTATION
         }
 
-        addFunction(accessorName, callSignature, needsNoImpl = needsNoImpl)
+        addFunction(accessorName, callSignature, needsNoImpl = needsNoImpl, additionalAnnotations = listOf(annotation))
     }
 
     var name: String? = null
@@ -585,7 +591,7 @@ open class TsInterfaceToKt(
     }
 
     override fun visitSignatureDeclaration(node: TS.SignatureDeclaration) {
-        addFunction(INVOKE, node.toKotlinCallSignature(typeMapper), needsNoImpl = false)
+        addFunction(INVOKE, node.toKotlinCallSignature(typeMapper), needsNoImpl = false, additionalAnnotations = listOf(NATIVE_INVOKE_ANNOTATION))
     }
 }
 

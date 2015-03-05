@@ -4,6 +4,7 @@ native
 module("lodash")
 public trait _ {
     public trait LoDashStatic {
+        nativeInvoke
         public fun invoke(value: Number): LoDashWrapper<Number>
         public var VERSION: String
         public var support: Support
