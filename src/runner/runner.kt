@@ -27,17 +27,16 @@ fun require(name: String): Any = noImpl
 val SRC_FILE_PATH_ARG_INDEX = 2
 val OUT_FILE_PATH_ARG_INDEX = 3
 val TYPESCRIPT_DEFINITION_FILE_EXT = ".d.ts"
-// TODO fix
-val PATH_TO_LIB_D_TS = "/Users/user/dev/ts2kt/lib/lib.d.ts"
+val PATH_TO_LIB_D_TS = "lib/lib.d.ts"
 
 val fs = require("fs") as node.fs
 
 private val reportedKinds = HashSet<Int>()
 
-val file2scriptSnapshotCache: MutableMap<String, dynamic> = hashMapOf()
+private val file2scriptSnapshotCache: MutableMap<String, dynamic> = hashMapOf()
 
-// todo move to utils?
-fun getScriptSnapshotFromFile(path: String): dynamic {
+// TODO drop? Probably we don't need own caching
+private fun getScriptSnapshotFromFile(path: String): dynamic {
     var scriptSnapshot  = file2scriptSnapshotCache[path]
 
     if (scriptSnapshot == null) {
@@ -48,24 +47,17 @@ fun getScriptSnapshotFromFile(path: String): dynamic {
     return scriptSnapshot
 }
 
+val LIB_D_TS_WITH_SNAPSHOT = "lib.d.ts" to getScriptSnapshotFromFile(PATH_TO_LIB_D_TS)
+
+val host = FileSystemBasedLSH(mapOf(), "")
+val documentRegistry = ts.createDocumentRegistry()
+val languageService = ts.createLanguageService(host, documentRegistry)
+
+
 fun translate(srcPath: String): String {
-    val file2scriptSnapshot: MutableMap<String, dynamic> = hashMapOf("lib.d.ts" to getScriptSnapshotFromFile(PATH_TO_LIB_D_TS))
-    var currentVersion = 1
-    val version: () -> Int = { currentVersion }
+    val normalizeSrcPath: String = ts.normalizePath(srcPath)
 
-    val normalizeSrcPath = ts.normalizePath(srcPath)
-    val dir = ts.getDirectoryPath(normalizeSrcPath)
-    val host = FileSystemBasedLSH(file2scriptSnapshot, dir, version)
-
-    file2scriptSnapshot[normalizeSrcPath] = getScriptSnapshotFromFile(normalizeSrcPath)
-
-    val documentRegistry = ts.createDocumentRegistry()
-    val languageService = ts.createLanguageService(host, documentRegistry)
-
-//    languageService.getSyntacticDiagnostics("foo.d.ts")
-//    languageService.getSemanticDiagnostics("foo.d.ts")
-
-    val fileNode = languageService.getSourceFile(normalizeSrcPath)
+    val file2scriptSnapshot = hashMapOf(LIB_D_TS_WITH_SNAPSHOT, normalizeSrcPath to getScriptSnapshotFromFile(normalizeSrcPath))
 
     val filesToProcess = array(normalizeSrcPath)
     while(filesToProcess.isNotEmpty()) {
@@ -82,10 +74,14 @@ fun translate(srcPath: String): String {
             filesToProcess.push(referencedFilePath)
             file2scriptSnapshot[referencedFilePath] = getScriptSnapshotFromFile(referencedFilePath)
         }
-//        currentVersion++
     }
-    // replace with `refresh()`?
-    currentVersion++
+
+    host.file2scriptSnapshot = file2scriptSnapshot
+    host.currentDirectory = ts.getDirectoryPath(normalizeSrcPath)
+
+//    languageService.getSyntacticDiagnostics("foo.d.ts")
+//    languageService.getSemanticDiagnostics("foo.d.ts")
+
 //    val fileNode = languageService.getSourceFile(normalizeSrcPath)
     val fileNode = languageService.getProgram().getSourceFile(normalizeSrcPath)
 
@@ -187,9 +183,6 @@ fun translate(srcPath: String): String {
     val ktTree = typeScriptToKotlinWalker.result
 
     var out = ktTree.toString()
-
-    // TODO drop?
-    file2scriptSnapshot.remove(normalizeSrcPath)
 
     return out
 }

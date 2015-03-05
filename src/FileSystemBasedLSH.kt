@@ -2,21 +2,19 @@ package ts2kt
 
 import typescript.ts
 
-public class FileSystemBasedLSH(val file2scriptSnapshot: Map<String, dynamic>, val currentDirectory: String, val version: () -> Int) {
+public class FileSystemBasedLSH(file2scriptSnapshot: Map<String, dynamic>, var currentDirectory: String) {
     var filesCache = array<String>()
-    var versionCache = -1
+
+    var file2scriptSnapshot = file2scriptSnapshot
+        get() = $file2scriptSnapshot
+        set(value) {
+            $file2scriptSnapshot = value
+            filesCache = value.keySet().copyToArray()
+        }
 
     fun getCompilationSettings() = ts.getDefaultCompilerOptions()
 
-    fun getScriptFileNames(): Array<String> {
-        val currentVersion = version()
-        if (versionCache != currentVersion) {
-            versionCache = currentVersion
-            filesCache = file2scriptSnapshot.keySet().copyToArray()
-        }
-
-        return filesCache
-    }
+    fun getScriptFileNames(): Array<String> = filesCache
 
     fun getScriptVersion(fileName: String) = 1 // ???
 
