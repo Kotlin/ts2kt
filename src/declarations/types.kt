@@ -746,7 +746,7 @@ public object TS {
         public fun getTypeOfSymbolAtLocation(symbol: Symbol, node: Node): Type
         public fun getDeclaredTypeOfSymbol(symbol: Symbol): Type
         public fun getPropertiesOfType(type: Type): Array<Symbol>
-        public fun getPropertyOfType(type: Type, propertyName: String): Symbol
+        public fun getPropertyOfType(type: Type, propertyName: String): Symbol?
         public fun getSignaturesOfType(type: Type, kind: SignatureKind): Array<Signature>
         public fun getIndexTypeOfType(type: Type, kind: IndexKind): Type
         public fun getReturnTypeOfSignature(signature: Signature): Type

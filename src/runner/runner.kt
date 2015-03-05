@@ -76,6 +76,9 @@ fun translate(srcPath: String): String {
 
         for (referencedFile in result.referencedFiles: Array<dynamic>) {
             val referencedFilePath = ts.normalizePath(curDir + referencedFile.filename)
+
+            if (referencedFilePath in file2scriptSnapshot) continue
+
             filesToProcess.push(referencedFilePath)
             file2scriptSnapshot[referencedFilePath] = getScriptSnapshotFromFile(referencedFilePath)
         }
@@ -83,57 +86,98 @@ fun translate(srcPath: String): String {
     }
     // replace with `refresh()`?
     currentVersion++
+//    val fileNode = languageService.getSourceFile(normalizeSrcPath)
+    val fileNode = languageService.getProgram().getSourceFile(normalizeSrcPath)
 
     val path = require("path") as node.path
     val srcName = path.basename(normalizeSrcPath, TYPESCRIPT_DEFINITION_FILE_EXT)
 
-//    fun isAnyMember(name: String, signature: typescript.PullSignatureSymbol?): Boolean {
-//        if (signature == null || signature.parameters == null) return false
-//
-//        return when (name) {
-//            "equals" ->
-//                signature.parameters.size() == 1 && signature.parameters[0].type?.name == "any"
-//            // TODO check return type ???
-//            "hashCode", "toString" ->
-//                signature.parameters.size() == 0
-//            else ->
-//                false
-//        }
-//    }
+    [inline] fun isAnyMember(node: TS.MethodDeclaration): Boolean {
+        val params = node.parameters.arr
 
-    fun getOverrideChecker(isOverridesBy: /*typescript.PullSymbol.(signature: typescript.PullSignatureSymbol?)*/(Any) -> Boolean): (TS.Node) -> Boolean {
-        return {
-            false
-//            val resolveResult = compiler.resolvePosition(it.start(), compiler.getDocument(srcResolvedPath)!!)
-//            val signature = resolveResult.candidateSignature
-//
-//            val name = resolveResult.symbol.name
-//
-//            val f: (typescript.PullTypeSymbol) -> Boolean = {
-//                    it.findMember(name)?.isOverridesBy(signature) ?: false
-//                }
-//
-//            (isAnyMember(name,  signature) ||
-//                    resolveResult.enclosingScopeSymbol.getExtendedTypes().any(f) ||
-//                    resolveResult.enclosingScopeSymbol.getImplementedTypes().any(f))
+        return when (node.declarationName?.text) {
+            "equals" ->
+                params.size() == 1 && params[0].type?.let { it.kind === TS.SyntaxKind.AnyKeyword } ?: true
+            // TODO check return type ???
+            "hashCode", "toString" ->
+                params.size() == 0
+            else ->
+                false
         }
     }
+
+    [inline] fun isOverrideHelper(
+            node: TS.Declaration,
+            [inlineOptions(InlineOption.ONLY_LOCAL_RETURN)] f: (TS.TypeChecker, TS.Type, String) -> Boolean
+    ): Boolean {
+        val parentNode = node.parent!! as TS.ClassDeclaration
+
+        if (parentNode.heritageClauses == null) return false
+
+        val typechecker: TS.TypeChecker = languageService.getTypecheker()
+
+        val nodeName = node.declarationName!!.text
+
+        val visited = hashSetOf<TS.Type>()
+
+        fun TS.ClassDeclaration.forEachBaseTypeNode(): Boolean {
+            val heritages = heritageClauses
+            if (heritages == null) return false
+
+            for (heritage in heritages.arr) {
+                val types = heritage.types
+                if (types == null) continue
+
+                for (typeNode in types.arr) {
+                    val type = typechecker.getTypeAtLocation(typeNode)
+
+                    if (!visited.add(type)) continue
+
+                    if (f(typechecker, type, nodeName)) return true
+
+                    if ((type.symbol?.declarations?.get(0) as? TS.ClassDeclaration)?.forEachBaseTypeNode() ?: false) return true
+                }
+            }
+
+            return false
+        }
+
+        return parentNode.forEachBaseTypeNode()
+    }
+
+    fun isOverride(node: TS.MethodDeclaration): Boolean {
+        if (isAnyMember(node)) return true
+
+        var nodeSignature: TS.Signature? = null
+
+        return isOverrideHelper(node) { (typechecker, type, nodeName) ->
+            if (nodeSignature == null) {
+                nodeSignature = typechecker.getSignatureFromDeclaration(node)
+            }
+
+            val candidates = typechecker.getPropertyOfType(type, nodeName)
+
+            candidates?.declarations?.any {
+                val signature = typechecker.getSignatureFromDeclaration(it as TS.SignatureDeclaration)
+                (typechecker: dynamic).isSignatureAssignableTo(nodeSignature, signature)
+            } ?: false
+        }
+    }
+
+    fun isOverrideProperty(node: TS.PropertyDeclaration): Boolean {
+        return isOverrideHelper(node) { (typechecker, type, nodeName) ->
+            typechecker.getPropertyOfType(type, nodeName)?.valueDeclaration?.kind === TS.SyntaxKind.Property
+        }
+    }
+
 
     val typeScriptToKotlinWalker = TypeScriptToKotlinWalker(srcName,
             isOwnDeclaration = {
                 val definitions: Array<dynamic> = languageService.getDefinitionAtPosition(normalizeSrcPath, it.end)
                 definitions.all { it.fileName === normalizeSrcPath }
             },
-            isOverride = getOverrideChecker { signature ->
-                false
-//                this.type != null &&
-//                this.type.getCallSignatures().any {
-//                    // TODO can use share it with many checks?
-//                    val pullTypeResolutionContext = typescript.PullTypeResolutionContext()
-//                    compiler.resolver.signatureIsAssignableToTarget(signature!!, it, pullTypeResolutionContext)
-//                }
-            },
-            isOverrideProperty = getOverrideChecker { true }
+            isOverride = ::isOverride,
+            isOverrideProperty = ::isOverrideProperty
     );
 
     // TODO fix

@@ -69,8 +69,8 @@ class TypeScriptToKotlinWalker(
         val moduleName: String? = null,
         typeMapper: ObjectTypeToKotlinTypeMapper? = null,
         val isOwnDeclaration: (TS.Node) -> Boolean = { true },
-        val isOverride: (TS.Node) -> Boolean,
-        val isOverrideProperty: (TS.Node) -> Boolean
+        val isOverride: (TS.MethodDeclaration) -> Boolean,
+        val isOverrideProperty: (TS.PropertyDeclaration) -> Boolean
 ) : TypeScriptToKotlinBase() {
 
     {
@@ -444,8 +444,8 @@ class TypeScriptToKotlinWalker(
 
 abstract class TsClassifierToKt(
         val typeMapper: ObjectTypeToKotlinTypeMapper,
-        val isOverride: (TS.Node) -> Boolean,
-        val isOverrideProperty: (TS.Node) -> Boolean
+        val isOverride: (TS.MethodDeclaration) -> Boolean,
+        val isOverrideProperty: (TS.PropertyDeclaration) -> Boolean
 ) : TypeScriptToKotlinBase() {
     abstract val needsNoImpl: Boolean
 
@@ -515,7 +515,7 @@ abstract class TsClassifierToKt(
         val name = declarationName.text
         val varType = node.type?.toKotlinTypeName(typeMapper) ?: ANY
 
-        val isOverride = isOverrideProperty(declarationName)
+        val isOverride = isOverrideProperty(node)
 
         getTranslator(node).addVariable(name, varType,
                 isOverride = isOverride,
@@ -534,7 +534,7 @@ abstract class TsClassifierToKt(
     override fun visitMethodDeclaration(node: TS.MethodDeclaration) {
         val declarationName = node.declarationName!!
         val name = declarationName.text
-        val isOverride = isOverride(declarationName)
+        val isOverride = isOverride(node)
 
         getTranslator(node).addFunction(name, isOverride, needsNoImpl, node)
     }
@@ -543,8 +543,8 @@ abstract class TsClassifierToKt(
 open class TsInterfaceToKt(
         typeMapper: ObjectTypeToKotlinTypeMapper,
         val annotations: List<ast.Annotation>,
-        isOverride: (TS.Node) -> Boolean,
-        isOverrideProperty: (TS.Node) -> Boolean
+        isOverride: (TS.MethodDeclaration) -> Boolean,
+        isOverrideProperty: (TS.PropertyDeclaration) -> Boolean
 ) : TsClassifierToKt(typeMapper, isOverride, isOverrideProperty) {
     override val result: Classifier
         get() = Classifier(ClassKind.TRAIT, name!!, listOf(), typeParams, parents, declarations, annotations, hasOpenModifier = false)
@@ -592,8 +592,8 @@ open class TsInterfaceToKt(
 class TsInterfaceToKtExtensions(
         typeMapper: ObjectTypeToKotlinTypeMapper,
         annotations: List<ast.Annotation>,
-        isOverride: (TS.Node) -> Boolean,
-        isOverrideProperty: (TS.Node) -> Boolean
+        isOverride: (TS.MethodDeclaration) -> Boolean,
+        isOverrideProperty: (TS.PropertyDeclaration) -> Boolean
 ) : TsInterfaceToKt(typeMapper, annotations, isOverride, isOverrideProperty){
 
     val cachedExtendsType by Delegates.lazy { getExtendsType(typeParams) }
@@ -658,8 +658,8 @@ class TsClassToKt(
         typeMapper: ObjectTypeToKotlinTypeMapper,
         val kind: ClassKind = ClassKind.CLASS,
         val annotations: List<ast.Annotation> = DEFAULT_ANNOTATION,
-        isOverride: (TS.Node) -> Boolean,
-        isOverrideProperty: (TS.Node) -> Boolean,
+        isOverride: (TS.MethodDeclaration) -> Boolean,
+        isOverrideProperty: (TS.PropertyDeclaration) -> Boolean,
         override val hasMembersOpenModifier: Boolean = true
 ) : TsClassifierToKt(typeMapper, isOverride, isOverrideProperty) {
     override val result: Classifier?
