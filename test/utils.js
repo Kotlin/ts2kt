@@ -23,6 +23,19 @@ var KT_EXT = ".kt";
 
 var UNVERIFIED_FILE_PREFIX = "// OUT:";
 
+var OPERATION_LEVEL = {
+    NONE: 0,
+    CONVERT: 1,
+    CHECK: 2
+};
+
+function getTestConfigBasedOnEnvironment() {
+    return {
+        verified: process.env.VERIFIED_OPERATION_LEVEL || OPERATION_LEVEL.CHECK,
+        other: process.env.OTHER_OPERATION_LEVEL || OPERATION_LEVEL.CONVERT
+    };
+}
+
 function replaceExtension(path, expected, replacment) {
     if (path.endsWith(expected)) {
         return path.substr(0, path.length - expected.length) + replacment;
@@ -31,15 +44,22 @@ function replaceExtension(path, expected, replacment) {
     return path;
 }
 
-function collectSingleFile (testFile, tests, testDataDir, testDataExpectedDir, testOnlyVerified) {
+function collectSingleFile (testFile, tests, testDataDir, testDataExpectedDir) {
     testDataDir = testDataDir || "";
     testDataExpectedDir = testDataExpectedDir || testDataDir;
 
+    var testConfig = getTestConfigBasedOnEnvironment();
+
     var expectedFile = replaceExtension(testFile, TS_EXT, KT_EXT);
-    tests[testFile] = generateTestFor(testDataDir + "/" + testFile, testDataExpectedDir + "/" + expectedFile, testOnlyVerified);
+    addTestFor(tests, testFile, testDataDir + "/" + testFile, testDataExpectedDir + "/" + expectedFile, testConfig);
 }
 
-function collectTestFiles(dir, tests, testDataExpectedDir, testOnlyVerified, testDataDir) {
+function collectTestFiles(dir, tests, testDataExpectedDir, testDataDir) {
+    var testConfig = getTestConfigBasedOnEnvironment();
+    return collectTestFilesRec(dir, tests, testDataExpectedDir, testConfig, testDataDir)
+}
+
+function collectTestFilesRec(dir, tests, testDataExpectedDir, testConfig, testDataDir) {
     testDataExpectedDir = testDataExpectedDir || dir;
     testDataDir = testDataDir || dir;
 
@@ -55,12 +75,12 @@ function collectTestFiles(dir, tests, testDataExpectedDir, testOnlyVerified, tes
             var path = dir + '/' + file;
             var stat = fs.statSync(path);
             if (stat && stat.isDirectory()) {
-                collectTestFiles(path, tests[file] = {}, testDataExpectedDir, testOnlyVerified, testDataDir);
+                collectTestFilesRec(path, tests[file] = {}, testDataExpectedDir, testConfig, testDataDir);
             }
             else {
                 if (file.endsWith(".d.ts")) {
                     var expectedFilePath = replaceExtension(path.substr(testDataDir.length), TS_EXT, KT_EXT);
-                    tests[file] = generateTestFor(path, testDataExpectedDir + expectedFilePath, testOnlyVerified);
+                    addTestFor(tests, file, path, testDataExpectedDir + expectedFilePath, testConfig);
                 }
             }
         }
@@ -83,7 +103,24 @@ function createDirsIfNeed(path) {
     }
 }
 
-function generateTestFor(srcPath, expectedPath, testOnlyVerified) {
+function addTestFor(tests, testName, srcPath, expectedPath, testConfig) {
+    var testFun = generateTestFor(srcPath, expectedPath, testConfig);
+    if (testFun) tests[testName] = testFun;
+}
+
+function generateTestFor(srcPath, expectedPath, testConfig) {
+    var expected;
+
+    if (fs.existsSync(expectedPath)) {
+        expected = fs.readFileSync(expectedPath, {encoding: "utf8"});
+    }
+
+    var isVerified = expected && !expected.startsWith(UNVERIFIED_FILE_PREFIX);
+
+    if (isVerified && testConfig.verified < OPERATION_LEVEL.CONVERT || !isVerified && testConfig.other < OPERATION_LEVEL.CONVERT) {
+        return
+    }
+
     return function(test) {
         var outPath = expectedPath + ".out";
 
@@ -92,24 +129,22 @@ function generateTestFor(srcPath, expectedPath, testOnlyVerified) {
         console.log("\n--------\nsrcPath = " + srcPath +
                     ", outPath = " + outPath +
                     ", expectedPath = " + expectedPath +
-                    ", testOnlyVerified = " + testOnlyVerified + "\n");
+                    ", testConfig = " + testConfig.verified + testConfig.other + "\n");
 
         ts2kt.translateToFile(srcPath, outPath);
 
         var actual = fs.readFileSync(outPath, {encoding: "utf8"});
 
         if (!fs.existsSync(expectedPath)) {
-            fs.writeFileSync(expectedPath, UNVERIFIED_FILE_PREFIX + "\n");
-            fs.appendFileSync(expectedPath, actual);
+            expected = UNVERIFIED_FILE_PREFIX + "\n" + actual;
+            fs.writeFileSync(expectedPath, expected);
         }
 
-        var expected = fs.readFileSync(expectedPath, {encoding: "utf8"});
-
-        if (!(testOnlyVerified && expected.startsWith(UNVERIFIED_FILE_PREFIX))) {
+        if (isVerified && testConfig.verified >= OPERATION_LEVEL.CHECK || !isVerified && testConfig.other >= OPERATION_LEVEL.CHECK) {
             test.equals(actual,  expected);
         }
 
-        test.done()
+        test.done();
     }
 }
 

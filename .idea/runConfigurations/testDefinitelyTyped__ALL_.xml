@@ -1,7 +1,10 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="testDefinitelyTyped" type="NodeunitConfigurationType" factoryName="Nodeunit">
+  <configuration default="false" name="testDefinitelyTyped [ALL]" type="NodeunitConfigurationType" factoryName="Nodeunit">
     <setting name="nodePath" value="/usr/local/bin/node" />
-    <envs />
+    <envs>
+      <env name="VERIFIED_OPERATION_LEVEL" value="2" />
+      <env name="OTHER_OPERATION_LEVEL" value="2" />
+    </envs>
     <setting name="passParentEnvVars" value="true" />
     <setting name="nodeunitModuleDir" value="$PROJECT_DIR$/node_modules/nodeunit" />
     <setting name="workingDirectory" value="$PROJECT_DIR$" />

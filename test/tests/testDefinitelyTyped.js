@@ -19,15 +19,13 @@ var utils = require('./../utils');
 var TEST_DATA_DIR = "testDefinitelyTyped/DefinitelyTyped";
 var TEST_DATA_EXPECTED_DIR = "testDefinitelyTyped/expected";
 
-var TEST_ONLY_VERIFIED = true;
-
 //var fileToTest = "amplifyjs/amplifyjs.d.ts";
 
 var tests = exports;
 
 if (typeof fileToTest === "string" && fileToTest) {
-    utils.collectSingleFile(fileToTest, tests, TEST_DATA_DIR, TEST_DATA_EXPECTED_DIR, TEST_ONLY_VERIFIED);
+    utils.collectSingleFile(fileToTest, tests, TEST_DATA_DIR, TEST_DATA_EXPECTED_DIR);
     tests = tests["other"] = {};
 }
 
-utils.collectTestFiles(TEST_DATA_DIR, tests, TEST_DATA_EXPECTED_DIR, TEST_ONLY_VERIFIED);
+utils.collectTestFiles(TEST_DATA_DIR, tests, TEST_DATA_EXPECTED_DIR);

@@ -1,0 +1,19 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="testDefinitelyTyped [check only Verified]" type="NodeunitConfigurationType" factoryName="Nodeunit">
+    <setting name="nodePath" value="/usr/local/bin/node" />
+    <envs>
+      <env name="VERIFIED_OPERATION_LEVEL" value="2" />
+      <env name="OTHER_OPERATION_LEVEL" value="0" />
+    </envs>
+    <setting name="passParentEnvVars" value="true" />
+    <setting name="nodeunitModuleDir" value="$PROJECT_DIR$/node_modules/nodeunit" />
+    <setting name="workingDirectory" value="$PROJECT_DIR$" />
+    <setting name="testType" value="JS_FILE" />
+    <setting name="jsFile" value="test/tests/testDefinitelyTyped.js" />
+    <method>
+      <option name="BuildArtifacts" enabled="true">
+        <artifact name="ts2kt" />
+      </option>
+    </method>
+  </configuration>
+</component>
