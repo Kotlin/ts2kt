@@ -29,6 +29,7 @@ val NUMBER = "Number"
 val STRING = "String"
 val BOOLEAN = "Boolean"
 val UNIT = "Unit"
+val DYNAMIC = "dynamic"
 val ARRAY = "Array"
 
 val SHOULD_BE_ESCAPED =
@@ -146,6 +147,8 @@ private fun TS.TypeNode.toKotlinTypeNameIfStandardType(typeMapper: ObjectTypeToK
         TS.SyntaxKind.Identifier -> (this as TS.Identifier).text
         TS.SyntaxKind.TypeLiteral -> (this as TS.TypeLiteralNode).toKotlinTypeName(typeMapper)
 
+        TS.SyntaxKind.UnionType -> (this as TS.UnionTypeNode).toKotlinTypeName(typeMapper)
+
         else -> unsupportedNode(this)
     }
 }
@@ -173,6 +176,13 @@ fun TS.TypeReferenceNode.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapp
     val strTypeArgs = typeArgs.arr.map { it.toKotlinTypeName(typeMapper) }.join(",")
     return "$name<$strTypeArgs>"
 }
+
+fun TS.UnionTypeNode.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper): String {
+    val commentWithExpectedType = types.arr.map { it.toKotlinTypeName(typeMapper) }.join(" | ", prefix = " /* ", postfix = " */")
+    // TODO should it be `Any`?
+    return DYNAMIC + commentWithExpectedType
+}
+
 
 fun forEachChild(visitor: Visitor, node: dynamic) {
     ts.forEachChild(node) { node ->
