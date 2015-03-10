@@ -186,11 +186,11 @@ fun TS.UnionTypeNode.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper):
 
 fun forEachChild(visitor: Visitor, node: dynamic) {
     ts.forEachChild(node) { node ->
-        visitNodeOrToken(visitor, node)
+        visitNode(visitor, node)
     }
 }
 
-fun visitNodeOrToken(visitor: Visitor, node: dynamic): Unit {
+fun visitNode(visitor: Visitor, node: dynamic): Unit {
     if (node == null) return
 
     when (node.kind) {

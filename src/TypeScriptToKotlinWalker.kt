@@ -586,8 +586,8 @@ open class TsInterfaceToKt(
         typeParams = node.typeParameters?.toKotlinTypeParams(typeMapper)
 
         // TODO merge with class?
-        node.heritageClauses?.arr?.forEach { visitNodeOrToken(this, it) }
-        node.members.arr.forEach { visitNodeOrToken(this, it) }
+        node.heritageClauses?.arr?.forEach { visitNode(this, it) }
+        node.members.arr.forEach { visitNode(this, it) }
     }
 
     override fun visitSignatureDeclaration(node: TS.SignatureDeclaration) {
@@ -699,8 +699,8 @@ class TsClassToKt(
         name = node.name.text
         typeParams = node.typeParameters?.toKotlinTypeParams(typeMapper)
 
-        node.heritageClauses?.arr?.forEach { visitNodeOrToken(this, it) }
-        node.members.arr.forEach { visitNodeOrToken(this, it) }
+        node.heritageClauses?.arr?.forEach { visitNode(this, it) }
+        node.members.arr.forEach { visitNode(this, it) }
     }
 
     override fun visitConstructorDeclaration(node: TS.ConstructorDeclaration) {
