@@ -154,7 +154,14 @@ fun translate(srcPath: String): String {
             val candidates = typechecker.getPropertyOfType(type, nodeName)
 
             candidates?.declarations?.any {
-                val signature = typechecker.getSignatureFromDeclaration(it as TS.SignatureDeclaration)
+                // TODO add test
+                if (it.kind === TS.SyntaxKind.Property) return@any false
+
+                val signature: TS.Signature = when (it.kind) {
+                    TS.SyntaxKind.Method -> typechecker.getSignatureFromDeclaration(it as TS.SignatureDeclaration)
+                    else -> unsupportedNode(it)
+                }
+
                 (typechecker: dynamic).isSignatureAssignableTo(nodeSignature, signature)
             } ?: false
         }
