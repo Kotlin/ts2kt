@@ -10,12 +10,6 @@
     <setting name="workingDirectory" value="$PROJECT_DIR$" />
     <setting name="testType" value="JS_FILE" />
     <setting name="jsFile" value="test/tests/testDefinitelyTyped.js" />
-    <RunnerSettings RunnerId="Nodeunit.debug" />
-    <RunnerSettings RunnerId="Nodeunit.run" />
-    <RunnerSettings RunnerId="debuggableProgram" />
-    <ConfigurationWrapper RunnerId="Nodeunit.debug" />
-    <ConfigurationWrapper RunnerId="Nodeunit.run" />
-    <ConfigurationWrapper RunnerId="debuggableProgram" />
     <method>
       <option name="BuildArtifacts" enabled="true">
         <artifact name="ts2kt" />
