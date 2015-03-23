@@ -76,7 +76,7 @@ fun TS.ParameterDeclaration.toKotlinParam(typeMapper: ObjectTypeToKotlinTypeMapp
         nodeType = originalNodeType
     }
 
-    val name = name.text
+    val name = name.unescapedText
     val typeName = nodeType?.toKotlinTypeName(typeMapper) ?: ANY
     val defaultValue = initializer?.let {
         when (it.kind) {
@@ -144,7 +144,7 @@ private fun TS.TypeNode.toKotlinTypeNameIfStandardType(typeMapper: ObjectTypeToK
 
         TS.SyntaxKind.TypeReference -> (this as TS.TypeReferenceNode).toKotlinTypeName(typeMapper)
 
-        TS.SyntaxKind.Identifier -> (this as TS.Identifier).text
+        TS.SyntaxKind.Identifier -> (this as TS.Identifier).unescapedText
         TS.SyntaxKind.TypeLiteral -> (this as TS.TypeLiteralNode).toKotlinTypeName(typeMapper)
 
         TS.SyntaxKind.UnionType -> (this as TS.UnionTypeNode).toKotlinTypeName(typeMapper)
@@ -161,9 +161,9 @@ fun TS.TypeNode.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper): Stri
 fun TS.EntityName.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper): String {
     return when (kind) {
         TS.SyntaxKind.Identifier ->
-            this.text
+            this.unescapedText
         else ->
-            this.left.toKotlinTypeName(typeMapper) + "." + this.right.text
+            this.left.toKotlinTypeName(typeMapper) + "." + this.right.unescapedText
     }
 }
 
@@ -230,5 +230,8 @@ val <T> TS.NodeArray<T>.arr: Array<T>
 
 val TS.SyntaxKind.str: String
     get() = ts.SyntaxKind[this]
+
+val TS.Identifier.unescapedText: String
+    get() = TS.unescapeIdentifier(text)
 
 fun unsupportedNode(node: TS.Node): Nothing = throw Exception("${node.kind.str} kind unsupported yet here!")

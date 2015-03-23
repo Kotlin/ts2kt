@@ -112,7 +112,7 @@ fun translate(srcPath: String): String {
 
         val typechecker: TS.TypeChecker = languageService.getTypecheker()
 
-        val nodeName = node.declarationName!!.text
+        val nodeName = node.declarationName!!.unescapedText
 
         val visited = hashSetOf<TS.Type>()
 
