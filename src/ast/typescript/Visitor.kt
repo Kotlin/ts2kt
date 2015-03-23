@@ -17,6 +17,7 @@ trait Visitor {
     public open fun visitHeritageClause(node: TS.HeritageClause): Unit = noImpl
 
     public open fun visitConstructorDeclaration(node: TS.ConstructorDeclaration): Unit = noImpl
+    public open fun visitConstructSignatureDeclaration(node: TS.ConstructorDeclaration): Unit = noImpl
 
     public open fun visitMethodDeclaration(node: TS.MethodDeclaration): Unit = noImpl
     public open fun visitPropertyDeclaration(node: TS.PropertyDeclaration): Unit = noImpl

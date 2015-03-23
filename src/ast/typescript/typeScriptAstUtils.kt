@@ -207,6 +207,7 @@ fun visitNode(visitor: Visitor, node: dynamic): Unit {
         TS.SyntaxKind.HeritageClause -> visitor.visitHeritageClause(node)
 
         TS.SyntaxKind.Constructor -> visitor.visitConstructorDeclaration(node)
+        TS.SyntaxKind.ConstructSignature -> visitor.visitConstructSignatureDeclaration(node)
 
         TS.SyntaxKind.Method -> visitor.visitMethodDeclaration(node)
         TS.SyntaxKind.Property -> visitor.visitPropertyDeclaration(node)
