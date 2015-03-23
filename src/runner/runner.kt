@@ -146,7 +146,7 @@ fun translate(srcPath: String): String {
 
         var nodeSignature: TS.Signature? = null
 
-        return isOverrideHelper(node) { (typechecker, type, nodeName) ->
+        return isOverrideHelper(node) { typechecker, type, nodeName ->
             if (nodeSignature == null) {
                 nodeSignature = typechecker.getSignatureFromDeclaration(node)
             }
@@ -168,7 +168,7 @@ fun translate(srcPath: String): String {
     }
 
     fun isOverrideProperty(node: TS.PropertyDeclaration): Boolean {
-        return isOverrideHelper(node) { (typechecker, type, nodeName) ->
+        return isOverrideHelper(node) { typechecker, type, nodeName ->
             typechecker.getPropertyOfType(type, nodeName)?.valueDeclaration?.kind === TS.SyntaxKind.Property
         }
     }

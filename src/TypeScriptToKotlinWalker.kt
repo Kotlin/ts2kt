@@ -37,8 +37,8 @@ private val INVOKE = "invoke"
 private val GET = "get"
 private val SET = "set"
 
-private val COMPARE_BY_NAME = { (a: Named, b: Named) -> a.name == b.name }
-private val IS_NATIVE_ANNOTATION = { (a: ast.Annotation) -> a.name == NATIVE }
+private val COMPARE_BY_NAME = { a: Named, b: Named -> a.name == b.name }
+private val IS_NATIVE_ANNOTATION = { a: ast.Annotation -> a.name == NATIVE }
 
 
 abstract class TypeScriptToKotlinBase : Visitor {
@@ -76,7 +76,7 @@ class TypeScriptToKotlinWalker(
         val isOverrideProperty: (TS.PropertyDeclaration) -> Boolean
 ) : TypeScriptToKotlinBase() {
 
-    {
+    init {
         // TODO drop hack for reset temp class indexer for each file
         if (packageFqName != null) ObjectTypeToKotlinTypeMapperImpl.reset()
     }

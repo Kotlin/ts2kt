@@ -39,7 +39,7 @@ private val VARARG = "vararg"
 private val INDENT = "    "
 private val indents = listOf("") as MutableList<String>
 
-private val takeIfNotAnnotatedAsFake = { (node: Annotated) ->
+private val takeIfNotAnnotatedAsFake = { node: Annotated ->
     var result = true
     for (a in node.annotations) {
         if (a == FAKE_ANNOTATION) {

@@ -32,7 +32,7 @@ class ObjectTypeToKotlinTypeMapperImpl(
         val declarations: MutableList<Member>
 ) : ObjectTypeToKotlinTypeMapper {
 
-    class object {
+    companion object {
         private var n = 0
 
         fun reset() {
@@ -40,9 +40,9 @@ class ObjectTypeToKotlinTypeMapperImpl(
         }
     }
 
-    val cache = HashMap<String, String>();
+    val cache = HashMap<String, String>()
 
-    {
+    init {
         // TODO better declaration for known classes
         cache[""] = "Any"
 
