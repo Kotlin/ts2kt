@@ -2,6 +2,7 @@ package auth0.widget
 
 native
 public trait Auth0WidgetStatic {
+    nativeNew
     public fun invoke(params: Auth0Constructor): Auth0WidgetStatic
     public fun getClient(): Auth0Static
     public fun getProfile(token: String, callback: Function): Auth0UserProfile

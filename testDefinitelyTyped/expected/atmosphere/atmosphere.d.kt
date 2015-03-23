@@ -8,6 +8,7 @@ public object Atmosphere {
         public var AtmosphereRequest: AtmosphereRequest? = noImpl
     }
     public trait AtmosphereRequest {
+        nativeNew
         public fun invoke(): Request
     }
     public trait Request {

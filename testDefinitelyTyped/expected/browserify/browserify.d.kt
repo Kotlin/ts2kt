@@ -21,18 +21,22 @@ public trait BrowserifyObject : NodeJS.EventEmitter {
     public fun ignore(file: String): BrowserifyObject
     public fun transform(tr: String): BrowserifyObject
     public fun transform(tr: Function): BrowserifyObject
+    public fun plugin(plugin: String, opts: Any? = null): BrowserifyObject
+    public fun plugin(plugin: Function, opts: Any? = null): BrowserifyObject
+}
+native
+public trait `T$2` {
+    public var entries: Array<String>? = noImpl
+    public var noParse: Array<String>? = noImpl
+}
+native
+public trait Browserify {
+    nativeInvoke
+    public fun invoke(): BrowserifyObject
+    nativeInvoke
+    public fun invoke(files: Array<String>): BrowserifyObject
+    nativeInvoke
+    public fun invoke(opts: `T$2`): BrowserifyObject
 }
 module
-public object browserify {
-    module("browserify")
-    public fun browserify(): BrowserifyObject = noImpl
-    module("browserify")
-    public fun browserify(files: Array<String>): BrowserifyObject = noImpl
-    public trait `T$2` {
-        public var entries: Array<String>? = noImpl
-        public var noParse: Array<String>? = noImpl
-    }
-    // ???
-    module("browserify")
-    public fun browserify(opts: `T$2`): BrowserifyObject = noImpl
-}
+public var browserify: Browserify = noImpl
