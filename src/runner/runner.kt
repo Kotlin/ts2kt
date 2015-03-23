@@ -64,7 +64,7 @@ fun translate(srcPath: String): String {
         val curFile = filesToProcess.shift()
         val curDir = ts.getDirectoryPath(curFile) + "/"
 
-        var result = ts.preProcessFile(file2scriptSnapshot[curFile].getText());
+        var result = ts.preProcessFile(file2scriptSnapshot[curFile].getText())
 
         for (referencedFile in result.referencedFiles: Array<dynamic>) {
             val referencedFilePath = ts.normalizePath(curDir + referencedFile.filename)
@@ -181,7 +181,7 @@ fun translate(srcPath: String): String {
             },
             isOverride = ::isOverride,
             isOverrideProperty = ::isOverrideProperty
-    );
+    )
 
     // TODO fix
     // note we have side effect here
@@ -195,7 +195,7 @@ fun translate(srcPath: String): String {
 }
 
 fun translateToFile(srcPath: String, outPath: String) {
-    fs.writeFileSync(outPath, translate(srcPath));
+    fs.writeFileSync(outPath, translate(srcPath))
 }
 
 native
@@ -208,13 +208,13 @@ fun main(args: Array<String>) {
 
     val process = require("process") as node.process
 
-    val srcPath = process.argv[SRC_FILE_PATH_ARG_INDEX];
-    val outPath = process.argv[OUT_FILE_PATH_ARG_INDEX];
+    val srcPath = process.argv[SRC_FILE_PATH_ARG_INDEX]
+    val outPath = process.argv[OUT_FILE_PATH_ARG_INDEX]
 
-    console.log(srcPath);
-    console.log(outPath);
+    console.log(srcPath)
+    console.log(outPath)
 
     if (srcPath == null || outPath == null) return
 
-    translateToFile(srcPath, outPath);
+    translateToFile(srcPath, outPath)
 }

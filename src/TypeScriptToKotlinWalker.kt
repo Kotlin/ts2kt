@@ -287,7 +287,7 @@ class TypeScriptToKotlinWalker(
                 val annotationParamString = annotation.getFirstParamAsString()
 
                 // TODO: fix after KT-5257 will be fixed
-                var needContinue = false;
+                var needContinue = false
                 // TODO: fix this HACK
                 val t = ArrayList<ast.Annotation>(declaration.annotations.size() + 1)
                 for (a in declaration.annotations) {
@@ -614,7 +614,7 @@ class TsInterfaceToKtExtensions(
         val extendsTypeParams = ArrayList<TypeParam>()
         for (e in this) {
             var toAdd = e.name
-            var i = 0;
+            var i = 0
             while (another.any { it.name == toAdd }) toAdd = e.name + i++
 
             extendsTypeParams.add(TypeParam(toAdd, e.upperBound))

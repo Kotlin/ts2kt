@@ -51,7 +51,7 @@ fun <T> List<T>.join(
 }
 
 fun <T: Any> MutableList<T>.merge(acceptor: (T) -> Boolean, comparator: (T, T) -> Boolean, merger: (T, T) -> T) {
-    var i = 0;
+    var i = 0
     while (i < size()) {
         val current = this[i]
         if (!acceptor(current)) {

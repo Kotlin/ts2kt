@@ -24,10 +24,10 @@ public class FileSystemBasedLSH(file2scriptSnapshot: Map<String, dynamic>, var c
 
     fun getScriptSnapshot(fileName: String): dynamic = file2scriptSnapshot[fileName]
 
-    // getLocalizedDiagnosticMessages?(): any;
+    // getLocalizedDiagnosticMessages?(): any
 //    fun getLocalizedDiagnosticMessages(): Any = throw UnsupportedOperationException() // ???
 
-    // getCancellationToken?(): CancellationToken;
+    // getCancellationToken?(): CancellationToken
 //    fun getCancellationToken(): dynamic =
 //            object {
 //                fun isCancellationRequested() = false

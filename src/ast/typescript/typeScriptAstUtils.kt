@@ -194,26 +194,26 @@ fun visitNode(visitor: Visitor, node: dynamic): Unit {
     if (node == null) return
 
     when (node.kind) {
-        TS.SyntaxKind.ModuleDeclaration -> visitor.visitModuleDeclaration(node);
+        TS.SyntaxKind.ModuleDeclaration -> visitor.visitModuleDeclaration(node)
 
-        TS.SyntaxKind.FunctionDeclaration    -> visitor.visitFunctionDeclaration(node);
-        TS.SyntaxKind.VariableStatement -> visitor.visitVariableStatement(node);
+        TS.SyntaxKind.FunctionDeclaration    -> visitor.visitFunctionDeclaration(node)
+        TS.SyntaxKind.VariableStatement -> visitor.visitVariableStatement(node)
 
-        TS.SyntaxKind.EnumDeclaration -> visitor.visitEnumDeclaration(node);
+        TS.SyntaxKind.EnumDeclaration -> visitor.visitEnumDeclaration(node)
 
-        TS.SyntaxKind.ClassDeclaration -> visitor.visitClassDeclaration(node);
-        TS.SyntaxKind.InterfaceDeclaration -> visitor.visitInterfaceDeclaration(node);
+        TS.SyntaxKind.ClassDeclaration -> visitor.visitClassDeclaration(node)
+        TS.SyntaxKind.InterfaceDeclaration -> visitor.visitInterfaceDeclaration(node)
 
-        TS.SyntaxKind.HeritageClause -> visitor.visitHeritageClause(node);
+        TS.SyntaxKind.HeritageClause -> visitor.visitHeritageClause(node)
 
-        TS.SyntaxKind.Constructor -> visitor.visitConstructorDeclaration(node);
+        TS.SyntaxKind.Constructor -> visitor.visitConstructorDeclaration(node)
 
-        TS.SyntaxKind.Method -> visitor.visitMethodDeclaration(node);
-        TS.SyntaxKind.Property -> visitor.visitPropertyDeclaration(node);
-        TS.SyntaxKind.IndexSignature -> visitor.visitIndexSignature(node);
-        TS.SyntaxKind.CallSignature -> visitor.visitSignatureDeclaration(node);
+        TS.SyntaxKind.Method -> visitor.visitMethodDeclaration(node)
+        TS.SyntaxKind.Property -> visitor.visitPropertyDeclaration(node)
+        TS.SyntaxKind.IndexSignature -> visitor.visitIndexSignature(node)
+        TS.SyntaxKind.CallSignature -> visitor.visitSignatureDeclaration(node)
 
-        TS.SyntaxKind.ExportAssignment -> visitor.visitExportAssignment(node);
+        TS.SyntaxKind.ExportAssignment -> visitor.visitExportAssignment(node)
 
         TS.SyntaxKind.EndOfFileToken -> { /* ignore */ }
         else -> {
