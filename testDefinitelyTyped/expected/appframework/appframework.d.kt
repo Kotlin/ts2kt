@@ -1,3 +1,4 @@
+// OUT:
 package appframework
 
 native
@@ -222,7 +223,7 @@ public trait appFrameworkCssMatrix {
     public var f: Number
 }
 native
-/// wrong inlined '`' for nested lambdas
+// TODO: wrong inlined '`' for nested lambdas
 public var af: (fn: (`$`: appFrameworkStatic) -> Unit) -> Unit = noImpl
 native
 public var `$`: appFrameworkStatic = noImpl

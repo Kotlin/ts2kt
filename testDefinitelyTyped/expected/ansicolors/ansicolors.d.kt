@@ -1,3 +1,4 @@
+// OUT:
 package ansicolors
 
 module
@@ -8,6 +9,6 @@ public object ansicolors {
         nativeSetter
         public fun set(index: String, value: (s: String) -> String)
     }
-    module("ansicolors") // ???
+    module("ansicolors") // TODO ???
     public var colors: `T$0` = noImpl
 }
