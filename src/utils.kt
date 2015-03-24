@@ -17,7 +17,6 @@
 package ts2kt.utils
 
 import js.JsError
-import java.util.*
 
 fun <T> List<T>.join(
         delimiter: String = ", ",
@@ -59,7 +58,7 @@ fun <T: Any> MutableList<T>.merge(acceptor: (T) -> Boolean, comparator: (T, T) -
             continue
         }
 
-        val candidates = ArrayList<Int>()
+        val candidates = arrayListOf<Int>()
 
         val size = size
         var j =  i + 1
