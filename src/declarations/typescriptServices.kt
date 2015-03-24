@@ -25,7 +25,6 @@ object TS {
         var end: Number
     }
 
-    @native("ts.SyntaxKind")
     enum class SyntaxKind {
         Unknown /* = 0 */,
         EndOfFileToken /* = 1 */,
@@ -328,7 +327,6 @@ object TS {
         FirstNode /* = 136 */
     }
 
-    @native("ts.NodeFlags")
     enum class NodeFlags {
         None /* = 0 */,
         Export /* = 2 */,
@@ -364,7 +362,6 @@ object TS {
         EmitHelperFlags /* = 62914560 */
     }
 
-    @native("ts.JsxFlags")
     enum class JsxFlags {
         None /* = 0 */,
         IntrinsicNamedElement /* = 1 */,
@@ -374,7 +371,6 @@ object TS {
         IntrinsicElement /* = 3 */
     }
 
-    @native("ts.Node")
     interface Node : TextRange {
         var kind: SyntaxKind
         var flags: NodeFlags
@@ -1283,7 +1279,6 @@ object TS {
         var sourceMapDecodedMappings: Array<SourceMapSpan>
     }
 
-    @native("ts.ExitStatus")
     enum class ExitStatus {
         Success /* = 0 */,
         DiagnosticsPresent_OutputsSkipped /* = 1 */,
@@ -1361,7 +1356,6 @@ object TS {
         fun reportInaccessibleThisError()
     }
 
-    @native("ts.TypeFormatFlags")
     enum class TypeFormatFlags {
         None /* = 0 */,
         WriteArrayAsGenericType /* = 1 */,
@@ -1374,14 +1368,12 @@ object TS {
         UseFullyQualifiedType /* = 128 */
     }
 
-    @native("ts.SymbolFormatFlags")
     enum class SymbolFormatFlags {
         None /* = 0 */,
         WriteTypeParametersOrArguments /* = 1 */,
         UseOnlyExternalAliasing /* = 2 */
     }
 
-    @native("ts.TypePredicateKind")
     enum class TypePredicateKind {
         `This` /* = 0 */,
         Identifier /* = 1 */
@@ -1401,7 +1393,6 @@ object TS {
         var parameterIndex: Number
     }
 
-    @native("ts.SymbolFlags")
     enum class SymbolFlags {
         None /* = 0 */,
         FunctionScopedVariable /* = 1 */,
@@ -1490,7 +1481,6 @@ object TS {
         fun set(index: String, value: Symbol)
     }
 
-    @native("ts.TypeFlags")
     enum class TypeFlags {
         Any /* = 1 */,
         String /* = 2 */,
@@ -1583,7 +1573,6 @@ object TS {
         var constraint: Type
     }
 
-    @native("ts.SignatureKind")
     enum class SignatureKind {
         Call /* = 0 */,
         Construct /* = 1 */
@@ -1600,7 +1589,6 @@ object TS {
         fun getDocumentationComment(): Array<SymbolDisplayPart>
     }
 
-    @native("ts.IndexKind")
     enum class IndexKind {
         String /* = 0 */,
         Number /* = 1 */
@@ -1629,14 +1617,12 @@ object TS {
         var code: Number
     }
 
-    @native("ts.DiagnosticCategory")
     enum class DiagnosticCategory {
         Warning /* = 0 */,
         Error /* = 1 */,
         Message /* = 2 */
     }
 
-    @native("ts.ModuleResolutionKind")
     enum class ModuleResolutionKind {
         Classic /* = 1 */,
         NodeJs /* = 2 */
@@ -1720,7 +1706,6 @@ object TS {
         var compilerOptions: CompilerOptions
     }
 
-    @native("ts.ModuleKind")
     enum class ModuleKind {
         None /* = 0 */,
         CommonJS /* = 1 */,
@@ -1731,14 +1716,12 @@ object TS {
         ES2015 /* = 5 */
     }
 
-    @native("ts.JsxEmit")
     enum class JsxEmit {
         None /* = 0 */,
         Preserve /* = 1 */,
         React /* = 2 */
     }
 
-    @native("ts.NewLineKind")
     enum class NewLineKind {
         CarriageReturnLineFeed /* = 0 */,
         LineFeed /* = 1 */
@@ -1749,7 +1732,6 @@ object TS {
         var character: Number
     }
 
-    @native("ts.ScriptKind")
     enum class ScriptKind {
         Unknown /* = 0 */,
         JS /* = 1 */,
@@ -1758,7 +1740,6 @@ object TS {
         TSX /* = 4 */
     }
 
-    @native("ts.ScriptTarget")
     enum class ScriptTarget {
         ES3 /* = 0 */,
         ES5 /* = 1 */,
@@ -1767,7 +1748,6 @@ object TS {
         Latest /* = 2 */
     }
 
-    @native("ts.LanguageVariant")
     enum class LanguageVariant {
         Standard /* = 0 */,
         JSX /* = 1 */
@@ -2106,7 +2086,6 @@ object TS {
         var IndentStyle: IndentStyle
     }
 
-    @native("ts.IndentStyle")
     enum class IndentStyle {
         None /* = 0 */,
         Block /* = 1 */,
@@ -2145,7 +2124,6 @@ object TS {
         var references: Array<ReferenceEntry>
     }
 
-    @native("ts.SymbolDisplayPartKind")
     enum class SymbolDisplayPartKind {
         aliasName /* = 0 */,
         className /* = 1 */,
@@ -2251,7 +2229,6 @@ object TS {
         var emitSkipped: Boolean
     }
 
-    @native("ts.OutputFileType")
     enum class OutputFileType {
         JavaScript /* = 0 */,
         SourceMap /* = 1 */,
@@ -2264,7 +2241,6 @@ object TS {
         var text: String
     }
 
-    @native("ts.EndOfLineState")
     enum class EndOfLineState {
         None /* = 0 */,
         InMultiLineCommentTrivia /* = 1 */,
@@ -2275,7 +2251,6 @@ object TS {
         InTemplateSubstitutionPosition /* = 6 */
     }
 
-    @native("ts.TokenClass")
     enum class TokenClass {
         Punctuation /* = 0 */,
         Keyword /* = 1 */,
@@ -2310,7 +2285,6 @@ object TS {
         fun reportStats(): String
     }
 
-    @native("ts.ClassificationType")
     enum class ClassificationType {
         comment /* = 1 */,
         identifier /* = 2 */,
