@@ -16,14 +16,14 @@
 
 package ts2kt
 
-import typescript.*
-import ts2kt.utils.*
-import ts2kt.kotlin.ast.*
 import ts2kt.kotlin.ast
+import ts2kt.kotlin.ast.*
+import ts2kt.kotlin.ast.Package
+import ts2kt.utils.assert
+import ts2kt.utils.join
+import ts2kt.utils.merge
+import typescript.TS
 import kotlin.properties.Delegates
-import java.util.ArrayList
-import java.util.HashSet
-import java.util.HashMap
 
 private val NATIVE_ANNOTATION = ast.Annotation(NATIVE)
 private val NATIVE_GETTER_ANNOTATION = ast.Annotation("nativeGetter")
@@ -48,7 +48,7 @@ abstract class TypeScriptToKotlinBase : Visitor {
 
     open val defaultAnnotations: List<ast.Annotation> = listOf()
 
-    val declarations = ArrayList<Member>()
+    val declarations = arrayListOf<Member>()
 
     open fun addVariable(name: String, type: String, extendsType: String? = null, typeParams: List<TypeParam>? = null, isVar: Boolean = true, isNullable: Boolean = false, isLambda: Boolean = false, needsNoImpl: Boolean = true, additionalAnnotations: List<ast.Annotation> = listOf(), isOverride: Boolean = false) {
         val annotations = defaultAnnotations + additionalAnnotations
@@ -90,9 +90,7 @@ class TypeScriptToKotlinWalker(
 
     override val hasMembersOpenModifier = false
 
-    // TODO fix PrimitiveHashMap for some special keys like 'hasOwnProperty'
-    [suppress("CAST_NEVER_SUCCEEDS")]
-    val exportedByAssignment = HashMap<Any, ast.Annotation>() as HashMap<String, ast.Annotation>
+    val exportedByAssignment = hashMapOf<String, ast.Annotation>()
 
     val typeMapper = typeMapper ?: ObjectTypeToKotlinTypeMapperImpl(defaultAnnotations, declarations)
 
@@ -122,8 +120,8 @@ class TypeScriptToKotlinWalker(
 
 //      TODO  node.modifiers
 //      TODO  test many declarations
-        val declarators = node.declarations.arr
-        for (d in declarators) {
+        val declarations = node.declarations.arr
+        for (d in declarations) {
             val name = d.name.unescapedText
             val varType = d.type?.toKotlinTypeName(typeMapper) ?: ANY
             addVariable(name, varType, additionalAnnotations = additionalAnnotations)
@@ -280,33 +278,27 @@ class TypeScriptToKotlinWalker(
     }
 
     fun fixExportAssignments() {
-        val found = HashSet<String>()
+        val found = hashSetOf<String>()
 
+        @overDeclarations
         for (declaration in declarations) {
             val annotation = exportedByAssignment[declaration.name]
             if (annotation != null) {
                 val annotationParamString = annotation.getFirstParamAsString()
 
-                // TODO: fix after KT-5257 will be fixed
-                var needContinue = false
                 // TODO: fix this HACK
-                val t = ArrayList<ast.Annotation>(declaration.annotations.size() + 1)
+                val t = arrayListOf<ast.Annotation>()
                 for (a in declaration.annotations) {
                     if (a == FAKE_ANNOTATION) continue
 
                     if (a.name == MODULE) {
-                        if (declaration.name == annotationParamString) {
-                            needContinue = true
-                            break
-                        }
+                        if (declaration.name == annotationParamString) continue@overDeclarations
 
                         continue
                     }
 
                     t.add(a)
                 }
-
-                if (needContinue) continue
 
                 t.add(annotation)
                 declaration.annotations = t
@@ -397,7 +389,7 @@ class TypeScriptToKotlinWalker(
                 a
             }
             else {
-                val merged = ArrayList<ast.Annotation>()
+                val merged = arrayListOf<ast.Annotation>()
                 merged.addAll(a)
                 merged.addAll(b)
 
@@ -436,13 +428,13 @@ class TypeScriptToKotlinWalker(
     }
 
     private fun Classifier.addMembersFrom(another: Classifier) {
-        val members = members as ArrayList
+        val members = members as MutableList
         members.addAll(another.members)
         members.mergeDeclarationsWithSameNameIfNeed()
     }
 
     private fun Classifier.addMember(member: Member) {
-        (members as ArrayList).add(member)
+        (members as MutableList).add(member)
     }
 }
 
@@ -453,7 +445,7 @@ abstract class TsClassifierToKt(
 ) : TypeScriptToKotlinBase() {
     abstract val needsNoImpl: Boolean
 
-    var parents = ArrayList<Type>()
+    var parents = arrayListOf<Type>()
 
     override fun visitHeritageClause(node: TS.HeritageClause) {
         val containingInInterface = this is TsInterfaceToKt
@@ -616,7 +608,7 @@ class TsInterfaceToKtExtensions(
 
         assert(!(this identityEquals another), "expected this !== another, this = $this, another = $another")
 
-        val extendsTypeParams = ArrayList<TypeParam>()
+        val extendsTypeParams = arrayListOf<TypeParam>()
         for (e in this) {
             var toAdd = e.name
             var i = 0
@@ -640,7 +632,7 @@ class TsInterfaceToKtExtensions(
                     this
                 }
                 else -> {
-                    val list = ArrayList<ast.Annotation>()
+                    val list = arrayListOf<ast.Annotation>()
                     list.add(NATIVE_ANNOTATION)
                     list.addAll(this)
                     list
@@ -682,7 +674,7 @@ class TsClassToKt(
                         if (staticTranslator == null) {
                             declarations
                         } else {
-                            val t = ArrayList<Member>()
+                            val t = arrayListOf<Member>()
                             t.addAll(declarations)
                             t.add(staticTranslator!!.result!!)
                             t
@@ -697,7 +689,7 @@ class TsClassToKt(
     override val needsNoImpl = true
 
     var typeParams: List<TypeParam>? = null
-    val paramsOfConstructors = ArrayList<List<FunParam>>()
+    val paramsOfConstructors = arrayListOf<List<FunParam>>()
 
     override fun visitClassDeclaration(node: TS.ClassDeclaration) {
 //      todo visitList(node.modifiers)
