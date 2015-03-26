@@ -16,10 +16,12 @@
 
 package ts2kt
 
-import typescript.*
-import java.util.*
-import node.*
-import ts2kt.utils.*
+import ts2kt.kotlin.ast.*
+import ts2kt.utils.push
+import ts2kt.utils.shift
+import typescript.TS
+import typescript.ts
+import java.util.HashSet
 
 native
 fun require(name: String): Any = noImpl
@@ -189,7 +191,7 @@ fun translate(srcPath: String): String {
 
     val ktTree = typeScriptToKotlinWalker.result
 
-    var out = ktTree.toString()
+    var out = ktTree.split().joinToString("\n/* ============= */\n")
 
     return out
 }
@@ -217,4 +219,31 @@ fun main(args: Array<String>) {
     if (srcPath == null || outPath == null) return
 
     translateToFile(srcPath, outPath)
+}
+
+fun KotlinFile.split(): List<KotlinFile> {
+    return split(packageFqName, members)
+}
+
+fun Classifier.split(root: Package?): List<KotlinFile> {
+    // TODO improve escaping
+    val p = Package((root?.let { it.name + "." } ?: "") + name.escapeIfNeed())
+    return split(p, members)
+}
+
+fun split(p: Package?, members: List<Member>): List<KotlinFile> {
+    val newMembers = arrayListOf<Member>()
+    val result = arrayListOf(KotlinFile(p, newMembers))
+
+    for (m in members) {
+        // TODO check that it's internal module?
+        if (m is Classifier && m.isModule()) {
+            result.addAll(m.split(p)/*.filter { it.members.isNotEmpty() }*/)
+        }
+        else {
+            newMembers.add(m)
+        }
+    }
+
+    return result
 }
