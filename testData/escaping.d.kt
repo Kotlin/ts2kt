@@ -24,123 +24,149 @@ public open class `is`<`trait`> {
     public open var `as`: Number = noImpl
     public open fun `package`(a: Any): Boolean = noImpl
 }
-module
-public object `when` {
-    public var `$`: Boolean = noImpl
-    public fun `package`(`as`: Number): `$tring` = noImpl
-}
-module
-public object AllKeywords {
-    module
-    public object `as` {
 
-    }
-    module
-    public object `break` {
+/* ============= */
+package escaping.`when`
 
-    }
-    module
-    public object `class` {
+public var `$`: Boolean = noImpl
+public fun `package`(`as`: Number): `$tring` = noImpl
 
-    }
-    module
-    public object `continue` {
+/* ============= */
+package escaping.AllKeywords.`as`
 
-    }
-    module
-    public object `do` {
+public var _: Any = noImpl
 
-    }
-    module
-    public object `else` {
+/* ============= */
+package escaping.AllKeywords.`break`
 
-    }
-    module
-    public object `false` {
+public var _: Any = noImpl
 
-    }
-    module
-    public object `for` {
+/* ============= */
+package escaping.AllKeywords.`class`
 
-    }
-    module
-    public object `fun` {
+public var _: Any = noImpl
 
-    }
-    module
-    public object `if` {
+/* ============= */
+package escaping.AllKeywords.`continue`
 
-    }
-    module
-    public object `in` {
+public var _: Any = noImpl
 
-    }
-    module
-    public object `is` {
+/* ============= */
+package escaping.AllKeywords.`do`
 
-    }
-    module
-    public object `null` {
+public var _: Any = noImpl
 
-    }
-    module
-    public object `object` {
+/* ============= */
+package escaping.AllKeywords.`else`
 
-    }
-    module
-    public object `package` {
+public var _: Any = noImpl
 
-    }
-    module
-    public object `return` {
+/* ============= */
+package escaping.AllKeywords.`false`
 
-    }
-    module
-    public object `super` {
+public var _: Any = noImpl
 
-    }
-    module
-    public object `this` {
+/* ============= */
+package escaping.AllKeywords.`for`
 
-    }
-    module
-    public object `This` {
+public var _: Any = noImpl
 
-    }
-    module
-    public object `throw` {
+/* ============= */
+package escaping.AllKeywords.`fun`
 
-    }
-    module
-    public object `trait` {
+public var _: Any = noImpl
 
-    }
-    module
-    public object `true` {
+/* ============= */
+package escaping.AllKeywords.`if`
 
-    }
-    module
-    public object `try` {
+public var _: Any = noImpl
 
-    }
-    module
-    public object `typealias` {
+/* ============= */
+package escaping.AllKeywords.`in`
 
-    }
-    module
-    public object `val` {
+public var _: Any = noImpl
 
-    }
-    module
-    public object `var` {
+/* ============= */
+package escaping.AllKeywords.`is`
 
-    }
-    module
-    public object `when` {
+public var _: Any = noImpl
 
-    }
-    module
-    public object `while` {
+/* ============= */
+package escaping.AllKeywords.`null`
 
-    }
-}
+public var _: Any = noImpl
+
+/* ============= */
+package escaping.AllKeywords.`object`
+
+public var _: Any = noImpl
+
+/* ============= */
+package escaping.AllKeywords.`package`
+
+public var _: Any = noImpl
+
+/* ============= */
+package escaping.AllKeywords.`return`
+
+public var _: Any = noImpl
+
+/* ============= */
+package escaping.AllKeywords.`super`
+
+public var _: Any = noImpl
+
+/* ============= */
+package escaping.AllKeywords.`this`
+
+public var _: Any = noImpl
+
+/* ============= */
+package escaping.AllKeywords.`This`
+
+public var _: Any = noImpl
+
+/* ============= */
+package escaping.AllKeywords.`throw`
+
+public var _: Any = noImpl
+
+/* ============= */
+package escaping.AllKeywords.`trait`
+
+public var _: Any = noImpl
+
+/* ============= */
+package escaping.AllKeywords.`true`
+
+public var _: Any = noImpl
+
+/* ============= */
+package escaping.AllKeywords.`try`
+
+public var _: Any = noImpl
+
+/* ============= */
+package escaping.AllKeywords.`typealias`
+
+public var _: Any = noImpl
+
+/* ============= */
+package escaping.AllKeywords.`val`
+
+public var _: Any = noImpl
+
+/* ============= */
+package escaping.AllKeywords.`var`
+
+public var _: Any = noImpl
+
+/* ============= */
+package escaping.AllKeywords.`when`
+
+public var _: Any = noImpl
+
+/* ============= */
+package escaping.AllKeywords.`while`
+
+public var _: Any = noImpl

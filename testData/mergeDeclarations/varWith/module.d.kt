@@ -21,7 +21,3 @@ public trait _ {
 
     }
 }
-module
-public object lodash {
-
-}

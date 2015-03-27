@@ -1,6 +1,6 @@
 package withStringName
 
-module
-public object jquery {
+/* ============= */
+package withStringName.jquery
 
-}
+public var placeholder: Any = noImpl

@@ -2,14 +2,6 @@ package useJsonWhenPossible
 
 native
 public var foo: Json = noImpl
-module
-public object Module {
-    public var bar: Json = noImpl
-    public fun withObjectTypeParam(bar: Json): Unit = noImpl
-    public open class Foo {
-        public open var prop: Json = noImpl
-    }
-}
 native
 public trait `T$0` {
     nativeGetter
@@ -21,4 +13,13 @@ native
 public trait Foo {
     public var foo: Json
     public var boo: `T$0`
+}
+
+/* ============= */
+package useJsonWhenPossible.Module
+
+public var bar: Json = noImpl
+public fun withObjectTypeParam(bar: Json): Unit = noImpl
+public open class Foo {
+    public open var prop: Json = noImpl
 }

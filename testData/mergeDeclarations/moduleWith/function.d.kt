@@ -8,8 +8,9 @@ public trait Fiber_ {
 }
 module("fibers")
 public fun Fiber(fn: Function): Fiber_ = noImpl
-module("fibers")
-public object Fiber {
-    public var current: Fiber = noImpl
-    public fun yield(value: Any? = null): Any = noImpl
-}
+
+/* ============= */
+package function.Fiber
+
+public var current: Fiber = noImpl
+public fun yield(value: Any? = null): Any = noImpl

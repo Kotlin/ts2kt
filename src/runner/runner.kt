@@ -238,7 +238,7 @@ fun split(p: Package?, members: List<Member>): List<KotlinFile> {
     for (m in members) {
         // TODO check that it's internal module?
         if (m is Classifier && m.isModule()) {
-            result.addAll(m.split(p)/*.filter { it.members.isNotEmpty() }*/)
+            result.addAll(m.split(p).filter { it.members.isNotEmpty() })
         }
         else {
             newMembers.add(m)

@@ -640,10 +640,6 @@ public trait JQuery {
     public fun queue(queueName: String, newQueue: Array<Function>): JQuery
     public fun queue(queueName: String, callback: Function): JQuery
 }
-module
-public object jquery {
-
-}
 native
 public var jQuery: JQueryStatic = noImpl
 native

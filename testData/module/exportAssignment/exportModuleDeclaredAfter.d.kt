@@ -1,10 +1,6 @@
 package exportModuleDeclaredAfter
 
-module
-public object semver {
+/* ============= */
+package exportModuleDeclaredAfter.SemverModule
 
-}
-module("semver")
-public object SemverModule {
-
-}
+public var something: Any = noImpl
