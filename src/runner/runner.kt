@@ -238,6 +238,7 @@ fun split(p: ast.Package?, members: List<Member>, isRoot: Boolean, fileAnnotatio
     val result = arrayListOf(file)
 
     var hasModules = false
+    var hasMemberWithModuleAnn = false
 
     for (m in members) {
         // TODO check that it's internal module?
@@ -256,11 +257,19 @@ fun split(p: ast.Package?, members: List<Member>, isRoot: Boolean, fileAnnotatio
                 m.annotations += NATIVE_ANNOTATION
             }
 
+            if (m.hasAnnotation(NATIVE_MODULE)) {
+                hasMemberWithModuleAnn = true
+            }
+
             newMembers.add(m)
         }
     }
 
-    if (isRoot && !hasModules) {
+    // TODO: can we do it better?
+    if (hasMemberWithModuleAnn && fileAnnotations === DEFAULT_EXTERNAL_MODULE_ANNOTATION) {
+        file.annotations = listOf(NATIVE_MODULE_PART_ANNOTATION)
+    }
+    else if (isRoot && !hasModules) {
         file.annotations = listOf()
     }
 

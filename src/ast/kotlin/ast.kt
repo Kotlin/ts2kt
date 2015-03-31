@@ -16,12 +16,15 @@
 
 package ts2kt.kotlin.ast
 
-import ts2kt.utils.*
-import ts2kt.*
+import ts2kt.UNIT
+import ts2kt.escapeIfNeed
+import ts2kt.utils.assert
+import ts2kt.utils.join
 
 val NATIVE_PACKAGE_ROOT = "nativePackageRoot"
 val NATIVE_PACKAGE = "nativePackage"
 val NATIVE_MODULE = "nativeModule"
+val NATIVE_MODULE_PART = "nativeModulePart"
 val NATIVE = "native"
 val FAKE = "fake"
 

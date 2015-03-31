@@ -20,7 +20,7 @@ fun Classifier.isModule() = isExternalModule() || isInternalModule()
 fun Classifier.isExternalModule() = kind === ClassKind.OBJECT && hasAnnotation(NATIVE_MODULE)
 fun Classifier.isInternalModule() = kind === ClassKind.OBJECT && hasAnnotation(NATIVE_PACKAGE)
 
-fun Classifier.hasAnnotation(vararg names: String) = annotations.any { it.name in names }
+fun Annotated.hasAnnotation(vararg names: String) = annotations.any { it.name in names }
 
 fun Classifier.getClassObject(): Classifier? =
         this.members.firstOrNull { it is Classifier && it.kind === ClassKind.CLASS_OBJECT } as? Classifier
