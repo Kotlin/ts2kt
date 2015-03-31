@@ -1,7 +1,7 @@
 package ts2kt.kotlin.ast
 
+import ts2kt.escapeIfNeed
 import ts2kt.utils.join
-import ts2kt.*
 
 fun <T> List<T>.stringify() = join("\n", endWithIfNotEmpty = "\n")
 
@@ -12,7 +12,7 @@ fun Annotation.getFirstParamAsString(): String? {
     return annotationParam.substring(1, annotationParam.size - 1)
 }
 
-fun Classifier.isModule() = kind === ClassKind.OBJECT && hasModuleAnnotation()
+fun Annotated.isNative() = annotations.any { it.name.startsWith(NATIVE) }
 
 fun Classifier.isModule() = isExternalModule() || isInternalModule()
 

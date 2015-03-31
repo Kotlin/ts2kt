@@ -252,6 +252,10 @@ fun split(p: ast.Package?, members: List<Member>, isRoot: Boolean, fileAnnotatio
             result.addAll(m.split(p, annotations).filter { it.members.isNotEmpty() })
         }
         else {
+            if (!m.isNative()) {
+                m.annotations += NATIVE_ANNOTATION
+            }
+
             newMembers.add(m)
         }
     }
