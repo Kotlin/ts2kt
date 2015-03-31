@@ -19,7 +19,7 @@ package ts2kt.kotlin.ast
 import ts2kt.utils.*
 import ts2kt.*
 
-val MODULE = "module"
+val NATIVE_PACKAGE_ROOT = "nativePackageRoot"
 val NATIVE_PACKAGE = "nativePackage"
 val NATIVE_MODULE = "nativeModule"
 val NATIVE = "native"
