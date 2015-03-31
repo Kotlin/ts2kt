@@ -107,8 +107,9 @@ class MemberList(val elements: List<Member>) : Node() {
     override fun stringify(): String = throw UnsupportedOperationException()
 }
 
-class KotlinFile(val packageFqName: Package?, val members: List<Member>) : Node() {
+class KotlinFile(val packageFqName: Package?, val members: List<Member>, override var annotations: List<Annotation>) : Node(), Annotated {
     override fun stringify(): String =
+            annotations.join(startWithIfNotEmpty = "[file: ", endWithIfNotEmpty = "]\n") +
             (packageFqName?.toString()?.plus("\n") ?: "") +
             members.join("\n",
                     startWithIfNotEmpty = if (packageFqName == null) "" else "\n",

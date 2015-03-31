@@ -16,6 +16,7 @@
 
 package ts2kt
 
+import ts2kt.kotlin.ast
 import ts2kt.kotlin.ast.*
 import ts2kt.utils.push
 import ts2kt.utils.shift
@@ -222,23 +223,33 @@ fun main(args: Array<String>) {
 }
 
 fun KotlinFile.split(): List<KotlinFile> {
-    return split(packageFqName, members)
+    return split(packageFqName, members, true, listOf(NATIVE_PACKAGE_ROOT_ANNOTATION))
 }
 
-fun Classifier.split(root: Package?): List<KotlinFile> {
+fun Classifier.split(root: ast.Package?, annotations: List<ast.Annotation>): List<KotlinFile> {
     // TODO improve escaping
-    val p = Package((root?.let { it.name + "." } ?: "") + name.escapeIfNeed())
-    return split(p, members)
+    val p = ast.Package((root?.let { it.name + "." } ?: "") + name.escapeIfNeed())
+    return split(p, members, false, annotations)
 }
 
-fun split(p: Package?, members: List<Member>): List<KotlinFile> {
+fun split(p: ast.Package?, members: List<Member>, isRoot: Boolean, fileAnnotations: List<ast.Annotation>): List<KotlinFile> {
     val newMembers = arrayListOf<Member>()
-    val result = arrayListOf(KotlinFile(p, newMembers))
+    val file = KotlinFile(p, newMembers, fileAnnotations)
+    val result = arrayListOf(file)
+
+    var hasModules = false
 
     for (m in members) {
         // TODO check that it's internal module?
         if (m is Classifier && m.isModule()) {
-            result.addAll(m.split(p).filter { it.members.isNotEmpty() })
+            hasModules = true
+            val annotations = when {
+                m.isInternalModule() -> DEFAULT_INTERNAL_MODULE_ANNOTATION
+                m.isExternalModule() -> DEFAULT_EXTERNAL_MODULE_ANNOTATION
+                // TODO:
+                else -> throw Exception("ups")
+            }
+            result.addAll(m.split(p, annotations).filter { it.members.isNotEmpty() })
         }
         else {
             newMembers.add(m)
