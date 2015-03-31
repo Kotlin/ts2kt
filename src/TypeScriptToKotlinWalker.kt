@@ -265,7 +265,7 @@ class TypeScriptToKotlinWalker(
 
     override fun visitExportAssignment(node: TS.ExportAssignment) {
         exportedByAssignment[node.exportName.unescapedText] =
-                ast.Annotation(MODULE, if (moduleName == null) listOf() else listOf(Argument(value = "\"$moduleName\"")))
+                ast.Annotation(NATIVE_MODULE, if (moduleName == null) listOf() else listOf(Argument(value = "\"$moduleName\"")))
     }
 
     override fun visitList(node: TS.Node) {
