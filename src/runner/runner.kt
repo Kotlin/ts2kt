@@ -256,5 +256,9 @@ fun split(p: ast.Package?, members: List<Member>, isRoot: Boolean, fileAnnotatio
         }
     }
 
+    if (isRoot && !hasModules) {
+        file.annotations = listOf()
+    }
+
     return result
 }
