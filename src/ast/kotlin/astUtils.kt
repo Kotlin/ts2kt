@@ -12,7 +12,8 @@ fun Annotation.getFirstParamAsString(): String? {
     return annotationParam.substring(1, annotationParam.size - 1)
 }
 
-fun Annotated.isNative() = annotations.any { it.name.startsWith(NATIVE) }
+fun Annotated.isNative() = annotations.any { it.isNative() }
+fun Annotation.isNative() = name.startsWith(NATIVE)
 
 fun Classifier.isModule() = isExternalModule() || isInternalModule()
 

@@ -291,10 +291,15 @@ class TypeScriptToKotlinWalker(
 
                 // TODO: fix this HACK
                 val t = arrayListOf<ast.Annotation>()
+                var nativeAnnotationCount = if (annotation.isNative()) 1 else 0
                 for (a in declaration.annotations) {
                     if (a == FAKE_ANNOTATION) continue
 
-                    if (a.name == NATIVE_PACKAGE) {
+                    if (a.isNative()){
+                        nativeAnnotationCount++
+                    }
+
+                    if (a.name == NATIVE_MODULE) {
                         if (declaration.name == annotationParamString) continue@overDeclarations
 
                         continue
@@ -304,7 +309,8 @@ class TypeScriptToKotlinWalker(
                 }
 
                 t.add(annotation)
-                declaration.annotations = t
+
+                declaration.annotations = if (nativeAnnotationCount > 1) t.filter { it.name != NATIVE } else t
 
                 found.add(declaration.name)
             }
