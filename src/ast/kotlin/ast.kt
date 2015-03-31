@@ -20,6 +20,8 @@ import ts2kt.utils.*
 import ts2kt.*
 
 val MODULE = "module"
+val NATIVE_PACKAGE = "nativePackage"
+val NATIVE_MODULE = "nativeModule"
 val NATIVE = "native"
 val FAKE = "fake"
 

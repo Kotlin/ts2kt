@@ -14,7 +14,12 @@ fun Annotation.getFirstParamAsString(): String? {
 
 fun Classifier.isModule() = kind === ClassKind.OBJECT && hasModuleAnnotation()
 
-fun Classifier.hasModuleAnnotation() = annotations.any { it.name == MODULE }
+fun Classifier.isModule() = isExternalModule() || isInternalModule()
+
+fun Classifier.isExternalModule() = kind === ClassKind.OBJECT && hasAnnotation(NATIVE_MODULE)
+fun Classifier.isInternalModule() = kind === ClassKind.OBJECT && hasAnnotation(NATIVE_PACKAGE)
+
+fun Classifier.hasAnnotation(vararg names: String) = annotations.any { it.name in names }
 
 fun Classifier.getClassObject(): Classifier? =
         this.members.firstOrNull { it is Classifier && it.kind === ClassKind.CLASS_OBJECT } as? Classifier

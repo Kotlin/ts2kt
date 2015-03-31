@@ -30,9 +30,11 @@ private val NATIVE_GETTER_ANNOTATION = ast.Annotation("nativeGetter")
 private val NATIVE_SETTER_ANNOTATION = ast.Annotation("nativeSetter")
 private val NATIVE_INVOKE_ANNOTATION = ast.Annotation("nativeInvoke")
 private val NATIVE_NEW_ANNOTATION = ast.Annotation("nativeNew")
-private val MODULE_ANNOTATION = ast.Annotation(MODULE)
+private val NATIVE_PACKAGE_ANNOTATION = ast.Annotation(NATIVE_PACKAGE)
+private val NATIVE_MODULE_ANNOTATION = ast.Annotation(NATIVE_MODULE)
 private val DEFAULT_ANNOTATION = listOf(NATIVE_ANNOTATION)
-private val DEFAULT_MODULE_ANNOTATION = listOf(MODULE_ANNOTATION)
+private val DEFAULT_INTERNAL_MODULE_ANNOTATION = listOf(NATIVE_PACKAGE_ANNOTATION)
+private val DEFAULT_EXTERNAL_MODULE_ANNOTATION = listOf(NATIVE_MODULE_ANNOTATION)
 private val NO_ANNOTATIONS = listOf<ast.Annotation>()
 private val INVOKE = "invoke"
 private val GET = "get"
@@ -94,8 +96,8 @@ class TypeScriptToKotlinWalker(
 
     val typeMapper = typeMapper ?: ObjectTypeToKotlinTypeMapperImpl(defaultAnnotations, declarations)
 
-    fun addModule(qualifier: List<String>, name: String, members: List<Member>, additionalAnnotations: List<ast.Annotation> = listOf()) {
-        val annotations = DEFAULT_MODULE_ANNOTATION + additionalAnnotations
+    fun addModule(qualifier: List<String>, name: String, members: List<Member>, isExternalModule: Boolean, additionalAnnotations: List<ast.Annotation> = listOf()) {
+        val annotations = (if (isExternalModule) DEFAULT_EXTERNAL_MODULE_ANNOTATION else DEFAULT_INTERNAL_MODULE_ANNOTATION) + additionalAnnotations
         val module = Classifier(ClassKind.OBJECT, name, listOf(), listOf(), listOf(), members, annotations, hasOpenModifier = false)
 
         var nestedModules = module
@@ -224,9 +226,9 @@ class TypeScriptToKotlinWalker(
         if (isExternalModule && tr.exportedByAssignment.isEmpty()) {
             val areAllFakeOrInterface = tr.declarations.all {
                 it.annotations.any { it == FAKE_ANNOTATION } ||
-                (it is Classifier && it.kind === ClassKind.TRAIT && it.annotations.all { it.name != MODULE })
+                (it is Classifier && it.kind === ClassKind.TRAIT && it.annotations.all { it.name != NATIVE_PACKAGE })
             }
-            val areAllPartOfThisModule = { tr.declarations.all { it.annotations.any { it.name == MODULE && it.getFirstParamAsString() == name } } }
+            val areAllPartOfThisModule = { tr.declarations.all { it.annotations.any { it.name == NATIVE_PACKAGE && it.getFirstParamAsString() == name } } }
 
             if (areAllFakeOrInterface) {
                 // unfake all
@@ -239,11 +241,11 @@ class TypeScriptToKotlinWalker(
                 if (tr.declarations.size() == 1 && tr.declarations[0] is Variable) {
                     val d = tr.declarations[0]
 
-                    var s: String = d.name
+                    var s = d.name
                     d.annotations = d.annotations.map {
-                        if (it.name == MODULE && !it.parameters.isEmpty()) {
+                        if (it.name == NATIVE_PACKAGE && !it.parameters.isEmpty()) {
                             s = it.getFirstParamAsString()!!
-                            MODULE_ANNOTATION
+                            NATIVE_PACKAGE_ANNOTATION
                         } else {
                             it
                         }
@@ -256,7 +258,7 @@ class TypeScriptToKotlinWalker(
             }
         }
 
-        addModule(qualifier, name, tr.declarations, additionalAnnotations = additionalAnnotations)
+        addModule(qualifier, name, tr.declarations, isExternalModule, additionalAnnotations = additionalAnnotations)
 
         exportedByAssignment.putAll(tr.exportedByAssignment)
     }
@@ -291,7 +293,7 @@ class TypeScriptToKotlinWalker(
                 for (a in declaration.annotations) {
                     if (a == FAKE_ANNOTATION) continue
 
-                    if (a.name == MODULE) {
+                    if (a.name == NATIVE_PACKAGE) {
                         if (declaration.name == annotationParamString) continue@overDeclarations
 
                         continue
@@ -351,7 +353,7 @@ class TypeScriptToKotlinWalker(
             }
             ClassKind.OBJECT -> {
                 if (b.kind === ClassKind.CLASS || b.kind === ClassKind.TRAIT) return mergeClassAndObject(b, a)
-                if (a.hasModuleAnnotation() && b.isModule()) return mergeClassifierMembers(a, b)
+                if (a.hasAnnotation(NATIVE_MODULE, NATIVE_PACKAGE) && b.isModule()) return mergeClassifierMembers(a, b)
             }
         }
 
