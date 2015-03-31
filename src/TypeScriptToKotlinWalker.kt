@@ -346,6 +346,7 @@ class TypeScriptToKotlinWalker(
         when (a.kind) {
              ClassKind.CLASS -> {
                 if (b.kind === ClassKind.OBJECT) return mergeClassAndObject(a, b)
+                 // TODO may be b.isModule?
             }
             ClassKind.TRAIT -> {
                 if (b.kind === ClassKind.OBJECT) return mergeClassAndObject(a, b)
