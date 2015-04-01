@@ -18,6 +18,7 @@ package ts2kt
 
 import ts2kt.kotlin.ast
 import ts2kt.kotlin.ast.*
+import ts2kt.kotlin.ast.Annotation
 import ts2kt.kotlin.ast.Package
 import ts2kt.utils.assert
 import ts2kt.utils.join
@@ -45,6 +46,8 @@ private val SET = "set"
 private val COMPARE_BY_NAME = { a: Named, b: Named -> a.name == b.name }
 private val IS_NATIVE_ANNOTATION = { a: ast.Annotation -> a.name == NATIVE }
 
+private val ALWAYS_TRUE: (ast.Annotation) -> Boolean = { true }
+private val IS_NATIVE_PACKAGE_ANNOTATION: (Annotation) -> Boolean = { it != NATIVE_PACKAGE_ANNOTATION }
 
 abstract class TypeScriptToKotlinBase : Visitor {
     abstract val result: Node?
@@ -354,8 +357,9 @@ class TypeScriptToKotlinWalker(
                             throw Exception("Unsupported types for merging, a: $a, b: $b")
                     }
 
-
-            result.annotations = mergeAnnotations(a.annotations, b.annotations)
+            if (result.annotations === NO_ANNOTATIONS) {
+                result.annotations = mergeAnnotations(a.annotations, b.annotations)
+            }
 
             result
         }
@@ -384,16 +388,19 @@ class TypeScriptToKotlinWalker(
         if (a.members.isEmpty()) return b
 
         // TODO is it right?
-        assert(a.getClassObject() == null, "Unxpected `class object` when merge Classifier(kind=${a.kind}) and Variable($b)")
+        assert(a.getClassObject() == null, "Unexpected `class object` when merge Classifier(kind=${a.kind}) and Variable($b)")
 
         if (a.kind === ClassKind.TRAIT || a.isModule()) {
-            val newTrait = Classifier(ClassKind.TRAIT, a.name, a.paramsOfConstructors, a.typeParams, a.parents, a.members, a.annotations, hasOpenModifier = false)
+            val newTrait = Classifier(ClassKind.TRAIT,
+                    a.name, a.paramsOfConstructors, a.typeParams, a.parents, a.members,
+                    mergeAnnotations(a.annotations, b.annotations, IS_NATIVE_PACKAGE_ANNOTATION),
+                    hasOpenModifier = false)
 
             val varTypeName = b.type.name
             val delegation = listOf(Type("${varTypeName} by $NO_IMPL: ${varTypeName}"))
 
             // TODO drop hacks
-            val classObject = Classifier(ClassKind.CLASS_OBJECT, "", listOf(), listOf(), delegation, listOf(), listOf(), hasOpenModifier = false)
+            val classObject = Classifier(ClassKind.CLASS_OBJECT, "", listOf(), listOf(), delegation, listOf(), NO_ANNOTATIONS, hasOpenModifier = false)
 
             newTrait.addMember(classObject)
 
@@ -403,30 +410,32 @@ class TypeScriptToKotlinWalker(
         throw Exception("Merging non-empty Classifier(kind=${a.kind}) and Variable unsupported yet, a: $a, b: $b")
     }
 
-    fun mergeAnnotations(a: List<ast.Annotation>, b: List<ast.Annotation>): List<ast.Annotation> =
-            if (a.isEmpty()) {
-                b
-            }
-            else if (b.isEmpty()) {
-                a
-            }
-            else {
-                val merged = arrayListOf<ast.Annotation>()
-                merged.addAll(a)
-                merged.addAll(b)
+    fun mergeAnnotations(a: List<ast.Annotation>, b: List<ast.Annotation>, predicate: (ast.Annotation) -> Boolean = ALWAYS_TRUE): List<ast.Annotation> {
+        val result =
+                if (a.isEmpty()) {
+                        b
+                } else if (b.isEmpty()) {
+                        a
+                } else {
+                    val merged = arrayListOf<ast.Annotation>()
+                    merged.addAll(a)
+                    merged.addAll(b)
 
-                merged.merge({ true }, COMPARE_BY_NAME) { a, b ->
-                    when {
-                        a.parameters.isEmpty() -> b
-                        b.parameters.isEmpty() -> a
-                        a.parameters == b.parameters -> a
+                    merged.merge(ALWAYS_TRUE, COMPARE_BY_NAME) { a, b ->
+                        when {
+                            a.parameters.isEmpty() -> b
+                            b.parameters.isEmpty() -> a
+                            a.parameters == b.parameters -> a
                         // TODO
-                        else -> throw Exception("Merging annotations with different arguments unsupported yet, a: $a, b: $b")
+                            else -> throw Exception("Merging annotations with different arguments unsupported yet, a: $a, b: $b")
+                        }
                     }
+
+                    merged
                 }
 
-                merged
-            }
+        return if (predicate === ALWAYS_TRUE) result else result.filter(predicate)
+    }
 
     fun mergeClassAndObject(a: Classifier, b: Classifier): Classifier {
         val classObject = a.getClassObject()
@@ -439,6 +448,8 @@ class TypeScriptToKotlinWalker(
             // TODO drop hack
             classObject.addMembersFrom(b)
         }
+
+        a.annotations = mergeAnnotations(a.annotations, b.annotations, IS_NATIVE_PACKAGE_ANNOTATION)
 
         return a
     }
