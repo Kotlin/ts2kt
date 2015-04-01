@@ -223,7 +223,8 @@ fun main(args: Array<String>) {
 }
 
 fun KotlinFile.split(): List<KotlinFile> {
-    return split(packageFqName, members, true, listOf(NATIVE_PACKAGE_ROOT_ANNOTATION))
+    val fileAnnotations = if (annotations.isEmpty()) listOf(NATIVE_PACKAGE_ROOT_ANNOTATION) else annotations
+    return split(packageFqName, members, true, fileAnnotations)
 }
 
 fun Classifier.split(root: ast.Package?, annotations: List<ast.Annotation>): List<KotlinFile> {
@@ -237,13 +238,11 @@ fun split(p: ast.Package?, members: List<Member>, isRoot: Boolean, fileAnnotatio
     val file = KotlinFile(p, newMembers, fileAnnotations)
     val result = arrayListOf(file)
 
-    var hasModules = false
     var hasMemberWithModuleAnn = false
 
     for (m in members) {
         // TODO check that it's internal module?
         if (m is Classifier && m.isModule()) {
-            hasModules = true
             val annotations = when {
                 m.isInternalModule() -> DEFAULT_INTERNAL_MODULE_ANNOTATION
                 m.isExternalModule() -> DEFAULT_EXTERNAL_MODULE_ANNOTATION
@@ -265,11 +264,13 @@ fun split(p: ast.Package?, members: List<Member>, isRoot: Boolean, fileAnnotatio
         }
     }
 
+    val hasModules = result.size() > 1
+
     // TODO: can we do it better?
     if (hasMemberWithModuleAnn && fileAnnotations === DEFAULT_EXTERNAL_MODULE_ANNOTATION) {
         file.annotations = listOf(NATIVE_MODULE_PART_ANNOTATION)
     }
-    else if (isRoot && !hasModules) {
+    else if (isRoot && !hasModules && file.hasAnnotation(NATIVE_PACKAGE_ROOT)) {
         file.annotations = listOf()
     }
 

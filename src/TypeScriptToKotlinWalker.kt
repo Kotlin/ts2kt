@@ -33,6 +33,7 @@ private val NATIVE_NEW_ANNOTATION = ast.Annotation("nativeNew")
 private val NATIVE_PACKAGE_ROOT_ANNOTATION = ast.Annotation(NATIVE_PACKAGE_ROOT)
 private val NATIVE_PACKAGE_ANNOTATION = ast.Annotation(NATIVE_PACKAGE)
 private val NATIVE_MODULE_ANNOTATION = ast.Annotation(NATIVE_MODULE)
+private val NATIVE_MODULE_PART_ANNOTATION = ast.Annotation(NATIVE_MODULE_PART)
 private val DEFAULT_ANNOTATION = listOf(NATIVE_ANNOTATION)
 private val DEFAULT_INTERNAL_MODULE_ANNOTATION = listOf(NATIVE_PACKAGE_ANNOTATION)
 private val DEFAULT_EXTERNAL_MODULE_ANNOTATION = listOf(NATIVE_MODULE_ANNOTATION)
@@ -88,7 +89,8 @@ class TypeScriptToKotlinWalker(
     override val result: KotlinFile
         get()  {
             assert(exportedByAssignment.isEmpty(), "exportedByAssignment should be empty, but it contains: ${exportedByAssignment.keySet().toString()}")
-            return KotlinFile(if (packageFqName != null) Package(packageFqName) else null, declarations, listOf())
+            val annotations = if (isNativeModule) DEFAULT_EXTERNAL_MODULE_ANNOTATION else listOf()
+            return KotlinFile(if (packageFqName != null) Package(packageFqName) else null, declarations, annotations)
         }
 
     override val hasMembersOpenModifier = false
@@ -96,6 +98,8 @@ class TypeScriptToKotlinWalker(
     val exportedByAssignment = hashMapOf<String, ast.Annotation>()
 
     val typeMapper = typeMapper ?: ObjectTypeToKotlinTypeMapperImpl(defaultAnnotations, declarations)
+
+    var isNativeModule = false
 
     fun addModule(qualifier: List<String>, name: String, members: List<Member>, isExternalModule: Boolean, additionalAnnotations: List<ast.Annotation> = listOf()) {
         val annotations = (if (isExternalModule) DEFAULT_EXTERNAL_MODULE_ANNOTATION else DEFAULT_INTERNAL_MODULE_ANNOTATION) + additionalAnnotations
@@ -112,6 +116,12 @@ class TypeScriptToKotlinWalker(
     }
 
     fun getAdditionalAnnotations(node: TS.Node): List<ast.Annotation> {
+        // TODO: use flags if possible
+        // TODO: is it hack?
+        if (requiredModifier === TS.SyntaxKind.DeclareKeyword && node.modifiers?.arr?.any { it.kind === TS.SyntaxKind.ExportKeyword } ?: false) {
+            isNativeModule = true
+        }
+
         val isShouldSkip = requiredModifier === TS.SyntaxKind.DeclareKeyword && !(node.modifiers?.arr?.any { it.kind === requiredModifier } ?: false )
         if (isShouldSkip) return DEFAULT_FAKE_ANNOTATION
 
@@ -265,6 +275,8 @@ class TypeScriptToKotlinWalker(
     }
 
     override fun visitExportAssignment(node: TS.ExportAssignment) {
+        isNativeModule = true
+
         exportedByAssignment[node.exportName.unescapedText] =
                 ast.Annotation(NATIVE_MODULE, if (moduleName == null) listOf() else listOf(Argument(value = "\"$moduleName\"")))
     }
