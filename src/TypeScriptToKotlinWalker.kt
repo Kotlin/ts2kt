@@ -44,10 +44,11 @@ private val GET = "get"
 private val SET = "set"
 
 private val COMPARE_BY_NAME = { a: Named, b: Named -> a.name == b.name }
-private val IS_NATIVE_ANNOTATION = { a: ast.Annotation -> a.name == NATIVE }
-
-private val ALWAYS_TRUE: (ast.Annotation) -> Boolean = { true }
-private val IS_NATIVE_PACKAGE_ANNOTATION: (Annotation) -> Boolean = { it != NATIVE_PACKAGE_ANNOTATION }
+private val ALWAYS_TRUE = { a: ast.Annotation -> true }
+private val IS_NATIVE_ANNOTATION = { a: ast.Annotation -> a === NATIVE_ANNOTATION }
+private val IS_NOT_NATIVE_ANNOTATION = { a: ast.Annotation -> a !== NATIVE_ANNOTATION }
+private val IS_NOT_FAKE_ANNOTATION = { a: ast.Annotation -> a !== FAKE_ANNOTATION }
+private val IS_NOT_NATIVE_PACKAGE_ANNOTATION = { a: ast.Annotation -> a != NATIVE_PACKAGE_ANNOTATION }
 
 abstract class TypeScriptToKotlinBase : Visitor {
     abstract val result: Node?
@@ -298,34 +299,23 @@ class TypeScriptToKotlinWalker(
     fun fixExportAssignments() {
         val found = hashSetOf<String>()
 
-        @overDeclarations
         for (declaration in declarations) {
             val annotation = exportedByAssignment[declaration.name]
             if (annotation != null) {
                 val annotationParamString = annotation.getFirstParamAsString()
 
-                // TODO: fix this HACK
-                val t = arrayListOf<ast.Annotation>()
-                var nativeAnnotationCount = if (annotation.isNative()) 1 else 0
-                for (a in declaration.annotations) {
-                    if (a == FAKE_ANNOTATION) continue
+                val newAnnotation =
+                        if (annotation.name == NATIVE_MODULE && declaration.name == annotationParamString) {
+                            ast.Annotation(annotation.name)
+                        }
+                        else {
+                            annotation
+                        }
 
-                    if (a.isNative()){
-                        nativeAnnotationCount++
-                    }
+                val newAnnotations = mergeAnnotations(declaration.annotations, listOf(newAnnotation), IS_NOT_FAKE_ANNOTATION)
+                val hasNativeX = newAnnotations.any { it.name != NATIVE && it.isNative() }
 
-                    if (a.name == NATIVE_MODULE) {
-                        if (declaration.name == annotationParamString) continue@overDeclarations
-
-                        continue
-                    }
-
-                    t.add(a)
-                }
-
-                t.add(annotation)
-
-                declaration.annotations = if (nativeAnnotationCount > 1) t.filter { it.name != NATIVE } else t
+                declaration.annotations = if (hasNativeX) newAnnotations.filter(IS_NOT_NATIVE_ANNOTATION) else newAnnotations
 
                 found.add(declaration.name)
             }
@@ -393,7 +383,7 @@ class TypeScriptToKotlinWalker(
         if (a.kind === ClassKind.TRAIT || a.isModule()) {
             val newTrait = Classifier(ClassKind.TRAIT,
                     a.name, a.paramsOfConstructors, a.typeParams, a.parents, a.members,
-                    mergeAnnotations(a.annotations, b.annotations, IS_NATIVE_PACKAGE_ANNOTATION),
+                    mergeAnnotations(a.annotations, b.annotations, IS_NOT_NATIVE_PACKAGE_ANNOTATION),
                     hasOpenModifier = false)
 
             val varTypeName = b.type.name
@@ -449,7 +439,7 @@ class TypeScriptToKotlinWalker(
             classObject.addMembersFrom(b)
         }
 
-        a.annotations = mergeAnnotations(a.annotations, b.annotations, IS_NATIVE_PACKAGE_ANNOTATION)
+        a.annotations = mergeAnnotations(a.annotations, b.annotations, IS_NOT_NATIVE_PACKAGE_ANNOTATION)
 
         return a
     }
