@@ -1,8 +1,11 @@
+[file: nativePackageRoot]
 package interfaces
 
 /* ============= */
+[file: nativePackage]
 package interfaces._
 
+native
 public trait LoDashStatic {
     public fun chain(value: Number): LoDashWrapper<Number>
     public fun chain(value: String): LoDashWrapper<String>

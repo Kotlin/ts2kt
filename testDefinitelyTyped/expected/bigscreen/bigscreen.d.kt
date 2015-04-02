@@ -13,6 +13,5 @@ public trait BigScreenStatic {
     public fun toggle(element: Element, onEnter: ((element: Element) -> Unit)? = null, onExit: (() -> Unit)? = null, onError: ((element: Element, reason: String) -> Unit)? = null)
     public fun videoEnabled(video: HTMLVideoElement): Boolean
 }
-native
-module("bigscreen")
+nativeModule
 public var bigscreen: BigScreenStatic = noImpl

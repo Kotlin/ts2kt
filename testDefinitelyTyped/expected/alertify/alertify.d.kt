@@ -1,7 +1,6 @@
 package alertify
 
 native
-module
 public trait alertify {
     public trait IAlertifyStatic {
         public fun alert(message: String, fn: Function? = null, cssClass: String? = null): IAlertifyStatic

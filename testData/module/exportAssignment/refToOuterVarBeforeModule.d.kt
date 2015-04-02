@@ -7,6 +7,5 @@ public trait SinonStatic {
     public var log: (message: String) -> Unit
     public fun restore(`object`: Any)
 }
-native
-module("sinon")
+nativeModule
 public var sinon: SinonStatic = noImpl

@@ -52,6 +52,5 @@ public trait IAccountingStatic {
     public fun unformat(string: String, decimal: String? = null): Number
     public var settings: IAccountingSettings
 }
-native
-module("accounting")
+nativeModule
 public var accounting: IAccountingStatic = noImpl

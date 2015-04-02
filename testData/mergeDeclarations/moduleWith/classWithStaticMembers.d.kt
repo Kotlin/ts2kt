@@ -1,7 +1,6 @@
 package classWithStaticMembers
 
 native
-module
 public open class Foo {
     public open fun bar(): Number = noImpl
     public class object {

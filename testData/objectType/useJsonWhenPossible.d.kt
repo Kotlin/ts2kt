@@ -1,3 +1,4 @@
+[file: nativePackageRoot]
 package useJsonWhenPossible
 
 native
@@ -16,10 +17,14 @@ public trait Foo {
 }
 
 /* ============= */
+[file: nativePackage]
 package useJsonWhenPossible.Module
 
+native
 public var bar: Json = noImpl
+native
 public fun withObjectTypeParam(bar: Json): Unit = noImpl
+native
 public open class Foo {
     public open var prop: Json = noImpl
 }

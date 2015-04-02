@@ -1,6 +1,11 @@
+[file: nativePackageRoot]
 package classWhenItContainsClass
 
-module("ws")
+/* ============= */
+[file: nativeModulePart]
+package classWhenItContainsClass.ws
+
+nativeModule("ws")
 public open class WebSocket(address: String) : events.EventEmitter() {
     public open fun connect(): Boolean = noImpl
     public class object {

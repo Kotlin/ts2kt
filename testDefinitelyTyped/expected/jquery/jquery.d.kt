@@ -642,6 +642,5 @@ public trait JQuery {
 }
 native
 public var jQuery: JQueryStatic = noImpl
-native
-module("jquery")
+nativeModule("jquery")
 public var `$`: JQueryStatic = noImpl

@@ -1,3 +1,4 @@
+[file: nativePackageRoot]
 package overloadedFunctions
 
 native
@@ -10,9 +11,14 @@ public trait Options {
     public var entries: Array<String>? = noImpl
     public var noParse: Array<String>? = noImpl
 }
-module("browserify")
+
+/* ============= */
+[file: nativeModulePart]
+package overloadedFunctions.browserify
+
+nativeModule
 public fun browserify(): BrowserifyObject = noImpl
-module("browserify")
+nativeModule
 public fun browserify(files: Array<String>): BrowserifyObject = noImpl
-module("browserify")
+nativeModule
 public fun browserify(opts: Options): BrowserifyObject = noImpl

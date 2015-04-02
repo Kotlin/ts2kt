@@ -1,4 +1,3 @@
-[file: nativePackageRoot]
 package assignmentExportFromTopLevel
 
 nativeModule("MyExtModule")

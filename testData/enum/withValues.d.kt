@@ -1,5 +1,6 @@
 package withValues
 
+native
 public enum class SomeEnum {
     Foo // = 1
     Bar

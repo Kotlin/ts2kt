@@ -35,6 +35,5 @@ public trait Auth0Options {
     public var userPwdConnectionName: String? = noImpl
     public var username_style: String? = noImpl
 }
-native
-module("Auth0Widget")
+nativeModule
 public var Auth0Widget: Auth0WidgetStatic = noImpl

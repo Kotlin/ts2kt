@@ -151,6 +151,5 @@ public trait Async {
     public fun dir(fn: Function, vararg arguments: Any)
     public fun noConflict(): Async
 }
-native
-module("async")
+nativeModule
 public var async: Async = noImpl

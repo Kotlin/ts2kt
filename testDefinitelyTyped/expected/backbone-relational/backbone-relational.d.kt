@@ -1,8 +1,11 @@
+[file: nativePackageRoot]
 package backbone-relational
 
 /* ============= */
+[file: nativePackage]
 package backbone-relational.Backbone
 
+native
 public open class RelationalModel : Model() {
     public open var relations: Any = noImpl
     public open var subModelTypes: Any = noImpl
@@ -21,6 +24,7 @@ public open class RelationalModel : Model() {
     public open fun findOrCreate(attributes: Number, options: Any? = null): Unit = noImpl
     public open fun findOrCreate(attributes: Any, options: Any? = null): Unit = noImpl
 }
+native
 public open class Relation : Model() {
     public open var options: Any = noImpl
     public open var instance: Any = noImpl
@@ -36,6 +40,7 @@ public open class Relation : Model() {
     public open fun getReverseRelations(model: RelationalModel): Relation = noImpl
     override fun destroy(): Unit = noImpl
 }
+native
 public open class HasOne : Relation() {
     public open var collectionType: Any = noImpl
     public open fun findRelated(options: Any): Model = noImpl
@@ -52,6 +57,7 @@ public open class HasOne : Relation() {
     public open fun addRelated(model: Model, options: Any): Unit = noImpl
     public open fun removeRelated(model: Model, coll: Any, options: Any): Unit = noImpl
 }
+native
 public open class HasMany : Relation() {
     public open var collectionType: Any = noImpl
     public open fun findRelated(options: Any): Model = noImpl
@@ -63,6 +69,7 @@ public open class HasMany : Relation() {
     public open fun addRelated(model: Model, options: Any): Unit = noImpl
     public open fun removeRelated(model: Model, coll: Any, options: Any): Unit = noImpl
 }
+native
 public open class Store : Events() {
     public open fun initializeRelation(model: Any, relation: Any, options: Any): Unit = noImpl
     public open fun addModelScope(scope: Any): Unit = noImpl

@@ -24,7 +24,7 @@ declare module when {
 }
 
 declare module AllKeywords {
-    export module "as" {
+    export module as {
         var _;
     }
     export module "break" {
@@ -48,7 +48,7 @@ declare module AllKeywords {
     export module "for" {
         var _;
     }
-    export module "fun" {
+    export module fun {
         var _;
     }
     export module "if" {
@@ -57,16 +57,16 @@ declare module AllKeywords {
     export module "in" {
         var _;
     }
-    export module "is" {
+    export module is {
         var _;
     }
     export module "null" {
         var _;
     }
-    export module "object" {
+    export module object {
         var _;
     }
-    export module "package" {
+    export module package {
         var _;
     }
     export module "return" {
@@ -78,13 +78,13 @@ declare module AllKeywords {
     export module "this" {
         var _;
     }
-    export module "This" {
+    export module This {
         var _;
     }
     export module "throw" {
         var _;
     }
-    export module "trait" {
+    export module trait {
         var _;
     }
     export module "true" {
@@ -93,16 +93,16 @@ declare module AllKeywords {
     export module "try" {
         var _;
     }
-    export module "typealias" {
+    export module typealias {
         var _;
     }
-    export module "val" {
+    export module val {
         var _;
     }
     export module "var" {
         var _;
     }
-    export module "when" {
+    export module when {
         var _;
     }
     export module "while" {

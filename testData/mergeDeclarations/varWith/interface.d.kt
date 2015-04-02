@@ -1,8 +1,11 @@
+[file: nativePackageRoot]
 package interface
 
 /* ============= */
+[file: nativePackage]
 package interface.AceAjax
 
+native
 public trait KeyBinding {
     public fun setDefaultHandler(kb: Any)
     public fun setKeyboardHandler(kb: Any)
@@ -15,6 +18,7 @@ public trait KeyBinding {
 
     }
 }
+native
 public trait Foo {
     public fun foo(editor: Editor): Boolean
 }

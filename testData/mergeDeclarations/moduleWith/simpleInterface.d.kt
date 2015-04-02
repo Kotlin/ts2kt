@@ -1,7 +1,6 @@
 package simpleInterface
 
 native
-module
 public trait Foo {
     public fun bar(): Number
     public class object {

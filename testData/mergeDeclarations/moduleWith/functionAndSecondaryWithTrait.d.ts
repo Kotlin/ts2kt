@@ -1,4 +1,4 @@
-// based on fibers.d.ts
+// based on node-fibers.d.ts
 interface Fiber {
     reset: () => any;
     run: (param?: any) => any;

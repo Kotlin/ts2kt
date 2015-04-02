@@ -1,4 +1,4 @@
-// based on fibers.d.ts
+// based on node-fibers.d.ts
 interface Fiber_ {
     reset: () => any;
     run: (param?: any) => any;
@@ -10,7 +10,7 @@ declare module "fibers" {
     function Fiber(fn: Function): Fiber_;
 
     module Fiber {
-        export var current: Fiber;
+        export var current: Fiber_;
         export function yield(value?: any): any
     }
 

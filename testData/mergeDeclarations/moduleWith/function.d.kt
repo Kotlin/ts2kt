@@ -1,3 +1,4 @@
+[file: nativePackageRoot]
 package function
 
 native
@@ -6,11 +7,19 @@ public trait Fiber_ {
     public var run: (param: Any? = null) -> Any
     public var throwInto: (ex: Any) -> Any
 }
-module("fibers")
+
+/* ============= */
+[file: nativeModulePart]
+package function.fibers
+
+nativeModule("fibers")
 public fun Fiber(fn: Function): Fiber_ = noImpl
 
 /* ============= */
-package function.Fiber
+[file: nativePackage, nativeModule("fibers")]
+package function.fibers.Fiber
 
-public var current: Fiber = noImpl
+native
+public var current: Fiber_ = noImpl
+native
 public fun yield(value: Any? = null): Any = noImpl

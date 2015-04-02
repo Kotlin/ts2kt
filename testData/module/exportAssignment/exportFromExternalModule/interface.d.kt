@@ -1,6 +1,11 @@
+[file: nativePackageRoot]
 package interface
 
-module("Boo")
+/* ============= */
+[file: nativeModulePart]
+package interface.Boo
+
+nativeModule("Boo")
 public trait IBaz {
     public fun doSomething()
 }

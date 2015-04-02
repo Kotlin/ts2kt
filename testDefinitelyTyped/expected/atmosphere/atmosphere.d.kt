@@ -1,20 +1,25 @@
+[file: nativePackageRoot]
 package atmosphere
 
 native
 public var atmosphere: Atmosphere.Atmosphere = noImpl
 
 /* ============= */
+[file: nativePackage]
 package atmosphere.Atmosphere
 
+native
 public trait Atmosphere {
     public var subscribe: ((requestOrUrl: Any, callback: Function? = null, request: Request? = null) -> Request)? = noImpl
     public var unsubscribe: (() -> Unit)? = noImpl
     public var AtmosphereRequest: AtmosphereRequest? = noImpl
 }
+native
 public trait AtmosphereRequest {
     nativeNew
     public fun invoke(): Request
 }
+native
 public trait Request {
     public var timeout: Number? = noImpl
     public var method: String? = noImpl
@@ -76,6 +81,7 @@ public trait Request {
     public var getUUID: (() -> Unit)? = noImpl
     public var pushLocal: ((message: String) -> Unit)? = noImpl
 }
+native
 public trait Response {
     public var status: Number? = noImpl
     public var reasonPhrase: String? = noImpl

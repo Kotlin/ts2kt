@@ -1,3 +1,4 @@
+[file: nativePackageRoot]
 package browserify
 
 native
@@ -38,5 +39,10 @@ public trait Browserify {
     nativeInvoke
     public fun invoke(opts: `T$2`): BrowserifyObject
 }
-module
+
+/* ============= */
+[file: nativeModulePart]
+package browserify.browserify
+
+nativeModule
 public var browserify: Browserify = noImpl

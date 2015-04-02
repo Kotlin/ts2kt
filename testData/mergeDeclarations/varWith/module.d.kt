@@ -1,7 +1,6 @@
 package module
 
-native
-module("lodash")
+nativeModule("lodash")
 public trait _ {
     public trait LoDashStatic {
         nativeInvoke

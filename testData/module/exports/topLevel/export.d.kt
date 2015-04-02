@@ -1,4 +1,4 @@
-nativeModule
+[file: nativeModule]
 package export
 
 native

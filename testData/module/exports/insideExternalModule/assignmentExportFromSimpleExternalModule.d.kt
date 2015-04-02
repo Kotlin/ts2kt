@@ -2,8 +2,8 @@
 package assignmentExportFromSimpleExternalModule
 
 /* ============= */
-[file: nativeModule]
+[file: nativeModulePart]
 package assignmentExportFromSimpleExternalModule.MyExtModule
 
-native
+nativeModule("MyExtModule")
 public var foo: Any = noImpl

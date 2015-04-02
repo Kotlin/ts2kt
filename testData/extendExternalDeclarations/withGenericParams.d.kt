@@ -1,6 +1,8 @@
+[file: nativePackageRoot]
 package withGenericParams
 
 /* ============= */
+[file: nativePackage]
 package withGenericParams.Q
 
 native
@@ -11,6 +13,7 @@ native
 public var <T> Promise<T>.bar: Array<T> = noImpl
 
 /* ============= */
+[file: nativeModule]
 package withGenericParams.ref-array
 
 native
