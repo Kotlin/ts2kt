@@ -31,6 +31,12 @@ val FAKE = "fake"
 val FAKE_ANNOTATION = Annotation(FAKE)
 val DEFAULT_FAKE_ANNOTATION = listOf(FAKE_ANNOTATION)
 
+val FAKE_MEMBER_NODE: Member = object : Node(), Member {
+    override var name = "<FAKE NODE>"
+    override fun stringify() = throw UnsupportedOperationException()
+    override var annotations: List<Annotation> = DEFAULT_FAKE_ANNOTATION
+}
+
 val NO_IMPL = "noImpl"
 private val EQ_NO_IMPL = " = $NO_IMPL"
 private val PUBLIC = "public"

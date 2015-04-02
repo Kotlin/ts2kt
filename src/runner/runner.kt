@@ -18,6 +18,7 @@ package ts2kt
 
 import ts2kt.kotlin.ast
 import ts2kt.kotlin.ast.*
+import ts2kt.kotlin.ast.Annotation
 import ts2kt.utils.push
 import ts2kt.utils.shift
 import typescript.TS
@@ -272,6 +273,10 @@ fun split(p: ast.Package?, members: List<Member>, isRoot: Boolean, fileAnnotatio
     }
     else if (isRoot && !hasModules && file.hasAnnotation(NATIVE_PACKAGE_ROOT)) {
         file.annotations = listOf()
+    }
+
+    if (hasModules && fileAnnotations === DEFAULT_EXTERNAL_MODULE_ANNOTATION && newMembers.isEmpty()) {
+        newMembers.add(FAKE_MEMBER_NODE)
     }
 
     return result
