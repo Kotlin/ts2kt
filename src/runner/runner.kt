@@ -244,12 +244,7 @@ fun split(p: ast.Package?, members: List<Member>, isRoot: Boolean, fileAnnotatio
     for (m in members) {
         // TODO check that it's internal module?
         if (m is Classifier && m.isModule()) {
-            val annotations = when {
-                m.isInternalModule() -> DEFAULT_INTERNAL_MODULE_ANNOTATION
-                m.isExternalModule() -> DEFAULT_EXTERNAL_MODULE_ANNOTATION
-                // TODO:
-                else -> throw Exception("ups")
-            }
+            val annotations = m.annotations.filter { it.name in array(NATIVE_MODULE, NATIVE_PACKAGE) }
             result.addAll(m.split(p, annotations).filter { it.members.isNotEmpty() })
         }
         else {
@@ -268,14 +263,14 @@ fun split(p: ast.Package?, members: List<Member>, isRoot: Boolean, fileAnnotatio
     val hasModules = result.size() > 1
 
     // TODO: can we do it better?
-    if (hasMemberWithModuleAnn && fileAnnotations === DEFAULT_EXTERNAL_MODULE_ANNOTATION) {
+    if (hasMemberWithModuleAnn && file.hasAnnotation(NATIVE_MODULE)) {
         file.annotations = listOf(NATIVE_MODULE_PART_ANNOTATION)
     }
     else if (isRoot && !hasModules && file.hasAnnotation(NATIVE_PACKAGE_ROOT)) {
         file.annotations = listOf()
     }
 
-    if (hasModules && fileAnnotations === DEFAULT_EXTERNAL_MODULE_ANNOTATION && newMembers.isEmpty()) {
+    if (hasModules && file.hasAnnotation(NATIVE_MODULE) && newMembers.isEmpty()) {
         newMembers.add(FAKE_MEMBER_NODE)
     }
 

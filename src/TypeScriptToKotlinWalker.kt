@@ -367,7 +367,7 @@ class TypeScriptToKotlinWalker(
             }
             ClassKind.OBJECT -> {
                 if (b.kind === ClassKind.CLASS || b.kind === ClassKind.TRAIT) return mergeClassAndObject(b, a)
-                if (a.hasAnnotation(NATIVE_MODULE, NATIVE_PACKAGE) && b.isModule()) return mergeClassifierMembers(a, b)
+                if (a.isModule() && b.isModule()) return mergeClassifierMembers(a, b)
             }
         }
 
