@@ -70,34 +70,30 @@ abstract class Node(val needsFixIndent: Boolean = false) {
 
     final override fun toString(): String {
         if (cachedToString == null) {
-            cachedToString = fixIndention(stringify())
+            cachedToString = fixIndentation(stringify())
         }
         return cachedToString!!
     }
 
-    private fun fixIndention(s: String): String {
+    private fun fixIndentation(s: String): String {
         if (!needsFixIndent) return s
-
-        val lines = s.split("\n")
 
         var indentIdx = 0
         var indent = getIndent(indentIdx)
-        for (i in lines.indices) {
-            if (lines[i].endsWith("}")) {
 
+        return s.lineSequence().map {
+            if (it.endsWith("}")) {
                 indent = getIndent(--indentIdx)
             }
 
-            if (!lines[i].isEmpty() && indentIdx != 0) {
-                lines[i] = indent + lines[i].trimLeading()
-            }
+            val result = if (it.isEmpty() || indentIdx == 0) it else indent + it.trimStart()
 
-            if (lines[i].endsWith('{')) {
+            if (it.endsWith('{')) {
                 indent = getIndent(++indentIdx)
             }
-        }
 
-        return lines.join("\n")
+            result
+        }.join("\n")
     }
 }
 
