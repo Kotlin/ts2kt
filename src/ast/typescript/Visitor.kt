@@ -3,7 +3,7 @@ package ts2kt
 import typescript.*
 
 native
-trait Visitor {
+interface Visitor {
     public open fun visitModuleDeclaration(node: TS.ModuleDeclaration): Unit = noImpl
 
     public open fun visitFunctionDeclaration(node: TS.FunctionDeclaration): Unit = noImpl

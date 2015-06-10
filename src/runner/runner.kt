@@ -59,7 +59,7 @@ fun translate(srcPath: String): String {
 
     val file2scriptSnapshot = hashMapOf(LIB_D_TS_WITH_SNAPSHOT, normalizeSrcPath to getScriptSnapshotFromFile(normalizeSrcPath))
 
-    val filesToProcess = array(normalizeSrcPath)
+    val filesToProcess = arrayOf(normalizeSrcPath)
     while(filesToProcess.isNotEmpty()) {
         val curFile = filesToProcess.shift()
         val curDir = ts.getDirectoryPath(curFile) + "/"
@@ -88,7 +88,7 @@ fun translate(srcPath: String): String {
     val path = require("path") as node.path
     val srcName = path.basename(normalizeSrcPath, TYPESCRIPT_DEFINITION_FILE_EXT)
 
-    [inline] fun isAnyMember(node: TS.MethodDeclaration): Boolean {
+    @inline fun isAnyMember(node: TS.MethodDeclaration): Boolean {
         val params = node.parameters.arr
 
         return when (node.declarationName?.text) {
@@ -102,9 +102,9 @@ fun translate(srcPath: String): String {
         }
     }
 
-    [inline] fun isOverrideHelper(
+    @inline fun isOverrideHelper(
             node: TS.Declaration,
-            [inlineOptions(InlineOption.ONLY_LOCAL_RETURN)] f: (TS.TypeChecker, TS.Type, String) -> Boolean
+            @inlineOptions(InlineOption.ONLY_LOCAL_RETURN) f: (TS.TypeChecker, TS.Type, String) -> Boolean
     ): Boolean {
         val parentNode = node.parent!! as TS.ClassDeclaration
 

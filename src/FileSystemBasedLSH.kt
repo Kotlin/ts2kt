@@ -3,13 +3,13 @@ package ts2kt
 import typescript.ts
 
 public class FileSystemBasedLSH(file2scriptSnapshot: Map<String, dynamic>, var currentDirectory: String) {
-    var filesCache = array<String>()
+    var filesCache = arrayOf<String>()
 
     var file2scriptSnapshot = file2scriptSnapshot
         get() = $file2scriptSnapshot
         set(value) {
             $file2scriptSnapshot = value
-            filesCache = value.keySet().copyToArray()
+            filesCache = value.keySet().toTypedArray()
         }
 
     fun getCompilationSettings() = ts.getDefaultCompilerOptions()

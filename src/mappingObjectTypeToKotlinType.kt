@@ -23,7 +23,7 @@ import ts2kt.kotlin.ast.*
 import ts2kt.kotlin.ast
 import typescript.*
 
-trait ObjectTypeToKotlinTypeMapper {
+interface ObjectTypeToKotlinTypeMapper {
     fun getKotlinTypeNameForObjectType(objectType: TS.TypeLiteralNode): String
 }
 
@@ -70,5 +70,5 @@ class ObjectTypeToKotlinTypeMapperImpl(
     }
 
     fun <T> List<T>.toStringKey(): String =
-            map { it.toString().replaceAll("(\\(|,\\s*)\\w+: ", "$1") }.copyToArray().sort().join(", ")
+            map { it.toString().replaceAll("(\\(|,\\s*)\\w+: ", "$1") }.toTypedArray().sort().join(", ")
 }
