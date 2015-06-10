@@ -114,17 +114,17 @@ class Package(val name: String) : Node() {
     override fun stringify(): String = "package $name"
 }
 
-trait Named : Node {
+interface Named : Node {
     // TODO: make it immutable
     var name: String
 }
 
-trait Annotated : Node {
+interface Annotated : Node {
     // TODO: make it immutable
     var annotations: List<Annotation>
 }
 
-trait Member : Named, Annotated
+interface Member : Named, Annotated
 
 // TODO should be Named?
 // TODO should we escape name here?
@@ -137,11 +137,11 @@ class Annotation(override var name: String, val parameters: List<Argument> = lis
 }
 
 enum class ClassKind(val keyword: String, val bracesAlwaysRequired: Boolean = false) {
-    CLASS : ClassKind("class")
-    TRAIT : ClassKind("trait")
-    ENUM : ClassKind("enum class")
-    OBJECT : ClassKind("object", bracesAlwaysRequired = true)
-    CLASS_OBJECT : ClassKind("class object", bracesAlwaysRequired = true)
+    CLASS("class"),
+    TRAIT("trait"),
+    ENUM("enum class"),
+    OBJECT("object", bracesAlwaysRequired = true),
+    CLASS_OBJECT("class object", bracesAlwaysRequired = true)
 }
 
 class Classifier(
