@@ -282,7 +282,7 @@ public object TS {
         public var modifiers: ModifiersArray? // = noImpl
     }
 
-    open class JsArray<T>
+    interface JsArray<T>
 
     public interface NodeArray<T> : JsArray<T>, TextRange {
         public var hasTrailingComma: Boolean? // = noImpl

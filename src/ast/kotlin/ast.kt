@@ -114,12 +114,12 @@ class Package(val name: String) : Node() {
     override fun stringify(): String = "package $name"
 }
 
-interface Named : Node {
+interface Named {
     // TODO: make it immutable
     var name: String
 }
 
-interface Annotated : Node {
+interface Annotated {
     // TODO: make it immutable
     var annotations: List<Annotation>
 }
