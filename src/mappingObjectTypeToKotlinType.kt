@@ -18,7 +18,6 @@ package ts2kt
 
 import java.util.HashMap
 import ts2kt.utils.replaceAll
-import ts2kt.utils.sort
 import ts2kt.kotlin.ast.*
 import ts2kt.kotlin.ast
 import typescript.*
@@ -70,5 +69,5 @@ class ObjectTypeToKotlinTypeMapperImpl(
     }
 
     fun <T> List<T>.toStringKey(): String =
-            map { it.toString().replaceAll("(\\(|,\\s*)\\w+: ", "$1") }.toTypedArray().sort().join(", ")
+            map { it.toString().replaceAll("(\\(|,\\s*)\\w+: ", "$1") }.sorted().join(", ")
 }

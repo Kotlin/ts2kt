@@ -102,12 +102,6 @@ private fun <T: Any> MutableList<T>.mergeAllTo(mergeTo: Int, candidateIndexes: L
 // JS Array methods
 
 native
-fun <T> Array<T>.join(delimiter: String = ","): String = noImpl
-
-native
-fun <T> Array<T>.sort(): Array<T> = noImpl
-
-native
 fun <T> Array<T>.push(vararg element: T): Unit = noImpl
 
 native
