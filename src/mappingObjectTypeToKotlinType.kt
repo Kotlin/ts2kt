@@ -19,7 +19,7 @@ package ts2kt
 import java.util.HashMap
 import ts2kt.utils.replaceAll
 import ts2kt.kotlin.ast.*
-import ts2kt.kotlin.ast
+import ts2kt.kotlin.ast.Annotation
 import typescript.*
 
 interface ObjectTypeToKotlinTypeMapper {
@@ -27,7 +27,7 @@ interface ObjectTypeToKotlinTypeMapper {
 }
 
 class ObjectTypeToKotlinTypeMapperImpl(
-        val defaultAnnotations: List<ast.Annotation>,
+        val defaultAnnotations: List<Annotation>,
         val declarations: MutableList<Member>
 ) : ObjectTypeToKotlinTypeMapper {
 
