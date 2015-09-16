@@ -16,17 +16,17 @@
 
 package node
 
-native
+@native
 class path private constructor() {
     fun basename(path: String, postfix: String): String = noImpl
 }
 
-native
+@native
 class process private constructor() {
     val argv: Array<String?> = noImpl
 }
 
-native
+@native
 class fs private constructor() {
     fun argv(index: Int): String = noImpl
     fun writeFileSync(path: String, text: String): Unit = noImpl

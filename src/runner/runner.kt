@@ -21,7 +21,7 @@ import java.util.*
 import node.*
 import ts2kt.utils.*
 
-native
+@native
 fun require(name: String): Any = noImpl
 
 val SRC_FILE_PATH_ARG_INDEX = 2
@@ -31,7 +31,7 @@ val PATH_TO_LIB_D_TS = "lib/lib.d.ts"
 
 val fs = require("fs") as node.fs
 
-private val reportedKinds = HashSet<Int>()
+internal val reportedKinds = HashSet<Int>()
 
 private val file2scriptSnapshotCache: MutableMap<String, dynamic> = hashMapOf()
 
@@ -88,7 +88,7 @@ fun translate(srcPath: String): String {
     val path = require("path") as node.path
     val srcName = path.basename(normalizeSrcPath, TYPESCRIPT_DEFINITION_FILE_EXT)
 
-    @inline fun isAnyMember(node: TS.MethodDeclaration): Boolean {
+    inline fun isAnyMember(node: TS.MethodDeclaration): Boolean {
         val params = node.parameters.arr
 
         return when (node.declarationName?.text) {
@@ -102,9 +102,9 @@ fun translate(srcPath: String): String {
         }
     }
 
-    @inline fun isOverrideHelper(
+    inline fun isOverrideHelper(
             node: TS.Declaration,
-            @inlineOptions(InlineOption.ONLY_LOCAL_RETURN) f: (TS.TypeChecker, TS.Type, String) -> Boolean
+            crossinline f: (TS.TypeChecker, TS.Type, String) -> Boolean
     ): Boolean {
         val parentNode = node.parent!! as TS.ClassDeclaration
 
@@ -198,7 +198,7 @@ fun translateToFile(srcPath: String, outPath: String) {
     fs.writeFileSync(outPath, translate(srcPath))
 }
 
-native
+@native
 object module {
     val parent: Any? = null
 }

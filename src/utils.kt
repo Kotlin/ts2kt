@@ -101,29 +101,29 @@ private fun <T: Any> MutableList<T>.mergeAllTo(mergeTo: Int, candidateIndexes: L
 
 // JS Array methods
 
-native
+@native
 fun <T> Array<T>.push(vararg element: T): Unit = noImpl
 
-native
+@native
 fun <T> Array<T>.shift(): T = noImpl
 
-native
+@native
 fun <T> Array<T>.splice(index: Int, removeCount: Int, vararg newItems: T): Array<T> = noImpl
 
 //
 
-native
+@native
 class RegExp(s: String, flags: String = "")
 
 // JS String methods
 
-native
+@native
 fun String.replace(r: RegExp, s: String): String = noImpl
 
 fun String.replaceAll(r: String, s: String): String = replace(RegExp(r, "g"), s)
 
 
-native
+@native
 fun eval<T>(code: String): T = noImpl
 
 // Assert

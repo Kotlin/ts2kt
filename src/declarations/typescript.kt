@@ -1,10 +1,10 @@
 package typescript
 
-native
+@native
 val ts: dynamic
 
-native
+@native
 fun TS.hasFlag<E : Enum<E>>(flags: Enum<E>, flag: E): Boolean = noImpl
 
-native
+@native
 fun TS.unescapeIdentifier(identifier: String): String = noImpl
