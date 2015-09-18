@@ -92,7 +92,7 @@ class TypeScriptToKotlinWalker(
     override val hasMembersOpenModifier = false
 
     // TODO fix PrimitiveHashMap for some special keys like 'hasOwnProperty'
-    @suppress("CAST_NEVER_SUCCEEDS")
+    @Suppress("CAST_NEVER_SUCCEEDS")
     val exportedByAssignment = HashMap<Any, Annotation>() as HashMap<String, Annotation>
 
     val typeMapper = typeMapper ?: ObjectTypeToKotlinTypeMapperImpl(defaultAnnotations, declarations)

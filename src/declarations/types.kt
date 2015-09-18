@@ -1,11 +1,11 @@
 package typescript
 
-native("ts")
+@native("ts")
 public object TS {
     public interface JsMap<T> {
-        nativeGetter
+        @nativeGetter
         public fun get(index: String): T
-        nativeSetter
+        @nativeSetter
         public fun set(index: String, value: T)
     }
     public interface TextRange {
@@ -305,7 +305,7 @@ public object TS {
     }
     public interface Declaration : Node {
         public var _declarationBrand: Any
-        native("name")
+        @native("name")
         public val declarationName: DeclarationName? // = noImpl
     }
     public interface ComputedPropertyName : Node {
@@ -351,7 +351,7 @@ public object TS {
     }
     public interface PropertyAssignment : ObjectLiteralElement {
         public var _propertyAssignmentBrand: Any
-        native("name")
+        @native("name")
         override val declarationName: DeclarationName
         public var questionToken: Node? // = noImpl
         public var initializer: Expression
@@ -363,7 +363,7 @@ public object TS {
         public var _functionLikeDeclarationBrand: Any
         public var asteriskToken: Node? // = noImpl
         public var questionToken: Node? // = noImpl
-        native("body")
+        @native("body")
         public val myBody: Block_or_Expression? // = noImpl
     }
     public interface FunctionDeclaration : FunctionLikeDeclaration, Statement {
@@ -464,7 +464,7 @@ public object TS {
     }
     public interface FunctionExpression : PrimaryExpression, FunctionLikeDeclaration {
         public var name: Identifier? // = noImpl
-        native("body")
+        @native("body")
         override var myBody: Block_or_Expression
     }
     public interface LiteralExpression : PrimaryExpression {
@@ -621,7 +621,7 @@ public object TS {
         public var type: TypeNode
     }
     public interface EnumMember : Declaration {
-        native("name")
+        @native("name")
         override var declarationName: DeclarationName
         public var initializer: Expression? // = noImpl
     }
