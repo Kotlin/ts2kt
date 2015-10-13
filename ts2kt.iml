@@ -9,6 +9,16 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="KotlinJavaScript" level="project" />
+    <orderEntry type="module-library">
+      <library name="&lt;Kotlin JavaScript library&gt;">
+        <CLASSES>
+          <root url="kotlin-js-meta://$KOTLIN_BUNDLED$/lib/kotlin-jslib.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$KOTLIN_BUNDLED$/lib/kotlin-jslib-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
   </component>
 </module>
-
