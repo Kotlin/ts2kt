@@ -6,9 +6,9 @@ public class FileSystemBasedLSH(file2scriptSnapshot: Map<String, dynamic>, var c
     var filesCache = arrayOf<String>()
 
     var file2scriptSnapshot = file2scriptSnapshot
-        get() = $file2scriptSnapshot
+        get() = field
         set(value) {
-            $file2scriptSnapshot = value
+            field = value
             filesCache = value.keySet().toTypedArray()
         }
 

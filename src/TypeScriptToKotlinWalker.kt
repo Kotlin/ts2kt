@@ -16,15 +16,15 @@
 
 package ts2kt
 
-import typescript.*
-import ts2kt.utils.*
 import ts2kt.kotlin.ast.*
 import ts2kt.kotlin.ast.Annotation
 import ts2kt.kotlin.ast.Function
+import ts2kt.utils.assert
+import ts2kt.utils.join
+import ts2kt.utils.merge
+import typescript.TS
+import java.util.*
 import kotlin.properties.Delegates
-import java.util.ArrayList
-import java.util.HashSet
-import java.util.HashMap
 
 private val NATIVE_ANNOTATION = Annotation(NATIVE)
 private val NATIVE_GETTER_ANNOTATION = Annotation("nativeGetter")
@@ -629,7 +629,7 @@ class TsInterfaceToKtExtensions(
         return extendsTypeParams
     }
 
-    fun List<TypeParam>?.merge(another: List<TypeParam>?): List<TypeParam>? = when {
+    infix fun List<TypeParam>?.merge(another: List<TypeParam>?): List<TypeParam>? = when {
                 this == null -> another
                 another == null -> this
                 else -> this + another

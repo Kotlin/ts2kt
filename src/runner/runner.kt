@@ -16,10 +16,12 @@
 
 package ts2kt
 
-import typescript.*
+import ts2kt.utils.push
+import ts2kt.utils.shift
+import typescript.TS
+import typescript.ts
 import java.util.*
-import node.*
-import ts2kt.utils.*
+import kotlin.js.native
 
 @native
 fun require(name: String): Any = noImpl
@@ -66,7 +68,8 @@ fun translate(srcPath: String): String {
 
         var result = ts.preProcessFile(file2scriptSnapshot[curFile].getText())
 
-        for (referencedFile in result.referencedFiles: Array<dynamic>) {
+        val referencedFiles: Array<dynamic> = result.referencedFiles
+        for (referencedFile in referencedFiles) {
             val referencedFilePath = ts.normalizePath(curDir + referencedFile.filename)
 
             if (referencedFilePath in file2scriptSnapshot) continue
@@ -162,7 +165,7 @@ fun translate(srcPath: String): String {
                     else -> unsupportedNode(it)
                 }
 
-                (typechecker: dynamic).isSignatureAssignableTo(nodeSignature, signature)
+                (typechecker.asDynamic()).isSignatureAssignableTo(nodeSignature, signature)
             } ?: false
         }
     }

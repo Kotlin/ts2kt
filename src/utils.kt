@@ -16,8 +16,7 @@
 
 package ts2kt.utils
 
-import java.util.ArrayList
-import java.util.HashSet
+import java.util.*
 
 fun <T> List<T>.join(
         delimiter: String = ", ",
@@ -124,7 +123,7 @@ fun String.replaceAll(r: String, s: String): String = replace(RegExp(r, "g"), s)
 
 
 @native
-fun eval<T>(code: String): T = noImpl
+fun <T> eval(code: String): T = noImpl
 
 // Assert
 

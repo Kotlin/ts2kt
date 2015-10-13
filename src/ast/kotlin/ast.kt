@@ -234,9 +234,10 @@ class Variable(
 ) : Member, Node() {
 
     // TODO is it HACK???
-    override var name = name
-        get() = (if (extendsType == null) "" else extendsType.stringify() + ".") + $name
-        set(value) { $name = value }
+    var _name = name
+    override var name: String
+        get() = (if (extendsType == null) "" else extendsType.stringify() + ".") + _name
+        set(value) { _name = value }
 
     override fun stringify(): String =
             annotations.stringify() +
@@ -244,7 +245,7 @@ class Variable(
             (if (isVar) VAR else VAL) + " " +
             (typeParams?.join(", ", startWithIfNotEmpty = "<", endWithIfNotEmpty = "> ") ?: "") +
             (if (extendsType == null) "" else extendsType.toString() + "." ) +
-            $name.escapeIfNeed() +
+            _name.escapeIfNeed() +
             type.stringify(printUnitType = !needsNoImpl) +
             if (needsNoImpl) EQ_NO_IMPL else ""
 }
