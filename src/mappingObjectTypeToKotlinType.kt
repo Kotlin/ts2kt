@@ -16,11 +16,11 @@
 
 package ts2kt
 
-import java.util.HashMap
-import ts2kt.utils.replaceAll
-import ts2kt.kotlin.ast.*
 import ts2kt.kotlin.ast.Annotation
-import typescript.*
+import ts2kt.kotlin.ast.Member
+import ts2kt.utils.replaceAll
+import typescript.TS
+import java.util.*
 
 interface ObjectTypeToKotlinTypeMapper {
     fun getKotlinTypeNameForObjectType(objectType: TS.TypeLiteralNode): String
@@ -69,5 +69,5 @@ class ObjectTypeToKotlinTypeMapperImpl(
     }
 
     fun <T> List<T>.toStringKey(): String =
-            map { it.toString().replaceAll("(\\(|,\\s*)\\w+: ", "$1") }.sorted().join(", ")
+            map { it.toString().replaceAll("(\\(|,\\s*)\\w+: ", "$1") }.sorted().joinToString(", ")
 }

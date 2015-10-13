@@ -16,8 +16,10 @@
 
 package ts2kt.kotlin.ast
 
-import ts2kt.utils.*
-import ts2kt.*
+import ts2kt.UNIT
+import ts2kt.escapeIfNeed
+import ts2kt.utils.assert
+import ts2kt.utils.join
 
 val MODULE = "module"
 val NATIVE = "native"
@@ -54,9 +56,9 @@ private val takeIfNotAnnotatedAsFake = { node: Annotated ->
 
 fun getIndent(n: Int): String {
     assert(n >= 0, "The indent index should be >= 0")
-    if (n < indents.size()) return indents[n]
+    if (n < indents.size) return indents[n]
 
-    for (i in indents.size()..n) {
+    for (i in indents.size..n) {
         indents.add(indents[i - 1] + INDENT)
     }
 
@@ -93,7 +95,7 @@ abstract class Node(val needsFixIndent: Boolean = false) {
             }
 
             result
-        }.join("\n")
+        }.joinToString("\n")
     }
 }
 

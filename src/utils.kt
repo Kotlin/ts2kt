@@ -51,7 +51,7 @@ fun <T> List<T>.join(
 
 fun <T: Any> MutableList<T>.merge(acceptor: (T) -> Boolean, comparator: (T, T) -> Boolean, merger: (T, T) -> T) {
     var i = 0
-    while (i < size()) {
+    while (i < size) {
         val current = this[i]
         if (!acceptor(current)) {
             i++
@@ -60,7 +60,7 @@ fun <T: Any> MutableList<T>.merge(acceptor: (T) -> Boolean, comparator: (T, T) -
 
         val candidates = ArrayList<Int>()
 
-        val size = size()
+        val size = size
         var j =  i + 1
         while (j < size) {
             val e = this[j]
@@ -90,9 +90,9 @@ private fun <T: Any> MutableList<T>.mergeAllTo(mergeTo: Int, candidateIndexes: L
 
     this[mergeTo] = merged
 
-    var i = candidateIndexes.size() - 1
+    var i = candidateIndexes.size - 1
     while(i >= 0) {
-        this.remove(candidateIndexes[i])
+        this.removeAt(candidateIndexes[i])
         i--
     }
 

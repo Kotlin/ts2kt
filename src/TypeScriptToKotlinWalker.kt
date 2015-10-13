@@ -24,7 +24,6 @@ import ts2kt.utils.join
 import ts2kt.utils.merge
 import typescript.TS
 import java.util.*
-import kotlin.properties.Delegates
 
 private val NATIVE_ANNOTATION = Annotation(NATIVE)
 private val NATIVE_GETTER_ANNOTATION = Annotation("nativeGetter")
@@ -103,7 +102,7 @@ class TypeScriptToKotlinWalker(
 
         var nestedModules = module
 
-        var i = qualifier.size()
+        var i = qualifier.size
         while (i --> 0) {
             nestedModules = Classifier(ClassKind.OBJECT, qualifier[i], listOf(), listOf(), listOf(), listOf(nestedModules), annotations, hasOpenModifier = false)
         }
@@ -239,7 +238,7 @@ class TypeScriptToKotlinWalker(
             }
             else if (areAllPartOfThisModule()) {
                 // TODO: is it right?
-                if (tr.declarations.size() == 1 && tr.declarations[0] is Variable) {
+                if (tr.declarations.size == 1 && tr.declarations[0] is Variable) {
                     val d = tr.declarations[0]
 
                     var s: String = d.name
@@ -291,7 +290,7 @@ class TypeScriptToKotlinWalker(
                 // TODO: fix after KT-5257 will be fixed
                 var needContinue = false
                 // TODO: fix this HACK
-                val t = ArrayList<Annotation>(declaration.annotations.size() + 1)
+                val t = ArrayList<Annotation>(declaration.annotations.size + 1)
                 for (a in declaration.annotations) {
                     if (a == FAKE_ANNOTATION) continue
 
@@ -362,6 +361,7 @@ class TypeScriptToKotlinWalker(
                 if (b.kind === ClassKind.CLASS || b.kind === ClassKind.TRAIT) return mergeClassAndObject(b, a)
                 if (a.hasModuleAnnotation() && b.isModule()) return mergeClassifierMembers(a, b)
             }
+            else -> {} // TODO is it bug?
         }
 
         throw Exception("Merging ${a.kind} and ${b.kind} unsupported yet, a: $a, b: $b")
@@ -608,14 +608,14 @@ class TsInterfaceToKtExtensions(
         isOverrideProperty: (TS.PropertyDeclaration) -> Boolean
 ) : TsInterfaceToKt(typeMapper, annotations, isOverride, isOverrideProperty){
 
-    val cachedExtendsType by Delegates.lazy { getExtendsType(typeParams) }
+    val cachedExtendsType by lazy { getExtendsType(typeParams) }
 
     fun getExtendsType(typeParams: List<TypeParam>?) = name!! + (typeParams?.join(startWithIfNotEmpty = "<", endWithIfNotEmpty = ">") ?: "")
 
     fun List<TypeParam>?.fixIfClashWith(another: List<TypeParam>?): List<TypeParam>? {
         if (this == null || another == null) return this
 
-        assert(!(this identityEquals another), "expected this !== another, this = $this, another = $another")
+        assert(!(this === another), "expected this !== another, this = $this, another = $another")
 
         val extendsTypeParams = ArrayList<TypeParam>()
         for (e in this) {
@@ -650,7 +650,7 @@ class TsInterfaceToKtExtensions(
 
     override fun addVariable(name: String, type: String, extendsType: String?, typeParams: List<TypeParam>?, isVar: Boolean, isNullable: Boolean, isLambda: Boolean, needsNoImpl: Boolean, additionalAnnotations: List<Annotation>, isOverride: Boolean) {
         val typeParamsWithoutClashes = this.typeParams.fixIfClashWith(typeParams)
-        val actualExtendsType = if (typeParamsWithoutClashes identityEquals this.typeParams) cachedExtendsType else getExtendsType(typeParamsWithoutClashes)
+        val actualExtendsType = if (typeParamsWithoutClashes === this.typeParams) cachedExtendsType else getExtendsType(typeParamsWithoutClashes)
         val annotations = additionalAnnotations.withNativeAnnotation()
 
         super.addVariable(name, type, actualExtendsType, typeParamsWithoutClashes merge typeParams, isVar, isNullable, isLambda, true, annotations, isOverride)
@@ -658,7 +658,7 @@ class TsInterfaceToKtExtensions(
 
     override fun addFunction(name: String, callSignature: CallSignature, extendsType: String?, needsNoImpl: Boolean, additionalAnnotations: List<Annotation>, isOverride: Boolean) {
         val typeParamsWithoutClashes = this.typeParams.fixIfClashWith(callSignature.typeParams)
-        val actualExtendsType = if (typeParamsWithoutClashes identityEquals this.typeParams) cachedExtendsType else getExtendsType(typeParamsWithoutClashes)
+        val actualExtendsType = if (typeParamsWithoutClashes === this.typeParams) cachedExtendsType else getExtendsType(typeParamsWithoutClashes)
         val annotations = additionalAnnotations.withNativeAnnotation()
 
         super.addFunction(name, CallSignature(callSignature.params, typeParamsWithoutClashes merge callSignature.typeParams, callSignature.returnType), actualExtendsType, true, annotations, isOverride)

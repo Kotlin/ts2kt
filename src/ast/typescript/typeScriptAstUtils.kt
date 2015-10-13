@@ -16,13 +16,16 @@
 
 package ts2kt
 
-import typescript.*
-import java.util.ArrayList
+import ts2kt.kotlin.ast.CallSignature
 import ts2kt.kotlin.ast.FunParam
 import ts2kt.kotlin.ast.TypeAnnotation
 import ts2kt.kotlin.ast.TypeParam
-import ts2kt.kotlin.ast.CallSignature
-import ts2kt.utils.*
+import ts2kt.utils.assert
+import ts2kt.utils.join
+import typescript.TS
+import typescript.hasFlag
+import typescript.ts
+import typescript.unescapeIdentifier
 
 val ANY = "Any"
 val NUMBER = "Number"
@@ -173,12 +176,12 @@ fun TS.TypeReferenceNode.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapp
     val typeArgs = typeArguments
     if (typeArgs == null) return name
 
-    val strTypeArgs = typeArgs.arr.map { it.toKotlinTypeName(typeMapper) }.join(",")
+    val strTypeArgs = typeArgs.arr.map { it.toKotlinTypeName(typeMapper) }.joinToString(",")
     return "$name<$strTypeArgs>"
 }
 
 fun TS.UnionTypeNode.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper): String {
-    val commentWithExpectedType = types.arr.map { it.toKotlinTypeName(typeMapper) }.join(" | ", prefix = " /* ", postfix = " */")
+    val commentWithExpectedType = types.arr.map { it.toKotlinTypeName(typeMapper) }.joinToString(" | ", prefix = " /* ", postfix = " */")
     // TODO should it be `Any`?
     return DYNAMIC + commentWithExpectedType
 }
@@ -226,7 +229,7 @@ fun visitNode(visitor: Visitor, node: dynamic): Unit {
 }
 
 val <T> TS.NodeArray<T>.arr: Array<T>
-    get() = this: dynamic
+    get() = this.asDynamic()
 
 val TS.SyntaxKind.str: String
     get() = ts.SyntaxKind[this]

@@ -1184,7 +1184,7 @@ public object TS {
         ideographicSpace, // = 0x3000
         mathematicalSpace, // = 0x205F
         ogham, // = 0x1680
-        _, // = 0x5F
+        `_`, // = 0x5F  //TODO drop the first backtick slow down IDE
         `$`, // = 0x24
         _0, // = 0x30
         _1, // = 0x31
