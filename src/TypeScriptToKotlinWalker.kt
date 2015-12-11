@@ -636,8 +636,7 @@ class TsInterfaceToKtExtensions(
             }
 
     fun List<Annotation>.withNativeAnnotation() = when {
-                defaultAnnotations.any(IS_NATIVE_ANNOTATION),
-                this.any(IS_NATIVE_ANNOTATION) -> {
+                defaultAnnotations.any(IS_NATIVE_ANNOTATION) || this.any(IS_NATIVE_ANNOTATION) -> {
                     this
                 }
                 else -> {
