@@ -96,10 +96,10 @@ fun translate(srcPath: String): String {
 
         return when (node.declarationName?.text) {
             "equals" ->
-                params.size() == 1 && params[0].type?.let { it.kind === TS.SyntaxKind.AnyKeyword } ?: true
+                params.size == 1 && params[0].type?.let { it.kind === TS.SyntaxKind.AnyKeyword } ?: true
             // TODO check return type ???
             "hashCode", "toString" ->
-                params.size() == 0
+                params.size == 0
             else ->
                 false
         }

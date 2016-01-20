@@ -84,7 +84,7 @@ class TypeScriptToKotlinWalker(
 
     override val result: KotlinFile
         get()  {
-            assert(exportedByAssignment.isEmpty(), "exportedByAssignment should be empty, but it contains: ${exportedByAssignment.keySet().toString()}")
+            assert(exportedByAssignment.isEmpty(), "exportedByAssignment should be empty, but it contains: ${exportedByAssignment.keys.toString()}")
             return KotlinFile(if (packageFqName != null) Package(packageFqName) else null, declarations)
         }
 
