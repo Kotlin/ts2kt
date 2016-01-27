@@ -9,7 +9,7 @@ public class FileSystemBasedLSH(file2scriptSnapshot: Map<String, dynamic>, var c
         get() = field
         set(value) {
             field = value
-            filesCache = value.keySet().toTypedArray()
+            filesCache = value.keys.toTypedArray()
         }
 
     fun getCompilationSettings() = ts.getDefaultCompilerOptions()

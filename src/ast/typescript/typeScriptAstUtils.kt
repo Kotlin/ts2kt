@@ -67,7 +67,7 @@ fun TS.ParameterDeclaration.toKotlinParam(typeMapper: ObjectTypeToKotlinTypeMapp
             originalNodeKind === TS.SyntaxKind.TypeReference &&
             (originalNodeType as TS.TypeReferenceNode).typeName.text == "Array" -> {
                 val typeArguments = (originalNodeType as TS.TypeReferenceNode).typeArguments!!.arr
-                assert(typeArguments.size() == 1, "Array should have one generic paramater, but have ${typeArguments.size()}.")
+                assert(typeArguments.size == 1, "Array should have one generic paramater, but have ${typeArguments.size}.")
                 nodeType = typeArguments[0] as TS.TypeNode_or_StringLiteralExpression
             }
             else -> {
