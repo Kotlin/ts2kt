@@ -1,8 +1,8 @@
 package simple
 
 enum class SomeEnum {
-    Foo
-    Bar
-    `$`
+    Foo,
+    Bar,
+    `$`,
     `BAZ$`
 }

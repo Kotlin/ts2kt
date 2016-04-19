@@ -16,7 +16,7 @@ interface __B {
     fun __express(filename: String, options: Any, callback: Function): Any
 }
 enum class __E {
-    __A
+    __A,
     __B
 }
 @module

@@ -165,7 +165,7 @@ class Classifier(
             (if (paramsOfConstructors.isEmpty()) "" else paramsOfConstructors[0].join(", ", startWithIfNotEmpty = "(", endWithIfNotEmpty = ")")) +
             parents.join(", ", startWithIfNotEmpty = " : ") +
             (if (bracesRequired) " {\n" else "") +
-            members.join("\n", filter = takeIfNotAnnotatedAsFake) +
+            members.join((if (kind == ClassKind.ENUM) "," else "")+ "\n", filter = takeIfNotAnnotatedAsFake) +
             (if (bracesRequired) "\n}" else "")
 
     val bracesRequired = kind.bracesAlwaysRequired || !members.isEmpty()
@@ -253,7 +253,7 @@ class Variable(
 
 class EnumEntry(override var name: String, val value: String? = null) : Member, Node() {
     override var annotations = listOf<Annotation>()
-    override fun stringify(): String = escapedName + if (value == null) "" else " // = $value"
+    override fun stringify(): String = escapedName + if (value == null) "" else " /* = $value */"
 }
 
 class Type(override var name: String, val needParens: Boolean = false) : Named, Node() {
