@@ -1,16 +1,16 @@
 package nestedModules
 
-module
-public object Foo {
-    module
-    public object Bar {
-        public trait A {
-            public fun baz()
+@module
+object Foo {
+    @module
+    object Bar {
+        interface A {
+            fun baz()
         }
-        public open class B {
-            public open fun boo(): Unit = noImpl
+        open class B {
+            open fun boo(): Unit = noImpl
         }
-        public var c: Number = noImpl
-        public fun d(a: Boolean, b: Any, c: SomeType): Unit = noImpl
+        var c: Number = noImpl
+        fun d(a: Boolean, b: Any, c: SomeType): Unit = noImpl
     }
 }

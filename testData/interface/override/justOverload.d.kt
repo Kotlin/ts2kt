@@ -1,10 +1,10 @@
 package justOverload
 
-native
-public trait Foo {
-    public fun bar(a: Number)
+@native
+interface Foo {
+    fun bar(a: Number)
 }
-native
-public trait Boo : Foo {
-    public fun bar(a: String)
+@native
+interface Boo : Foo {
+    fun bar(a: String)
 }

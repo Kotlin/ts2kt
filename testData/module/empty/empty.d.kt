@@ -1,6 +1,6 @@
 package empty
 
-module
-public object D3 {
+@module
+object D3 {
 
 }

@@ -1,11 +1,11 @@
 package callSignature
 
-native
-public trait Foo {
-    nativeInvoke
-    public fun invoke()
-    nativeInvoke
-    public fun invoke(n: Number): Boolean
-    nativeInvoke
-    public fun invoke(foo: Foo, s: String): Bar
+@native
+interface Foo {
+    @nativeInvoke
+    fun invoke()
+    @nativeInvoke
+    fun invoke(n: Number): Boolean
+    @nativeInvoke
+    fun invoke(foo: Foo, s: String): Bar
 }

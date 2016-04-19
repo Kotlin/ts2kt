@@ -1,16 +1,16 @@
 package withInterface
 
-module
-public object LazyJS {
-    public trait LazyStatic {
-        public fun foo(a: Number)
+@module
+object LazyJS {
+    interface LazyStatic {
+        fun foo(a: Number)
     }
-    public var a: Any = noImpl
+    var a: Any = noImpl
 }
-native
-module("lazy.js")
-public var Lazy: LazyJS.LazyStatic = noImpl
-module
-public object lazy.js {
+@native
+@module("lazy.js")
+var Lazy: LazyJS.LazyStatic = noImpl
+@module
+object lazy.js {
 
 }

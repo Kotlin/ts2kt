@@ -1,20 +1,20 @@
 package interface
 
-module
-public object AceAjax {
-    public trait KeyBinding {
-        public fun setDefaultHandler(kb: Any)
-        public fun setKeyboardHandler(kb: Any)
-        public fun addKeyboardHandler(kb: Any, pos: Any)
-        public fun removeKeyboardHandler(kb: Any): Boolean
-        public fun getKeyboardHandler(): Any
-        public fun onCommandKey(e: Any, hashId: Any, keyCode: Any)
-        public fun onTextInput(text: Any)
-        public class object : Foo by noImpl: Foo {
+@module
+object AceAjax {
+    interface KeyBinding {
+        fun setDefaultHandler(kb: Any)
+        fun setKeyboardHandler(kb: Any)
+        fun addKeyboardHandler(kb: Any, pos: Any)
+        fun removeKeyboardHandler(kb: Any): Boolean
+        fun getKeyboardHandler(): Any
+        fun onCommandKey(e: Any, hashId: Any, keyCode: Any)
+        fun onTextInput(text: Any)
+        companion object : Foo by noImpl: Foo {
 
         }
     }
-    public trait Foo {
-        public fun foo(editor: Editor): Boolean
+    interface Foo {
+        fun foo(editor: Editor): Boolean
     }
 }

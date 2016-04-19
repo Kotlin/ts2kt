@@ -1,20 +1,20 @@
 package anyMembers
 
-native
-public trait ExpectedOverrides {
+@native
+interface ExpectedOverrides {
     override fun equals(a: Any)
     override fun hashCode(): Number
     override fun toString(): String
 }
-native
-public trait ExpectedOverrides2 {
+@native
+interface ExpectedOverrides2 {
     override fun equals(a: Any)
 }
-native
-public trait ExpectedNoOverrides {
-    public fun equals()
-    public fun equals(a: Number)
-    public fun equals(a: String)
-    public fun hashCode(a: String): Number
-    public fun toString(a: Number = 1)
+@native
+interface ExpectedNoOverrides {
+    fun equals()
+    fun equals(a: Number)
+    fun equals(a: String)
+    fun hashCode(a: String): Number
+    fun toString(a: Number = 1)
 }

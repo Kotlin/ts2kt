@@ -1,34 +1,34 @@
 package tscEscaping
 
-module
-public object atpl {
-    public var __foo: Any = noImpl
-    public fun __express(filename: String, options: Any, callback: Function): Any = noImpl
+@module
+object atpl {
+    var __foo: Any = noImpl
+    fun __express(filename: String, options: Any, callback: Function): Any = noImpl
 }
-native
-public open class __A {
-    public open var __foo: Number = noImpl
-    public open fun __express(filename: String, options: Any, callback: Function): Any = noImpl
+@native
+open class __A {
+    open var __foo: Number = noImpl
+    open fun __express(filename: String, options: Any, callback: Function): Any = noImpl
 }
-native
-public trait __B {
-    public var __foo: Number
-    public fun __express(filename: String, options: Any, callback: Function): Any
+@native
+interface __B {
+    var __foo: Number
+    fun __express(filename: String, options: Any, callback: Function): Any
 }
-public enum class __E {
+enum class __E {
     __A
     __B
 }
-module
-public object __M {
-    public var __foo: Number = noImpl
-    public fun __express(filename: String, options: Any, callback: Function): Any = noImpl
-    module
-    public object __N {
-        public var __foo: Number = noImpl
-        public fun __express(filename: String, options: Any, callback: Function): Any = noImpl
-        public open class __C
+@module
+object __M {
+    var __foo: Number = noImpl
+    fun __express(filename: String, options: Any, callback: Function): Any = noImpl
+    @module
+    object __N {
+        var __foo: Number = noImpl
+        fun __express(filename: String, options: Any, callback: Function): Any = noImpl
+        open class __C
     }
 }
-native
-public fun foo<__T>(__a: __T, _b: __M.__N.__C): Unit = noImpl
+@native
+fun foo<__T>(__a: __T, _b: __M.__N.__C): Unit = noImpl

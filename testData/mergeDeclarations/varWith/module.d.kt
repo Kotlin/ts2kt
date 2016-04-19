@@ -1,27 +1,27 @@
 package module
 
-native
-module("lodash")
-public trait _ {
-    public trait LoDashStatic {
-        nativeInvoke
-        public fun invoke(value: Number): LoDashWrapper<Number>
-        public var VERSION: String
-        public var support: Support
+@native
+@module("lodash")
+interface _ {
+    interface LoDashStatic {
+        @nativeInvoke
+        fun invoke(value: Number): LoDashWrapper<Number>
+        var VERSION: String
+        var support: Support
     }
-    public trait Support {
-        public var argsClass: Boolean
-        public var argsObject: Boolean
+    interface Support {
+        var argsClass: Boolean
+        var argsObject: Boolean
     }
-    public trait LoDashArrayWrapper<T> {
-        public fun difference(vararg others: Array<T>): LoDashArrayWrapper<T>
-        public fun difference(vararg others: List<T>): LoDashArrayWrapper<T>
+    interface LoDashArrayWrapper<T> {
+        fun difference(vararg others: Array<T>): LoDashArrayWrapper<T>
+        fun difference(vararg others: List<T>): LoDashArrayWrapper<T>
     }
-    public class object : _.LoDashStatic by noImpl: _.LoDashStatic {
+    companion object : _.LoDashStatic by noImpl: _.LoDashStatic {
 
     }
 }
-module
-public object lodash {
+@module
+object lodash {
 
 }

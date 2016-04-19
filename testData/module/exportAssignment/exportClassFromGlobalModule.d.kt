@@ -1,7 +1,7 @@
 package exportClassFromGlobalModule
 
-native
-module
-public open class SampleView : _atom.ScrollView() {
-    public open var foo: String = noImpl
+@native
+@module
+open class SampleView : _atom.ScrollView() {
+    open var foo: String = noImpl
 }

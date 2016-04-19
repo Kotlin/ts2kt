@@ -1,13 +1,13 @@
 package exportedByDefault
 
-module
-public object Boo {
-    public fun foo(): String = noImpl
-    public var bar: Number = noImpl
-    public trait IBaz {
-        public fun doSomething()
+@module
+object Boo {
+    fun foo(): String = noImpl
+    var bar: Number = noImpl
+    interface IBaz {
+        fun doSomething()
     }
-    public open class Klass {
-        public open fun method(s: Any): String = noImpl
+    open class Klass {
+        open fun method(s: Any): String = noImpl
     }
 }

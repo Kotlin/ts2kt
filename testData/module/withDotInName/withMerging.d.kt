@@ -1,23 +1,23 @@
 package withMerging
 
-module
-public object Foo {
-    module
-    public object Bar {
-        module
-        public object Baz {
-            public var variableFooBarBaz: Number = noImpl
-            public fun funcFooBarBaz(): Unit = noImpl
-            public open class AFooBarBaz
-            public var anotherVariableFooBarBaz: Number = noImpl
-            public fun anotherFuncFooBarBaz(): Unit = noImpl
-            public open class AnotherAFooBarBaz
+@module
+object Foo {
+    @module
+    object Bar {
+        @module
+        object Baz {
+            var variableFooBarBaz: Number = noImpl
+            fun funcFooBarBaz(): Unit = noImpl
+            open class AFooBarBaz
+            var anotherVariableFooBarBaz: Number = noImpl
+            fun anotherFuncFooBarBaz(): Unit = noImpl
+            open class AnotherAFooBarBaz
         }
-        public var variableFooBar: Number = noImpl
-        public fun funcFooBar(): Unit = noImpl
-        public open class AFooBar
+        var variableFooBar: Number = noImpl
+        fun funcFooBar(): Unit = noImpl
+        open class AFooBar
     }
-    public var variableFoo: Number = noImpl
-    public fun funcFoo(): Unit = noImpl
-    public open class AFoo
+    var variableFoo: Number = noImpl
+    fun funcFoo(): Unit = noImpl
+    open class AFoo
 }

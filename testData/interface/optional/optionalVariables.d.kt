@@ -1,9 +1,9 @@
 package optionalVariables
 
-native
-public trait Foo {
-    public var varAsAny: Any? = noImpl
-    public var varAsNumber: Number? = noImpl
-    public var varAsBoolean: Boolean? = noImpl
-    public var varAsString: String? = noImpl
+@native
+interface Foo {
+    var varAsAny: Any? = noImpl
+    var varAsNumber: Number? = noImpl
+    var varAsBoolean: Boolean? = noImpl
+    var varAsString: String? = noImpl
 }

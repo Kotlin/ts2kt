@@ -1,15 +1,15 @@
 package simple
 
-native
-public trait Foo {
-    public fun bar()
-    public fun bar(a: Number)
-    public var baz: Any
+@native
+interface Foo {
+    fun bar()
+    fun bar(a: Number)
+    var baz: Any
 }
-native
-public trait Boo : Foo {
+@native
+interface Boo : Foo {
     override fun bar()
     override fun bar(a: Number)
-    public fun bar(a: String)
+    fun bar(a: String)
     override var baz: Number
 }

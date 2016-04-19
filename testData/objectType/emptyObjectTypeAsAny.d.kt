@@ -1,8 +1,8 @@
 package emptyObjectTypeAsAny
 
-native
-public var foo: Any = noImpl
-native
-public trait Foo {
-    public var boo: Any
+@native
+var foo: Any = noImpl
+@native
+interface Foo {
+    var boo: Any
 }

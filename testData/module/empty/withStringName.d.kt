@@ -1,6 +1,6 @@
 package withStringName
 
-module
-public object jquery {
+@module
+object jquery {
 
 }

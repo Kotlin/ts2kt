@@ -30,7 +30,6 @@ val DEFAULT_FAKE_ANNOTATION = listOf(FAKE_ANNOTATION)
 
 val NO_IMPL = "noImpl"
 private val EQ_NO_IMPL = " = $NO_IMPL"
-private val PUBLIC = "public"
 private val OPEN = "open"
 private val OVERRIDE = "override"
 private val VAR = "var"
@@ -135,15 +134,15 @@ class Argument(val name: String? = null, val value: Any /* TODO ??? */) {
 }
 
 class Annotation(override var name: String, val parameters: List<Argument> = listOf()) : Named, Node() {
-    override fun stringify(): String = "$escapedName" + if (parameters.isEmpty()) "" else "(${parameters.join()})"
+    override fun stringify(): String = "@$escapedName" + if (parameters.isEmpty()) "" else "(${parameters.join()})"
 }
 
 enum class ClassKind(val keyword: String, val bracesAlwaysRequired: Boolean = false) {
     CLASS("class"),
-    TRAIT("trait"),
+    INTERFACE("interface"),
     ENUM("enum class"),
     OBJECT("object", bracesAlwaysRequired = true),
-    CLASS_OBJECT("class object", bracesAlwaysRequired = true)
+    COMPANION_OBJECT("companion object", bracesAlwaysRequired = true)
 }
 
 class Classifier(
@@ -158,7 +157,6 @@ class Classifier(
 ) : Member, Node(needsFixIndent = true) {
     override fun stringify(): String =
             annotations.stringify() +
-            PUBLIC + " " +
             (if (hasOpenModifier) OPEN + " " else "") +
             kind.keyword +
             (if (name.isEmpty()) "" else " ") +
@@ -182,7 +180,7 @@ class FunParam(
     override fun stringify(): String = stringify(printDefaultValue = true)
 
     fun stringify(printDefaultValue: Boolean): String =
-            (if (isVar) "$PUBLIC $OPEN $VAR " else "") +
+            (if (isVar) "$OPEN $VAR " else "") +
             (if (type.isVararg) VARARG + " " else "") + escapedName + type +
             if (defaultValue == null || !printDefaultValue) "" else " = $defaultValue"
 }
@@ -214,8 +212,8 @@ class Function(
 ) : Member, Node() {
     override fun stringify(): String =
             annotations.stringify() +
-            (if (isOverride) OVERRIDE else PUBLIC + (if (hasOpenModifier) " " + OPEN else "")) +
-            " $FUN " +
+            (if (isOverride) OVERRIDE + " " else if (hasOpenModifier) OPEN + " " else "") +
+            "$FUN " +
             // TODO refactor this
             (if (extendsType == null) "" else callSignature.stringifyTypeParams(withSpaceAfter = true) + extendsType.toString() + "." ) +
             escapedName +
@@ -243,7 +241,8 @@ class Variable(
 
     override fun stringify(): String =
             annotations.stringify() +
-            (if (isOverride) OVERRIDE else PUBLIC + (if (hasOpenModifier) " " + OPEN else "")) + " " +
+            // TODO extract common logic between Variable and Function
+            (if (isOverride) OVERRIDE + " " else if (hasOpenModifier) OPEN + " " else "") +
             (if (isVar) VAR else VAL) + " " +
             (typeParams?.join(", ", startWithIfNotEmpty = "<", endWithIfNotEmpty = "> ") ?: "") +
             (if (extendsType == null) "" else extendsType.toString() + "." ) +

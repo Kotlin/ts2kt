@@ -1,14 +1,14 @@
 package variables
 
-native
-public var varWithoutTypeAnnotation: Any = noImpl
-native
-public var varAsAny: Any = noImpl
-native
-public var varAsNumber: Number = noImpl
-native
-public var varAsBoolean: Boolean = noImpl
-native
-public var varAsString: String = noImpl
-native
-public var varAsFoo: Foo = noImpl
+@native
+var varWithoutTypeAnnotation: Any = noImpl
+@native
+var varAsAny: Any = noImpl
+@native
+var varAsNumber: Number = noImpl
+@native
+var varAsBoolean: Boolean = noImpl
+@native
+var varAsString: String = noImpl
+@native
+var varAsFoo: Foo = noImpl

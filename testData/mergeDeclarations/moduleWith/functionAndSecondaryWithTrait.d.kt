@@ -1,15 +1,15 @@
 package functionAndSecondaryWithTrait
 
-native
-module("fibers")
-public trait Fiber {
-    public var reset: () -> Any
-    public var run: (param: Any? = null) -> Any
-    public var throwInto: (ex: Any) -> Any
-    public class object {
-        public var current: Fiber = noImpl
-        public fun yield(value: Any? = null): Any = noImpl
+@native
+@module("fibers")
+interface Fiber {
+    var reset: () -> Any
+    var run: (param: Any? = null) -> Any
+    var throwInto: (ex: Any) -> Any
+    companion object {
+        var current: Fiber = noImpl
+        fun yield(value: Any? = null): Any = noImpl
     }
 }
-module("fibers")
-public fun Fiber(fn: Function): Fiber = noImpl
+@module("fibers")
+fun Fiber(fn: Function): Fiber = noImpl

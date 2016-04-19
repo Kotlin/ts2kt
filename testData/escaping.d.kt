@@ -1,146 +1,146 @@
 package escaping
 
-native
-public var `val`: Any = noImpl
-native
-public var `$foo`: Boolean = noImpl
-native
-public fun `bar$`(`ba$z`: Number): Unit = noImpl
-native
-public fun `fun`(): Unit = noImpl
-native
-module
-public trait `This` {
-    public var `when`: String
-    public var `typealias`: Number
-    public fun `in`(`object`: Foo)
-    public class object {
-        public var `$foo`: Boolean = noImpl
-        public fun `bar$`(`ba$z`: Number): Unit = noImpl
+@native
+var `val`: Any = noImpl
+@native
+var `$foo`: Boolean = noImpl
+@native
+fun `bar$`(`ba$z`: Number): Unit = noImpl
+@native
+fun `fun`(): Unit = noImpl
+@native
+@module
+interface `This` {
+    var `when`: String
+    var `typealias`: Number
+    fun `in`(`object`: Foo)
+    companion object {
+        var `$foo`: Boolean = noImpl
+        fun `bar$`(`ba$z`: Number): Unit = noImpl
     }
 }
-native
-public open class `is`<`trait`> {
-    public open var `as`: Number = noImpl
-    public open fun `package`(a: Any): Boolean = noImpl
+@native
+open class `is`<`trait`> {
+    open var `as`: Number = noImpl
+    open fun `package`(a: Any): Boolean = noImpl
 }
-module
-public object `when` {
-    public var `$`: Boolean = noImpl
-    public fun `package`(`as`: Number): `$tring` = noImpl
+@module
+object `when` {
+    var `$`: Boolean = noImpl
+    fun `package`(`as`: Number): `$tring` = noImpl
 }
-module
-public object AllKeywords {
-    module
-    public object `as` {
+@module
+object AllKeywords {
+    @module
+    object `as` {
 
     }
-    module
-    public object `break` {
+    @module
+    object `break` {
 
     }
-    module
-    public object `class` {
+    @module
+    object `class` {
 
     }
-    module
-    public object `continue` {
+    @module
+    object `continue` {
 
     }
-    module
-    public object `do` {
+    @module
+    object `do` {
 
     }
-    module
-    public object `else` {
+    @module
+    object `else` {
 
     }
-    module
-    public object `false` {
+    @module
+    object `false` {
 
     }
-    module
-    public object `for` {
+    @module
+    object `for` {
 
     }
-    module
-    public object `fun` {
+    @module
+    object `fun` {
 
     }
-    module
-    public object `if` {
+    @module
+    object `if` {
 
     }
-    module
-    public object `in` {
+    @module
+    object `in` {
 
     }
-    module
-    public object `is` {
+    @module
+    object `is` {
 
     }
-    module
-    public object `null` {
+    @module
+    object `null` {
 
     }
-    module
-    public object `object` {
+    @module
+    object `object` {
 
     }
-    module
-    public object `package` {
+    @module
+    object `package` {
 
     }
-    module
-    public object `return` {
+    @module
+    object `return` {
 
     }
-    module
-    public object `super` {
+    @module
+    object `super` {
 
     }
-    module
-    public object `this` {
+    @module
+    object `this` {
 
     }
-    module
-    public object `This` {
+    @module
+    object `This` {
 
     }
-    module
-    public object `throw` {
+    @module
+    object `throw` {
 
     }
-    module
-    public object `trait` {
+    @module
+    object `trait` {
 
     }
-    module
-    public object `true` {
+    @module
+    object `true` {
 
     }
-    module
-    public object `try` {
+    @module
+    object `try` {
 
     }
-    module
-    public object `typealias` {
+    @module
+    object `typealias` {
 
     }
-    module
-    public object `val` {
+    @module
+    object `val` {
 
     }
-    module
-    public object `var` {
+    @module
+    object `var` {
 
     }
-    module
-    public object `when` {
+    @module
+    object `when` {
 
     }
-    module
-    public object `while` {
+    @module
+    object `while` {
 
     }
 }

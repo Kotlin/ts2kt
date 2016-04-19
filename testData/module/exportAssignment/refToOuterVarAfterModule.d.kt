@@ -1,14 +1,14 @@
 package refToOuterVarAfterModule
 
-native
-public trait JQueryStatic {
-    public fun ajax(settings: JQueryAjaxSettings): JQueryXHR
-    public fun ajax(url: String, settings: JQueryAjaxSettings? = null): JQueryXHR
+@native
+interface JQueryStatic {
+    fun ajax(settings: JQueryAjaxSettings): JQueryXHR
+    fun ajax(url: String, settings: JQueryAjaxSettings? = null): JQueryXHR
 }
-module
-public object jquery {
+@module
+object jquery {
 
 }
-native
-module("jquery")
-public var `$`: JQueryStatic = noImpl
+@native
+@module("jquery")
+var `$`: JQueryStatic = noImpl

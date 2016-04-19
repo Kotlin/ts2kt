@@ -1,10 +1,10 @@
 package genericsWithConstraint
 
-native
-public trait Foo<T : Bar> {
-    public var varT: T
-    public fun withoutArgumentsReturnsT(): T
-    public fun withOneT(a: T): T
-    public fun returnsB<B : Baz>(a: Any): B
-    public fun withManyArguments<A : T, B : B>(a: A, b: B): T
+@native
+interface Foo<T : Bar> {
+    var varT: T
+    fun withoutArgumentsReturnsT(): T
+    fun withOneT(a: T): T
+    fun returnsB<B : Baz>(a: Any): B
+    fun withManyArguments<A : T, B : B>(a: A, b: B): T
 }

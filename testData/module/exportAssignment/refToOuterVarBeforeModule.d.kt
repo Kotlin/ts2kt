@@ -1,12 +1,12 @@
 package refToOuterVarBeforeModule
 
-native
-public trait SinonStatic {
-    public var createStubInstance: (constructor: Any) -> SinonStub
-    public var format: (obj: Any) -> String
-    public var log: (message: String) -> Unit
-    public fun restore(`object`: Any)
+@native
+interface SinonStatic {
+    var createStubInstance: (constructor: Any) -> SinonStub
+    var format: (obj: Any) -> String
+    var log: (message: String) -> Unit
+    fun restore(`object`: Any)
 }
-native
-module("sinon")
-public var sinon: SinonStatic = noImpl
+@native
+@module("sinon")
+var sinon: SinonStatic = noImpl

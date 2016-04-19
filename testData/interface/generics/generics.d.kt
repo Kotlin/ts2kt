@@ -1,10 +1,10 @@
 package generics
 
-native
-public trait Foo<T> {
-    public var varT: T
-    public fun withoutArgumentsReturnsT(): T
-    public fun withOneT(a: T): T
-    public fun returnsB<B>(a: Any): B
-    public fun withManyArguments<A, B>(a: A, b: B): T
+@native
+interface Foo<T> {
+    var varT: T
+    fun withoutArgumentsReturnsT(): T
+    fun withOneT(a: T): T
+    fun returnsB<B>(a: Any): B
+    fun withManyArguments<A, B>(a: A, b: B): T
 }

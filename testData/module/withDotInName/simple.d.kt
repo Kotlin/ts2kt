@@ -1,14 +1,14 @@
 package simple
 
-module
-public object Foo {
-    module
-    public object Bar {
-        module
-        public object Baz {
-            public var variable: Number = noImpl
-            public fun func(): Unit = noImpl
-            public open class A
+@module
+object Foo {
+    @module
+    object Bar {
+        @module
+        object Baz {
+            var variable: Number = noImpl
+            fun func(): Unit = noImpl
+            open class A
         }
     }
 }

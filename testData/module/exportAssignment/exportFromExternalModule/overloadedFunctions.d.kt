@@ -1,18 +1,18 @@
 package overloadedFunctions
 
-native
-public trait BrowserifyObject : NodeJS.EventEmitter {
-    public fun add(file: String): BrowserifyObject
-    public fun require(file: String): BrowserifyObject
+@native
+interface BrowserifyObject : NodeJS.EventEmitter {
+    fun add(file: String): BrowserifyObject
+    fun require(file: String): BrowserifyObject
 }
-native
-public trait Options {
-    public var entries: Array<String>? = noImpl
-    public var noParse: Array<String>? = noImpl
+@native
+interface Options {
+    var entries: Array<String>? = noImpl
+    var noParse: Array<String>? = noImpl
 }
-module("browserify")
-public fun browserify(): BrowserifyObject = noImpl
-module("browserify")
-public fun browserify(files: Array<String>): BrowserifyObject = noImpl
-module("browserify")
-public fun browserify(opts: Options): BrowserifyObject = noImpl
+@module("browserify")
+fun browserify(): BrowserifyObject = noImpl
+@module("browserify")
+fun browserify(files: Array<String>): BrowserifyObject = noImpl
+@module("browserify")
+fun browserify(opts: Options): BrowserifyObject = noImpl

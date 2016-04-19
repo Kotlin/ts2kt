@@ -1,6 +1,6 @@
 package interface
 
-module("Boo")
-public trait IBaz {
-    public fun doSomething()
+@module("Boo")
+interface IBaz {
+    fun doSomething()
 }

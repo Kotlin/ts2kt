@@ -1,24 +1,24 @@
 package useJsonWhenPossible
 
-native
-public var foo: Json = noImpl
-module
-public object Module {
-    public var bar: Json = noImpl
-    public fun withObjectTypeParam(bar: Json): Unit = noImpl
-    public open class Foo {
-        public open var prop: Json = noImpl
+@native
+var foo: Json = noImpl
+@module
+object Module {
+    var bar: Json = noImpl
+    fun withObjectTypeParam(bar: Json): Unit = noImpl
+    open class Foo {
+        open var prop: Json = noImpl
     }
 }
-native
-public trait `T$0` {
-    nativeGetter
-    public fun get(s: Number): Any
-    nativeSetter
-    public fun set(s: Number, value: Any)
+@native
+interface `T$0` {
+    @nativeGetter
+    fun get(s: Number): Any
+    @nativeSetter
+    fun set(s: Number, value: Any)
 }
-native
-public trait Foo {
-    public var foo: Json
-    public var boo: `T$0`
+@native
+interface Foo {
+    var foo: Json
+    var boo: `T$0`
 }

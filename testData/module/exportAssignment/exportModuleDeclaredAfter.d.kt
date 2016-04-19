@@ -1,10 +1,10 @@
 package exportModuleDeclaredAfter
 
-module
-public object semver {
+@module
+object semver {
 
 }
-module("semver")
-public object SemverModule {
+@module("semver")
+object SemverModule {
 
 }

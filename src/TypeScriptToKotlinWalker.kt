@@ -226,7 +226,7 @@ class TypeScriptToKotlinWalker(
         if (isExternalModule && tr.exportedByAssignment.isEmpty()) {
             val areAllFakeOrInterface = tr.declarations.all {
                 it.annotations.any { it == FAKE_ANNOTATION } ||
-                (it is Classifier && it.kind === ClassKind.TRAIT && it.annotations.all { it.name != MODULE })
+                (it is Classifier && it.kind === ClassKind.INTERFACE && it.annotations.all { it.name != MODULE })
             }
             val areAllPartOfThisModule = { tr.declarations.all { it.annotations.any { it.name == MODULE && it.getFirstParamAsString() == name } } }
 
@@ -353,12 +353,12 @@ class TypeScriptToKotlinWalker(
              ClassKind.CLASS -> {
                 if (b.kind === ClassKind.OBJECT) return mergeClassAndObject(a, b)
             }
-            ClassKind.TRAIT -> {
+            ClassKind.INTERFACE -> {
                 if (b.kind === ClassKind.OBJECT) return mergeClassAndObject(a, b)
-                if (b.kind === ClassKind.TRAIT) return mergeClassifierMembers(a, b)
+                if (b.kind === ClassKind.INTERFACE) return mergeClassifierMembers(a, b)
             }
             ClassKind.OBJECT -> {
-                if (b.kind === ClassKind.CLASS || b.kind === ClassKind.TRAIT) return mergeClassAndObject(b, a)
+                if (b.kind === ClassKind.CLASS || b.kind === ClassKind.INTERFACE) return mergeClassAndObject(b, a)
                 if (a.hasModuleAnnotation() && b.isModule()) return mergeClassifierMembers(a, b)
             }
             else -> {} // TODO is it bug?
@@ -373,14 +373,14 @@ class TypeScriptToKotlinWalker(
         // TODO is it right?
         assert(a.getClassObject() == null, "Unxpected `class object` when merge Classifier(kind=${a.kind}) and Variable($b)")
 
-        if (a.kind === ClassKind.TRAIT || a.isModule()) {
-            val newTrait = Classifier(ClassKind.TRAIT, a.name, a.paramsOfConstructors, a.typeParams, a.parents, a.members, a.annotations, hasOpenModifier = false)
+        if (a.kind === ClassKind.INTERFACE || a.isModule()) {
+            val newTrait = Classifier(ClassKind.INTERFACE, a.name, a.paramsOfConstructors, a.typeParams, a.parents, a.members, a.annotations, hasOpenModifier = false)
 
             val varTypeName = b.type.name
             val delegation = listOf(Type("${varTypeName} by $NO_IMPL: ${varTypeName}"))
 
             // TODO drop hacks
-            val classObject = Classifier(ClassKind.CLASS_OBJECT, "", listOf(), listOf(), delegation, listOf(), listOf(), hasOpenModifier = false)
+            val classObject = Classifier(ClassKind.COMPANION_OBJECT, "", listOf(), listOf(), delegation, listOf(), listOf(), hasOpenModifier = false)
 
             newTrait.addMember(classObject)
 
@@ -420,7 +420,7 @@ class TypeScriptToKotlinWalker(
 
         if (classObject == null) {
             // TODO drop hack
-            a.addMember(Classifier(ClassKind.CLASS_OBJECT, "", listOf(), listOf(), listOf(), b.members, NO_ANNOTATIONS, hasOpenModifier = false))
+            a.addMember(Classifier(ClassKind.COMPANION_OBJECT, "", listOf(), listOf(), listOf(), b.members, NO_ANNOTATIONS, hasOpenModifier = false))
         }
         else {
             // TODO drop hack
@@ -502,7 +502,7 @@ abstract class TsClassifierToKt(
         if (node.modifiers?.arr?.any { it.kind === TS.SyntaxKind.StaticKeyword } ?: false) {
             if (staticTranslator == null) {
                 // TODO support override for static members
-                staticTranslator = TsClassToKt(typeMapper, ClassKind.CLASS_OBJECT, listOf(), NOT_OVERRIDE, NOT_OVERRIDE, hasMembersOpenModifier = false)
+                staticTranslator = TsClassToKt(typeMapper, ClassKind.COMPANION_OBJECT, listOf(), NOT_OVERRIDE, NOT_OVERRIDE, hasMembersOpenModifier = false)
                 staticTranslator?.name = ""
             }
             return staticTranslator!!
@@ -555,7 +555,7 @@ open class TsInterfaceToKt(
         isOverrideProperty: (TS.PropertyDeclaration) -> Boolean
 ) : TsClassifierToKt(typeMapper, isOverride, isOverrideProperty) {
     override val result: Classifier
-        get() = Classifier(ClassKind.TRAIT, name!!, listOf(), typeParams, parents, declarations, annotations, hasOpenModifier = false)
+        get() = Classifier(ClassKind.INTERFACE, name!!, listOf(), typeParams, parents, declarations, annotations, hasOpenModifier = false)
 
     override val hasMembersOpenModifier = false
 

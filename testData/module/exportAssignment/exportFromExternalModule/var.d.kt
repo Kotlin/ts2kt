@@ -1,11 +1,11 @@
 package var
 
-module
-public object Mixto {
-    public trait IMixinStatic {
-        public fun includeInto(constructor: Any)
-        public fun extend(`object`: Any)
+@module
+object Mixto {
+    interface IMixinStatic {
+        fun includeInto(constructor: Any)
+        fun extend(`object`: Any)
     }
 }
-module
-public var mixto: Mixto.IMixinStatic = noImpl
+@module
+var mixto: Mixto.IMixinStatic = noImpl

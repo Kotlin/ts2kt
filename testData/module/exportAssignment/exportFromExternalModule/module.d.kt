@@ -1,7 +1,7 @@
 package module
 
-module("Boo")
-public object MM {
-    public fun method(s: Any): String = noImpl
-    public var variable: Any = noImpl
+@module("Boo")
+object MM {
+    fun method(s: Any): String = noImpl
+    var variable: Any = noImpl
 }

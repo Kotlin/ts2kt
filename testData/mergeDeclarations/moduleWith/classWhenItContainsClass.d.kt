@@ -1,11 +1,11 @@
 package classWhenItContainsClass
 
-module("ws")
-public open class WebSocket(address: String) : events.EventEmitter() {
-    public open fun connect(): Boolean = noImpl
-    public class object {
-        public open class Server {
-            public open fun start(): Unit = noImpl
+@module("ws")
+open class WebSocket(address: String) : events.EventEmitter() {
+    open fun connect(): Boolean = noImpl
+    companion object {
+        open class Server {
+            open fun start(): Unit = noImpl
         }
     }
 }

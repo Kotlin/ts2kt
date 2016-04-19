@@ -1,6 +1,6 @@
 package class
 
-module("Boo")
-public open class Klass {
-    public open fun method(s: Any): String = noImpl
+@module("Boo")
+open class Klass {
+    open fun method(s: Any): String = noImpl
 }

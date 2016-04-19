@@ -1,10 +1,10 @@
 package methods
 
-native
-public open class Foo {
-    public class object {
-        public fun methodWithOutArgs(): Unit = noImpl
-        public fun methodWithString(s: String): String = noImpl
-        public fun methodWithManyArgs(n: Number, settings: Bar): Boolean = noImpl
+@native
+open class Foo {
+    companion object {
+        fun methodWithOutArgs(): Unit = noImpl
+        fun methodWithString(s: String): String = noImpl
+        fun methodWithManyArgs(n: Number, settings: Bar): Boolean = noImpl
     }
 }

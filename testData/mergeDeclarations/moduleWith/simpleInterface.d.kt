@@ -1,11 +1,11 @@
 package simpleInterface
 
-native
-module
-public trait Foo {
-    public fun bar(): Number
-    public class object {
-        public fun baz(a: Any): Unit = noImpl
-        public fun bar(): Number = noImpl
+@native
+@module
+interface Foo {
+    fun bar(): Number
+    companion object {
+        fun baz(a: Any): Unit = noImpl
+        fun bar(): Number = noImpl
     }
 }

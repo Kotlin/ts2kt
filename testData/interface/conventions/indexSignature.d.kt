@@ -1,13 +1,13 @@
 package indexSignature
 
-native
-public trait Foo {
-    nativeGetter
-    public fun get(n: Number): Bar
-    nativeSetter
-    public fun set(n: Number, value: Bar)
-    nativeGetter
-    public fun get(s: String): String
-    nativeSetter
-    public fun set(s: String, value: String)
+@native
+interface Foo {
+    @nativeGetter
+    fun get(n: Number): Bar
+    @nativeSetter
+    fun set(n: Number, value: Bar)
+    @nativeGetter
+    fun get(s: String): String
+    @nativeSetter
+    fun set(s: String, value: String)
 }

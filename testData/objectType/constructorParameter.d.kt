@@ -1,9 +1,9 @@
 package constructorParameter
 
-native
-public trait `T$0` {
-    public var foo: Number
-    public var bar: Any
+@native
+interface `T$0` {
+    var foo: Number
+    var bar: Any
 }
-native
-public open class Foo(p: `T$0`)
+@native
+open class Foo(p: `T$0`)

@@ -1,6 +1,6 @@
 package simple
 
-public enum class SomeEnum {
+enum class SomeEnum {
     Foo
     Bar
     `$`

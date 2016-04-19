@@ -1,25 +1,25 @@
 package inClassMembers
 
-native
-public trait `T$0` {
-    public fun bar(a: Any): Number
-    public var baz: Any? = noImpl
-    public var boo: Any? = noImpl
-    public var show: (overrideChecks: Boolean) -> Unit
+@native
+interface `T$0` {
+    fun bar(a: Any): Number
+    var baz: Any? = noImpl
+    var boo: Any? = noImpl
+    var show: (overrideChecks: Boolean) -> Unit
 }
-native
-public trait `T$1` {
-    public var value: Any? = noImpl
-    public var done: Boolean
+@native
+interface `T$1` {
+    var value: Any? = noImpl
+    var done: Boolean
 }
-native
-public trait `T$2` {
-    public fun bar(a: Any): Number
-    public fun baz(a: Any, b: Any, c: String): Boolean
+@native
+interface `T$2` {
+    fun bar(a: Any): Number
+    fun baz(a: Any, b: Any, c: String): Boolean
 }
-native
-public open class Foo {
-    public open fun withObjectTypeParam(opt: `T$0`): Unit = noImpl
-    public open fun returnsObjectType(): `T$1` = noImpl
-    public open var foo: `T$2` = noImpl
+@native
+open class Foo {
+    open fun withObjectTypeParam(opt: `T$0`): Unit = noImpl
+    open fun returnsObjectType(): `T$1` = noImpl
+    open var foo: `T$2` = noImpl
 }
