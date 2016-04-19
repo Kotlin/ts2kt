@@ -131,7 +131,7 @@ function generateTestFor(srcPath, expectedPath, testConfig) {
                     ", expectedPath = " + expectedPath +
                     ", testConfig = " + testConfig.verified + testConfig.other + "\n");
 
-        ts2kt.translateToFile(srcPath, outPath);
+        ts2kt.translateToFile_puj7f4$(srcPath, outPath);
 
         var actual = fs.readFileSync(outPath, {encoding: "utf8"});
 
