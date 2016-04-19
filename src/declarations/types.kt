@@ -12,6 +12,8 @@ public object TS {
         public var pos: Number
         public var end: Number
     }
+
+    @native("ts.SyntaxKind")
     public enum class SyntaxKind {
         Unknown,
         EndOfFileToken,
@@ -244,6 +246,7 @@ public object TS {
         LastBinaryOperator, // = CaretEqualsToken
         FirstNode // = QualifiedName
     }
+    @native("ts.NodeFlags")
     public enum class NodeFlags {
         Export, // = 0x00000001
         Ambient, // = 0x00000002
@@ -261,6 +264,7 @@ public object TS {
         AccessibilityModifier, // = Public | Private | Protected
         BlockScoped // = Let | Const
     }
+    @native("ts.ParserContextFlags")
     public enum class ParserContextFlags {
         StrictMode, // = 1 << 0
         DisallowIn, // = 1 << 1
@@ -269,6 +273,7 @@ public object TS {
         ContainsError, // = 1 << 4
         HasPropagatedChildContainsErrorFlag // = 1 << 5
     }
+    @native("ts.Node")
     public interface Node : TextRange {
         public var kind: SyntaxKind
         public var flags: NodeFlags
