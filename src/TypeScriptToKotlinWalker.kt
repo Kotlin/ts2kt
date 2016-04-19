@@ -122,9 +122,9 @@ class TypeScriptToKotlinWalker(
 
 //      TODO  node.modifiers
 //      TODO  test many declarations
-        val declarators = node.declarations.arr
+        val declarators = node.declarationList.declarations.arr
         for (d in declarators) {
-            val name = d.name.unescapedText
+            val name = d.declarationName!!.unescapedText
             val varType = d.type?.toKotlinTypeName(typeMapper) ?: ANY
             addVariable(name, varType, additionalAnnotations = additionalAnnotations)
         }
@@ -134,7 +134,7 @@ class TypeScriptToKotlinWalker(
         val additionalAnnotations = getAdditionalAnnotations(node)
 
 //      TODO  visitList(node.modifiers)
-        val name = node.name.unescapedText
+        val name = node.propertyName!!.unescapedText
         val callSignature = node.toKotlinCallSignature(typeMapper)
         addFunction(name, callSignature, additionalAnnotations = additionalAnnotations)
     }
@@ -143,7 +143,7 @@ class TypeScriptToKotlinWalker(
 //        // TODO: is it hack?
 //        if (requiredModifier != DeclareKeyword && isShouldSkip(node)) return
 
-        if (!isOwnDeclaration(node.name)) {
+        if (!isOwnDeclaration(node.identifierName)) {
             val translator = TsInterfaceToKtExtensions(typeMapper, annotations = defaultAnnotations, isOverride = isOverride, isOverrideProperty = isOverrideProperty)
             translator.visitInterfaceDeclaration(node)
             declarations.addAll(translator.declarations)
@@ -178,7 +178,7 @@ class TypeScriptToKotlinWalker(
         }
 
         val enumClass =
-                Classifier(ClassKind.ENUM, node.name.unescapedText, listOf(), listOf(), listOf(),
+                Classifier(ClassKind.ENUM, node.identifierName.unescapedText, listOf(), listOf(), listOf(),
                         entries, listOf(), hasOpenModifier = false)
 
         declarations.add(enumClass)
@@ -188,11 +188,11 @@ class TypeScriptToKotlinWalker(
         val additionalAnnotations = getAdditionalAnnotations(node)
 
         fun getName(node: TS.ModuleDeclaration): String {
-            return when(node.name.kind) {
+            return when(node.declarationName!!.kind) {
                 TS.SyntaxKind.Identifier,
-                TS.SyntaxKind.StringLiteral -> node.name.unescapedText
+                TS.SyntaxKind.StringLiteral -> node.declarationName!!.unescapedText
 
-                else -> unsupportedNode(node.name)
+                else -> unsupportedNode(node.declarationName!!)
             }
         }
 
@@ -221,7 +221,7 @@ class TypeScriptToKotlinWalker(
 
         tr.visitList(body)
 
-        val isExternalModule = rightNode.name.kind === TS.SyntaxKind.StringLiteral
+        val isExternalModule = rightNode.declarationName!!.kind === TS.SyntaxKind.StringLiteral
 
         if (isExternalModule && tr.exportedByAssignment.isEmpty()) {
             val areAllFakeOrInterface = tr.declarations.all {
@@ -264,7 +264,17 @@ class TypeScriptToKotlinWalker(
     }
 
     override fun visitExportAssignment(node: TS.ExportAssignment) {
-        exportedByAssignment[node.exportName.unescapedText] =
+        // TODO is it right?
+        val exportName =
+                node.identifierName?.unescapedText ?:
+                        run {
+                            if (node.expression.kind == TS.SyntaxKind.Identifier)
+                                (node.expression as TS.Identifier).text
+                            else
+                                unsupportedNode(node)
+                        }
+
+        exportedByAssignment[exportName] =
                 Annotation(MODULE, if (moduleName == null) listOf() else listOf(Argument(value = "\"$moduleName\"")))
     }
 
@@ -518,7 +528,7 @@ abstract class TsClassifierToKt(
     open fun needsNoImpl(node: TS.MethodDeclaration): Boolean = true
 
     override fun visitPropertyDeclaration(node: TS.PropertyDeclaration) {
-        val declarationName = node.declarationName!!
+        val declarationName = node.propertyName!!
 
         val name = declarationName.unescapedText
         val varType = node.type?.toKotlinTypeName(typeMapper) ?: ANY
@@ -540,7 +550,7 @@ abstract class TsClassifierToKt(
     }
 
     override fun visitMethodDeclaration(node: TS.MethodDeclaration) {
-        val declarationName = node.declarationName!!
+        val declarationName = node.propertyName!!
         val name = declarationName.unescapedText
         val isOverride = isOverride(node)
 
@@ -584,7 +594,7 @@ open class TsInterfaceToKt(
 
     override fun visitInterfaceDeclaration(node: TS.InterfaceDeclaration) {
 //      todo visitList(node.modifiers)
-        name = node.name.unescapedText
+        name = node.identifierName.unescapedText
         typeParams = node.typeParameters?.toKotlinTypeParams(typeMapper)
 
         // TODO merge with class?
@@ -701,7 +711,7 @@ class TsClassToKt(
 
     override fun visitClassDeclaration(node: TS.ClassDeclaration) {
 //      todo visitList(node.modifiers)
-        name = node.name.unescapedText
+        name = node.identifierName!!.unescapedText
         typeParams = node.typeParameters?.toKotlinTypeParams(typeMapper)
 
         node.heritageClauses?.arr?.forEach { visitNode(this, it) }

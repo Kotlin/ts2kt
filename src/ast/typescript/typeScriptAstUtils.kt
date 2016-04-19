@@ -21,9 +21,9 @@ import ts2kt.kotlin.ast.FunParam
 import ts2kt.kotlin.ast.TypeAnnotation
 import ts2kt.kotlin.ast.TypeParam
 import ts2kt.utils.assert
+import ts2kt.utils.hasFlag
 import ts2kt.utils.join
 import typescript.TS
-import typescript.hasFlag
 import typescript.ts
 import typescript.unescapeIdentifier
 
@@ -55,20 +55,20 @@ fun TS.ParameterDeclaration.toKotlinParam(typeMapper: ObjectTypeToKotlinTypeMapp
     val originalNodeType = type
     val isVararg = dotDotDotToken != null
 
-    val nodeType: TS.TypeNode_or_StringLiteralExpression?
+    val nodeType: TS.TypeNode?
     if (isVararg && originalNodeType != null) {
         val originalNodeKind = originalNodeType.kind
 
         when {
             originalNodeKind === TS.SyntaxKind.ArrayType -> {
-                nodeType = (originalNodeType as TS.ArrayTypeNode).elementType as TS.TypeNode_or_StringLiteralExpression
+                nodeType = (originalNodeType as TS.ArrayTypeNode).elementType
             }
 
             originalNodeKind === TS.SyntaxKind.TypeReference &&
             (originalNodeType as TS.TypeReferenceNode).typeName.text == "Array" -> {
                 val typeArguments = (originalNodeType as TS.TypeReferenceNode).typeArguments!!.arr
                 assert(typeArguments.size == 1, "Array should have one generic paramater, but have ${typeArguments.size}.")
-                nodeType = typeArguments[0] as TS.TypeNode_or_StringLiteralExpression
+                nodeType = typeArguments[0]
             }
             else -> {
                 throw Exception("Rest parameter must be array types, but ${originalNodeKind.str}")
@@ -79,7 +79,7 @@ fun TS.ParameterDeclaration.toKotlinParam(typeMapper: ObjectTypeToKotlinTypeMapp
         nodeType = originalNodeType
     }
 
-    val name = name.unescapedText
+    val name = declarationName!!.unescapedText
     val typeName = nodeType?.toKotlinTypeName(typeMapper) ?: ANY
     val defaultValue = initializer?.let {
         when (it.kind) {
@@ -92,7 +92,7 @@ fun TS.ParameterDeclaration.toKotlinParam(typeMapper: ObjectTypeToKotlinTypeMapp
     }
     val isNullable = questionToken != null
     val isLambda = nodeType?.kind === TS.SyntaxKind.FunctionType
-    val isVar = TS.hasFlag(flags, TS.NodeFlags.AccessibilityModifier)
+    val isVar = hasFlag(flags, TS.NodeFlags.AccessibilityModifier)
 
     return FunParam(name,
             TypeAnnotation(typeName, isNullable = isNullable, isLambda = isLambda, isVararg = isVararg),
@@ -105,7 +105,7 @@ fun TS.NodeArray<TS.ParameterDeclaration>.toKotlinParams(typeMapper: ObjectTypeT
 
 fun TS.NodeArray<TS.TypeParameterDeclaration>.toKotlinTypeParams(typeMapper: ObjectTypeToKotlinTypeMapper): List<TypeParam>  =
         arr.map { typeParam ->
-            val typeName = (typeParam.name as TS.TypeNode).toKotlinTypeName(typeMapper)
+            val typeName = (typeParam.identifierName as TS.TypeNode).toKotlinTypeName(typeMapper)
             val upperBound = typeParam.constraint?.toKotlinTypeName(typeMapper)
             TypeParam(typeName, upperBound)
         }
@@ -146,6 +146,7 @@ private fun TS.TypeNode.toKotlinTypeNameIfStandardType(typeMapper: ObjectTypeToK
         TS.SyntaxKind.FunctionType -> (this as TS.FunctionOrConstructorTypeNode).toKotlinTypeName(typeMapper)
 
         TS.SyntaxKind.TypeReference -> (this as TS.TypeReferenceNode).toKotlinTypeName(typeMapper)
+        TS.SyntaxKind.ExpressionWithTypeArguments -> (this as TS.ExpressionWithTypeArguments).toKotlinTypeName(typeMapper)
 
         TS.SyntaxKind.Identifier -> (this as TS.Identifier).unescapedText
         TS.SyntaxKind.TypeLiteral -> (this as TS.TypeLiteralNode).toKotlinTypeName(typeMapper)
@@ -173,11 +174,37 @@ fun TS.EntityName.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper): St
 fun TS.TypeReferenceNode.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper): String {
     // TODO improve
     val name = typeName.toKotlinTypeName(typeMapper)
-    val typeArgs = typeArguments
-    if (typeArgs == null) return name
+    val typeArgs = typeArguments ?: return name
 
     val strTypeArgs = typeArgs.arr.map { it.toKotlinTypeName(typeMapper) }.joinToString(",")
     return "$name<$strTypeArgs>"
+}
+
+fun TS.ExpressionWithTypeArguments.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper): String {
+    val name = expression.stringifyQualifiedName()
+
+    val typeArgs = typeArguments ?: return name
+
+    val strTypeArgs = typeArgs.arr.map { it.toKotlinTypeName(typeMapper) }.joinToString(",")
+    return "$name<$strTypeArgs>"
+}
+
+private fun TS.PropertyAccessExpression.stringify(): String {
+    val identifier = identifierName.unescapedText
+
+    val qualifier = expression?.stringifyQualifiedName() ?: return identifier
+
+    return qualifier + "." + identifier
+}
+
+private fun TS.Node.stringifyQualifiedName() = when (kind) {
+    TS.SyntaxKind.Identifier ->
+        (this as TS.Identifier).unescapedText
+
+    TS.SyntaxKind.PropertyAccessExpression ->
+        (this as TS.PropertyAccessExpression).stringify()
+
+    else -> unsupportedNode(this)
 }
 
 fun TS.UnionTypeNode.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper): String {
@@ -212,8 +239,14 @@ fun visitNode(visitor: Visitor, node: dynamic): Unit {
         TS.SyntaxKind.Constructor -> visitor.visitConstructorDeclaration(node)
         TS.SyntaxKind.ConstructSignature -> visitor.visitConstructSignatureDeclaration(node)
 
-        TS.SyntaxKind.Method -> visitor.visitMethodDeclaration(node)
-        TS.SyntaxKind.Property -> visitor.visitPropertyDeclaration(node)
+        // TODO what is difference between MethodSignature and MethodDeclaration
+        TS.SyntaxKind.MethodDeclaration,
+        TS.SyntaxKind.MethodSignature -> visitor.visitMethodDeclaration(node)
+
+        // TODO what is difference between PropertySignature and PropertyDeclaration
+        TS.SyntaxKind.PropertyDeclaration,
+        TS.SyntaxKind.PropertySignature -> visitor.visitPropertyDeclaration(node)
+
         TS.SyntaxKind.IndexSignature -> visitor.visitIndexSignature(node)
         TS.SyntaxKind.CallSignature -> visitor.visitSignatureDeclaration(node)
 
@@ -234,6 +267,7 @@ val <T> TS.NodeArray<T>.arr: Array<T>
 val TS.SyntaxKind.str: String
     get() = ts.SyntaxKind[this]
 
+// TODO review where we use raw text
 val TS.Identifier.unescapedText: String
     get() = TS.unescapeIdentifier(text)
 

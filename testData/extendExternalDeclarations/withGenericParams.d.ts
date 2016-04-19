@@ -10,6 +10,7 @@ declare module Q {
 }
 
 declare module "ref-array" {
+    // TODO probably we should ignore declarations with same name inside external module
     interface ArrayType<T> {
         [prop: string]: number;
         someField: string;

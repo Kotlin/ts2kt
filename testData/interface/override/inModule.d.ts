@@ -4,6 +4,6 @@ declare module TypeScript {
     }
 
     interface ISeparatedSyntaxList extends ISyntaxElement {
-        childAt(index: number): ISyntaxNodeOrToken;
+        childAt(index: number): ISeparatedSyntaxList;
     }
 }

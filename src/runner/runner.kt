@@ -16,6 +16,7 @@
 
 package ts2kt
 
+import ts2kt.utils.hasFlag
 import ts2kt.utils.push
 import ts2kt.utils.shift
 import typescript.TS
@@ -53,7 +54,7 @@ val LIB_D_TS_WITH_SNAPSHOT = "lib.d.ts" to getScriptSnapshotFromFile(PATH_TO_LIB
 
 val host = FileSystemBasedLSH(mapOf(), "")
 val documentRegistry = ts.createDocumentRegistry()
-val languageService = ts.createLanguageService(host, documentRegistry)
+val languageService: TS.LanguageService = ts.createLanguageService(host, documentRegistry)
 
 
 fun translate(srcPath: String): String {
@@ -66,11 +67,11 @@ fun translate(srcPath: String): String {
         val curFile = filesToProcess.shift()
         val curDir = ts.getDirectoryPath(curFile) + "/"
 
-        var result = ts.preProcessFile(file2scriptSnapshot[curFile].getText())
+        val result = ts.preProcessFile(file2scriptSnapshot[curFile].getText())
 
         val referencedFiles: Array<dynamic> = result.referencedFiles
         for (referencedFile in referencedFiles) {
-            val referencedFilePath = ts.normalizePath(curDir + referencedFile.filename)
+            val referencedFilePath = ts.normalizePath(curDir + referencedFile.fileName)
 
             if (referencedFilePath in file2scriptSnapshot) continue
 
@@ -94,7 +95,7 @@ fun translate(srcPath: String): String {
     inline fun isAnyMember(node: TS.MethodDeclaration): Boolean {
         val params = node.parameters.arr
 
-        return when (node.declarationName?.text) {
+        return when (node.propertyName?.text) {
             "equals" ->
                 params.size == 1 && params[0].type?.let { it.kind === TS.SyntaxKind.AnyKeyword } ?: true
             // TODO check return type ???
@@ -113,22 +114,20 @@ fun translate(srcPath: String): String {
 
         if (parentNode.heritageClauses == null) return false
 
-        val typechecker: TS.TypeChecker = languageService.getTypecheker()
+        val typechecker = languageService.getProgram().getTypeChecker()
 
         val nodeName = node.declarationName!!.unescapedText
 
         val visited = hashSetOf<TS.Type>()
 
         fun TS.ClassDeclaration.forEachBaseTypeNode(): Boolean {
-            val heritages = heritageClauses
-            if (heritages == null) return false
+            val heritages = heritageClauses ?: return false
 
             for (heritage in heritages.arr) {
-                val types = heritage.types
-                if (types == null) continue
+                val types = heritage.types ?: continue
 
                 for (typeNode in types.arr) {
-                    val type = typechecker.getTypeAtLocation(typeNode)
+                    val type = typechecker.getTypeAtLocation(typeNode) ?: continue
 
                     if (!visited.add(type)) continue
 
@@ -144,43 +143,82 @@ fun translate(srcPath: String): String {
         return parentNode.forEachBaseTypeNode()
     }
 
+    fun TS.Type.isSubtypeOf(other: TS.Type): Boolean {
+        if (this == other) return true
+
+        // other as Any
+//        if (other == null) return true
+
+        // other is Any?
+        if (hasFlag(other.flags, TS.TypeFlags.Any)) return true
+
+        // this as Any
+//        if (this == null) return false
+
+        return getBaseTypes()?.any { it.isSubtypeOf(other) } ?: false
+    }
+
+    fun TS.TypeChecker.getTypeOfSymbol(symbol: TS.Symbol) : TS.Type =
+            // TODO find better solution
+            getTypeOfSymbolAtLocation(symbol, symbol.valueDeclaration.asDynamic().type)
+
+    fun TS.TypeChecker.isOverride(candidate: TS.Signature, other: TS.Signature): Boolean {
+        if (candidate.parameters.size != other.parameters.size) return false
+
+        if (!candidate.getReturnType().isSubtypeOf(other.getReturnType())) return false
+
+        for (i in candidate.parameters.indices) {
+            val candidateType = getTypeOfSymbol(candidate.parameters[i])
+            val otherType = getTypeOfSymbol(other.parameters[i])
+
+            if (candidateType != otherType) return false
+        }
+
+        return true
+    }
+
     fun isOverride(node: TS.MethodDeclaration): Boolean {
         if (isAnyMember(node)) return true
 
         var nodeSignature: TS.Signature? = null
 
         return isOverrideHelper(node) { typechecker, type, nodeName ->
-            if (nodeSignature == null) {
-                nodeSignature = typechecker.getSignatureFromDeclaration(node)
-            }
+            nodeSignature = nodeSignature ?: typechecker.getSignatureFromDeclaration(node)
 
             val candidates = typechecker.getPropertyOfType(type, nodeName)
 
             candidates?.declarations?.any {
                 // TODO add test
-                if (it.kind === TS.SyntaxKind.Property) return@any false
+                if (it.kind === TS.SyntaxKind.PropertyDeclaration || it.kind === TS.SyntaxKind.PropertySignature) return@any false
 
                 val signature: TS.Signature = when (it.kind) {
-                    TS.SyntaxKind.Method -> typechecker.getSignatureFromDeclaration(it as TS.SignatureDeclaration)
+                    TS.SyntaxKind.MethodSignature,
+                    TS.SyntaxKind.MethodDeclaration -> typechecker.getSignatureFromDeclaration(it as TS.SignatureDeclaration)
                     else -> unsupportedNode(it)
                 }
 
-                (typechecker.asDynamic()).isSignatureAssignableTo(nodeSignature, signature)
+
+                typechecker.isOverride(nodeSignature!!, signature)
             } ?: false
         }
     }
 
     fun isOverrideProperty(node: TS.PropertyDeclaration): Boolean {
         return isOverrideHelper(node) { typechecker, type, nodeName ->
-            typechecker.getPropertyOfType(type, nodeName)?.valueDeclaration?.kind === TS.SyntaxKind.Property
+            val property = typechecker.getPropertyOfType(type, nodeName) ?: return@isOverrideHelper false
+
+            val candidateType = typechecker.getTypeAtLocation(node)
+            val otherType = typechecker.getTypeOfSymbol(property)
+
+            candidateType != null && candidateType.isSubtypeOf(otherType)
         }
     }
 
 
     val typeScriptToKotlinWalker = TypeScriptToKotlinWalker(srcName,
             isOwnDeclaration = {
-                val definitions: Array<dynamic> = languageService.getDefinitionAtPosition(normalizeSrcPath, it.end)
-                definitions.all { it.fileName === normalizeSrcPath }
+                val definitions = languageService.getDefinitionAtPosition(normalizeSrcPath, it.end)
+                definitions.all { it.fileName == normalizeSrcPath }
             },
             isOverride = ::isOverride,
             isOverrideProperty = ::isOverrideProperty
@@ -192,7 +230,7 @@ fun translate(srcPath: String): String {
 
     val ktTree = typeScriptToKotlinWalker.result
 
-    var out = ktTree.toString()
+    val out = ktTree.toString()
 
     return out
 }

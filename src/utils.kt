@@ -130,3 +130,7 @@ fun <T> eval(code: String): T = noImpl
 fun assert(condition: Boolean, message: String) {
     if (!condition) throw Exception(message)
 }
+
+// TS AST utils
+@Suppress("NOTHING_TO_INLINE", "UNUSED_PARAMETER")
+inline fun <E : Enum<E>> hasFlag(flags: Enum<E>, flag: E): Boolean = js("(flags & flag) != 0")
