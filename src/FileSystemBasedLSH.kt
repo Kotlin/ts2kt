@@ -1,9 +1,10 @@
 package ts2kt
 
+import typescript.LanguageServiceHost
 import typescript.ts
 
-public class FileSystemBasedLSH(file2scriptSnapshot: Map<String, dynamic>, var currentDirectory: String) {
-    var filesCache = arrayOf<String>()
+class FileSystemBasedLSH(file2scriptSnapshot: Map<String, dynamic>, var currentDirectory: String) : LanguageServiceHost {
+    private var filesCache = arrayOf<String>()
 
     var file2scriptSnapshot = file2scriptSnapshot
         get() = field
@@ -12,17 +13,17 @@ public class FileSystemBasedLSH(file2scriptSnapshot: Map<String, dynamic>, var c
             filesCache = value.keys.toTypedArray()
         }
 
-    fun getCompilationSettings() = ts.getDefaultCompilerOptions()
+    override fun getCompilationSettings() = ts.getDefaultCompilerOptions()
 
-    fun getScriptFileNames(): Array<String> = filesCache
+    override fun getScriptFileNames(): Array<String> = filesCache
 
-    fun getScriptVersion(fileName: String) = 1 // ???
+    override fun getScriptVersion(fileName: String) = 1 // ???
 
-    fun getScriptIsOpen(fileName: String) = file2scriptSnapshot.containsKey(fileName)
+    override fun getScriptIsOpen(fileName: String) = file2scriptSnapshot.containsKey(fileName)
 
-    fun getScriptByteOrderMark(fileName: String) = ts.ByteOrderMark.None
+    override fun getScriptByteOrderMark(fileName: String) = ts.ByteOrderMark.None
 
-    fun getScriptSnapshot(fileName: String): dynamic = file2scriptSnapshot[fileName]
+    override fun getScriptSnapshot(fileName: String): dynamic = file2scriptSnapshot[fileName]
 
     // getLocalizedDiagnosticMessages?(): any
 //    fun getLocalizedDiagnosticMessages(): Any = throw UnsupportedOperationException() // ???
@@ -33,8 +34,8 @@ public class FileSystemBasedLSH(file2scriptSnapshot: Map<String, dynamic>, var c
 //                fun isCancellationRequested() = false
 //            }
 
-    fun getCurrentDirectory() = currentDirectory
-    fun getDefaultLibFilename(options: dynamic) = "lib.d.ts"
+    override fun getCurrentDirectory() = currentDirectory
+    override fun getDefaultLibFilename(options: dynamic) = "lib.d.ts"
 
-    fun log(message: Any) = console.log(message)
+    override fun log(message: Any) = console.log(message)
 }
