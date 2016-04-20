@@ -2,18 +2,10 @@ package typescript
 
 @native("ts")
 object TS {
-    interface JsMap<T> {
-        @nativeGetter
-        fun get(index: String): T
-        @nativeSetter
-        fun set(index: String, value: T)
-    }
-
     interface Path2 {
         val __pathBrand: Any
     }
 
-    @native
     interface FileMap<T> {
         fun get(fileName: String /* Path */): T
         fun get(fileName: Path2 /* Path */): T
@@ -404,35 +396,23 @@ object TS {
         fun getText(sourceFile: SourceFile?): String
         fun getFirstToken(sourceFile: SourceFile?): Node
         fun getLastToken(sourceFile: SourceFile?): Node
-
-//        var parserContextFlags: ParserContextFlags? // = noImpl
-//        var id: Number? // = noImpl
-//        var symbol: Symbol? // = noImpl
-//        var locals: SymbolTable? // = noImpl
-//        var nextContainer: Node? // = noImpl
-//        var localSymbol: Symbol? // = noImpl
     }
 
-    @native
     interface NodeArray<T> : JsArray<T>, TextRange {
         var hasTrailingComma: Boolean? // = noImpl
     }
 
-    @native
     interface ModifiersArray : NodeArray<Modifier> {
         var flags: Number
     }
 
-    @native
     interface Modifier : Node
 
-    @native
     interface Identifier : PrimaryExpression {
         /*override */var text: String
         var originalKeywordKind: SyntaxKind? // = noImpl
     }
 
-    @native
     interface QualifiedName : Node {
         var left: EntityName
         var right: Identifier
@@ -442,30 +422,25 @@ object TS {
     interface PropertyName : Identifier, LiteralExpression, ComputedPropertyName
     interface DeclarationName : Identifier, LiteralExpression, ComputedPropertyName, BindingPattern
 
-    @native
     interface Declaration : Node {
         var _declarationBrand: Any
         @native("name")
         val declarationName: DeclarationName? // = noImpl
     }
 
-    @native
     interface DeclarationStatement : Declaration, Statement {
         @native("name")
         /*override*/ val identifierName: Identifier? // = noImpl
     }
 
-    @native
     interface ComputedPropertyName : Node {
         var expression: Expression
     }
 
-    @native
     interface Decorator : Node {
         var expression: LeftHandSideExpression
     }
 
-    @native
     interface TypeParameterDeclaration : Declaration {
         @native("name")
         /*override*/ var identifierName: Identifier
@@ -473,7 +448,6 @@ object TS {
         var expression: Expression? // = noImpl
     }
 
-    @native
     interface SignatureDeclaration : Declaration {
         @native("name")
         /*override*/ val propertyName: PropertyName? // = noImpl
@@ -482,43 +456,39 @@ object TS {
         var type: TypeNode? // = noImpl
     }
 
-    @native
     interface CallSignatureDeclaration : SignatureDeclaration, TypeElement
 
-    @native
     interface ConstructSignatureDeclaration : SignatureDeclaration, TypeElement
 
-    @native
     interface VariableDeclaration : Declaration {
 //        override var parent: VariableDeclarationList? // = noImpl
-        /*override*/ var name: dynamic /* Identifier | BindingPattern */
+        @native("name")
+        /*override*/ var dynamicName: dynamic /* Identifier | BindingPattern */
         var type: TypeNode? // = noImpl
         var initializer: Expression? // = noImpl
     }
 
-    @native
     interface VariableDeclarationList : Node {
         var declarations: NodeArray<VariableDeclaration>
     }
 
-    @native
     interface ParameterDeclaration : Declaration {
         var dotDotDotToken: Node? // = noImpl
-        /*override*/ var name: dynamic /* Identifier | BindingPattern */
+        @native("name")
+        /*override*/ var dynamicName: dynamic /* Identifier | BindingPattern */
         var questionToken: Node? // = noImpl
         var type: TypeNode? // = noImpl
         var initializer: Expression? // = noImpl
     }
 
-    @native
     interface BindingElement : Declaration {
         var propertyName: PropertyName? // = noImpl
         var dotDotDotToken: Node? // = noImpl
-        /*override*/ var name: dynamic /* Identifier | BindingPattern */
+        @native("name")
+        /*override*/ var dynamicName: dynamic /* Identifier | BindingPattern */
         var initializer: Expression? // = noImpl
     }
 
-    @native
     interface PropertySignature : TypeElement {
         override val propertyName: PropertyName
         override var questionToken: Node? // = noImpl
@@ -526,7 +496,6 @@ object TS {
         var initializer: Expression? // = noImpl
     }
 
-    @native
     interface PropertyDeclaration : ClassElement {
         var questionToken: Node? // = noImpl
         override val propertyName: PropertyName
@@ -534,14 +503,12 @@ object TS {
         var initializer: Expression? // = noImpl
     }
 
-    @native
     interface ObjectLiteralElement : Declaration {
         var _objectLiteralBrandBrand: Any
         @native("name")
         /*override*/ val propertyName: PropertyName? // = noImpl
     }
 
-    @native
     interface PropertyAssignment : ObjectLiteralElement {
         var _propertyAssignmentBrand: Any
         override val propertyName: PropertyName
@@ -549,7 +516,6 @@ object TS {
         var initializer: Expression
     }
 
-    @native
     interface ShorthandPropertyAssignment : ObjectLiteralElement {
         @native("name")
         /*override*/ val identifierName: Identifier //TODO extra space
@@ -558,7 +524,6 @@ object TS {
         var objectAssignmentInitializer: Expression? // = noImpl
     }
 
-    @native
     interface VariableLikeDeclaration : Declaration {
         var propertyName: PropertyName? // = noImpl
         var dotDotDotToken: Node? // = noImpl
@@ -568,24 +533,19 @@ object TS {
         var initializer: Expression? // = noImpl
     }
 
-    @native
     interface PropertyLikeDeclaration : Declaration {
         @native("name")
         /*override*/ var propertyName: PropertyName
     }
 
-    @native
     interface BindingPattern : Node {
         var elements: NodeArray<BindingElement>
     }
 
-    @native
     interface ObjectBindingPattern : BindingPattern
 
-    @native
     interface ArrayBindingPattern : BindingPattern
 
-    @native
     interface FunctionLikeDeclaration : SignatureDeclaration {
         var _functionLikeDeclarationBrand: Any
         var asteriskToken: Node? // = noImpl
@@ -593,215 +553,172 @@ object TS {
         var body: dynamic /* Block | Expression */? // = noImpl // TODO
     }
 
-    @native
     interface FunctionDeclaration : FunctionLikeDeclaration, DeclarationStatement {
         override var identifierName: Identifier? // = noImpl
         override var body: FunctionBody? // = noImpl
     }
 
-    @native
     interface MethodSignature : SignatureDeclaration, TypeElement {
         override val propertyName: PropertyName
     }
 
-    @native
     interface MethodDeclaration : FunctionLikeDeclaration, ClassElement, ObjectLiteralElement {
         override var propertyName: PropertyName
         override var body: FunctionBody? // = noImpl
     }
 
-    @native
     interface ConstructorDeclaration : FunctionLikeDeclaration, ClassElement {
         override var body: FunctionBody? // = noImpl
     }
 
-    @native
     interface SemicolonClassElement : ClassElement {
         var _semicolonClassElementBrand: Any
     }
 
-    @native
     interface AccessorDeclaration : FunctionLikeDeclaration, ClassElement, ObjectLiteralElement {
         var _accessorDeclarationBrand: Any
         override var propertyName: PropertyName
         override var body: FunctionBody
     }
 
-    @native
     interface GetAccessorDeclaration : AccessorDeclaration
 
-    @native
     interface SetAccessorDeclaration : AccessorDeclaration
 
-    @native
     interface IndexSignatureDeclaration : SignatureDeclaration, ClassElement, TypeElement {
         var _indexSignatureDeclarationBrand: Any
     }
 
-    @native
     interface TypeNode : Node {
         var _typeNodeBrand: Any
     }
 
-    @native
     interface ThisTypeNode : TypeNode {
         var _thisTypeNodeBrand: Any
     }
 
-    @native
     interface FunctionOrConstructorTypeNode : TypeNode, SignatureDeclaration {
         var _functionOrConstructorTypeNodeBrand: Any
     }
 
-    @native
     interface FunctionTypeNode : FunctionOrConstructorTypeNode
 
-    @native
     interface ConstructorTypeNode : FunctionOrConstructorTypeNode
 
-    @native
     interface TypeReferenceNode : TypeNode {
         var typeName: EntityName
         var typeArguments: NodeArray<TypeNode>? // = noImpl
     }
 
-    @native
     interface TypePredicateNode : TypeNode {
         var parameterName: dynamic /* Identifier | ThisTypeNode */
         var type: TypeNode
     }
 
-    @native
     interface TypeQueryNode : TypeNode {
         var exprName: EntityName
     }
 
-    @native
     interface TypeLiteralNode : TypeNode, Declaration {
         var members: NodeArray<TypeElement>
     }
 
-    @native
     interface ArrayTypeNode : TypeNode {
         var elementType: TypeNode
     }
 
-    @native
     interface TupleTypeNode : TypeNode {
         var elementTypes: NodeArray<TypeNode>
     }
 
-    @native
     interface UnionOrIntersectionTypeNode : TypeNode {
         var types: NodeArray<TypeNode>
     }
 
-    @native
     interface UnionTypeNode : UnionOrIntersectionTypeNode
 
-    @native
     interface IntersectionTypeNode : UnionOrIntersectionTypeNode
 
-    @native
     interface ParenthesizedTypeNode : TypeNode {
         var type: TypeNode
     }
 
-    @native
     interface StringLiteralTypeNode : LiteralLikeNode, TypeNode {
         var _stringLiteralTypeBrand: Any
     }
 
-    @native
     interface StringLiteral : LiteralExpression {
         var _stringLiteralBrand: Any
     }
 
-    @native
     interface Expression : Node {
         var _expressionBrand: Any
         var contextualType: Type? // = noImpl
     }
 
-    @native
     interface OmittedExpression : Expression
 
-    @native
     interface UnaryExpression : Expression {
         var _unaryExpressionBrand: Any
     }
 
-    @native
     interface IncrementExpression : UnaryExpression {
         var _incrementExpressionBrand: Any
     }
 
-    @native
     interface PrefixUnaryExpression : IncrementExpression {
         var operator: SyntaxKind
         var operand: UnaryExpression
     }
 
-    @native
     interface PostfixUnaryExpression : IncrementExpression {
         var operand: LeftHandSideExpression
         var operator: SyntaxKind
     }
 
-    @native
     interface PostfixExpression : UnaryExpression {
         var _postfixExpressionBrand: Any
     }
 
-    @native
     interface LeftHandSideExpression : IncrementExpression {
         var _leftHandSideExpressionBrand: Any
     }
 
-    @native
     interface MemberExpression : LeftHandSideExpression {
         var _memberExpressionBrand: Any
     }
 
-    @native
     interface PrimaryExpression : MemberExpression {
         var _primaryExpressionBrand: Any
     }
 
-    @native
     interface DeleteExpression : UnaryExpression {
         var expression: UnaryExpression
     }
 
-    @native
     interface TypeOfExpression : UnaryExpression {
         var expression: UnaryExpression
     }
 
-    @native
     interface VoidExpression : UnaryExpression {
         var expression: UnaryExpression
     }
 
-    @native
     interface AwaitExpression : UnaryExpression {
         var expression: UnaryExpression
     }
 
-    @native
     interface YieldExpression : Expression {
         var asteriskToken: Node? // = noImpl
         var expression: Expression? // = noImpl
     }
 
-    @native
     interface BinaryExpression : Expression, Declaration {
         var left: Expression
         var operatorToken: Node
         var right: Expression
     }
 
-    @native
     interface ConditionalExpression : Expression {
         var condition: Expression
         var questionToken: Node
@@ -813,99 +730,82 @@ object TS {
     interface FunctionBody : Block
     interface ConciseBody : FunctionBody, Expression
 
-    @native
     interface FunctionExpression : PrimaryExpression, FunctionLikeDeclaration {
         @native("name")
         /*override*/ var identifierName: Identifier? // = noImpl
         override var body: FunctionBody
     }
 
-    @native
     interface ArrowFunction : Expression, FunctionLikeDeclaration {
         var equalsGreaterThanToken: Node
         override var body: ConciseBody
     }
 
-    @native
     interface LiteralLikeNode : Node {
         /*override */var text: String
         var isUnterminated: Boolean? // = noImpl
         var hasExtendedUnicodeEscape: Boolean? // = noImpl
     }
 
-    @native
     interface LiteralExpression : LiteralLikeNode, PrimaryExpression {
         var _literalExpressionBrand: Any
     }
 
-    @native
     interface TemplateLiteralFragment : LiteralLikeNode {
         var _templateLiteralFragmentBrand: Any
     }
 
-    @native
     interface TemplateExpression : PrimaryExpression {
         var head: TemplateLiteralFragment
         var templateSpans: NodeArray<TemplateSpan>
     }
 
-    @native
     interface TemplateSpan : Node {
         var expression: Expression
         var literal: TemplateLiteralFragment
     }
 
-    @native
     interface ParenthesizedExpression : PrimaryExpression {
         var expression: Expression
     }
 
-    @native
     interface ArrayLiteralExpression : PrimaryExpression {
         var elements: NodeArray<Expression>
     }
 
-    @native
     interface SpreadElementExpression : Expression {
         var expression: Expression
     }
 
-    @native
     interface ObjectLiteralExpression : PrimaryExpression, Declaration {
         var properties: NodeArray<ObjectLiteralElement>
     }
 
-    @native
     interface PropertyAccessExpression : MemberExpression, Declaration {
-        var expression: LeftHandSideExpression
+        var expression: LeftHandSideExpression?
         var dotToken: Node
         @native("name")
         /*override*/ var identifierName: Identifier
     }
 
-    @native
     interface ElementAccessExpression : MemberExpression {
         var expression: LeftHandSideExpression
         var argumentExpression: Expression? // = noImpl
     }
 
-    @native
     interface CallExpression : LeftHandSideExpression, Declaration {
         var expression: LeftHandSideExpression
         var typeArguments: NodeArray<TypeNode>? // = noImpl
         var arguments: NodeArray<Expression>
     }
 
-    @native
     interface ExpressionWithTypeArguments : TypeNode {
         var expression: LeftHandSideExpression
         var typeArguments: NodeArray<TypeNode>? // = noImpl
     }
 
-    @native
     interface NewExpression : CallExpression, PrimaryExpression
 
-    @native
     interface TaggedTemplateExpression : MemberExpression {
         var tag: LeftHandSideExpression
         var template: dynamic /* LiteralExpression | TemplateExpression */
@@ -913,208 +813,171 @@ object TS {
 
     interface CallLikeExpression : CallExpression, NewExpression, TaggedTemplateExpression, Decorator
 
-    @native
     interface AsExpression : Expression {
         var expression: Expression
         var type: TypeNode
     }
 
-    @native
     interface TypeAssertion : UnaryExpression {
         var type: TypeNode
         var expression: UnaryExpression
     }
 
-    @native
     interface JsxElement : PrimaryExpression {
         var openingElement: JsxOpeningElement
         var children: NodeArray<JsxChild>
         var closingElement: JsxClosingElement
     }
 
-    @native
     interface JsxOpeningElement : Expression {
         var _openingElementBrand: Any? // = noImpl
         var tagName: EntityName
         /*override */var attributes: NodeArray<dynamic /* JsxAttribute | JsxSpreadAttribute */>
     }
 
-    @native
     interface JsxSelfClosingElement : PrimaryExpression, JsxOpeningElement {
         var _selfClosingElementBrand: Any? // = noImpl
     }
 
-    @native
     interface JsxAttribute : Node {
         @native("name")
         var identifierName: Identifier
         var initializer: Expression? // = noImpl
     }
 
-    @native
     interface JsxSpreadAttribute : Node {
         var expression: Expression
     }
 
-    @native
     interface JsxClosingElement : Node {
         var tagName: EntityName
     }
 
-    @native
     interface JsxExpression : Expression {
         var expression: Expression? // = noImpl
     }
 
-    @native
     interface JsxText : Node {
         var _jsxTextExpressionBrand: Any
     }
 
     interface JsxChild : JsxText, JsxExpression, JsxElement, JsxSelfClosingElement
 
-    @native
     interface Statement : Node {
         var _statementBrand: Any
     }
 
-    @native
     interface EmptyStatement : Statement
 
-    @native
     interface DebuggerStatement : Statement
 
-    @native
     interface MissingDeclaration : DeclarationStatement, ClassElement, ObjectLiteralElement, TypeElement {
         override var identifierName: Identifier? // = noImpl
     }
 
-    @native
     interface Block : Statement {
         var statements: NodeArray<Statement>
     }
 
-    @native
     interface VariableStatement : Statement {
         var declarationList: VariableDeclarationList
     }
 
-    @native
     interface ExpressionStatement : Statement {
         var expression: Expression
     }
 
-    @native
     interface IfStatement : Statement {
         var expression: Expression
         var thenStatement: Statement
         var elseStatement: Statement? // = noImpl
     }
 
-    @native
     interface IterationStatement : Statement {
         var statement: Statement
     }
 
-    @native
     interface DoStatement : IterationStatement {
         var expression: Expression
     }
 
-    @native
     interface WhileStatement : IterationStatement {
         var expression: Expression
     }
 
-    @native
     interface ForStatement : IterationStatement {
         var initializer: dynamic /* VariableDeclarationList | Expression */? // = noImpl
         var condition: Expression? // = noImpl
         var incrementor: Expression? // = noImpl
     }
 
-    @native
     interface ForInStatement : IterationStatement {
         var initializer: dynamic /* VariableDeclarationList | Expression */
         var expression: Expression
     }
 
-    @native
     interface ForOfStatement : IterationStatement {
         var initializer: dynamic /* VariableDeclarationList | Expression */
         var expression: Expression
     }
 
-    @native
     interface BreakStatement : Statement {
         var label: Identifier? // = noImpl
     }
 
-    @native
     interface ContinueStatement : Statement {
         var label: Identifier? // = noImpl
     }
 
-    @native
     interface ReturnStatement : Statement {
         var expression: Expression? // = noImpl
     }
 
-    @native
     interface WithStatement : Statement {
         var expression: Expression
         var statement: Statement
     }
 
-    @native
     interface SwitchStatement : Statement {
         var expression: Expression
         var caseBlock: CaseBlock
     }
 
-    @native
     interface CaseBlock : Node {
         var clauses: NodeArray<CaseOrDefaultClause>
     }
 
-    @native
     interface CaseClause : Node {
         var expression: Expression
         var statements: NodeArray<Statement>
     }
 
-    @native
     interface DefaultClause : Node {
         var statements: NodeArray<Statement>
     }
 
     interface CaseOrDefaultClause : CaseClause, DefaultClause;
 
-    @native
     interface LabeledStatement : Statement {
         var label: Identifier
         var statement: Statement
     }
 
-    @native
     interface ThrowStatement : Statement {
         var expression: Expression
     }
 
-    @native
     interface TryStatement : Statement {
         var tryBlock: Block
         var catchClause: CatchClause? // = noImpl
         var finallyBlock: Block? // = noImpl
     }
 
-    @native
     interface CatchClause : Node {
         var variableDeclaration: VariableDeclaration
         var block: Block
     }
 
-    @native
     interface ClassLikeDeclaration : Declaration {
         @native("name")
         /*override*/ var identifierName: Identifier? // = noImpl
@@ -1123,22 +986,18 @@ object TS {
         var members: NodeArray<ClassElement>
     }
 
-    @native
     interface ClassDeclaration : ClassLikeDeclaration, DeclarationStatement {
         override var identifierName: Identifier? // = noImpl
     }
 
-    @native
     interface ClassExpression : ClassLikeDeclaration, PrimaryExpression
 
-    @native
     interface ClassElement : Declaration {
         var _classElementBrand: Any
         @native("name")
         /*override*/ val propertyName: PropertyName? // = noImpl
     }
 
-    @native
     interface TypeElement : Declaration {
         var _typeElementBrand: Any
         @native("name")
@@ -1146,7 +1005,6 @@ object TS {
         var questionToken: Node? // = noImpl
     }
 
-    @native
     interface InterfaceDeclaration : DeclarationStatement {
         override val identifierName: Identifier
         var typeParameters: NodeArray<TypeParameterDeclaration>? // = noImpl
@@ -1154,234 +1012,193 @@ object TS {
         var members: NodeArray<TypeElement>
     }
 
-    @native
     interface HeritageClause : Node {
         var token: SyntaxKind
         var types: NodeArray<ExpressionWithTypeArguments>? // = noImpl
     }
 
-    @native
     interface TypeAliasDeclaration : DeclarationStatement {
         override var identifierName: Identifier
         var typeParameters: NodeArray<TypeParameterDeclaration>? // = noImpl
         var type: TypeNode
     }
 
-    @native
     interface EnumMember : Declaration {
         override val declarationName: DeclarationName
         var initializer: Expression? // = noImpl
     }
 
-    @native
     interface EnumDeclaration : DeclarationStatement {
         override var identifierName: Identifier
         var members: NodeArray<EnumMember>
     }
 
-    @native
     interface ModuleDeclaration : DeclarationStatement {
-        /*override*/ var name: dynamic /* Identifier | LiteralExpression */
+        @native("name")
+        /*override*/ var dynamicName: dynamic /* Identifier | LiteralExpression */
         var body: dynamic /* ModuleBlock | ModuleDeclaration */
     }
 
-    @native
     interface ModuleBlock : Node, Statement {
         var statements: NodeArray<Statement>
     }
 
-    @native
     interface ImportEqualsDeclaration : DeclarationStatement {
         override var identifierName: Identifier
         var moduleReference: dynamic /* EntityName | ExternalModuleReference */
     }
 
-    @native
     interface ExternalModuleReference : Node {
         var expression: Expression? // = noImpl
     }
 
-    @native
     interface ImportDeclaration : Statement {
         var importClause: ImportClause? // = noImpl
         var moduleSpecifier: Expression
     }
 
-    @native
     interface ImportClause : Declaration {
         @native("name")
         /*override*/ var identifierName: Identifier? // = noImpl
         var namedBindings: dynamic /* NamespaceImport | NamedImports */? // = noImpl
     }
 
-    @native
     interface NamespaceImport : Declaration {
         @native("name")
         /*override*/ var identifierName: Identifier
     }
 
-    @native
     interface ExportDeclaration : DeclarationStatement {
         var exportClause: NamedExports? // = noImpl
         var moduleSpecifier: Expression? // = noImpl
     }
 
-    @native
     interface NamedImports : Node {
         var elements: NodeArray<ImportSpecifier>
     }
 
-    @native
     interface NamedExports : Node {
         var elements: NodeArray<ExportSpecifier>
     }
 
-    @native
     interface ImportSpecifier : Declaration {
         var propertyName: Identifier? // = noImpl
         @native("name")
         /*override*/ var identifierName: Identifier
     }
 
-    @native
     interface ExportSpecifier : Declaration {
         var propertyName: Identifier? // = noImpl
         @native("name")
         /*override*/ var identifierName: Identifier
     }
 
-    @native
     interface ExportAssignment : DeclarationStatement {
         var isExportEquals: Boolean? // = noImpl
         var expression: Expression
     }
 
-    @native
     interface FileReference : TextRange {
         var fileName: String
     }
 
-    @native
     interface CommentRange : TextRange {
         var hasTrailingNewLine: Boolean? // = noImpl
         var kind: SyntaxKind
     }
 
-    @native
     interface JSDocTypeExpression : Node {
         var type: JSDocType
     }
 
-    @native
     interface JSDocType : TypeNode {
         var _jsDocTypeBrand: Any
     }
 
-    @native
     interface JSDocAllType : JSDocType {
         var _JSDocAllTypeBrand: Any
     }
 
-    @native
     interface JSDocUnknownType : JSDocType {
         var _JSDocUnknownTypeBrand: Any
     }
 
-    @native
     interface JSDocArrayType : JSDocType {
         var elementType: JSDocType
     }
 
-    @native
     interface JSDocUnionType : JSDocType {
         var types: NodeArray<JSDocType>
     }
 
-    @native
     interface JSDocTupleType : JSDocType {
         var types: NodeArray<JSDocType>
     }
 
-    @native
     interface JSDocNonNullableType : JSDocType {
         var type: JSDocType
     }
 
-    @native
     interface JSDocNullableType : JSDocType {
         var type: JSDocType
     }
 
-    @native
     interface JSDocRecordType : JSDocType, TypeLiteralNode {
 //        override var members: NodeArray<JSDocRecordMember>
     }
 
-    @native
     interface JSDocTypeReference : JSDocType {
         var name: EntityName
         var typeArguments: NodeArray<JSDocType>
     }
 
-    @native
     interface JSDocOptionalType : JSDocType {
         var type: JSDocType
     }
 
-    @native
     interface JSDocFunctionType : JSDocType, SignatureDeclaration {
         override var parameters: NodeArray<ParameterDeclaration>
 //        override var type: JSDocType
     }
 
-    @native
     interface JSDocVariadicType : JSDocType {
         var type: JSDocType
     }
 
-    @native
     interface JSDocConstructorType : JSDocType {
         var type: JSDocType
     }
 
-    @native
     interface JSDocThisType : JSDocType {
         var type: JSDocType
     }
 
-    @native
     interface JSDocRecordMember : PropertySignature {
         override var propertyName: dynamic /* Identifier | LiteralExpression */
 //        override var type: JSDocType? // = noImpl
     }
 
-    @native
     interface JSDocComment : Node {
         var tags: NodeArray<JSDocTag>
     }
 
-    @native
     interface JSDocTag : Node {
         var atToken: Node
         var tagName: Identifier
     }
 
-    @native
     interface JSDocTemplateTag : JSDocTag {
         var typeParameters: NodeArray<TypeParameterDeclaration>
     }
 
-    @native
     interface JSDocReturnTag : JSDocTag {
         var typeExpression: JSDocTypeExpression
     }
 
-    @native
     interface JSDocTypeTag : JSDocTag {
         var typeExpression: JSDocTypeExpression
     }
 
-    @native
     interface JSDocParameterTag : JSDocTag {
         var preParameterName: Identifier? // = noImpl
         var typeExpression: JSDocTypeExpression? // = noImpl
@@ -1389,13 +1206,11 @@ object TS {
         var isBracketed: Boolean
     }
 
-    @native
     interface AmdDependency {
         var path: String
         var name: String
     }
 
-    @native
     interface SourceFile : Declaration {
         var statements: NodeArray<Statement>
         var endOfFileToken: Node
@@ -1414,31 +1229,26 @@ object TS {
         fun update(newText: String, textChangeRange: TextChangeRange): SourceFile
     }
 
-    @native
     interface ScriptReferenceHost {
         fun getCompilerOptions(): CompilerOptions
         fun getSourceFile(fileName: String): SourceFile
         fun getCurrentDirectory(): String
     }
 
-    @native
     interface ParseConfigHost {
         fun readDirectory(rootDir: String, extension: String, exclude: Array<String>): Array<String>
     }
 
-    @native
     interface WriteFileCallback {
         @nativeInvoke
         fun invoke(fileName: String, data: String, writeByteOrderMark: Boolean, onError: ((message: String) -> Unit)? = null)
     }
 
-    @native
     interface CancellationToken {
         fun isCancellationRequested(): Boolean
         fun throwIfCancellationRequested()
     }
 
-    @native
     interface Program : ScriptReferenceHost {
         fun getRootFileNames(): Array<String>
         fun getSourceFiles(): Array<SourceFile>
@@ -1451,7 +1261,6 @@ object TS {
         fun getTypeChecker(): TypeChecker
     }
 
-    @native
     interface SourceMapSpan {
         var emittedLine: Number
         var emittedColumn: Number
@@ -1461,7 +1270,6 @@ object TS {
         var sourceIndex: Number
     }
 
-    @native
     interface SourceMapData {
         var sourceMapFilePath: String
         var jsSourceMappingURL: String
@@ -1482,18 +1290,16 @@ object TS {
         DiagnosticsPresent_OutputsGenerated /* = 2 */
     }
 
-    @native
     interface EmitResult {
         var emitSkipped: Boolean
         var diagnostics: Array<Diagnostic>
     }
 
-    @native
     interface TypeChecker {
         fun getTypeOfSymbolAtLocation(symbol: Symbol, node: Node): Type
         fun getDeclaredTypeOfSymbol(symbol: Symbol): Type
         fun getPropertiesOfType(type: Type): Array<Symbol>
-        fun getPropertyOfType(type: Type, propertyName: String): Symbol
+        fun getPropertyOfType(type: Type, propertyName: String): Symbol?
         fun getSignaturesOfType(type: Type, kind: SignatureKind): Array<Signature>
         fun getIndexTypeOfType(type: Type, kind: IndexKind): Type
         fun getBaseTypes(type: InterfaceType): Array<ObjectType>
@@ -1503,7 +1309,7 @@ object TS {
         fun getSymbolsOfParameterPropertyDeclaration(parameter: ParameterDeclaration, parameterName: String): Array<Symbol>
         fun getShorthandAssignmentValueSymbol(location: Node): Symbol
         fun getExportSpecifierLocalTargetSymbol(location: ExportSpecifier): Symbol
-        fun getTypeAtLocation(node: Node): Type
+        fun getTypeAtLocation(node: Node): Type?
         fun typeToString(type: Type, enclosingDeclaration: Node? = null, flags: TypeFormatFlags? = null): String
         fun symbolToString(symbol: Symbol, enclosingDeclaration: Node? = null, meaning: SymbolFlags? = null): String
         fun getSymbolDisplayBuilder(): SymbolDisplayBuilder
@@ -1526,7 +1332,6 @@ object TS {
         fun isOptionalParameter(node: ParameterDeclaration): Boolean
     }
 
-    @native
     interface SymbolDisplayBuilder {
         fun buildTypeDisplay(type: Type, writer: SymbolWriter, enclosingDeclaration: Node? = null, flags: TypeFormatFlags? = null)
         fun buildSymbolDisplay(symbol: Symbol, writer: SymbolWriter, enclosingDeclaration: Node? = null, meaning: SymbolFlags? = null, flags: SymbolFormatFlags? = null)
@@ -1540,7 +1345,6 @@ object TS {
         fun buildReturnTypeDisplay(signature: Signature, writer: SymbolWriter, enclosingDeclaration: Node? = null, flags: TypeFormatFlags? = null)
     }
 
-    @native
     interface SymbolWriter {
         fun writeKeyword(text: String)
         fun writeOperator(text: String)
@@ -1583,18 +1387,15 @@ object TS {
         Identifier /* = 1 */
     }
 
-    @native
     interface TypePredicateBase {
         var kind: TypePredicateKind
         var type: Type
     }
 
-    @native
     interface ThisTypePredicate : TypePredicateBase {
         var _thisTypePredicateBrand: Any
     }
 
-    @native
     interface IdentifierTypePredicate : TypePredicateBase {
         var parameterName: String
         var parameterIndex: Number
@@ -1668,7 +1469,6 @@ object TS {
         Export /* = 7340032 */
     }
 
-    @native
     interface Symbol {
         var flags: SymbolFlags
         var name: String
@@ -1682,7 +1482,6 @@ object TS {
         fun getDocumentationComment(): Array<SymbolDisplayPart>
     }
 
-    @native
     interface SymbolTable {
         @nativeGetter
         fun get(index: String): Symbol?
@@ -1724,7 +1523,6 @@ object TS {
 
     interface DestructuringPattern/* : BindingPattern, ObjectLiteralExpression, ArrayLiteralExpression*/
 
-    @native
     interface Type {
         var flags: TypeFlags
         var symbol: Symbol? // = noImpl
@@ -1738,18 +1536,15 @@ object TS {
         fun getConstructSignatures(): Array<Signature>
         fun getStringIndexType(): Type
         fun getNumberIndexType(): Type
-        fun getBaseTypes(): Array<ObjectType>
+        fun getBaseTypes(): Array<ObjectType>?
     }
 
-    @native
     interface StringLiteralType : Type {
         var text: String
     }
 
-    @native
     interface ObjectType : Type
 
-    @native
     interface InterfaceType : ObjectType {
         var typeParameters: Array<TypeParameter>
         var outerTypeParameters: Array<TypeParameter>
@@ -1757,7 +1552,6 @@ object TS {
         var thisType: TypeParameter
     }
 
-    @native
     interface InterfaceTypeWithDeclaredMembers : InterfaceType {
         var declaredProperties: Array<Symbol>
         var declaredCallSignatures: Array<Signature>
@@ -1766,32 +1560,25 @@ object TS {
         var declaredNumberIndexType: Type
     }
 
-    @native
     interface TypeReference : ObjectType {
         var target: GenericType
         var typeArguments: Array<Type>
     }
 
-    @native
     interface GenericType : InterfaceType, TypeReference
 
-    @native
     interface TupleType : ObjectType {
         var elementTypes: Array<Type>
     }
 
-    @native
     interface UnionOrIntersectionType : Type {
         var types: Array<Type>
     }
 
-    @native
     interface UnionType : UnionOrIntersectionType
 
-    @native
     interface IntersectionType : UnionOrIntersectionType
 
-    @native
     interface TypeParameter : Type {
         var constraint: Type
     }
@@ -1802,7 +1589,6 @@ object TS {
         Construct /* = 1 */
     }
 
-    @native
     interface Signature {
         var declaration: SignatureDeclaration
         var typeParameters: Array<TypeParameter>
@@ -1820,7 +1606,6 @@ object TS {
         Number /* = 1 */
     }
 
-    @native
     interface DiagnosticMessage {
         var key: String
         var category: DiagnosticCategory
@@ -1828,7 +1613,6 @@ object TS {
         var message: String
     }
 
-    @native
     interface DiagnosticMessageChain {
         var messageText: String
         var category: DiagnosticCategory
@@ -1836,7 +1620,6 @@ object TS {
         var next: DiagnosticMessageChain? // = noImpl
     }
 
-    @native
     interface Diagnostic {
         var file: SourceFile
         var start: Number
@@ -1859,7 +1642,6 @@ object TS {
         NodeJs /* = 2 */
     }
 
-    @native
     interface CompilerOptions {
         var allowNonTsExtensions: Boolean? // = noImpl
         var charset: String? // = noImpl
@@ -1918,7 +1700,6 @@ object TS {
         fun set(option: String, value: dynamic /* String | Number | Boolean */)
     }
 
-    @native
     interface TypingOptions {
         var enableAutoDiscovery: Boolean? // = noImpl
         var include: Array<String>? // = noImpl
@@ -1930,7 +1711,6 @@ object TS {
         fun set(option: String, value: dynamic /* Array<String> | Boolean */)
     }
 
-    @native
     interface DiscoverTypingsInfo {
         var fileNames: Array<String>
         var projectRootPath: String
@@ -1964,7 +1744,6 @@ object TS {
         LineFeed /* = 1 */
     }
 
-    @native
     interface LineAndCharacter {
         var line: Number
         var character: Number
@@ -1994,7 +1773,6 @@ object TS {
         JSX /* = 1 */
     }
 
-    @native
     interface ParsedCommandLine {
         var options: CompilerOptions
         var typingOptions: TypingOptions? // = noImpl
@@ -2002,26 +1780,22 @@ object TS {
         var errors: Array<Diagnostic>
     }
 
-    @native
     interface ModuleResolutionHost {
         fun fileExists(fileName: String): Boolean
         fun readFile(fileName: String): String
         val directoryExists: ((directoryName: String) -> Boolean)? // = noImpl
     }
 
-    @native
     interface ResolvedModule {
         var resolvedFileName: String
         var isExternalLibraryImport: Boolean? // = noImpl
     }
 
-    @native
     interface ResolvedModuleWithFailedLookupLocations {
         var resolvedModule: ResolvedModule
         var failedLookupLocations: Array<String>
     }
 
-    @native
     interface CompilerHost : ModuleResolutionHost {
         fun getSourceFile(fileName: String, languageVersion: ScriptTarget, onError: ((message: String) -> Unit)? = null): SourceFile
         val getCancellationToken: (() -> CancellationToken)? // = noImpl
@@ -2034,19 +1808,16 @@ object TS {
         val resolveModuleNames: ((moduleNames: Array<String>, containingFile: String) -> Array<ResolvedModule>)? // = noImpl
     }
 
-    @native
     interface TextSpan {
         var start: Number
         var length: Number
     }
 
-    @native
     interface TextChangeRange {
         var span: TextSpan
         var newLength: Number
     }
 
-    @native
     interface System {
         var args: Array<String>
         var newLine: String
@@ -2067,24 +1838,20 @@ object TS {
         fun exit(exitCode: Number? = null)
     }
 
-    @native
     interface FileWatcher {
         fun close()
     }
 
-    @native
     interface DirectoryWatcher : FileWatcher {
         var directoryPath: String /*Path*/
         var referenceCount: Number
     }
 
-    @native
     interface ErrorCallback {
         @nativeInvoke
         fun invoke(message: DiagnosticMessage, length: Number)
     }
 
-    @native
     interface Scanner {
         fun getStartPos(): Number
         fun getToken(): SyntaxKind
@@ -2115,57 +1882,76 @@ object TS {
         fun <T> tryScan(callback: () -> T): T
     }
 
-    @native
-    fun Node.getSourceFile(): SourceFile // = noImpl
-
-    @native
-    fun Node.getChildCount(sourceFile: SourceFile? = null): Number // = noImpl
-
-    @native
-    fun Node.getChildAt(index: Number, sourceFile: SourceFile? = null): Node // = noImpl
-
-    @native
-    fun Node.getChildren(sourceFile: SourceFile? = null): Array<Node> // = noImpl
-
-    @native
-    fun Node.getStart(sourceFile: SourceFile? = null): Number // = noImpl
-
-    @native
-    fun Node.getFullStart(): Number // = noImpl
-
-    @native
-    fun Node.getEnd(): Number // = noImpl
-
-    @native
-    fun Node.getWidth(sourceFile: SourceFile? = null): Number // = noImpl
-
-    @native
-    fun Node.getFullWidth(): Number // = noImpl
-
-    @native
-    fun Node.getLeadingTriviaWidth(sourceFile: SourceFile? = null): Number // = noImpl
-
-    @native
-    fun Node.getFullText(sourceFile: SourceFile? = null): String // = noImpl
-
-    @native
-    fun Node.getText(sourceFile: SourceFile? = null): String // = noImpl
-
-    @native
-    fun Node.getFirstToken(sourceFile: SourceFile? = null): Node // = noImpl
-
-    @native
-    fun Node.getLastToken(sourceFile: SourceFile? = null): Node // = noImpl
-
-    @native
+    fun tokenToString(t: SyntaxKind): String = noImpl
+    fun getPositionOfLineAndCharacter(sourceFile: SourceFile, line: Number, character: Number): Number = noImpl
+    fun getLineAndCharacterOfPosition(sourceFile: SourceFile, position: Number): LineAndCharacter = noImpl
+    fun isWhiteSpace(ch: Number): Boolean = noImpl
+    fun isLineBreak(ch: Number): Boolean = noImpl
+    fun couldStartTrivia(text: String, pos: Number): Boolean = noImpl
+    fun getLeadingCommentRanges(text: String, pos: Number): Array<CommentRange> = noImpl
+    fun getTrailingCommentRanges(text: String, pos: Number): Array<CommentRange> = noImpl
+    fun getShebang(text: String): String = noImpl
+    fun isIdentifierStart(ch: Number, languageVersion: ScriptTarget): Boolean = noImpl
+    fun isIdentifierPart(ch: Number, languageVersion: ScriptTarget): Boolean = noImpl
+    fun createScanner(languageVersion: ScriptTarget, skipTrivia: Boolean, languageVariant: LanguageVariant? = null, text: String? = null, onError: ErrorCallback? = null, start: Number? = null, length: Number? = null): Scanner = noImpl
+    fun getDefaultLibFileName(options: CompilerOptions): String = noImpl
+    fun textSpanEnd(span: TextSpan): Number = noImpl
+    fun textSpanIsEmpty(span: TextSpan): Boolean = noImpl
+    fun textSpanContainsPosition(span: TextSpan, position: Number): Boolean = noImpl
+    fun textSpanContainsTextSpan(span: TextSpan, other: TextSpan): Boolean = noImpl
+    fun textSpanOverlapsWith(span: TextSpan, other: TextSpan): Boolean = noImpl
+    fun textSpanOverlap(span1: TextSpan, span2: TextSpan): TextSpan = noImpl
+    fun textSpanIntersectsWithTextSpan(span: TextSpan, other: TextSpan): Boolean = noImpl
+    fun textSpanIntersectsWith(span: TextSpan, start: Number, length: Number): Boolean = noImpl
+    fun decodedTextSpanIntersectsWith(start1: Number, length1: Number, start2: Number, length2: Number): Boolean = noImpl
+    fun textSpanIntersectsWithPosition(span: TextSpan, position: Number): Boolean = noImpl
+    fun textSpanIntersection(span1: TextSpan, span2: TextSpan): TextSpan = noImpl
+    fun createTextSpan(start: Number, length: Number): TextSpan = noImpl
+    fun createTextSpanFromBounds(start: Number, end: Number): TextSpan = noImpl
+    fun textChangeRangeNewSpan(range: TextChangeRange): TextSpan = noImpl
+    fun textChangeRangeIsUnchanged(range: TextChangeRange): Boolean = noImpl
+    fun createTextChangeRange(span: TextSpan, newLength: Number): TextChangeRange = noImpl
+    var unchangedTextChangeRange: TextChangeRange = noImpl
+    fun collapseTextChangeRangesAcrossMultipleVersions(changes: Array<TextChangeRange>): TextChangeRange = noImpl
+    fun getTypeParameterOwner(d: Declaration): Declaration = noImpl
+    fun isParameterPropertyDeclaration(node: ParameterDeclaration): Boolean = noImpl
+    fun createNode(kind: SyntaxKind, pos: Number? = null, end: Number? = null): Node = noImpl
+    fun <T> forEachChild(node: Node, cbNode: (node: Node) -> T, cbNodeArray: ((nodes: Array<Node>) -> T)? = null): T = noImpl
+    fun createSourceFile(fileName: String, sourceText: String, languageVersion: ScriptTarget, setParentNodes: Boolean? = null, scriptKind: ScriptKind? = null): SourceFile = noImpl
+    fun updateSourceFile(sourceFile: SourceFile, newText: String, textChangeRange: TextChangeRange, aggressiveChecks: Boolean? = null): SourceFile = noImpl
+    var version: String = noImpl
+    fun findConfigFile(searchPath: String, fileExists: (fileName: String) -> Boolean): String = noImpl
+    fun resolveTripleslashReference(moduleName: String, containingFile: String): String = noImpl
+    fun resolveModuleName(moduleName: String, containingFile: String, compilerOptions: CompilerOptions, host: ModuleResolutionHost): ResolvedModuleWithFailedLookupLocations = noImpl
+    fun nodeModuleNameResolver(moduleName: String, containingFile: String, compilerOptions: CompilerOptions, host: ModuleResolutionHost): ResolvedModuleWithFailedLookupLocations = noImpl
+    fun classicNameResolver(moduleName: String, containingFile: String, compilerOptions: CompilerOptions, host: ModuleResolutionHost): ResolvedModuleWithFailedLookupLocations = noImpl
+    fun createCompilerHost(options: CompilerOptions, setParentNodes: Boolean? = null): CompilerHost = noImpl
+    fun getPreEmitDiagnostics(program: Program, sourceFile: SourceFile? = null, cancellationToken: CancellationToken? = null): Array<Diagnostic> = noImpl
+    fun flattenDiagnosticMessageText(messageText: dynamic /* String | DiagnosticMessageChain */, newLine: String): String = noImpl
+    fun createProgram(rootNames: Array<String>, options: CompilerOptions, host: CompilerHost? = null, oldProgram: Program? = null): Program = noImpl
+    fun parseCommandLine(commandLine: Array<String>, readFile: ((path: String) -> String)? = null): ParsedCommandLine = noImpl
+    interface `T$0` {
+        var config: Any? get() = noImpl; set(v) {}
+        var error: Diagnostic? get() = noImpl; set(v) {}
+    }
+    fun readConfigFile(fileName: String, readFile: (path: String) -> String): `T$0` = noImpl
+    fun parseConfigFileTextToJson(fileName: String, jsonText: String): `T$0` = noImpl
+    fun parseJsonConfigFileContent(json: Any, host: ParseConfigHost, basePath: String, existingOptions: CompilerOptions? = null, configFileName: String? = null): ParsedCommandLine = noImpl
+    interface `T$1` {
+        var options: CompilerOptions
+        var errors: Array<Diagnostic>
+    }
+    fun convertCompilerOptionsFromJson(jsonOptions: Any, basePath: String, configFileName: String? = null): `T$1` = noImpl
+    var servicesVersion: String = noImpl
     interface IScriptSnapshot {
-        fun getText(start: Number, end: Number): String
+        fun getText(start: Number = noImpl, end: Number = noImpl): String
         fun getLength(): Number
         fun getChangeRange(oldSnapshot: IScriptSnapshot): TextChangeRange
         val dispose: (() -> Unit)? // = noImpl
     }
-
-    @native
+    object ScriptSnapshot {
+        fun fromString(text: String): IScriptSnapshot = noImpl
+    }
     interface PreProcessedFileInfo {
         var referencedFiles: Array<FileReference>
         var importedFiles: Array<FileReference>
@@ -2173,33 +1959,30 @@ object TS {
         var isLibFile: Boolean
     }
 
-    @native
     interface HostCancellationToken {
         fun isCancellationRequested(): Boolean
     }
 
-    @native
     interface LanguageServiceHost {
         fun getCompilationSettings(): CompilerOptions
-        val getNewLine: (() -> String)? // = noImpl
-        val getProjectVersion: (() -> String)? // = noImpl
+        val getNewLine: (() -> String)? get() = noImpl
+        val getProjectVersion: (() -> String)? get() = noImpl
         fun getScriptFileNames(): Array<String>
-        val getScriptKind: ((fileName: String) -> ScriptKind)? // = noImpl
+        val getScriptKind: ((fileName: String) -> ScriptKind)? get() = noImpl
         fun getScriptVersion(fileName: String): String
-        fun getScriptSnapshot(fileName: String): IScriptSnapshot
-        val getLocalizedDiagnosticMessages: (() -> Any)? // = noImpl
-        val getCancellationToken: (() -> HostCancellationToken)? // = noImpl
+        fun getScriptSnapshot(fileName: String): IScriptSnapshot?
+        val getLocalizedDiagnosticMessages: (() -> Any)? get() = noImpl
+        val getCancellationToken: (() -> HostCancellationToken)? get() = noImpl
         fun getCurrentDirectory(): String
         fun getDefaultLibFileName(options: CompilerOptions): String
-        val log: ((s: String) -> Unit)? // = noImpl
-        val trace: ((s: String) -> Unit)? // = noImpl
-        val error: ((s: String) -> Unit)? // = noImpl
-        val useCaseSensitiveFileNames: (() -> Boolean)? // = noImpl
-        val resolveModuleNames: ((moduleNames: Array<String>, containingFile: String) -> Array<ResolvedModule>)? // = noImpl
-        val directoryExists: ((directoryName: String) -> Boolean)? // = noImpl
+        val log: ((s: String) -> Unit)? get() = noImpl
+        val trace: ((s: String) -> Unit)? get() = noImpl
+        val error: ((s: String) -> Unit)? get() = noImpl
+        val useCaseSensitiveFileNames: (() -> Boolean)? get() = noImpl
+        val resolveModuleNames: ((moduleNames: Array<String>, containingFile: String) -> Array<ResolvedModule>)? get() = noImpl
+        val directoryExists: ((directoryName: String) -> Boolean)? get() = noImpl
     }
 
-    @native
     interface LanguageService {
         fun cleanupSemanticCache()
         fun getSyntacticDiagnostics(fileName: String): Array<Diagnostic>
@@ -2239,19 +2022,16 @@ object TS {
         fun dispose()
     }
 
-    @native
     interface Classifications {
         var spans: Array<Number>
         var endOfLineState: EndOfLineState
     }
 
-    @native
     interface ClassifiedSpan {
         var textSpan: TextSpan
         var classificationType: String
     }
 
-    @native
     interface NavigationBarItem {
         var text: String
         var kind: String
@@ -2263,13 +2043,11 @@ object TS {
         var grayed: Boolean
     }
 
-    @native
     interface TodoCommentDescriptor {
         var text: String
         var priority: Number
     }
 
-    @native
     interface TodoComment {
         var descriptor: TodoCommentDescriptor
         var message: String
@@ -2281,39 +2059,33 @@ object TS {
         val newText: String
     }
 
-    @native
     interface TextInsertion {
         var newText: String
         var caretOffset: Number
     }
 
-    @native
     interface RenameLocation {
         var textSpan: TextSpan
         var fileName: String
     }
 
-    @native
     interface ReferenceEntry {
         var textSpan: TextSpan
         var fileName: String
         var isWriteAccess: Boolean
     }
 
-    @native
     interface DocumentHighlights {
         var fileName: String
         var highlightSpans: Array<HighlightSpan>
     }
 
-    @native
     interface HighlightSpan {
         var fileName: String? // = noImpl
         var textSpan: TextSpan
         var kind: String
     }
 
-    @native
     interface NavigateToItem {
         var name: String
         var kind: String
@@ -2326,7 +2098,6 @@ object TS {
         var containerKind: String
     }
 
-    @native
     interface EditorOptions {
         var IndentSize: Number
         var TabSize: Number
@@ -2342,7 +2113,6 @@ object TS {
         Smart /* = 2 */
     }
 
-    @native
     interface FormatCodeOptions : EditorOptions {
         var InsertSpaceAfterCommaDelimiter: Boolean
         var InsertSpaceAfterSemicolonInForStatements: Boolean
@@ -2361,7 +2131,6 @@ object TS {
         fun set(s: String, value: dynamic /* Boolean | Number | String */)
     }
 
-    @native
     interface DefinitionInfo {
         var fileName: String
         var textSpan: TextSpan
@@ -2371,7 +2140,6 @@ object TS {
         var containerName: String
     }
 
-    @native
     interface ReferencedSymbol {
         var definition: DefinitionInfo
         var references: Array<ReferenceEntry>
@@ -2403,13 +2171,11 @@ object TS {
         regularExpressionLiteral /* = 21 */
     }
 
-    @native
     interface SymbolDisplayPart {
         var text: String
         var kind: String
     }
 
-    @native
     interface QuickInfo {
         var kind: String
         var kindModifiers: String
@@ -2418,7 +2184,6 @@ object TS {
         var documentation: Array<SymbolDisplayPart>
     }
 
-    @native
     interface RenameInfo {
         var canRename: Boolean
         var localizedErrorMessage: String
@@ -2429,7 +2194,6 @@ object TS {
         var triggerSpan: TextSpan
     }
 
-    @native
     interface SignatureHelpParameter {
         var name: String
         var documentation: Array<SymbolDisplayPart>
@@ -2437,7 +2201,6 @@ object TS {
         var isOptional: Boolean
     }
 
-    @native
     interface SignatureHelpItem {
         var isVariadic: Boolean
         var prefixDisplayParts: Array<SymbolDisplayPart>
@@ -2447,7 +2210,6 @@ object TS {
         var documentation: Array<SymbolDisplayPart>
     }
 
-    @native
     interface SignatureHelpItems {
         var items: Array<SignatureHelpItem>
         var applicableSpan: TextSpan
@@ -2456,14 +2218,12 @@ object TS {
         var argumentCount: Number
     }
 
-    @native
     interface CompletionInfo {
         var isMemberCompletion: Boolean
         var isNewIdentifierLocation: Boolean
         var entries: Array<CompletionEntry>
     }
 
-    @native
     interface CompletionEntry {
         var name: String
         var kind: String
@@ -2471,7 +2231,6 @@ object TS {
         var sortText: String
     }
 
-    @native
     interface CompletionEntryDetails {
         var name: String
         var kind: String
@@ -2480,7 +2239,6 @@ object TS {
         var documentation: Array<SymbolDisplayPart>
     }
 
-    @native
     interface OutliningSpan {
         var textSpan: TextSpan
         var hintSpan: TextSpan
@@ -2488,7 +2246,6 @@ object TS {
         var autoCollapse: Boolean
     }
 
-    @native
     interface EmitOutput {
         var outputFiles: Array<OutputFile>
         var emitSkipped: Boolean
@@ -2501,7 +2258,6 @@ object TS {
         Declaration /* = 2 */
     }
 
-    @native
     interface OutputFile {
         var name: String
         var writeByteOrderMark: Boolean
@@ -2532,25 +2288,21 @@ object TS {
         RegExpLiteral /* = 8 */
     }
 
-    @native
     interface ClassificationResult {
         var finalLexState: EndOfLineState
         var entries: Array<ClassificationInfo>
     }
 
-    @native
     interface ClassificationInfo {
         var length: Number
         var classification: TokenClass
     }
 
-    @native
     interface Classifier {
         fun getClassificationsForLine(text: String, lexState: EndOfLineState, syntacticClassifierAbsent: Boolean): ClassificationResult
         fun getEncodedLexicalClassifications(text: String, endOfLineState: EndOfLineState, syntacticClassifierAbsent: Boolean): Classifications
     }
 
-    @native
     interface DocumentRegistry {
         fun acquireDocument(fileName: String, compilationSettings: CompilerOptions, scriptSnapshot: IScriptSnapshot, version: String, scriptKind: ScriptKind? = null): SourceFile
         fun updateDocument(fileName: String, compilationSettings: CompilerOptions, scriptSnapshot: IScriptSnapshot, version: String, scriptKind: ScriptKind? = null): SourceFile
@@ -2586,12 +2338,13 @@ object TS {
         jsxAttributeStringLiteralValue /* = 24 */
     }
 
-    @native
     interface DisplayPartsSymbolWriter : SymbolWriter {
         fun displayParts(): Array<SymbolDisplayPart>
     }
 
-    @native
+    fun displayPartsToString(displayParts: Array<SymbolDisplayPart>): String = noImpl
+    fun getDefaultCompilerOptions(): CompilerOptions = noImpl
+
     interface TranspileOptions {
         var compilerOptions: CompilerOptions? // = noImpl
         var fileName: String? // = noImpl
@@ -2600,10 +2353,20 @@ object TS {
         var renamedDependencies: JsMap<String>? // = noImpl
     }
 
-    @native
     interface TranspileOutput {
         var outputText: String
         var diagnostics: Array<Diagnostic>? // = noImpl
         var sourceMapText: String? // = noImpl
     }
+    
+    fun transpileModule(input: String, transpileOptions: TranspileOptions): TranspileOutput = noImpl
+    fun transpile(input: String, compilerOptions: CompilerOptions? = null, fileName: String? = null, diagnostics: Array<Diagnostic>? = null, moduleName: String? = null): String = noImpl
+    fun createLanguageServiceSourceFile(fileName: String, scriptSnapshot: IScriptSnapshot, scriptTarget: ScriptTarget, version: String, setNodeParents: Boolean, scriptKind: ScriptKind? = null): SourceFile = noImpl
+    var disableIncrementalParsing: Boolean = noImpl
+    fun updateLanguageServiceSourceFile(sourceFile: SourceFile, scriptSnapshot: IScriptSnapshot, version: String, textChangeRange: TextChangeRange, aggressiveChecks: Boolean? = null): SourceFile = noImpl
+    fun createDocumentRegistry(useCaseSensitiveFileNames: Boolean? = null, currentDirectory: String? = null): DocumentRegistry = noImpl
+    fun preProcessFile(sourceText: String, readImportFiles: Boolean? = null, detectJavaScriptImports: Boolean? = null): PreProcessedFileInfo = noImpl
+    fun createLanguageService(host: LanguageServiceHost, documentRegistry: DocumentRegistry? = null): LanguageService = noImpl
+    fun createClassifier(): Classifier = noImpl
+    fun getDefaultLibFilePath(options: CompilerOptions): String = noImpl
 }
