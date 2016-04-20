@@ -25,7 +25,6 @@ import ts2kt.utils.assert
 import ts2kt.utils.hasFlag
 import ts2kt.utils.join
 import typescript.TS
-import typescript.ts
 import typescript.unescapeIdentifier
 
 val ANY = "Any"
@@ -67,7 +66,7 @@ fun TS.ParameterDeclaration.toKotlinParam(typeMapper: ObjectTypeToKotlinTypeMapp
 
             originalNodeKind === TS.SyntaxKind.TypeReference &&
             (originalNodeType as TS.TypeReferenceNode).typeName.text == "Array" -> {
-                val typeArguments = (originalNodeType as TS.TypeReferenceNode).typeArguments!!.arr
+                val typeArguments = originalNodeType.typeArguments!!.arr
                 assert(typeArguments.size == 1, "Array should have one generic paramater, but have ${typeArguments.size}.")
                 nodeType = typeArguments[0]
             }
@@ -215,48 +214,48 @@ fun TS.UnionTypeNode.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper):
 }
 
 
-fun forEachChild(visitor: Visitor, node: dynamic) {
-    ts.forEachChild(node) { node ->
+fun forEachChild(visitor: Visitor, node: TS.Node) {
+    TS.forEachChild(node, { node ->
         visitNode(visitor, node)
-    }
+    })
 }
 
-fun visitNode(visitor: Visitor, node: dynamic): Unit {
+fun visitNode(visitor: Visitor, node: TS.Node?): Unit {
     if (node == null) return
 
     when (node.kind) {
-        TS.SyntaxKind.ModuleDeclaration -> visitor.visitModuleDeclaration(node)
+        TS.SyntaxKind.ModuleDeclaration -> visitor.visitModuleDeclaration(node as TS.ModuleDeclaration)
 
-        TS.SyntaxKind.FunctionDeclaration    -> visitor.visitFunctionDeclaration(node)
-        TS.SyntaxKind.VariableStatement -> visitor.visitVariableStatement(node)
+        TS.SyntaxKind.FunctionDeclaration    -> visitor.visitFunctionDeclaration(node as TS.FunctionDeclaration)
+        TS.SyntaxKind.VariableStatement -> visitor.visitVariableStatement(node as TS.VariableStatement)
 
-        TS.SyntaxKind.EnumDeclaration -> visitor.visitEnumDeclaration(node)
+        TS.SyntaxKind.EnumDeclaration -> visitor.visitEnumDeclaration(node as TS.EnumDeclaration)
 
-        TS.SyntaxKind.ClassDeclaration -> visitor.visitClassDeclaration(node)
-        TS.SyntaxKind.InterfaceDeclaration -> visitor.visitInterfaceDeclaration(node)
+        TS.SyntaxKind.ClassDeclaration -> visitor.visitClassDeclaration(node as TS.ClassDeclaration)
+        TS.SyntaxKind.InterfaceDeclaration -> visitor.visitInterfaceDeclaration(node as TS.InterfaceDeclaration)
 
-        TS.SyntaxKind.HeritageClause -> visitor.visitHeritageClause(node)
+        TS.SyntaxKind.HeritageClause -> visitor.visitHeritageClause(node as TS.HeritageClause)
 
-        TS.SyntaxKind.Constructor -> visitor.visitConstructorDeclaration(node)
-        TS.SyntaxKind.ConstructSignature -> visitor.visitConstructSignatureDeclaration(node)
+        TS.SyntaxKind.Constructor -> visitor.visitConstructorDeclaration(node as TS.ConstructorDeclaration)
+        TS.SyntaxKind.ConstructSignature -> visitor.visitConstructSignatureDeclaration(node as TS.ConstructorDeclaration)
 
         // TODO what is difference between MethodSignature and MethodDeclaration
         TS.SyntaxKind.MethodDeclaration,
-        TS.SyntaxKind.MethodSignature -> visitor.visitMethodDeclaration(node)
+        TS.SyntaxKind.MethodSignature -> visitor.visitMethodDeclaration(node as TS.MethodDeclaration)
 
         // TODO what is difference between PropertySignature and PropertyDeclaration
         TS.SyntaxKind.PropertyDeclaration,
-        TS.SyntaxKind.PropertySignature -> visitor.visitPropertyDeclaration(node)
+        TS.SyntaxKind.PropertySignature -> visitor.visitPropertyDeclaration(node as TS.PropertyDeclaration)
 
-        TS.SyntaxKind.IndexSignature -> visitor.visitIndexSignature(node)
-        TS.SyntaxKind.CallSignature -> visitor.visitSignatureDeclaration(node)
+        TS.SyntaxKind.IndexSignature -> visitor.visitIndexSignature(node as TS.IndexSignatureDeclaration)
+        TS.SyntaxKind.CallSignature -> visitor.visitSignatureDeclaration(node as TS.SignatureDeclaration)
 
-        TS.SyntaxKind.ExportAssignment -> visitor.visitExportAssignment(node)
+        TS.SyntaxKind.ExportAssignment -> visitor.visitExportAssignment(node as TS.ExportAssignment)
 
         TS.SyntaxKind.EndOfFileToken -> { /* ignore */ }
         else -> {
-            val message = "Unsupported node.kind: ${node.kind}, name: ${ts.SyntaxKind[node.kind]}"
-            if (reportedKinds.add(node.kind)) console.error(message)
+            val message = "Unsupported node.kind: ${node.kind}, name: ${node.kind.str}"
+            if (reportedKinds.add(node.kind.id)) console.error(message)
             unsupportedNode(node)
         }
     }
@@ -266,7 +265,10 @@ val <T> TS.NodeArray<T>.arr: Array<T>
     get() = this.asDynamic()
 
 val TS.SyntaxKind.str: String
-    get() = ts.SyntaxKind[this]
+    get() = js("ts").SyntaxKind[this]
+
+val TS.SyntaxKind.id: Int
+    get() = this.asDynamic()
 
 // TODO review where we use raw text
 val TS.Identifier.unescapedText: String

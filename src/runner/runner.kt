@@ -22,7 +22,8 @@ import ts2kt.utils.hasFlag
 import ts2kt.utils.push
 import ts2kt.utils.shift
 import typescript.TS
-import typescript.ts
+import typescript.getDirectoryPath
+import typescript.normalizePath
 import java.util.*
 import kotlin.js.native
 
@@ -40,14 +41,14 @@ val fs = require("fs") as node.fs
 
 internal val reportedKinds = HashSet<Int>()
 
-private val file2scriptSnapshotCache: MutableMap<String, dynamic> = hashMapOf()
+private val file2scriptSnapshotCache: MutableMap<String, TS.IScriptSnapshot> = hashMapOf()
 
 // TODO drop? Probably we don't need own caching
-private fun getScriptSnapshotFromFile(path: String): dynamic {
+private fun getScriptSnapshotFromFile(path: String): TS.IScriptSnapshot {
     var scriptSnapshot  = file2scriptSnapshotCache[path]
 
     if (scriptSnapshot == null) {
-        scriptSnapshot = ts.ScriptSnapshot.fromString(fs.readFileSync(path).toString())
+        scriptSnapshot = TS.ScriptSnapshot.fromString(fs.readFileSync(path).toString())
         file2scriptSnapshotCache[path] = scriptSnapshot
     }
 
@@ -57,25 +58,24 @@ private fun getScriptSnapshotFromFile(path: String): dynamic {
 val LIB_D_TS_WITH_SNAPSHOT = "lib.d.ts" to getScriptSnapshotFromFile(PATH_TO_LIB_D_TS)
 
 val host = FileSystemBasedLSH(mapOf(), "")
-val documentRegistry = ts.createDocumentRegistry()
-val languageService: TS.LanguageService = ts.createLanguageService(host, documentRegistry)
-
+val documentRegistry = TS.createDocumentRegistry()
+val languageService = TS.createLanguageService(host, documentRegistry)
 
 fun translate(srcPath: String): String {
-    val normalizeSrcPath: String = ts.normalizePath(srcPath)
+    val normalizeSrcPath = TS.normalizePath(srcPath)
 
     val file2scriptSnapshot = hashMapOf(LIB_D_TS_WITH_SNAPSHOT, normalizeSrcPath to getScriptSnapshotFromFile(normalizeSrcPath))
 
     val filesToProcess = arrayOf(normalizeSrcPath)
     while(filesToProcess.isNotEmpty()) {
         val curFile = filesToProcess.shift()
-        val curDir = ts.getDirectoryPath(curFile) + "/"
+        val curDir = TS.getDirectoryPath(curFile) + "/"
 
-        val result = ts.preProcessFile(file2scriptSnapshot[curFile].getText())
+        val result = TS.preProcessFile(file2scriptSnapshot[curFile]!!.getText())
 
-        val referencedFiles: Array<dynamic> = result.referencedFiles
+        val referencedFiles = result.referencedFiles
         for (referencedFile in referencedFiles) {
-            val referencedFilePath = ts.normalizePath(curDir + referencedFile.fileName)
+            val referencedFilePath = TS.normalizePath(curDir + referencedFile.fileName)
 
             if (referencedFilePath in file2scriptSnapshot) continue
 
@@ -85,7 +85,7 @@ fun translate(srcPath: String): String {
     }
 
     host.file2scriptSnapshot = file2scriptSnapshot
-    host.currentDirectory = ts.getDirectoryPath(normalizeSrcPath)
+    host.currentDirectory = TS.getDirectoryPath(normalizeSrcPath)
 
 //    languageService.getSyntacticDiagnostics("foo.d.ts")
 //    languageService.getSemanticDiagnostics("foo.d.ts")

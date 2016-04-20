@@ -1,7 +1,10 @@
 package typescript
 
 @native
-val ts: dynamic
+fun TS.unescapeIdentifier(identifier: String): String
 
 @native
-fun TS.unescapeIdentifier(identifier: String): String = noImpl
+fun TS.normalizePath(path: String): String
+
+@native
+fun TS.getDirectoryPath(path: String): String
