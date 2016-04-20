@@ -1,42 +1,42 @@
 package browserify
 
-native
-public trait `T$0` {
-    public var expose: String
+@native
+interface `T$0` {
+    var expose: String
 }
-native
-public trait `T$1` {
-    public var insertGlobals: Boolean? = noImpl
-    public var detectGlobals: Boolean? = noImpl
-    public var debug: Boolean? = noImpl
-    public var standalone: String? = noImpl
-    public var insertGlobalVars: Any? = noImpl
+@native
+interface `T$1` {
+    var insertGlobals: Boolean? = noImpl
+    var detectGlobals: Boolean? = noImpl
+    var debug: Boolean? = noImpl
+    var standalone: String? = noImpl
+    var insertGlobalVars: Any? = noImpl
 }
-native
-public trait BrowserifyObject : NodeJS.EventEmitter {
-    public fun add(file: String): BrowserifyObject
-    public fun require(file: String, opts: `T$0`? = null): BrowserifyObject
-    public fun bundle(opts: `T$1`? = null, cb: ((err: Any, src: Any) -> Unit)? = null): NodeJS.ReadableStream
-    public fun external(file: String): BrowserifyObject
-    public fun ignore(file: String): BrowserifyObject
-    public fun transform(tr: String): BrowserifyObject
-    public fun transform(tr: Function): BrowserifyObject
-    public fun plugin(plugin: String, opts: Any? = null): BrowserifyObject
-    public fun plugin(plugin: Function, opts: Any? = null): BrowserifyObject
+@native
+interface BrowserifyObject : NodeJS.EventEmitter {
+    fun add(file: String): BrowserifyObject
+    fun require(file: String, opts: `T$0`? = null): BrowserifyObject
+    fun bundle(opts: `T$1`? = null, cb: ((err: Any, src: Any) -> Unit)? = null): NodeJS.ReadableStream
+    fun external(file: String): BrowserifyObject
+    fun ignore(file: String): BrowserifyObject
+    fun transform(tr: String): BrowserifyObject
+    fun transform(tr: Function): BrowserifyObject
+    fun plugin(plugin: String, opts: Any? = null): BrowserifyObject
+    fun plugin(plugin: Function, opts: Any? = null): BrowserifyObject
 }
-native
-public trait `T$2` {
-    public var entries: Array<String>? = noImpl
-    public var noParse: Array<String>? = noImpl
+@native
+interface `T$2` {
+    var entries: Array<String>? = noImpl
+    var noParse: Array<String>? = noImpl
 }
-native
-public trait Browserify {
-    nativeInvoke
-    public fun invoke(): BrowserifyObject
-    nativeInvoke
-    public fun invoke(files: Array<String>): BrowserifyObject
-    nativeInvoke
-    public fun invoke(opts: `T$2`): BrowserifyObject
+@native
+interface Browserify {
+    @nativeInvoke
+    fun invoke(): BrowserifyObject
+    @nativeInvoke
+    fun invoke(files: Array<String>): BrowserifyObject
+    @nativeInvoke
+    fun invoke(opts: `T$2`): BrowserifyObject
 }
-module
-public var browserify: Browserify = noImpl
+@module
+var browserify: Browserify = noImpl

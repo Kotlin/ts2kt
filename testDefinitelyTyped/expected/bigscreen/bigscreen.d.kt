@@ -1,18 +1,18 @@
 package bigscreen
 
-native
-public trait BigScreenStatic {
-    public var element: Element
-    public var enabled: Boolean
-    public fun exit()
-    public fun onchange(element: Element)
-    public fun onenter(element: Element)
-    public fun onerror(element: Element, reason: String)
-    public fun onexit()
-    public fun request(element: Element, onEnter: ((element: Element) -> Unit)? = null, onExit: (() -> Unit)? = null, onError: ((element: Element, reason: String) -> Unit)? = null)
-    public fun toggle(element: Element, onEnter: ((element: Element) -> Unit)? = null, onExit: (() -> Unit)? = null, onError: ((element: Element, reason: String) -> Unit)? = null)
-    public fun videoEnabled(video: HTMLVideoElement): Boolean
+@native
+interface BigScreenStatic {
+    var element: Element
+    var enabled: Boolean
+    fun exit()
+    fun onchange(element: Element)
+    fun onenter(element: Element)
+    fun onerror(element: Element, reason: String)
+    fun onexit()
+    fun request(element: Element, onEnter: ((element: Element) -> Unit)? = null, onExit: (() -> Unit)? = null, onError: ((element: Element, reason: String) -> Unit)? = null)
+    fun toggle(element: Element, onEnter: ((element: Element) -> Unit)? = null, onExit: (() -> Unit)? = null, onError: ((element: Element, reason: String) -> Unit)? = null)
+    fun videoEnabled(video: HTMLVideoElement): Boolean
 }
-native
-module("bigscreen")
-public var bigscreen: BigScreenStatic = noImpl
+@native
+@module("bigscreen")
+var bigscreen: BigScreenStatic = noImpl

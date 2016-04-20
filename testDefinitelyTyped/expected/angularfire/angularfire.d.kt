@@ -1,83 +1,83 @@
 package angularfire
 
-native
-public trait AngularFireService {
-    nativeInvoke
-    public fun invoke(firebase: Firebase, config: Any? = null): AngularFire
+@native
+interface AngularFireService {
+    @nativeInvoke
+    fun invoke(firebase: Firebase, config: Any? = null): AngularFire
 }
-native
-public trait AngularFire {
-    public fun `$asArray`(): AngularFireArray
-    public fun `$asObject`(): AngularFireObject
-    public fun `$ref`(): Firebase
-    public fun `$push`(data: Any): ng.IPromise<Firebase>
-    public fun `$set`(key: String, data: Any): ng.IPromise<Firebase>
-    public fun `$set`(data: Any): ng.IPromise<Firebase>
-    public fun `$remove`(key: String? = null): ng.IPromise<Firebase>
-    public fun `$update`(key: String, data: Object): ng.IPromise<Firebase>
-    public fun `$update`(data: Any): ng.IPromise<Firebase>
-    public fun `$transaction`(updateFn: (currentData: Any) -> Any, applyLocally: Boolean? = null): ng.IPromise<FirebaseDataSnapshot>
-    public fun `$transaction`(key: String, updateFn: (currentData: Any) -> Any, applyLocally: Boolean? = null): ng.IPromise<FirebaseDataSnapshot>
+@native
+interface AngularFire {
+    fun `$asArray`(): AngularFireArray
+    fun `$asObject`(): AngularFireObject
+    fun `$ref`(): Firebase
+    fun `$push`(data: Any): ng.IPromise<Firebase>
+    fun `$set`(key: String, data: Any): ng.IPromise<Firebase>
+    fun `$set`(data: Any): ng.IPromise<Firebase>
+    fun `$remove`(key: String? = null): ng.IPromise<Firebase>
+    fun `$update`(key: String, data: Object): ng.IPromise<Firebase>
+    fun `$update`(data: Any): ng.IPromise<Firebase>
+    fun `$transaction`(updateFn: (currentData: Any) -> Any, applyLocally: Boolean? = null): ng.IPromise<FirebaseDataSnapshot>
+    fun `$transaction`(key: String, updateFn: (currentData: Any) -> Any, applyLocally: Boolean? = null): ng.IPromise<FirebaseDataSnapshot>
 }
-native
-public trait AngularFireObject : AngularFireSimpleObject {
+@native
+interface AngularFireObject : AngularFireSimpleObject {
     override var `$id`: String
     override var `$priority`: Number
     override var `$value`: Any
-    public fun `$save`(): ng.IPromise<Firebase>
-    public fun `$loaded`(resolve: ((x: AngularFireObject) -> ng.IHttpPromise<Any>)? = null, reject: ((err: Any) -> Any)? = null): ng.IPromise<AngularFireObject>
-    public fun `$loaded`(resolve: ((x: AngularFireObject) -> ng.IPromise<Any>)? = null, reject: ((err: Any) -> Any)? = null): ng.IPromise<AngularFireObject>
-    public fun `$loaded`(resolve: ((x: AngularFireObject) -> Unit)? = null, reject: ((err: Any) -> Any)? = null): ng.IPromise<AngularFireObject>
-    public fun `$inst`(): AngularFire
-    public fun `$bindTo`(scope: ng.IScope, varName: String): ng.IPromise<Any>
-    public fun `$watch`(callback: Function, context: Any? = null): Function
-    public fun `$destroy`()
+    fun `$save`(): ng.IPromise<Firebase>
+    fun `$loaded`(resolve: ((x: AngularFireObject) -> ng.IHttpPromise<Any>)? = null, reject: ((err: Any) -> Any)? = null): ng.IPromise<AngularFireObject>
+    fun `$loaded`(resolve: ((x: AngularFireObject) -> ng.IPromise<Any>)? = null, reject: ((err: Any) -> Any)? = null): ng.IPromise<AngularFireObject>
+    fun `$loaded`(resolve: ((x: AngularFireObject) -> Unit)? = null, reject: ((err: Any) -> Any)? = null): ng.IPromise<AngularFireObject>
+    fun `$inst`(): AngularFire
+    fun `$bindTo`(scope: ng.IScope, varName: String): ng.IPromise<Any>
+    fun `$watch`(callback: Function, context: Any? = null): Function
+    fun `$destroy`()
 }
-native
-public trait AngularFireObjectService {
-    public fun `$extendFactory`(ChildClass: Object, methods: Object? = null): Object
+@native
+interface AngularFireObjectService {
+    fun `$extendFactory`(ChildClass: Object, methods: Object? = null): Object
 }
-native
-public trait AngularFireArray : Array<AngularFireSimpleObject> {
-    public fun `$add`(newData: Any): ng.IPromise<Firebase>
-    public fun `$save`(recordOrIndex: Any): ng.IPromise<Firebase>
-    public fun `$remove`(recordOrIndex: Any): ng.IPromise<Firebase>
-    public fun `$getRecord`(key: String): AngularFireSimpleObject
-    public fun `$keyAt`(recordOrIndex: Any): String
-    public fun `$indexFor`(key: String): Number
-    public fun `$loaded`(resolve: ((x: AngularFireArray) -> ng.IHttpPromise<Any>)? = null, reject: ((err: Any) -> Any)? = null): ng.IPromise<AngularFireArray>
-    public fun `$loaded`(resolve: ((x: AngularFireArray) -> ng.IPromise<Any>)? = null, reject: ((err: Any) -> Any)? = null): ng.IPromise<AngularFireArray>
-    public fun `$loaded`(resolve: ((x: AngularFireArray) -> Unit)? = null, reject: ((err: Any) -> Any)? = null): ng.IPromise<AngularFireArray>
-    public fun `$inst`(): AngularFire
-    public fun `$watch`(cb: (event: String, key: String, prevChild: String) -> Unit, context: Any? = null): Function
-    public fun `$destroy`()
+@native
+interface AngularFireArray : Array<AngularFireSimpleObject> {
+    fun `$add`(newData: Any): ng.IPromise<Firebase>
+    fun `$save`(recordOrIndex: Any): ng.IPromise<Firebase>
+    fun `$remove`(recordOrIndex: Any): ng.IPromise<Firebase>
+    fun `$getRecord`(key: String): AngularFireSimpleObject
+    fun `$keyAt`(recordOrIndex: Any): String
+    fun `$indexFor`(key: String): Number
+    fun `$loaded`(resolve: ((x: AngularFireArray) -> ng.IHttpPromise<Any>)? = null, reject: ((err: Any) -> Any)? = null): ng.IPromise<AngularFireArray>
+    fun `$loaded`(resolve: ((x: AngularFireArray) -> ng.IPromise<Any>)? = null, reject: ((err: Any) -> Any)? = null): ng.IPromise<AngularFireArray>
+    fun `$loaded`(resolve: ((x: AngularFireArray) -> Unit)? = null, reject: ((err: Any) -> Any)? = null): ng.IPromise<AngularFireArray>
+    fun `$inst`(): AngularFire
+    fun `$watch`(cb: (event: String, key: String, prevChild: String) -> Unit, context: Any? = null): Function
+    fun `$destroy`()
 }
-native
-public trait AngularFireArrayService {
-    public fun `$extendFactory`(ChildClass: Object, methods: Object? = null): Object
+@native
+interface AngularFireArrayService {
+    fun `$extendFactory`(ChildClass: Object, methods: Object? = null): Object
 }
-native
-public trait AngularFireSimpleObject {
-    public var `$id`: String
-    public var `$priority`: Number
-    public var `$value`: Any
-    nativeGetter
-    public fun get(key: String): Any
-    nativeSetter
-    public fun set(key: String, value: Any)
+@native
+interface AngularFireSimpleObject {
+    var `$id`: String
+    var `$priority`: Number
+    var `$value`: Any
+    @nativeGetter
+    fun get(key: String): Any
+    @nativeSetter
+    fun set(key: String, value: Any)
 }
-native
-public trait AngularFireAuthService {
-    nativeInvoke
-    public fun invoke(firebase: Firebase): AngularFireAuth
+@native
+interface AngularFireAuthService {
+    @nativeInvoke
+    fun invoke(firebase: Firebase): AngularFireAuth
 }
-native
-public trait AngularFireAuth {
-    public fun `$getCurrentUser`(): ng.IPromise<Any>
-    public fun `$login`(provider: String, options: Object? = null): ng.IPromise<Any>
-    public fun `$logout`()
-    public fun `$createUser`(email: String, password: String): ng.IPromise<Any>
-    public fun `$changePassword`(email: String, oldPassword: String, newPassword: String): ng.IPromise<Any>
-    public fun `$removeUser`(email: String, password: String): ng.IPromise<Any>
-    public fun `$sendPasswordResetEmail`(email: String): ng.IPromise<Any>
+@native
+interface AngularFireAuth {
+    fun `$getCurrentUser`(): ng.IPromise<Any>
+    fun `$login`(provider: String, options: Object? = null): ng.IPromise<Any>
+    fun `$logout`()
+    fun `$createUser`(email: String, password: String): ng.IPromise<Any>
+    fun `$changePassword`(email: String, oldPassword: String, newPassword: String): ng.IPromise<Any>
+    fun `$removeUser`(email: String, password: String): ng.IPromise<Any>
+    fun `$sendPasswordResetEmail`(email: String): ng.IPromise<Any>
 }

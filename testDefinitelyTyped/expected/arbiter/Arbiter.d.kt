@@ -1,35 +1,35 @@
 package Arbiter
 
-module
-public object ArbiterDef {
-    public trait SubscribeHandler {
-        nativeInvoke
-        public fun invoke(data: Any, message: String, subscriber_context: Any)
+@module
+object ArbiterDef {
+    interface SubscribeHandler {
+        @nativeInvoke
+        fun invoke(data: Any, message: String, subscriber_context: Any)
     }
-    public trait SubscribeOptions {
-        public var priority: Number? = noImpl
-        public var async: Boolean? = noImpl
-        public var persist: Boolean? = noImpl
+    interface SubscribeOptions {
+        var priority: Number? = noImpl
+        var async: Boolean? = noImpl
+        var persist: Boolean? = noImpl
     }
-    public trait PublishOptions {
-        public var cancelable: Boolean? = noImpl
-        public var persist: Boolean? = noImpl
-        public var async: Boolean? = noImpl
+    interface PublishOptions {
+        var cancelable: Boolean? = noImpl
+        var persist: Boolean? = noImpl
+        var async: Boolean? = noImpl
     }
-    public trait ArbiterStatic {
-        public var version: String
-        public var updated_on: String
-        public fun create(): ArbiterStatic
-        public fun publish(msg: String, data: Any? = null, options: PublishOptions? = null): Boolean
-        public fun subscribe(msg: String, func: SubscribeHandler): Any
-        public fun subscribe(msg: String, options: SubscribeOptions, func: SubscribeHandler): Any
-        public fun subscribe(msg: String, options: SubscribeOptions, context: Any, func: SubscribeHandler): Any
-        public fun subscribe(msg: Array<String>, func: SubscribeHandler): Any
-        public fun subscribe(msg: Array<String>, options: SubscribeOptions, func: SubscribeHandler): Any
-        public fun subscribe(msg: Array<String>, options: SubscribeOptions, context: Any, func: SubscribeHandler): Any
-        public fun unsubscribe(subscription_id: Number): Boolean
-        public fun resubscribe(subscription_id: Number): Boolean
+    interface ArbiterStatic {
+        var version: String
+        var updated_on: String
+        fun create(): ArbiterStatic
+        fun publish(msg: String, data: Any? = null, options: PublishOptions? = null): Boolean
+        fun subscribe(msg: String, func: SubscribeHandler): Any
+        fun subscribe(msg: String, options: SubscribeOptions, func: SubscribeHandler): Any
+        fun subscribe(msg: String, options: SubscribeOptions, context: Any, func: SubscribeHandler): Any
+        fun subscribe(msg: Array<String>, func: SubscribeHandler): Any
+        fun subscribe(msg: Array<String>, options: SubscribeOptions, func: SubscribeHandler): Any
+        fun subscribe(msg: Array<String>, options: SubscribeOptions, context: Any, func: SubscribeHandler): Any
+        fun unsubscribe(subscription_id: Number): Boolean
+        fun resubscribe(subscription_id: Number): Boolean
     }
 }
-native
-public var Arbiter: ArbiterDef.ArbiterStatic = noImpl
+@native
+var Arbiter: ArbiterDef.ArbiterStatic = noImpl

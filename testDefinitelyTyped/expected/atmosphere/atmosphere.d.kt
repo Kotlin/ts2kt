@@ -1,91 +1,91 @@
 package atmosphere
 
-module
-public object Atmosphere {
-    public trait Atmosphere {
-        public var subscribe: ((requestOrUrl: Any, callback: Function? = null, request: Request? = null) -> Request)? = noImpl
-        public var unsubscribe: (() -> Unit)? = noImpl
-        public var AtmosphereRequest: AtmosphereRequest? = noImpl
+@module
+object Atmosphere {
+    interface Atmosphere {
+        var subscribe: ((requestOrUrl: Any, callback: Function? = null, request: Request? = null) -> Request)? = noImpl
+        var unsubscribe: (() -> Unit)? = noImpl
+        var AtmosphereRequest: AtmosphereRequest? = noImpl
     }
-    public trait AtmosphereRequest {
-        nativeNew
-        public fun invoke(): Request
+    interface AtmosphereRequest {
+        @nativeNew
+        fun invoke(): Request
     }
-    public trait Request {
-        public var timeout: Number? = noImpl
-        public var method: String? = noImpl
-        public var headers: Any? = noImpl
-        public var contentType: String? = noImpl
-        public var callback: Function? = noImpl
-        public var url: String? = noImpl
-        public var data: String? = noImpl
-        public var suspend: Boolean? = noImpl
-        public var maxRequest: Number? = noImpl
-        public var reconnect: Boolean? = noImpl
-        public var maxStreamingLength: Number? = noImpl
-        public var lastIndex: Number? = noImpl
-        public var logLevel: String? = noImpl
-        public var requestCount: Number? = noImpl
-        public var fallbackMethod: String? = noImpl
-        public var fallbackTransport: String? = noImpl
-        public var transport: String? = noImpl
-        public var webSocketImpl: Any? = noImpl
-        public var webSocketBinaryType: Any? = noImpl
-        public var dispatchUrl: String? = noImpl
-        public var webSocketPathDelimiter: String? = noImpl
-        public var enableXDR: Boolean? = noImpl
-        public var rewriteURL: Boolean? = noImpl
-        public var attachHeadersAsQueryString: Boolean? = noImpl
-        public var executeCallbackBeforeReconnect: Boolean? = noImpl
-        public var readyState: Number? = noImpl
-        public var lastTimestamp: Number? = noImpl
-        public var withCredentials: Boolean? = noImpl
-        public var trackMessageLength: Boolean? = noImpl
-        public var messageDelimiter: String? = noImpl
-        public var connectTimeout: Number? = noImpl
-        public var reconnectInterval: Number? = noImpl
-        public var dropHeaders: Boolean? = noImpl
-        public var uuid: Number? = noImpl
-        public var async: Boolean? = noImpl
-        public var shared: Boolean? = noImpl
-        public var readResponsesHeaders: Boolean? = noImpl
-        public var maxReconnectOnClose: Number? = noImpl
-        public var enableProtocol: Boolean? = noImpl
-        public var pollingInterval: Number? = noImpl
-        public var onError: ((response: Response? = null) -> Unit)? = noImpl
-        public var onClose: ((response: Response? = null) -> Unit)? = noImpl
-        public var onOpen: ((response: Response? = null) -> Unit)? = noImpl
-        public var onMessage: ((response: Response) -> Unit)? = noImpl
-        public var onReopen: ((request: Request? = null, response: Response? = null) -> Unit)? = noImpl
-        public var onReconnect: ((request: Request? = null, response: Response? = null) -> Unit)? = noImpl
-        public var onMessagePublished: ((response: Response? = null) -> Unit)? = noImpl
-        public var onTransportFailure: ((reason: String? = null, response: Response? = null) -> Unit)? = noImpl
-        public var onLocalMessage: ((request: Request? = null) -> Unit)? = noImpl
-        public var onFailureToReconnect: ((request: Request? = null, response: Response? = null) -> Unit)? = noImpl
-        public var onClientTimeout: ((request: Request? = null) -> Unit)? = noImpl
-        public var subscribe: ((options: Request) -> Unit)? = noImpl
-        public var execute: (() -> Unit)? = noImpl
-        public var close: (() -> Unit)? = noImpl
-        public var disconnect: (() -> Unit)? = noImpl
-        public var getUrl: (() -> String)? = noImpl
-        public var push: ((message: String, dispatchUrl: String? = null) -> Unit)? = noImpl
-        public var getUUID: (() -> Unit)? = noImpl
-        public var pushLocal: ((message: String) -> Unit)? = noImpl
+    interface Request {
+        var timeout: Number? = noImpl
+        var method: String? = noImpl
+        var headers: Any? = noImpl
+        var contentType: String? = noImpl
+        var callback: Function? = noImpl
+        var url: String? = noImpl
+        var data: String? = noImpl
+        var suspend: Boolean? = noImpl
+        var maxRequest: Number? = noImpl
+        var reconnect: Boolean? = noImpl
+        var maxStreamingLength: Number? = noImpl
+        var lastIndex: Number? = noImpl
+        var logLevel: String? = noImpl
+        var requestCount: Number? = noImpl
+        var fallbackMethod: String? = noImpl
+        var fallbackTransport: String? = noImpl
+        var transport: String? = noImpl
+        var webSocketImpl: Any? = noImpl
+        var webSocketBinaryType: Any? = noImpl
+        var dispatchUrl: String? = noImpl
+        var webSocketPathDelimiter: String? = noImpl
+        var enableXDR: Boolean? = noImpl
+        var rewriteURL: Boolean? = noImpl
+        var attachHeadersAsQueryString: Boolean? = noImpl
+        var executeCallbackBeforeReconnect: Boolean? = noImpl
+        var readyState: Number? = noImpl
+        var lastTimestamp: Number? = noImpl
+        var withCredentials: Boolean? = noImpl
+        var trackMessageLength: Boolean? = noImpl
+        var messageDelimiter: String? = noImpl
+        var connectTimeout: Number? = noImpl
+        var reconnectInterval: Number? = noImpl
+        var dropHeaders: Boolean? = noImpl
+        var uuid: Number? = noImpl
+        var async: Boolean? = noImpl
+        var shared: Boolean? = noImpl
+        var readResponsesHeaders: Boolean? = noImpl
+        var maxReconnectOnClose: Number? = noImpl
+        var enableProtocol: Boolean? = noImpl
+        var pollingInterval: Number? = noImpl
+        var onError: ((response: Response? = null) -> Unit)? = noImpl
+        var onClose: ((response: Response? = null) -> Unit)? = noImpl
+        var onOpen: ((response: Response? = null) -> Unit)? = noImpl
+        var onMessage: ((response: Response) -> Unit)? = noImpl
+        var onReopen: ((request: Request? = null, response: Response? = null) -> Unit)? = noImpl
+        var onReconnect: ((request: Request? = null, response: Response? = null) -> Unit)? = noImpl
+        var onMessagePublished: ((response: Response? = null) -> Unit)? = noImpl
+        var onTransportFailure: ((reason: String? = null, response: Response? = null) -> Unit)? = noImpl
+        var onLocalMessage: ((request: Request? = null) -> Unit)? = noImpl
+        var onFailureToReconnect: ((request: Request? = null, response: Response? = null) -> Unit)? = noImpl
+        var onClientTimeout: ((request: Request? = null) -> Unit)? = noImpl
+        var subscribe: ((options: Request) -> Unit)? = noImpl
+        var execute: (() -> Unit)? = noImpl
+        var close: (() -> Unit)? = noImpl
+        var disconnect: (() -> Unit)? = noImpl
+        var getUrl: (() -> String)? = noImpl
+        var push: ((message: String, dispatchUrl: String? = null) -> Unit)? = noImpl
+        var getUUID: (() -> Unit)? = noImpl
+        var pushLocal: ((message: String) -> Unit)? = noImpl
     }
-    public trait Response {
-        public var status: Number? = noImpl
-        public var reasonPhrase: String? = noImpl
-        public var responseBody: String? = noImpl
-        public var messages: Array<String>? = noImpl
-        public var headers: Array<String>? = noImpl
-        public var state: String? = noImpl
-        public var transport: String? = noImpl
-        public var error: String? = noImpl
-        public var request: Request? = noImpl
-        public var partialMessage: String? = noImpl
-        public var errorHandled: Boolean? = noImpl
-        public var closedByClientTimeout: Boolean? = noImpl
+    interface Response {
+        var status: Number? = noImpl
+        var reasonPhrase: String? = noImpl
+        var responseBody: String? = noImpl
+        var messages: Array<String>? = noImpl
+        var headers: Array<String>? = noImpl
+        var state: String? = noImpl
+        var transport: String? = noImpl
+        var error: String? = noImpl
+        var request: Request? = noImpl
+        var partialMessage: String? = noImpl
+        var errorHandled: Boolean? = noImpl
+        var closedByClientTimeout: Boolean? = noImpl
     }
 }
-native
-public var atmosphere: Atmosphere.Atmosphere = noImpl
+@native
+var atmosphere: Atmosphere.Atmosphere = noImpl

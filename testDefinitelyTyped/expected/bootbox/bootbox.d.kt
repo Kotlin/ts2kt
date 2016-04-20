@@ -1,60 +1,60 @@
 package bootbox
 
-native
-public trait BootboxAlertOptions {
-    public var message: String
-    public var callback: (() -> Any)? = noImpl
+@native
+interface BootboxAlertOptions {
+    var message: String
+    var callback: (() -> Any)? = noImpl
 }
-native
-public trait BootboxConfirmOptions {
-    public var message: String
-    public var callback: ((result: Boolean) -> Any)? = noImpl
+@native
+interface BootboxConfirmOptions {
+    var message: String
+    var callback: ((result: Boolean) -> Any)? = noImpl
 }
-native
-public trait BootboxPromptOptions {
-    public var message: String
-    public var callback: ((result: String) -> Any)? = noImpl
+@native
+interface BootboxPromptOptions {
+    var message: String
+    var callback: ((result: String) -> Any)? = noImpl
 }
-native
-public trait BootboxButton {
-    public var label: String? = noImpl
-    public var className: String? = noImpl
-    public var callback: (() -> Any)? = noImpl
+@native
+interface BootboxButton {
+    var label: String? = noImpl
+    var className: String? = noImpl
+    var callback: (() -> Any)? = noImpl
 }
-native
-public trait BootboxDialogOptions {
-    public var message: dynamic /* String | Element */
-    public var title: dynamic /* String | Element */? = noImpl
-    public var callback: ((result: Boolean) -> Any)? = noImpl
-    public var show: Boolean? = noImpl
-    public var onEscape: (() -> Any)? = noImpl
-    public var backdrop: Boolean? = noImpl
-    public var closeButton: Boolean? = noImpl
-    public var animate: Boolean? = noImpl
-    public var className: String? = noImpl
-    public var buttons: Object? = noImpl
+@native
+interface BootboxDialogOptions {
+    var message: dynamic /* String | Element */
+    var title: dynamic /* String | Element */? = noImpl
+    var callback: ((result: Boolean) -> Any)? = noImpl
+    var show: Boolean? = noImpl
+    var onEscape: (() -> Any)? = noImpl
+    var backdrop: Boolean? = noImpl
+    var closeButton: Boolean? = noImpl
+    var animate: Boolean? = noImpl
+    var className: String? = noImpl
+    var buttons: Object? = noImpl
 }
-native
-public trait BootboxDefaultOptions {
-    public var locale: String? = noImpl
-    public var show: Boolean? = noImpl
-    public var backdrop: Boolean? = noImpl
-    public var closeButton: Boolean? = noImpl
-    public var animate: Boolean? = noImpl
-    public var className: String? = noImpl
+@native
+interface BootboxDefaultOptions {
+    var locale: String? = noImpl
+    var show: Boolean? = noImpl
+    var backdrop: Boolean? = noImpl
+    var closeButton: Boolean? = noImpl
+    var animate: Boolean? = noImpl
+    var className: String? = noImpl
 }
-native
-public trait BootboxStatic {
-    public fun alert(message: String, callback: (() -> Unit)? = null)
-    public fun alert(options: BootboxAlertOptions)
-    public fun confirm(message: String, callback: ((result: Boolean) -> Unit)? = null)
-    public fun confirm(options: BootboxConfirmOptions)
-    public fun prompt(message: String, callback: ((result: String) -> Unit)? = null)
-    public fun prompt(options: BootboxPromptOptions)
-    public fun dialog(message: String, callback: ((result: String) -> Unit)? = null)
-    public fun dialog(options: BootboxDialogOptions)
-    public fun setDefaults(options: BootboxDefaultOptions)
-    public fun hideAll()
+@native
+interface BootboxStatic {
+    fun alert(message: String, callback: (() -> Unit)? = null)
+    fun alert(options: BootboxAlertOptions)
+    fun confirm(message: String, callback: ((result: Boolean) -> Unit)? = null)
+    fun confirm(options: BootboxConfirmOptions)
+    fun prompt(message: String, callback: ((result: String) -> Unit)? = null)
+    fun prompt(options: BootboxPromptOptions)
+    fun dialog(message: String, callback: ((result: String) -> Unit)? = null)
+    fun dialog(options: BootboxDialogOptions)
+    fun setDefaults(options: BootboxDefaultOptions)
+    fun hideAll()
 }
-native
-public var bootbox: BootboxStatic = noImpl
+@native
+var bootbox: BootboxStatic = noImpl
