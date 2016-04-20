@@ -445,12 +445,14 @@ object TS {
     @native
     interface Declaration : Node {
         var _declarationBrand: Any
-        var name: DeclarationName? // = noImpl
+        @native("name")
+        val declarationName: DeclarationName? // = noImpl
     }
 
     @native
     interface DeclarationStatement : Declaration, Statement {
-//         override var name: Identifier? // = noImpl
+        @native("name")
+        /*override*/ val identifierName: Identifier? // = noImpl
     }
 
     @native
@@ -465,14 +467,16 @@ object TS {
 
     @native
     interface TypeParameterDeclaration : Declaration {
-//         override var name: Identifier
+        @native("name")
+        /*override*/ var identifierName: Identifier
         var constraint: TypeNode? // = noImpl
         var expression: Expression? // = noImpl
     }
 
     @native
     interface SignatureDeclaration : Declaration {
-//         override var name: PropertyName? // = noImpl
+        @native("name")
+        /*override*/ val propertyName: PropertyName? // = noImpl
         var typeParameters: NodeArray<TypeParameterDeclaration>? // = noImpl
         var parameters: NodeArray<ParameterDeclaration>
         var type: TypeNode? // = noImpl
@@ -487,7 +491,7 @@ object TS {
     @native
     interface VariableDeclaration : Declaration {
 //        override var parent: VariableDeclarationList? // = noImpl
-//         override var name: dynamic /* Identifier | BindingPattern */
+        /*override*/ var name: dynamic /* Identifier | BindingPattern */
         var type: TypeNode? // = noImpl
         var initializer: Expression? // = noImpl
     }
@@ -500,7 +504,7 @@ object TS {
     @native
     interface ParameterDeclaration : Declaration {
         var dotDotDotToken: Node? // = noImpl
-//         override var name: dynamic /* Identifier | BindingPattern */
+        /*override*/ var name: dynamic /* Identifier | BindingPattern */
         var questionToken: Node? // = noImpl
         var type: TypeNode? // = noImpl
         var initializer: Expression? // = noImpl
@@ -510,13 +514,13 @@ object TS {
     interface BindingElement : Declaration {
         var propertyName: PropertyName? // = noImpl
         var dotDotDotToken: Node? // = noImpl
-//         override var name: dynamic /* Identifier | BindingPattern */
+        /*override*/ var name: dynamic /* Identifier | BindingPattern */
         var initializer: Expression? // = noImpl
     }
 
     @native
     interface PropertySignature : TypeElement {
-//         override var name: PropertyName
+        override val propertyName: PropertyName
         override var questionToken: Node? // = noImpl
         var type: TypeNode? // = noImpl
         var initializer: Expression? // = noImpl
@@ -525,7 +529,7 @@ object TS {
     @native
     interface PropertyDeclaration : ClassElement {
         var questionToken: Node? // = noImpl
-//         override var name: PropertyName
+        override val propertyName: PropertyName
         var type: TypeNode? // = noImpl
         var initializer: Expression? // = noImpl
     }
@@ -533,20 +537,22 @@ object TS {
     @native
     interface ObjectLiteralElement : Declaration {
         var _objectLiteralBrandBrand: Any
-//         override var name: PropertyName? // = noImpl
+        @native("name")
+        /*override*/ val propertyName: PropertyName? // = noImpl
     }
 
     @native
     interface PropertyAssignment : ObjectLiteralElement {
         var _propertyAssignmentBrand: Any
-//         override var name: PropertyName
+        override val propertyName: PropertyName
         var questionToken: Node? // = noImpl
         var initializer: Expression
     }
 
     @native
     interface ShorthandPropertyAssignment : ObjectLiteralElement {
-//         override var name: Identifier
+        @native("name")
+        /*override*/ val identifierName: Identifier //TODO extra space
         var questionToken: Node? // = noImpl
         var equalsToken: Node? // = noImpl
         var objectAssignmentInitializer: Expression? // = noImpl
@@ -556,7 +562,7 @@ object TS {
     interface VariableLikeDeclaration : Declaration {
         var propertyName: PropertyName? // = noImpl
         var dotDotDotToken: Node? // = noImpl
-//         override var name: DeclarationName
+        override val declarationName: DeclarationName
         var questionToken: Node? // = noImpl
         var type: TypeNode? // = noImpl
         var initializer: Expression? // = noImpl
@@ -564,7 +570,8 @@ object TS {
 
     @native
     interface PropertyLikeDeclaration : Declaration {
-//         override var name: PropertyName
+        @native("name")
+        /*override*/ var propertyName: PropertyName
     }
 
     @native
@@ -583,23 +590,23 @@ object TS {
         var _functionLikeDeclarationBrand: Any
         var asteriskToken: Node? // = noImpl
         var questionToken: Node? // = noImpl
-        var body: dynamic /* Block | Expression */? // = noImpl
+        var body: dynamic /* Block | Expression */? // = noImpl // TODO
     }
 
     @native
     interface FunctionDeclaration : FunctionLikeDeclaration, DeclarationStatement {
-//         override var name: Identifier? // = noImpl
+        override var identifierName: Identifier? // = noImpl
         override var body: FunctionBody? // = noImpl
     }
 
     @native
     interface MethodSignature : SignatureDeclaration, TypeElement {
-//         override var name: PropertyName
+        override val propertyName: PropertyName
     }
 
     @native
     interface MethodDeclaration : FunctionLikeDeclaration, ClassElement, ObjectLiteralElement {
-//         override var name: PropertyName
+        override var propertyName: PropertyName
         override var body: FunctionBody? // = noImpl
     }
 
@@ -616,7 +623,7 @@ object TS {
     @native
     interface AccessorDeclaration : FunctionLikeDeclaration, ClassElement, ObjectLiteralElement {
         var _accessorDeclarationBrand: Any
-//         override var name: PropertyName
+        override var propertyName: PropertyName
         override var body: FunctionBody
     }
 
@@ -808,7 +815,8 @@ object TS {
 
     @native
     interface FunctionExpression : PrimaryExpression, FunctionLikeDeclaration {
-//         override var name: Identifier? // = noImpl
+        @native("name")
+        /*override*/ var identifierName: Identifier? // = noImpl
         override var body: FunctionBody
     }
 
@@ -871,7 +879,8 @@ object TS {
     interface PropertyAccessExpression : MemberExpression, Declaration {
         var expression: LeftHandSideExpression
         var dotToken: Node
-//         override var name: Identifier
+        @native("name")
+        /*override*/ var identifierName: Identifier
     }
 
     @native
@@ -937,7 +946,8 @@ object TS {
 
     @native
     interface JsxAttribute : Node {
-        var name: Identifier
+        @native("name")
+        var identifierName: Identifier
         var initializer: Expression? // = noImpl
     }
 
@@ -976,7 +986,7 @@ object TS {
 
     @native
     interface MissingDeclaration : DeclarationStatement, ClassElement, ObjectLiteralElement, TypeElement {
-//         override var name: Identifier? // = noImpl
+        override var identifierName: Identifier? // = noImpl
     }
 
     @native
@@ -1106,7 +1116,8 @@ object TS {
 
     @native
     interface ClassLikeDeclaration : Declaration {
-//         override var name: Identifier? // = noImpl
+        @native("name")
+        /*override*/ var identifierName: Identifier? // = noImpl
         var typeParameters: NodeArray<TypeParameterDeclaration>? // = noImpl
         var heritageClauses: NodeArray<HeritageClause>? // = noImpl
         var members: NodeArray<ClassElement>
@@ -1114,7 +1125,7 @@ object TS {
 
     @native
     interface ClassDeclaration : ClassLikeDeclaration, DeclarationStatement {
-//         override var name: Identifier? // = noImpl
+        override var identifierName: Identifier? // = noImpl
     }
 
     @native
@@ -1123,19 +1134,21 @@ object TS {
     @native
     interface ClassElement : Declaration {
         var _classElementBrand: Any
-//         override var name: PropertyName? // = noImpl
+        @native("name")
+        /*override*/ val propertyName: PropertyName? // = noImpl
     }
 
     @native
     interface TypeElement : Declaration {
         var _typeElementBrand: Any
-//         override var name: PropertyName? // = noImpl
+        @native("name")
+        /*override*/ val propertyName: PropertyName? // = noImpl
         var questionToken: Node? // = noImpl
     }
 
     @native
     interface InterfaceDeclaration : DeclarationStatement {
-//         override var name: Identifier
+        override val identifierName: Identifier
         var typeParameters: NodeArray<TypeParameterDeclaration>? // = noImpl
         var heritageClauses: NodeArray<HeritageClause>? // = noImpl
         var members: NodeArray<TypeElement>
@@ -1149,26 +1162,26 @@ object TS {
 
     @native
     interface TypeAliasDeclaration : DeclarationStatement {
-//         override var name: Identifier
+        override var identifierName: Identifier
         var typeParameters: NodeArray<TypeParameterDeclaration>? // = noImpl
         var type: TypeNode
     }
 
     @native
     interface EnumMember : Declaration {
-//         override var name: DeclarationName
+        override val declarationName: DeclarationName
         var initializer: Expression? // = noImpl
     }
 
     @native
     interface EnumDeclaration : DeclarationStatement {
-//         override var name: Identifier
+        override var identifierName: Identifier
         var members: NodeArray<EnumMember>
     }
 
     @native
     interface ModuleDeclaration : DeclarationStatement {
-//         override var name: dynamic /* Identifier | LiteralExpression */
+        /*override*/ var name: dynamic /* Identifier | LiteralExpression */
         var body: dynamic /* ModuleBlock | ModuleDeclaration */
     }
 
@@ -1179,7 +1192,7 @@ object TS {
 
     @native
     interface ImportEqualsDeclaration : DeclarationStatement {
-//         override var name: Identifier
+        override var identifierName: Identifier
         var moduleReference: dynamic /* EntityName | ExternalModuleReference */
     }
 
@@ -1196,13 +1209,15 @@ object TS {
 
     @native
     interface ImportClause : Declaration {
-//         override var name: Identifier? // = noImpl
+        @native("name")
+        /*override*/ var identifierName: Identifier? // = noImpl
         var namedBindings: dynamic /* NamespaceImport | NamedImports */? // = noImpl
     }
 
     @native
     interface NamespaceImport : Declaration {
-//         override var name: Identifier
+        @native("name")
+        /*override*/ var identifierName: Identifier
     }
 
     @native
@@ -1224,13 +1239,15 @@ object TS {
     @native
     interface ImportSpecifier : Declaration {
         var propertyName: Identifier? // = noImpl
-//         override var name: Identifier
+        @native("name")
+        /*override*/ var identifierName: Identifier
     }
 
     @native
     interface ExportSpecifier : Declaration {
         var propertyName: Identifier? // = noImpl
-//         override var name: Identifier
+        @native("name")
+        /*override*/ var identifierName: Identifier
     }
 
     @native
@@ -1334,7 +1351,7 @@ object TS {
 
     @native
     interface JSDocRecordMember : PropertySignature {
-//         override var name: dynamic /* Identifier | LiteralExpression */
+        override var propertyName: dynamic /* Identifier | LiteralExpression */
 //        override var type: JSDocType? // = noImpl
     }
 
