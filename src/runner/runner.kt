@@ -16,6 +16,8 @@
 
 package ts2kt
 
+import js.JsError
+import node.require
 import ts2kt.utils.hasFlag
 import ts2kt.utils.push
 import ts2kt.utils.shift
@@ -24,8 +26,10 @@ import typescript.ts
 import java.util.*
 import kotlin.js.native
 
-@native
-fun require(name: String): Any = noImpl
+// HACK to replace `Kotlin.throwNPE` since Kotlin Exceptions unusable now because don't have stacktrace
+private val init = run {
+    js("Kotlin").throwNPE = { message: String -> throw JsError(message) }
+}
 
 val SRC_FILE_PATH_ARG_INDEX = 2
 val OUT_FILE_PATH_ARG_INDEX = 3

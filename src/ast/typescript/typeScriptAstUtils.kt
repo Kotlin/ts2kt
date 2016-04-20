@@ -16,6 +16,7 @@
 
 package ts2kt
 
+import js.JsError
 import ts2kt.kotlin.ast.CallSignature
 import ts2kt.kotlin.ast.FunParam
 import ts2kt.kotlin.ast.TypeAnnotation
@@ -71,7 +72,7 @@ fun TS.ParameterDeclaration.toKotlinParam(typeMapper: ObjectTypeToKotlinTypeMapp
                 nodeType = typeArguments[0]
             }
             else -> {
-                throw Exception("Rest parameter must be array types, but ${originalNodeKind.str}")
+                throw JsError("Rest parameter must be array types, but ${originalNodeKind.str}")
             }
         }
     }
@@ -256,7 +257,7 @@ fun visitNode(visitor: Visitor, node: dynamic): Unit {
         else -> {
             val message = "Unsupported node.kind: ${node.kind}, name: ${ts.SyntaxKind[node.kind]}"
             if (reportedKinds.add(node.kind)) console.error(message)
-            throw Exception(message)
+            unsupportedNode(node)
         }
     }
 }
@@ -271,4 +272,9 @@ val TS.SyntaxKind.str: String
 val TS.Identifier.unescapedText: String
     get() = TS.unescapeIdentifier(text)
 
-fun unsupportedNode(node: TS.Node): Nothing = throw Exception("${node.kind.str} kind unsupported yet here!")
+fun unsupportedNode(node: TS.Node): Nothing {
+    val message = "${node.kind.str} kind unsupported yet here! See node in attachment."
+    val exception = JsError(message)
+    exception.asDynamic().attachment = node
+    throw exception
+}

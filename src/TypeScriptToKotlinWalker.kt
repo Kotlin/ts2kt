@@ -16,6 +16,7 @@
 
 package ts2kt
 
+import js.JsError
 import ts2kt.kotlin.ast.*
 import ts2kt.kotlin.ast.Annotation
 import ts2kt.kotlin.ast.Function
@@ -338,17 +339,17 @@ class TypeScriptToKotlinWalker(
                             when (b) {
                                 is Classifier -> mergeClassifiers(a, b)
                                 is Variable -> mergeClassifierAndVariable(a, b)
-                                else -> throw Exception("Merging ${a.kind} and ??? unsupported yet, a: $a, b: $b")
+                                else -> throw JsError("Merging ${a.kind} and ??? unsupported yet, a: $a, b: $b")
                             }
 
                         is Variable ->
                             when (b) {
                                 is Classifier -> mergeClassifierAndVariable(b, a)
-                                else -> throw Exception("Merging Variable and ??? unsupported yet, a: $a, b: $b")
+                                else -> throw JsError("Merging Variable and ??? unsupported yet, a: $a, b: $b")
                             }
 
                         else ->
-                            throw Exception("Unsupported types for merging, a: $a, b: $b")
+                            throw JsError("Unsupported types for merging, a: $a, b: $b")
                     }
 
 
@@ -374,7 +375,7 @@ class TypeScriptToKotlinWalker(
             else -> {} // TODO is it bug?
         }
 
-        throw Exception("Merging ${a.kind} and ${b.kind} unsupported yet, a: $a, b: $b")
+        throw JsError("Merging ${a.kind} and ${b.kind} unsupported yet, a: $a, b: $b")
     }
 
     fun mergeClassifierAndVariable(a: Classifier, b: Variable): Member {
@@ -397,7 +398,7 @@ class TypeScriptToKotlinWalker(
             return newTrait
         }
 
-        throw Exception("Merging non-empty Classifier(kind=${a.kind}) and Variable unsupported yet, a: $a, b: $b")
+        throw JsError("Merging non-empty Classifier(kind=${a.kind}) and Variable unsupported yet, a: $a, b: $b")
     }
 
     fun mergeAnnotations(a: List<Annotation>, b: List<Annotation>): List<Annotation> =
@@ -418,7 +419,7 @@ class TypeScriptToKotlinWalker(
                         b.parameters.isEmpty() -> a
                         a.parameters == b.parameters -> a
                         // TODO
-                        else -> throw Exception("Merging annotations with different arguments unsupported yet, a: $a, b: $b")
+                        else -> throw JsError("Merging annotations with different arguments unsupported yet, a: $a, b: $b")
                     }
                 }
 

@@ -17,6 +17,9 @@
 package node
 
 @native
+fun require(name: String): Any = noImpl
+
+@native
 class path private constructor() {
     fun basename(path: String, postfix: String): String = noImpl
 }

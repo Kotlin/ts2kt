@@ -16,6 +16,7 @@
 
 package ts2kt.utils
 
+import js.JsError
 import java.util.*
 
 fun <T> List<T>.join(
@@ -128,7 +129,7 @@ fun <T> eval(code: String): T = noImpl
 // Assert
 
 fun assert(condition: Boolean, message: String) {
-    if (!condition) throw Exception(message)
+    if (!condition) throw JsError(message)
 }
 
 // TS AST utils
