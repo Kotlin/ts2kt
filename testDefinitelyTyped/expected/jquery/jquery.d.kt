@@ -42,7 +42,7 @@ interface JQueryXHR : XMLHttpRequest, JQueryPromise<Any> {
     // TODO: investigate
     fun overrideMimeType(mimeType: String): Any
     fun abort(statusText: String? = null)
-    fun then<R>(doneCallback: (data: Any, textStatus: String, jqXHR: JQueryXHR) -> R, failCallback: ((jqXHR: JQueryXHR, textStatus: String, errorThrown: Any) -> Unit)? = null): JQueryPromise<R>
+    fun <R> then(doneCallback: (data: Any, textStatus: String, jqXHR: JQueryXHR) -> R, failCallback: ((jqXHR: JQueryXHR, textStatus: String, errorThrown: Any) -> Unit)? = null): JQueryPromise<R>
     var responseJSON: Any? = noImpl
     fun error(xhr: JQueryXHR, textStatus: String, errorThrown: String)
 }
@@ -64,7 +64,7 @@ interface JQueryCallback {
 }
 @native
 interface JQueryGenericPromise<T> {
-    fun then<U>(doneFilter: (value: T? = null, vararg values: Any) -> dynamic /* U | JQueryPromise<U> */, failFilter: ((vararg reasons: Any) -> Any)? = null, progressFilter: ((vararg progression: Any) -> Any)? = null): JQueryPromise<U>
+    fun <U> then(doneFilter: (value: T? = null, vararg values: Any) -> dynamic /* U | JQueryPromise<U> */, failFilter: ((vararg reasons: Any) -> Any)? = null, progressFilter: ((vararg progression: Any) -> Any)? = null): JQueryPromise<U>
     fun then(doneFilter: (value: T? = null, vararg values: Any) -> Unit, failFilter: ((vararg reasons: Any) -> Any)? = null, progressFilter: ((vararg progression: Any) -> Any)? = null): JQueryPromise<Unit>
 }
 @native
@@ -275,10 +275,10 @@ interface JQueryStatic {
     @nativeInvoke
     fun invoke(html: String, attributes: Object): JQuery
     fun noConflict(removeAll: Boolean? = null): JQueryStatic
-    fun `when`<T>(vararg deferreds: dynamic /* T | JQueryPromise<T> */): JQueryPromise<T>
+    fun <T> `when`(vararg deferreds: dynamic /* T | JQueryPromise<T> */): JQueryPromise<T>
     var cssHooks: Json
     var cssNumber: Any
-    fun data<T>(element: Element, key: String, value: T): T
+    fun <T> data(element: Element, key: String, value: T): T
     fun data(element: Element, key: String): Any
     fun data(element: Element): Any
     fun dequeue(element: Element, queueName: String? = null)
@@ -287,7 +287,7 @@ interface JQueryStatic {
     fun queue(element: Element, queueName: String, newQueue: Array<Function>): JQuery
     fun queue(element: Element, queueName: String, callback: Function): JQuery
     fun removeData(element: Element, name: String? = null): JQuery
-    fun Deferred<T>(beforeStart: ((deferred: JQueryDeferred<T>) -> Any)? = null): JQueryDeferred<T>
+    fun <T> Deferred(beforeStart: ((deferred: JQueryDeferred<T>) -> Any)? = null): JQueryDeferred<T>
     var easing: JQueryEasingFunctions
     var fx: `T$1`
     fun proxy(fnction: (vararg args: Any) -> Any, context: Object, vararg additionalArguments: Any): Any
@@ -299,13 +299,13 @@ interface JQueryStatic {
     var isReady: Boolean
     var support: JQuerySupport
     fun contains(container: Element, contained: Element): Boolean
-    fun each<T>(collection: Array<T>, callback: (indexInArray: Number, valueOfElement: T) -> Any): Any
+    fun <T> each(collection: Array<T>, callback: (indexInArray: Number, valueOfElement: T) -> Any): Any
     fun each(collection: Any, callback: (indexInArray: Any, valueOfElement: Any) -> Any): Any
     fun extend(target: Any, object1: Any? = null, vararg objectN: Any): Any
     fun extend(deep: Boolean, target: Any, object1: Any? = null, vararg objectN: Any): Any
     fun globalEval(code: String): Any
-    fun grep<T>(array: Array<T>, func: (elementOfArray: T, indexInArray: Number) -> Boolean, invert: Boolean? = null): Array<T>
-    fun inArray<T>(value: T, array: Array<T>, fromIndex: Number? = null): Number
+    fun <T> grep(array: Array<T>, func: (elementOfArray: T, indexInArray: Number) -> Boolean, invert: Boolean? = null): Array<T>
+    fun <T> inArray(value: T, array: Array<T>, fromIndex: Number? = null): Number
     fun isArray(obj: Any): Boolean
     fun isEmptyObject(obj: Any): Boolean
     fun isFunction(obj: Any): Boolean
@@ -314,9 +314,9 @@ interface JQueryStatic {
     fun isWindow(obj: Any): Boolean
     fun isXMLDoc(node: Node): Boolean
     fun makeArray(obj: Any): Array<Any>
-    fun map<T, U>(array: Array<T>, callback: (elementOfArray: T, indexInArray: Number) -> U): Array<U>
+    fun <T, U> map(array: Array<T>, callback: (elementOfArray: T, indexInArray: Number) -> U): Array<U>
     fun map(arrayOrObject: Any, callback: (value: Any, indexOrKey: Any) -> Any): Any
-    fun merge<T>(first: Array<T>, second: Array<T>): Array<T>
+    fun <T> merge(first: Array<T>, second: Array<T>): Array<T>
     fun noop(): Any
     fun now(): Number
     fun parseJSON(json: String): Any

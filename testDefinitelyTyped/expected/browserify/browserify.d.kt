@@ -75,17 +75,17 @@ object Browserify {
         fun external(file: BrowserifyObject): BrowserifyObject
         fun ignore(file: String, opts: `T$2`? = null): BrowserifyObject
         fun exclude(file: String, opts: `T$2`? = null): BrowserifyObject
-        fun transform<T : T$2>(tr: String, opts: T? = null): BrowserifyObject
-        fun transform<T : T$2>(tr: (file: String, opts: T) -> NodeJS.ReadWriteStream, opts: T? = null): BrowserifyObject
-        fun plugin<T : T$2>(plugin: String, opts: T? = null): BrowserifyObject
-        fun plugin<T : T$2>(plugin: (b: BrowserifyObject, opts: T) -> Any, opts: T? = null): BrowserifyObject
+        fun <T : T$2> transform(tr: String, opts: T? = null): BrowserifyObject
+        fun <T : T$2> transform(tr: (file: String, opts: T) -> NodeJS.ReadWriteStream, opts: T? = null): BrowserifyObject
+        fun <T : T$2> plugin(plugin: String, opts: T? = null): BrowserifyObject
+        fun <T : T$2> plugin(plugin: (b: BrowserifyObject, opts: T) -> Any, opts: T? = null): BrowserifyObject
         fun reset(opts: Options? = null)
-        fun on(event: Any/* "file"*/, listener: (file: String, id: String, parent: Any) -> Any): BrowserifyObject
-        fun on(event: Any/* "package"*/, listener: (pkg: Any) -> Any): BrowserifyObject
-        fun on(event: Any/* "bundle"*/, listener: (bundle: NodeJS.ReadableStream) -> Any): BrowserifyObject
-        fun on(event: Any/* "reset"*/, listener: () -> Any): BrowserifyObject
-        fun on(event: Any/* "transform"*/, listener: (tr: NodeJS.ReadWriteStream, file: String) -> Any): BrowserifyObject
-        fun on(event: String, listener: Function): BrowserifyObject
+        fun on(event: Any /* "file"*/, listener: (file: String, id: String, parent: Any) -> Any): BrowserifyObject /* this */
+        fun on(event: Any /* "package"*/, listener: (pkg: Any) -> Any): BrowserifyObject /* this */
+        fun on(event: Any /* "bundle"*/, listener: (bundle: NodeJS.ReadableStream) -> Any): BrowserifyObject /* this */
+        fun on(event: Any /* "reset"*/, listener: () -> Any): BrowserifyObject /* this */
+        fun on(event: Any /* "transform"*/, listener: (tr: NodeJS.ReadWriteStream, file: String) -> Any): BrowserifyObject /* this */
+        fun on(event: String, listener: Function): BrowserifyObject /* this */
         var pipeline: Any
     }
 }

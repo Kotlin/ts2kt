@@ -214,10 +214,11 @@ class Function(
             annotations.stringify() +
             (if (isOverride) OVERRIDE + " " else if (hasOpenModifier) OPEN + " " else "") +
             "$FUN " +
+            callSignature.stringifyTypeParams(withSpaceAfter = true) +
             // TODO refactor this
-            (if (extendsType == null) "" else callSignature.stringifyTypeParams(withSpaceAfter = true) + extendsType.toString() + "." ) +
+            (if (extendsType == null) "" else extendsType.toString() + "." ) +
             escapedName +
-            callSignature.stringify(withTypeParams = extendsType == null, printUnitReturnType = needsNoImpl, printDefaultValues = !isOverride) +
+            callSignature.stringify(withTypeParams = false, printUnitReturnType = needsNoImpl, printDefaultValues = !isOverride) +
             if (needsNoImpl) EQ_NO_IMPL else ""
 }
 

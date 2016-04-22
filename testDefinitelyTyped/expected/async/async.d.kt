@@ -124,50 +124,50 @@ interface `T$0` {
 }
 @native
 interface Async {
-    fun each<T>(arr: Array<T>, iterator: AsyncIterator<T>, callback: ErrorCallback? = null)
-    fun eachSeries<T>(arr: Array<T>, iterator: AsyncIterator<T>, callback: ErrorCallback? = null)
-    fun eachLimit<T>(arr: Array<T>, limit: Number, iterator: AsyncIterator<T>, callback: ErrorCallback? = null)
+    fun <T> each(arr: Array<T>, iterator: AsyncIterator<T>, callback: ErrorCallback? = null)
+    fun <T> eachSeries(arr: Array<T>, iterator: AsyncIterator<T>, callback: ErrorCallback? = null)
+    fun <T> eachLimit(arr: Array<T>, limit: Number, iterator: AsyncIterator<T>, callback: ErrorCallback? = null)
     fun forEachOf(obj: Any, iterator: (item: Any, key: dynamic /* String | Number */, callback: ErrorCallback? = null) -> Unit, callback: ErrorCallback)
-    fun forEachOf<T>(obj: Array<T>, iterator: AsyncForEachOfIterator<T>, callback: ErrorCallback? = null)
+    fun <T> forEachOf(obj: Array<T>, iterator: AsyncForEachOfIterator<T>, callback: ErrorCallback? = null)
     fun forEachOfSeries(obj: Any, iterator: (item: Any, key: dynamic /* String | Number */, callback: ErrorCallback? = null) -> Unit, callback: ErrorCallback)
-    fun forEachOfSeries<T>(obj: Array<T>, iterator: AsyncForEachOfIterator<T>, callback: ErrorCallback? = null)
+    fun <T> forEachOfSeries(obj: Array<T>, iterator: AsyncForEachOfIterator<T>, callback: ErrorCallback? = null)
     fun forEachOfLimit(obj: Any, limit: Number, iterator: (item: Any, key: dynamic /* String | Number */, callback: ErrorCallback? = null) -> Unit, callback: ErrorCallback)
-    fun forEachOfLimit<T>(obj: Array<T>, limit: Number, iterator: AsyncForEachOfIterator<T>, callback: ErrorCallback? = null)
-    fun map<T, R>(arr: Array<T>, iterator: AsyncResultIterator<T,R>, callback: AsyncResultArrayCallback<R>? = null): Any
-    fun mapSeries<T, R>(arr: Array<T>, iterator: AsyncResultIterator<T,R>, callback: AsyncResultArrayCallback<R>? = null): Any
-    fun mapLimit<T, R>(arr: Array<T>, limit: Number, iterator: AsyncResultIterator<T,R>, callback: AsyncResultArrayCallback<R>? = null): Any
-    fun filter<T>(arr: Array<T>, iterator: AsyncBooleanIterator<T>, callback: ((results: Array<T>) -> Any)? = null): Any
-    fun select<T>(arr: Array<T>, iterator: AsyncBooleanIterator<T>, callback: ((results: Array<T>) -> Any)? = null): Any
-    fun filterSeries<T>(arr: Array<T>, iterator: AsyncBooleanIterator<T>, callback: ((results: Array<T>) -> Any)? = null): Any
-    fun selectSeries<T>(arr: Array<T>, iterator: AsyncBooleanIterator<T>, callback: ((results: Array<T>) -> Any)? = null): Any
-    fun filterLimit<T>(arr: Array<T>, limit: Number, iterator: AsyncBooleanIterator<T>, callback: ((results: Array<T>) -> Any)? = null): Any
-    fun selectLimit<T>(arr: Array<T>, limit: Number, iterator: AsyncBooleanIterator<T>, callback: ((results: Array<T>) -> Any)? = null): Any
-    fun reject<T>(arr: Array<T>, iterator: AsyncBooleanIterator<T>, callback: ((results: Array<T>) -> Any)? = null): Any
-    fun rejectSeries<T>(arr: Array<T>, iterator: AsyncBooleanIterator<T>, callback: ((results: Array<T>) -> Any)? = null): Any
-    fun rejectLimit<T>(arr: Array<T>, limit: Number, iterator: AsyncBooleanIterator<T>, callback: ((results: Array<T>) -> Any)? = null): Any
-    fun reduce<T, R>(arr: Array<T>, memo: R, iterator: AsyncMemoIterator<T,R>, callback: AsyncResultCallback<R>? = null): Any
-    fun inject<T, R>(arr: Array<T>, memo: R, iterator: AsyncMemoIterator<T,R>, callback: AsyncResultCallback<R>? = null): Any
-    fun foldl<T, R>(arr: Array<T>, memo: R, iterator: AsyncMemoIterator<T,R>, callback: AsyncResultCallback<R>? = null): Any
-    fun reduceRight<T, R>(arr: Array<T>, memo: R, iterator: AsyncMemoIterator<T,R>, callback: AsyncResultCallback<R>): Any
-    fun foldr<T, R>(arr: Array<T>, memo: R, iterator: AsyncMemoIterator<T,R>, callback: AsyncResultCallback<R>): Any
-    fun detect<T>(arr: Array<T>, iterator: AsyncBooleanIterator<T>, callback: ((result: T) -> Unit)? = null): Any
-    fun detectSeries<T>(arr: Array<T>, iterator: AsyncBooleanIterator<T>, callback: ((result: T) -> Unit)? = null): Any
-    fun detectLimit<T>(arr: Array<T>, limit: Number, iterator: AsyncBooleanIterator<T>, callback: ((result: T) -> Unit)? = null): Any
-    fun sortBy<T, V>(arr: Array<T>, iterator: AsyncResultIterator<T,V>, callback: AsyncResultArrayCallback<T>? = null): Any
-    fun some<T>(arr: Array<T>, iterator: AsyncBooleanIterator<T>, callback: ((result: Boolean) -> Unit)? = null): Any
-    fun someLimit<T>(arr: Array<T>, limit: Number, iterator: AsyncBooleanIterator<T>, callback: ((result: Boolean) -> Unit)? = null): Any
-    fun any<T>(arr: Array<T>, iterator: AsyncBooleanIterator<T>, callback: ((result: Boolean) -> Unit)? = null): Any
-    fun every<T>(arr: Array<T>, iterator: AsyncBooleanIterator<T>, callback: ((result: Boolean) -> Any)? = null): Any
-    fun everyLimit<T>(arr: Array<T>, limit: Number, iterator: AsyncBooleanIterator<T>, callback: ((result: Boolean) -> Any)? = null): Any
-    fun all<T>(arr: Array<T>, iterator: AsyncBooleanIterator<T>, callback: ((result: Boolean) -> Any)? = null): Any
-    fun concat<T, R>(arr: Array<T>, iterator: AsyncResultIterator<T,Array<R>>, callback: AsyncResultArrayCallback<R>? = null): Any
-    fun concatSeries<T, R>(arr: Array<T>, iterator: AsyncResultIterator<T,Array<R>>, callback: AsyncResultArrayCallback<R>? = null): Any
-    fun series<T>(tasks: Array<AsyncFunction<T>>, callback: AsyncResultArrayCallback<T>? = null)
-    fun series<T>(tasks: Dictionary<AsyncFunction<T>>, callback: AsyncResultObjectCallback<T>? = null)
-    fun parallel<T>(tasks: Array<AsyncFunction<T>>, callback: AsyncResultArrayCallback<T>? = null)
-    fun parallel<T>(tasks: Dictionary<AsyncFunction<T>>, callback: AsyncResultObjectCallback<T>? = null)
-    fun parallelLimit<T>(tasks: Array<AsyncFunction<T>>, limit: Number, callback: AsyncResultArrayCallback<T>? = null)
-    fun parallelLimit<T>(tasks: Dictionary<AsyncFunction<T>>, limit: Number, callback: AsyncResultObjectCallback<T>? = null)
+    fun <T> forEachOfLimit(obj: Array<T>, limit: Number, iterator: AsyncForEachOfIterator<T>, callback: ErrorCallback? = null)
+    fun <T, R> map(arr: Array<T>, iterator: AsyncResultIterator<T,R>, callback: AsyncResultArrayCallback<R>? = null): Any
+    fun <T, R> mapSeries(arr: Array<T>, iterator: AsyncResultIterator<T,R>, callback: AsyncResultArrayCallback<R>? = null): Any
+    fun <T, R> mapLimit(arr: Array<T>, limit: Number, iterator: AsyncResultIterator<T,R>, callback: AsyncResultArrayCallback<R>? = null): Any
+    fun <T> filter(arr: Array<T>, iterator: AsyncBooleanIterator<T>, callback: ((results: Array<T>) -> Any)? = null): Any
+    fun <T> select(arr: Array<T>, iterator: AsyncBooleanIterator<T>, callback: ((results: Array<T>) -> Any)? = null): Any
+    fun <T> filterSeries(arr: Array<T>, iterator: AsyncBooleanIterator<T>, callback: ((results: Array<T>) -> Any)? = null): Any
+    fun <T> selectSeries(arr: Array<T>, iterator: AsyncBooleanIterator<T>, callback: ((results: Array<T>) -> Any)? = null): Any
+    fun <T> filterLimit(arr: Array<T>, limit: Number, iterator: AsyncBooleanIterator<T>, callback: ((results: Array<T>) -> Any)? = null): Any
+    fun <T> selectLimit(arr: Array<T>, limit: Number, iterator: AsyncBooleanIterator<T>, callback: ((results: Array<T>) -> Any)? = null): Any
+    fun <T> reject(arr: Array<T>, iterator: AsyncBooleanIterator<T>, callback: ((results: Array<T>) -> Any)? = null): Any
+    fun <T> rejectSeries(arr: Array<T>, iterator: AsyncBooleanIterator<T>, callback: ((results: Array<T>) -> Any)? = null): Any
+    fun <T> rejectLimit(arr: Array<T>, limit: Number, iterator: AsyncBooleanIterator<T>, callback: ((results: Array<T>) -> Any)? = null): Any
+    fun <T, R> reduce(arr: Array<T>, memo: R, iterator: AsyncMemoIterator<T,R>, callback: AsyncResultCallback<R>? = null): Any
+    fun <T, R> inject(arr: Array<T>, memo: R, iterator: AsyncMemoIterator<T,R>, callback: AsyncResultCallback<R>? = null): Any
+    fun <T, R> foldl(arr: Array<T>, memo: R, iterator: AsyncMemoIterator<T,R>, callback: AsyncResultCallback<R>? = null): Any
+    fun <T, R> reduceRight(arr: Array<T>, memo: R, iterator: AsyncMemoIterator<T,R>, callback: AsyncResultCallback<R>): Any
+    fun <T, R> foldr(arr: Array<T>, memo: R, iterator: AsyncMemoIterator<T,R>, callback: AsyncResultCallback<R>): Any
+    fun <T> detect(arr: Array<T>, iterator: AsyncBooleanIterator<T>, callback: ((result: T) -> Unit)? = null): Any
+    fun <T> detectSeries(arr: Array<T>, iterator: AsyncBooleanIterator<T>, callback: ((result: T) -> Unit)? = null): Any
+    fun <T> detectLimit(arr: Array<T>, limit: Number, iterator: AsyncBooleanIterator<T>, callback: ((result: T) -> Unit)? = null): Any
+    fun <T, V> sortBy(arr: Array<T>, iterator: AsyncResultIterator<T,V>, callback: AsyncResultArrayCallback<T>? = null): Any
+    fun <T> some(arr: Array<T>, iterator: AsyncBooleanIterator<T>, callback: ((result: Boolean) -> Unit)? = null): Any
+    fun <T> someLimit(arr: Array<T>, limit: Number, iterator: AsyncBooleanIterator<T>, callback: ((result: Boolean) -> Unit)? = null): Any
+    fun <T> any(arr: Array<T>, iterator: AsyncBooleanIterator<T>, callback: ((result: Boolean) -> Unit)? = null): Any
+    fun <T> every(arr: Array<T>, iterator: AsyncBooleanIterator<T>, callback: ((result: Boolean) -> Any)? = null): Any
+    fun <T> everyLimit(arr: Array<T>, limit: Number, iterator: AsyncBooleanIterator<T>, callback: ((result: Boolean) -> Any)? = null): Any
+    fun <T> all(arr: Array<T>, iterator: AsyncBooleanIterator<T>, callback: ((result: Boolean) -> Any)? = null): Any
+    fun <T, R> concat(arr: Array<T>, iterator: AsyncResultIterator<T,Array<R>>, callback: AsyncResultArrayCallback<R>? = null): Any
+    fun <T, R> concatSeries(arr: Array<T>, iterator: AsyncResultIterator<T,Array<R>>, callback: AsyncResultArrayCallback<R>? = null): Any
+    fun <T> series(tasks: Array<AsyncFunction<T>>, callback: AsyncResultArrayCallback<T>? = null)
+    fun <T> series(tasks: Dictionary<AsyncFunction<T>>, callback: AsyncResultObjectCallback<T>? = null)
+    fun <T> parallel(tasks: Array<AsyncFunction<T>>, callback: AsyncResultArrayCallback<T>? = null)
+    fun <T> parallel(tasks: Dictionary<AsyncFunction<T>>, callback: AsyncResultObjectCallback<T>? = null)
+    fun <T> parallelLimit(tasks: Array<AsyncFunction<T>>, limit: Number, callback: AsyncResultArrayCallback<T>? = null)
+    fun <T> parallelLimit(tasks: Dictionary<AsyncFunction<T>>, limit: Number, callback: AsyncResultObjectCallback<T>? = null)
     fun whilst(test: () -> Boolean, fn: AsyncVoidFunction, callback: (err: Any) -> Unit)
     fun doWhilst(fn: AsyncVoidFunction, test: () -> Boolean, callback: (err: Any) -> Unit)
     fun until(test: () -> Boolean, fn: AsyncVoidFunction, callback: (err: Any) -> Unit)
@@ -180,19 +180,19 @@ interface Async {
     fun seq(vararg fns: Function): Function
     fun applyEach(fns: Array<Function>, argsAndCallback: Array<Any>)
     fun applyEachSeries(fns: Array<Function>, argsAndCallback: Array<Any>)
-    fun queue<T>(worker: AsyncWorker<T>, concurrency: Number? = null): AsyncQueue<T>
-    fun priorityQueue<T>(worker: AsyncWorker<T>, concurrency: Number): AsyncPriorityQueue<T>
+    fun <T> queue(worker: AsyncWorker<T>, concurrency: Number? = null): AsyncQueue<T>
+    fun <T> priorityQueue(worker: AsyncWorker<T>, concurrency: Number): AsyncPriorityQueue<T>
     fun cargo(worker: (tasks: Array<Any>, callback: ErrorCallback) -> Unit, payload: Number? = null): AsyncCargo
     fun auto(tasks: Any, callback: ((error: Error, results: Any) -> Unit)? = null)
-    fun retry<T>(opts: Number, task: (callback: AsyncResultCallback<T>, results: Any) -> Unit, callback: (error: Error, results: Any) -> Unit)
-    fun retry<T>(opts: `T$0`, task: (callback: AsyncResultCallback<T>, results: Any) -> Unit, callback: (error: Error, results: Any) -> Unit)
+    fun <T> retry(opts: Number, task: (callback: AsyncResultCallback<T>, results: Any) -> Unit, callback: (error: Error, results: Any) -> Unit)
+    fun <T> retry(opts: `T$0`, task: (callback: AsyncResultCallback<T>, results: Any) -> Unit, callback: (error: Error, results: Any) -> Unit)
     fun iterator(tasks: Array<Function>): Function
     fun apply(fn: Function, vararg arguments: Any): AsyncFunction<Any>
     fun nextTick(callback: Function)
     fun setImmediate(callback: Function)
-    fun times<T>(n: Number, iterator: AsyncResultIterator<Number,T>, callback: AsyncResultArrayCallback<T>)
-    fun timesSeries<T>(n: Number, iterator: AsyncResultIterator<Number,T>, callback: AsyncResultArrayCallback<T>)
-    fun timesLimit<T>(n: Number, limit: Number, iterator: AsyncResultIterator<Number,T>, callback: AsyncResultArrayCallback<T>)
+    fun <T> times(n: Number, iterator: AsyncResultIterator<Number,T>, callback: AsyncResultArrayCallback<T>)
+    fun <T> timesSeries(n: Number, iterator: AsyncResultIterator<Number,T>, callback: AsyncResultArrayCallback<T>)
+    fun <T> timesLimit(n: Number, limit: Number, iterator: AsyncResultIterator<Number,T>, callback: AsyncResultArrayCallback<T>)
     fun memoize(fn: Function, hasher: Function? = null): Function
     fun unmemoize(fn: Function): Function
     fun ensureAsync(fn: (vararg argsAndCallback: Any) -> Unit): Function

@@ -31,4 +31,4 @@ object __M {
     }
 }
 @native
-fun foo<__T>(__a: __T, _b: __M.__N.__C): Unit = noImpl
+fun <__T> foo(__a: __T, _b: __M.__N.__C): Unit = noImpl

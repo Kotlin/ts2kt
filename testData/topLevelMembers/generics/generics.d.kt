@@ -1,13 +1,13 @@
 package generics
 
 @native
-fun withoutArgumentsReturnsT<T>(): T = noImpl
+fun <T> withoutArgumentsReturnsT(): T = noImpl
 @native
-fun withOneT<T>(a: T): Any = noImpl
+fun <T> withOneT(a: T): Any = noImpl
 @native
-fun returnsT<T>(s: String): T = noImpl
+fun <T> returnsT(s: String): T = noImpl
 @native
-fun withManyArguments<A, B>(a: A, b: B): Boolean = noImpl
+fun <A, B> withManyArguments(a: A, b: B): Boolean = noImpl
 @native
 var arrayOfAny: Array<Any> = noImpl
 @native
