@@ -1,3 +1,3 @@
 [submodule "testDefinitelyTyped/DefinitelyTyped"]
 	path = testDefinitelyTyped/DefinitelyTyped
-	url = https://github.com/borisyankov/DefinitelyTyped.git
+	url = https://github.com/DefinitelyTyped/DefinitelyTyped.git
