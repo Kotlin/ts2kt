@@ -23,6 +23,7 @@ interface amplifyDecoders {
 @native
 interface amplifyAjaxSettings : JQueryAjaxSettings {
     var cache: Any? = noImpl
+    var dataMap: dynamic /* Any | (data: Any) -> Any */? = noImpl
     var decoder: Any? = noImpl
 }
 @native
@@ -30,7 +31,7 @@ interface amplifyRequest {
     @nativeInvoke
     fun invoke(resourceId: String, hash: Any? = null, callback: Function? = null)
     @nativeInvoke
-    fun invoke(settings: amplifyRequestSettings)
+    fun invoke(settings: amplifyRequestSettings): Any
     fun define(resourceId: String, requestType: String, settings: amplifyAjaxSettings? = null)
     fun define(resourceId: String, resource: (settings: amplifyRequestSettings) -> Unit)
     var decoders: amplifyDecoders
@@ -71,4 +72,5 @@ interface amplifyStatic {
     var request: amplifyRequest
 }
 @native
+@module("amplify")
 var amplify: amplifyStatic = noImpl

@@ -22,6 +22,7 @@ interface JQueryAjaxSettings {
     var isLocal: Boolean? = noImpl
     var jsonp: Any? = noImpl
     var jsonpCallback: Any? = noImpl
+    var method: String? = noImpl
     var mimeType: String? = noImpl
     var password: String? = noImpl
     var processData: Boolean? = noImpl
@@ -41,8 +42,9 @@ interface JQueryXHR : XMLHttpRequest, JQueryPromise<Any> {
     // TODO: investigate
     fun overrideMimeType(mimeType: String): Any
     fun abort(statusText: String? = null)
-    fun then(doneCallback: (data: Any, textStatus: String, jqXHR: JQueryXHR) -> Unit, failCallback: ((jqXHR: JQueryXHR, textStatus: String, errorThrown: Any) -> Unit)? = null): JQueryPromise<Any>
+    fun then<R>(doneCallback: (data: Any, textStatus: String, jqXHR: JQueryXHR) -> R, failCallback: ((jqXHR: JQueryXHR, textStatus: String, errorThrown: Any) -> Unit)? = null): JQueryPromise<R>
     var responseJSON: Any? = noImpl
+    fun error(xhr: JQueryXHR, textStatus: String, errorThrown: String)
 }
 @native
 interface JQueryCallback {
@@ -53,7 +55,7 @@ interface JQueryCallback {
     fun empty(): JQueryCallback
     fun fire(vararg arguments: Any): JQueryCallback
     fun fired(): Boolean
-    fun fireWith(context: Any? = null, vararg args: Any): JQueryCallback
+    fun fireWith(context: Any? = null, args: Array<Any>? = null): JQueryCallback
     fun has(callback: Function): Boolean
     fun lock(): JQueryCallback
     fun locked(): Boolean
@@ -62,7 +64,8 @@ interface JQueryCallback {
 }
 @native
 interface JQueryGenericPromise<T> {
-    fun then<U>(doneFilter: (value: T) -> dynamic /* U | JQueryGenericPromise<U> */, failFilter: ((reason: Any) -> dynamic /* U | JQueryGenericPromise<U> */)? = null): JQueryGenericPromise<U>
+    fun then<U>(doneFilter: (value: T? = null, vararg values: Any) -> dynamic /* U | JQueryPromise<U> */, failFilter: ((vararg reasons: Any) -> Any)? = null, progressFilter: ((vararg progression: Any) -> Any)? = null): JQueryPromise<U>
+    fun then(doneFilter: (value: T? = null, vararg values: Any) -> Unit, failFilter: ((vararg reasons: Any) -> Any)? = null, progressFilter: ((vararg progression: Any) -> Any)? = null): JQueryPromise<Unit>
 }
 @native
 interface JQueryPromiseCallback<T> {
@@ -70,47 +73,34 @@ interface JQueryPromiseCallback<T> {
     fun invoke(value: T? = null, vararg args: Any)
 }
 @native
-interface JQueryPromiseOperator<T, R> {
+interface JQueryPromiseOperator<T, U> {
     @nativeInvoke
-    fun invoke(callback: JQueryPromiseCallback<T>, vararg callbacks: JQueryPromiseCallback<T>): JQueryPromise<R>
-    @nativeInvoke
-    fun invoke(callback: Array<JQueryPromiseCallback<T>>, vararg callbacks: JQueryPromiseCallback<T>): JQueryPromise<R>
+    fun invoke(callback1: dynamic /* JQueryPromiseCallback<T> | Array<JQueryPromiseCallback<T>> */, vararg callbacksN: dynamic /* JQueryPromiseCallback<Any> | Array<JQueryPromiseCallback<Any>> */): JQueryPromise<U>
 }
 @native
-interface JQueryPromise<T> {
-    var always: JQueryPromiseOperator<Any,T>
-    var done: JQueryPromiseOperator<T,T>
-    var fail: JQueryPromiseOperator<Any,T>
-    fun progress(progressCallback: JQueryPromiseCallback<T>): JQueryPromise<T>
-    fun progress(progressCallbacks: Array<JQueryPromiseCallback<T>>): JQueryPromise<T>
+interface JQueryPromise<T> : JQueryGenericPromise<T> {
     fun state(): String
+    fun always(alwaysCallback1: dynamic /* JQueryPromiseCallback<Any> | Array<JQueryPromiseCallback<Any>> */? = null, vararg alwaysCallbacksN: dynamic /* JQueryPromiseCallback<Any> | Array<JQueryPromiseCallback<Any>> */): JQueryPromise<T>
+    fun done(doneCallback1: dynamic /* JQueryPromiseCallback<T> | Array<JQueryPromiseCallback<T>> */? = null, vararg doneCallbackN: dynamic /* JQueryPromiseCallback<T> | Array<JQueryPromiseCallback<T>> */): JQueryPromise<T>
+    fun fail(failCallback1: dynamic /* JQueryPromiseCallback<Any> | Array<JQueryPromiseCallback<Any>> */? = null, vararg failCallbacksN: dynamic /* JQueryPromiseCallback<Any> | Array<JQueryPromiseCallback<Any>> */): JQueryPromise<T>
+    fun progress(progressCallback1: dynamic /* JQueryPromiseCallback<Any> | Array<JQueryPromiseCallback<Any>> */? = null, vararg progressCallbackN: dynamic /* JQueryPromiseCallback<Any> | Array<JQueryPromiseCallback<Any>> */): JQueryPromise<T>
     fun pipe(doneFilter: ((x: Any) -> Any)? = null, failFilter: ((x: Any) -> Any)? = null, progressFilter: ((x: Any) -> Any)? = null): JQueryPromise<Any>
-    fun then<U>(doneFilter: (value: T) -> dynamic /* U | JQueryGenericPromise<U> */, failFilter: ((vararg reasons: Any) -> dynamic /* U | JQueryGenericPromise<U> */)? = null, progressFilter: ((vararg progression: Any) -> Any)? = null): JQueryPromise<U>
-    fun then<U>(doneFilter: (vararg values: Any) -> dynamic /* U | JQueryGenericPromise<U> */, failFilter: ((vararg reasons: Any) -> dynamic /* U | JQueryGenericPromise<U> */)? = null, progressFilter: ((vararg progression: Any) -> Any)? = null): JQueryPromise<U>
 }
 @native
-interface JQueryDeferred<T> : JQueryPromise<T> {
-    fun always(alwaysCallbacks1: JQueryPromiseCallback<T>? = null, vararg alwaysCallbacks2: JQueryPromiseCallback<T>): JQueryDeferred<T>
-    fun always(alwaysCallbacks1: Array<JQueryPromiseCallback<T>>? = null, vararg alwaysCallbacks2: JQueryPromiseCallback<T>): JQueryDeferred<T>
-    fun always(alwaysCallbacks1: JQueryPromiseCallback<T>? = null, vararg alwaysCallbacks2: Any): JQueryDeferred<T>
-    fun always(alwaysCallbacks1: Array<JQueryPromiseCallback<T>>? = null, vararg alwaysCallbacks2: Any): JQueryDeferred<T>
-    fun done(doneCallbacks1: JQueryPromiseCallback<T>? = null, vararg doneCallbacks2: JQueryPromiseCallback<T>): JQueryDeferred<T>
-    fun done(doneCallbacks1: Array<JQueryPromiseCallback<T>>? = null, vararg doneCallbacks2: JQueryPromiseCallback<T>): JQueryDeferred<T>
-    fun done(doneCallbacks1: JQueryPromiseCallback<T>? = null, vararg doneCallbacks2: Any): JQueryDeferred<T>
-    fun done(doneCallbacks1: Array<JQueryPromiseCallback<T>>? = null, vararg doneCallbacks2: Any): JQueryDeferred<T>
-    fun fail(failCallbacks1: JQueryPromiseCallback<T>? = null, vararg failCallbacks2: JQueryPromiseCallback<T>): JQueryDeferred<T>
-    fun fail(failCallbacks1: Array<JQueryPromiseCallback<T>>? = null, vararg failCallbacks2: JQueryPromiseCallback<T>): JQueryDeferred<T>
-    fun fail(failCallbacks1: JQueryPromiseCallback<T>? = null, vararg failCallbacks2: Any): JQueryDeferred<T>
-    fun fail(failCallbacks1: Array<JQueryPromiseCallback<T>>? = null, vararg failCallbacks2: Any): JQueryDeferred<T>
-    fun progress(progressCallback: JQueryPromiseCallback<T>): JQueryDeferred<T>
-    fun progress(progressCallbacks: Array<JQueryPromiseCallback<T>>): JQueryDeferred<T>
-    fun notify(vararg args: Any): JQueryDeferred<T>
-    fun notifyWith(context: Any, vararg args: Any): JQueryDeferred<T>
-    fun reject(vararg args: Any): JQueryDeferred<T>
-    fun rejectWith(context: Any, vararg args: Any): JQueryDeferred<T>
+interface JQueryDeferred<T> : JQueryGenericPromise<T> {
+    fun state(): String
+    fun always(alwaysCallback1: dynamic /* JQueryPromiseCallback<Any> | Array<JQueryPromiseCallback<Any>> */? = null, vararg alwaysCallbacksN: dynamic /* JQueryPromiseCallback<Any> | Array<JQueryPromiseCallback<Any>> */): JQueryDeferred<T>
+    fun done(doneCallback1: dynamic /* JQueryPromiseCallback<T> | Array<JQueryPromiseCallback<T>> */? = null, vararg doneCallbackN: dynamic /* JQueryPromiseCallback<T> | Array<JQueryPromiseCallback<T>> */): JQueryDeferred<T>
+    fun fail(failCallback1: dynamic /* JQueryPromiseCallback<Any> | Array<JQueryPromiseCallback<Any>> */? = null, vararg failCallbacksN: dynamic /* JQueryPromiseCallback<Any> | Array<JQueryPromiseCallback<Any>> */): JQueryDeferred<T>
+    fun progress(progressCallback1: dynamic /* JQueryPromiseCallback<Any> | Array<JQueryPromiseCallback<Any>> */? = null, vararg progressCallbackN: dynamic /* JQueryPromiseCallback<Any> | Array<JQueryPromiseCallback<Any>> */): JQueryDeferred<T>
+    fun notify(value: Any? = null, vararg args: Any): JQueryDeferred<T>
+    fun notifyWith(context: Any, value: Array<Any>? = null): JQueryDeferred<T>
+    fun reject(value: Any? = null, vararg args: Any): JQueryDeferred<T>
+    fun rejectWith(context: Any, value: Array<Any>? = null): JQueryDeferred<T>
     fun resolve(value: T? = null, vararg args: Any): JQueryDeferred<T>
-    fun resolveWith(context: Any, vararg args: Any): JQueryDeferred<T>
+    fun resolveWith(context: Any, value: Array<T>? = null): JQueryDeferred<T>
     fun promise(target: Any? = null): JQueryPromise<T>
+    fun pipe(doneFilter: ((x: Any) -> Any)? = null, failFilter: ((x: Any) -> Any)? = null, progressFilter: ((x: Any) -> Any)? = null): JQueryPromise<Any>
 }
 @native
 interface BaseJQueryEventObject : Event {
@@ -221,6 +211,20 @@ interface JQueryAnimationOptions {
     var specialEasing: Object? = noImpl
 }
 @native
+interface JQueryEasingFunction {
+    @nativeInvoke
+    fun invoke(percent: Number): Number
+}
+@native
+interface JQueryEasingFunctions {
+    @nativeGetter
+    fun get(name: String): JQueryEasingFunction
+    @nativeSetter
+    fun set(name: String, value: JQueryEasingFunction)
+    var linear: JQueryEasingFunction
+    var swing: JQueryEasingFunction
+}
+@native
 interface `T$0` {
     var slow: Number
     var fast: Number
@@ -259,6 +263,8 @@ interface JQueryStatic {
     @nativeInvoke
     fun invoke(elementArray: Array<Element>): JQuery
     @nativeInvoke
+    fun invoke(callback: (jQueryAlias: JQueryStatic? = null) -> Any): JQuery
+    @nativeInvoke
     fun invoke(`object`: Any): JQuery
     @nativeInvoke
     fun invoke(`object`: JQuery): JQuery
@@ -268,12 +274,8 @@ interface JQueryStatic {
     fun invoke(html: String, ownerDocument: Document? = null): JQuery
     @nativeInvoke
     fun invoke(html: String, attributes: Object): JQuery
-    @nativeInvoke
-    fun invoke(callback: Function): JQuery
-    fun noConflict(removeAll: Boolean? = null): Object
-    fun `when`<T>(vararg deferreds: JQueryGenericPromise<T>): JQueryPromise<T>
-    fun `when`<T>(vararg deferreds: T): JQueryPromise<T>
-    fun `when`<T>(vararg deferreds: Any): JQueryPromise<T>
+    fun noConflict(removeAll: Boolean? = null): JQueryStatic
+    fun `when`<T>(vararg deferreds: dynamic /* T | JQueryPromise<T> */): JQueryPromise<T>
     var cssHooks: Json
     var cssNumber: Any
     fun data<T>(element: Element, key: String, value: T): T
@@ -286,6 +288,7 @@ interface JQueryStatic {
     fun queue(element: Element, queueName: String, callback: Function): JQuery
     fun removeData(element: Element, name: String? = null): JQuery
     fun Deferred<T>(beforeStart: ((deferred: JQueryDeferred<T>) -> Any)? = null): JQueryDeferred<T>
+    var easing: JQueryEasingFunctions
     var fx: `T$1`
     fun proxy(fnction: (vararg args: Any) -> Any, context: Object, vararg additionalArguments: Any): Any
     fun proxy(context: Object, name: String, vararg additionalArguments: Any): Any
@@ -358,7 +361,7 @@ interface JQuery {
     fun toggleClass(swtch: Boolean? = null): JQuery
     fun toggleClass(func: (index: Number, className: String, swtch: Boolean) -> String, swtch: Boolean? = null): JQuery
     fun `val`(): Any
-    fun `val`(value: dynamic /* String | Array<String> */): JQuery
+    fun `val`(value: dynamic /* String | Array<String> | Number */): JQuery
     fun `val`(func: (index: Number, value: String) -> String): JQuery
     fun css(propertyName: String): String
     fun css(propertyName: String, value: dynamic /* String | Number */): JQuery
@@ -388,12 +391,13 @@ interface JQuery {
     fun width(func: (index: Number, width: Number) -> dynamic /* Number | String */): JQuery
     fun clearQueue(queueName: String? = null): JQuery
     fun data(key: String, value: Any): JQuery
-    fun data(obj: Json): JQuery
     fun data(key: String): Any
+    fun data(obj: Json): JQuery
     fun data(): Any
     fun dequeue(queueName: String? = null): JQuery
     fun removeData(name: String): JQuery
     fun removeData(list: Array<String>): JQuery
+    fun removeData(): JQuery
     fun promise(type: String? = null, target: Object? = null): JQueryPromise<Any>
     fun animate(properties: Object, duration: dynamic /* String | Number */? = null, complete: Function? = null): JQuery
     fun animate(properties: Object, duration: dynamic /* String | Number */? = null, easing: String? = null, complete: Function? = null): JQuery
@@ -454,8 +458,10 @@ interface JQuery {
     fun focus(): JQuery
     fun focus(handler: (eventObject: JQueryEventObject) -> Any): JQuery
     fun focus(eventData: Any? = null, handler: ((eventObject: JQueryEventObject) -> Any)? = null): JQuery
+    fun focusin(): JQuery
     fun focusin(handler: (eventObject: JQueryEventObject) -> Any): JQuery
     fun focusin(eventData: Object, handler: (eventObject: JQueryEventObject) -> Any): JQuery
+    fun focusout(): JQuery
     fun focusout(handler: (eventObject: JQueryEventObject) -> Any): JQuery
     fun focusout(eventData: Object, handler: (eventObject: JQueryEventObject) -> Any): JQuery
     fun hover(handlerIn: (eventObject: JQueryEventObject) -> Any, handlerOut: (eventObject: JQueryEventObject) -> Any): JQuery
@@ -494,6 +500,7 @@ interface JQuery {
     fun mouseup(eventData: Object, handler: (eventObject: JQueryMouseEventObject) -> Any): JQuery
     fun off(): JQuery
     fun off(events: String, selector: String? = null, handler: ((eventObject: JQueryEventObject) -> Any)? = null): JQuery
+    fun off(events: String, handler: (eventObject: JQueryEventObject, vararg args: Any) -> Any): JQuery
     fun off(events: String, handler: (eventObject: JQueryEventObject) -> Any): JQuery
     fun off(events: Json, selector: String? = null): JQuery
     fun on(events: String, handler: (eventObject: JQueryEventObject, vararg args: Any) -> Any): JQuery
@@ -508,7 +515,7 @@ interface JQuery {
     fun one(events: String, selector: String, data: Any, handler: (eventObject: JQueryEventObject) -> Any): JQuery
     fun one(events: Json, selector: String? = null, data: Any? = null): JQuery
     fun one(events: Json, data: Any? = null): JQuery
-    fun ready(handler: Function): JQuery
+    fun ready(handler: (jQueryAlias: JQueryStatic? = null) -> Any): JQuery
     fun resize(): JQuery
     fun resize(handler: (eventObject: JQueryEventObject) -> Any): JQuery
     fun resize(eventData: Object, handler: (eventObject: JQueryEventObject) -> Any): JQuery
@@ -524,6 +531,7 @@ interface JQuery {
     fun trigger(eventType: String, extraParameters: dynamic /* Array<Any> | Object */? = null): JQuery
     fun trigger(event: JQueryEventObject, extraParameters: dynamic /* Array<Any> | Object */? = null): JQuery
     fun triggerHandler(eventType: String, vararg extraParameters: Any): Object
+    fun triggerHandler(event: JQueryEventObject, vararg extraParameters: Any): Object
     fun unbind(eventType: String? = null, handler: ((eventObject: JQueryEventObject) -> Any)? = null): JQuery
     fun unbind(eventType: String, fls: Boolean): JQuery
     fun unbind(evt: Any): JQuery
@@ -620,7 +628,7 @@ interface JQuery {
     fun nextUntil(obj: JQuery? = null, filter: String? = null): JQuery
     fun not(selector: String): JQuery
     fun not(func: (index: Number, element: Element) -> Boolean): JQuery
-    fun not(vararg elements: Element): JQuery
+    fun not(elements: dynamic /* Element | Array<Element> */): JQuery
     fun not(obj: JQuery): JQuery
     fun offsetParent(): JQuery
     fun parent(selector: String? = null): JQuery

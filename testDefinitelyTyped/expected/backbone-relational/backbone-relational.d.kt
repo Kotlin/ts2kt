@@ -15,11 +15,13 @@ object Backbone {
         open fun fetchRelated(key: String, options: Any? = null, update: Boolean? = null): Any = noImpl
         // TODO: investigate
         open fun toJSON(): Any = noImpl
-        open fun setup(): Unit = noImpl
-        open fun build(attributes: Any, options: Any? = null): Unit = noImpl
-        open fun findOrCreate(attributes: String, options: Any? = null): Unit = noImpl
-        open fun findOrCreate(attributes: Number, options: Any? = null): Unit = noImpl
-        open fun findOrCreate(attributes: Any, options: Any? = null): Unit = noImpl
+        companion object {
+            fun setup(): Unit = noImpl
+            fun build(attributes: Any, options: Any? = null): Unit = noImpl
+            fun findOrCreate(attributes: String, options: Any? = null): Unit = noImpl
+            fun findOrCreate(attributes: Number, options: Any? = null): Unit = noImpl
+            fun findOrCreate(attributes: Any, options: Any? = null): Unit = noImpl
+        }
     }
     open class Relation : Model() {
         open var options: Any = noImpl
@@ -77,14 +79,16 @@ object Backbone {
         open fun getCollection(type: RelationalModel, create: Boolean): Collection<Model> = noImpl
         open fun getObjectByName(name: String): Any = noImpl
         open fun resolveIdForItem(type: Any, item: Any): Any = noImpl
-        open fun find(type: Any, item: String): RelationalModel = noImpl
-        open fun find(type: Any, item: Number): RelationalModel = noImpl
-        open fun find(type: Any, item: RelationalModel): RelationalModel = noImpl
-        open fun find(type: Any, item: Any): RelationalModel = noImpl
         open fun register(model: RelationalModel): Unit = noImpl
         open fun checkId(model: RelationalModel, id: Any): Unit = noImpl
         open fun update(model: RelationalModel): Unit = noImpl
         open fun unregister(model: RelationalModel, collection: Collection<Model>, options: Any): Unit = noImpl
         open fun reset(): Unit = noImpl
+        companion object {
+            fun find(type: Any, item: String): RelationalModel = noImpl
+            fun find(type: Any, item: Number): RelationalModel = noImpl
+            fun find(type: Any, item: RelationalModel): RelationalModel = noImpl
+            fun find(type: Any, item: Any): RelationalModel = noImpl
+        }
     }
 }

@@ -24,18 +24,21 @@ interface AngularFireObject : AngularFireSimpleObject {
     override var `$id`: String
     override var `$priority`: Number
     override var `$value`: Any
+    fun `$remove`(): ng.IPromise<Firebase>
     fun `$save`(): ng.IPromise<Firebase>
     fun `$loaded`(resolve: ((x: AngularFireObject) -> ng.IHttpPromise<Any>)? = null, reject: ((err: Any) -> Any)? = null): ng.IPromise<AngularFireObject>
     fun `$loaded`(resolve: ((x: AngularFireObject) -> ng.IPromise<Any>)? = null, reject: ((err: Any) -> Any)? = null): ng.IPromise<AngularFireObject>
     fun `$loaded`(resolve: ((x: AngularFireObject) -> Unit)? = null, reject: ((err: Any) -> Any)? = null): ng.IPromise<AngularFireObject>
-    fun `$inst`(): AngularFire
+    fun `$ref`(): Firebase
     fun `$bindTo`(scope: ng.IScope, varName: String): ng.IPromise<Any>
     fun `$watch`(callback: Function, context: Any? = null): Function
     fun `$destroy`()
 }
 @native
 interface AngularFireObjectService {
-    fun `$extendFactory`(ChildClass: Object, methods: Object? = null): Object
+    @nativeInvoke
+    fun invoke(firebase: Firebase): AngularFireObject
+    fun `$extend`(ChildClass: Object, methods: Object? = null): Object
 }
 @native
 interface AngularFireArray : Array<AngularFireSimpleObject> {
@@ -48,13 +51,15 @@ interface AngularFireArray : Array<AngularFireSimpleObject> {
     fun `$loaded`(resolve: ((x: AngularFireArray) -> ng.IHttpPromise<Any>)? = null, reject: ((err: Any) -> Any)? = null): ng.IPromise<AngularFireArray>
     fun `$loaded`(resolve: ((x: AngularFireArray) -> ng.IPromise<Any>)? = null, reject: ((err: Any) -> Any)? = null): ng.IPromise<AngularFireArray>
     fun `$loaded`(resolve: ((x: AngularFireArray) -> Unit)? = null, reject: ((err: Any) -> Any)? = null): ng.IPromise<AngularFireArray>
-    fun `$inst`(): AngularFire
+    fun `$ref`(): Firebase
     fun `$watch`(cb: (event: String, key: String, prevChild: String) -> Unit, context: Any? = null): Function
     fun `$destroy`()
 }
 @native
 interface AngularFireArrayService {
-    fun `$extendFactory`(ChildClass: Object, methods: Object? = null): Object
+    @nativeInvoke
+    fun invoke(firebase: Firebase): AngularFireArray
+    fun `$extend`(ChildClass: Object, methods: Object? = null): Object
 }
 @native
 interface AngularFireSimpleObject {
@@ -73,11 +78,20 @@ interface AngularFireAuthService {
 }
 @native
 interface AngularFireAuth {
-    fun `$getCurrentUser`(): ng.IPromise<Any>
-    fun `$login`(provider: String, options: Object? = null): ng.IPromise<Any>
-    fun `$logout`()
-    fun `$createUser`(email: String, password: String): ng.IPromise<Any>
-    fun `$changePassword`(email: String, oldPassword: String, newPassword: String): ng.IPromise<Any>
-    fun `$removeUser`(email: String, password: String): ng.IPromise<Any>
-    fun `$sendPasswordResetEmail`(email: String): ng.IPromise<Any>
+    fun `$authWithCustomToken`(authToken: String, options: Object? = null): ng.IPromise<Any>
+    fun `$authAnonymously`(options: Object? = null): ng.IPromise<Any>
+    fun `$authWithPassword`(credentials: FirebaseCredentials, options: Object? = null): ng.IPromise<Any>
+    fun `$authWithOAuthPopup`(provider: String, options: Object? = null): ng.IPromise<Any>
+    fun `$authWithOAuthRedirect`(provider: String, options: Object? = null): ng.IPromise<Any>
+    fun `$authWithOAuthToken`(provider: String, credentials: dynamic /* Object | String */, options: Object? = null): ng.IPromise<Any>
+    fun `$getAuth`(): FirebaseAuthData
+    fun `$onAuth`(callback: Function, context: Any? = null): Function
+    fun `$unauth`()
+    fun `$waitForAuth`(): ng.IPromise<Any>
+    fun `$requireAuth`(): ng.IPromise<Any>
+    fun `$createUser`(credentials: FirebaseCredentials): ng.IPromise<Any>
+    fun `$removeUser`(credentials: FirebaseCredentials): ng.IPromise<Any>
+    fun `$changeEmail`(credentials: FirebaseChangeEmailCredentials): ng.IPromise<Any>
+    fun `$changePassword`(credentials: FirebaseChangePasswordCredentials): ng.IPromise<Any>
+    fun `$resetPassword`(credentials: FirebaseResetPasswordCredentials): ng.IPromise<Any>
 }
