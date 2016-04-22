@@ -153,6 +153,13 @@ private fun TS.TypeNode.toKotlinTypeNameIfStandardType(typeMapper: ObjectTypeToK
 
         TS.SyntaxKind.UnionType -> (this as TS.UnionTypeNode).toKotlinTypeName(typeMapper)
 
+        TS.SyntaxKind.ParenthesizedType -> (this as TS.ParenthesizedTypeNode).type.toKotlinTypeName(typeMapper)
+
+        // TODO how to support?
+        TS.SyntaxKind.StringLiteralType -> ANY + " /* \"" + (this as TS.StringLiteralType).text + "\"*/"
+
+        TS.SyntaxKind.ThisType -> (this as TS.ThisTypeNode).toKotlinTypeName(typeMapper)
+
         else -> unsupportedNode(this)
     }
 }
@@ -213,6 +220,40 @@ fun TS.UnionTypeNode.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper):
     return DYNAMIC + commentWithExpectedType
 }
 
+fun TS.ThisTypeNode.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper): String {
+    var parent = parent
+
+    while(parent != null) {
+        @Suppress("NON_EXHAUSTIVE_WHEN")
+        when (parent.kind) {
+            TS.SyntaxKind.ClassDeclaration,
+            TS.SyntaxKind.InterfaceDeclaration ->
+                return (parent as ClassOrInterfaceDeclaration).toKotlinTypeName(typeMapper) + " /* this */"
+            // TODO support
+            TS.SyntaxKind.TypeLiteral ->
+                return ANY + " /* this */"
+        }
+        parent = parent.parent
+    }
+
+    throw JsError("Illegal State")
+}
+
+@native
+interface ClassOrInterfaceDeclaration : TS.DeclarationStatement {
+    override val identifierName: TS.Identifier?
+    var typeParameters: TS.NodeArray<TS.TypeParameterDeclaration>? // = noImpl
+}
+
+fun ClassOrInterfaceDeclaration.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper): String {
+    val name = identifierName!!.unescapedText
+
+    val typeParams = typeParameters ?: return name
+
+    val strTypeParams = typeParams.arr.map { it.identifierName.unescapedText }.joinToString(", ")
+    return "$name<$strTypeParams>"
+
+}
 
 fun forEachChild(visitor: Visitor, node: TS.Node) {
     TS.forEachChild(node, { node ->
@@ -233,6 +274,7 @@ fun visitNode(visitor: Visitor, node: TS.Node?): Unit {
 
         TS.SyntaxKind.ClassDeclaration -> visitor.visitClassDeclaration(node as TS.ClassDeclaration)
         TS.SyntaxKind.InterfaceDeclaration -> visitor.visitInterfaceDeclaration(node as TS.InterfaceDeclaration)
+        TS.SyntaxKind.TypeAliasDeclaration -> { /* TODO implement */ }
 
         TS.SyntaxKind.HeritageClause -> visitor.visitHeritageClause(node as TS.HeritageClause)
 
