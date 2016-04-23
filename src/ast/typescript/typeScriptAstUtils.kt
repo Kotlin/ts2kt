@@ -24,6 +24,7 @@ import ts2kt.kotlin.ast.TypeParam
 import ts2kt.utils.assert
 import ts2kt.utils.hasFlag
 import ts2kt.utils.join
+import typescript.ClassOrInterfaceDeclaration
 import typescript.TS
 import typescript.unescapeIdentifier
 
@@ -237,12 +238,6 @@ fun TS.ThisTypeNode.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper): 
     }
 
     throw JsError("Illegal State")
-}
-
-@native
-interface ClassOrInterfaceDeclaration : TS.DeclarationStatement {
-    override val identifierName: TS.Identifier?
-    var typeParameters: TS.NodeArray<TS.TypeParameterDeclaration>? // = noImpl
 }
 
 fun ClassOrInterfaceDeclaration.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper): String {
