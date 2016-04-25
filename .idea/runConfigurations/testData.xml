@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="testData" type="NodeunitConfigurationType" factoryName="Nodeunit">
-    <setting name="nodePath" value="/usr/local/bin/node" />
+    <setting name="nodePath" value="project" />
     <envs>
       <env name="VERIFIED_OPERATION_LEVEL" value="2" />
       <env name="OTHER_OPERATION_LEVEL" value="2" />
