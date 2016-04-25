@@ -19,7 +19,7 @@ var utils = require('./../utils');
 var TEST_DATA_DIR = "testData";
 
 //var fileToTest = "../" +
-//    "testData/mergeDeclarations/simpleClass.d.ts";
+//    "testData/module/exportAssignment/exportModuleDeclaredBefore.d.ts";
 
 var tests = exports;
 

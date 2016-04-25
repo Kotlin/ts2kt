@@ -19,7 +19,7 @@ var utils = require('./../utils');
 var TEST_DATA_DIR = "testDefinitelyTyped/DefinitelyTyped";
 var TEST_DATA_EXPECTED_DIR = "testDefinitelyTyped/expected";
 
-//var fileToTest = "amplifyjs/amplifyjs.d.ts";
+//var fileToTest = "jquery/jquery.d.ts";
 
 var tests = exports;
 
