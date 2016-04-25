@@ -1,0 +1,29 @@
+{
+  "name": "ts2kt",
+  "author": "JetBrains s.r.o.",
+  "homepage": "https://github.com/bashor/ts2kt",
+  "version": "0.0.1",
+  "license": "Apache-2.0",
+  "description": "Converter of TypeScript definition files to Kotlin declarations (stubs)",
+  "keywords": [
+    "Kotlin",
+    "TypeScript",
+    "DefinitelyTyped",
+    "compiler",
+    "language",
+    "javascript"
+  ],
+  "bugs": {
+    "url": "https://github.com/bashor/ts2kt/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bashor/ts2kt.git"
+  },
+  "engines": {
+    "node": ">=0.8.0"
+  },
+  "devDependencies": {
+    "nodeunit": "^0.9.1"
+  }
+}
