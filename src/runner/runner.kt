@@ -37,7 +37,7 @@ val OUT_FILE_PATH_ARG_INDEX = 3
 val TYPESCRIPT_DEFINITION_FILE_EXT = ".d.ts"
 val PATH_TO_LIB_D_TS = "lib/lib.d.ts"
 
-val fs = require("fs") as node.fs
+val fs: node.fs = require("fs").asDynamic()
 
 internal val reportedKinds = HashSet<Int>()
 
@@ -251,7 +251,7 @@ object module {
 fun main(args: Array<String>) {
     if (module.parent != null) return
 
-    val process = require("process") as node.process
+    val process: node.process = require("process").asDynamic()
 
     val srcPath = process.argv[SRC_FILE_PATH_ARG_INDEX]
     val outPath = process.argv[OUT_FILE_PATH_ARG_INDEX]
