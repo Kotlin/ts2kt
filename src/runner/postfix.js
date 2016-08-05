@@ -1,1 +1,1 @@
-module.exports = Kotlin.modules.ts2kt.ts2kt;
+module.exports = ts2kt.ts2kt;
