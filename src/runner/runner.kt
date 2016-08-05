@@ -18,6 +18,7 @@ package ts2kt
 
 import js.JsError
 import node.require
+import ts2kt.utils.cast
 import ts2kt.utils.hasFlag
 import ts2kt.utils.push
 import ts2kt.utils.shift
@@ -37,7 +38,7 @@ val OUT_FILE_PATH_ARG_INDEX = 3
 val TYPESCRIPT_DEFINITION_FILE_EXT = ".d.ts"
 val PATH_TO_LIB_D_TS = "lib/lib.d.ts"
 
-val fs: node.fs = require("fs").asDynamic()
+val fs: node.fs = require("fs")
 
 internal val reportedKinds = HashSet<Int>()
 
@@ -93,7 +94,7 @@ fun translate(srcPath: String): String {
 //    val fileNode = languageService.getSourceFile(normalizeSrcPath)
     val fileNode = languageService.getProgram().getSourceFile(normalizeSrcPath)
 
-    val path = require("path") as node.path
+    val path: node.path = require("path")
     val srcName = path.basename(normalizeSrcPath, TYPESCRIPT_DEFINITION_FILE_EXT)
 
     inline fun isAnyMember(node: TS.MethodDeclaration): Boolean {
@@ -114,7 +115,7 @@ fun translate(srcPath: String): String {
             node: TS.Declaration,
             crossinline f: (TS.TypeChecker, TS.Type, String) -> Boolean
     ): Boolean {
-        val parentNode = node.parent!! as TS.ClassDeclaration
+        val parentNode = node.parent!!.cast<TS.ClassDeclaration>()
 
         if (parentNode.heritageClauses == null) return false
 
@@ -197,7 +198,7 @@ fun translate(srcPath: String): String {
 
                 val signature: TS.Signature = when (it.kind) {
                     TS.SyntaxKind.MethodSignature,
-                    TS.SyntaxKind.MethodDeclaration -> typechecker.getSignatureFromDeclaration(it as TS.SignatureDeclaration)
+                    TS.SyntaxKind.MethodDeclaration -> typechecker.getSignatureFromDeclaration(it.cast<TS.SignatureDeclaration>())
                     else -> unsupportedNode(it)
                 }
 
@@ -251,7 +252,7 @@ object module {
 fun main(args: Array<String>) {
     if (module.parent != null) return
 
-    val process: node.process = require("process").asDynamic()
+    val process: node.process = require("process")
 
     val srcPath = process.argv[SRC_FILE_PATH_ARG_INDEX]
     val outPath = process.argv[OUT_FILE_PATH_ARG_INDEX]

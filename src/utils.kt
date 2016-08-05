@@ -18,6 +18,9 @@ package ts2kt.utils
 
 import js.JsError
 
+@Suppress("NOTHING_TO_INLINE")
+inline fun <T> dynamic.cast(): T = this
+
 fun <T> List<T>.join(
         delimiter: String = ", ",
         start: String = "",

@@ -21,6 +21,7 @@ import ts2kt.kotlin.ast.*
 import ts2kt.kotlin.ast.Annotation
 import ts2kt.kotlin.ast.Function
 import ts2kt.utils.assert
+import ts2kt.utils.cast
 import ts2kt.utils.join
 import ts2kt.utils.merge
 import typescript.TS
@@ -169,7 +170,7 @@ class TypeScriptToKotlinWalker(
         val entries = node.members.arr.map { entry ->
             EnumEntry(entry.declarationName.unescapedText, entry.initializer?.let{
                 when (it.kind) {
-                    TS.SyntaxKind.FirstLiteralToken -> (it as TS.LiteralExpression).text
+                    TS.SyntaxKind.FirstLiteralToken -> (it.cast<TS.LiteralExpression>()).text
                     else -> unsupportedNode(it)
                 }
             })
@@ -267,7 +268,7 @@ class TypeScriptToKotlinWalker(
                 node.identifierName?.unescapedText ?:
                         run {
                             if (node.expression.kind == TS.SyntaxKind.Identifier)
-                                (node.expression as TS.Identifier).text
+                                (node.expression.cast<TS.Identifier>()).text
                             else
                                 unsupportedNode(node)
                         }

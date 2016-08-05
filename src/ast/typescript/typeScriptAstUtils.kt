@@ -22,6 +22,7 @@ import ts2kt.kotlin.ast.FunParam
 import ts2kt.kotlin.ast.TypeAnnotation
 import ts2kt.kotlin.ast.TypeParam
 import ts2kt.utils.assert
+import ts2kt.utils.cast
 import ts2kt.utils.hasFlag
 import ts2kt.utils.join
 import typescript.ClassOrInterfaceDeclaration
@@ -62,12 +63,12 @@ fun TS.ParameterDeclaration.toKotlinParam(typeMapper: ObjectTypeToKotlinTypeMapp
 
         when {
             originalNodeKind === TS.SyntaxKind.ArrayType -> {
-                nodeType = (originalNodeType as TS.ArrayTypeNode).elementType
+                nodeType = (originalNodeType.cast<TS.ArrayTypeNode>()).elementType
             }
 
             originalNodeKind === TS.SyntaxKind.TypeReference &&
-            (originalNodeType as TS.TypeReferenceNode).typeName.text == "Array" -> {
-                val typeArguments = originalNodeType.typeArguments!!.arr
+            (originalNodeType.cast<TS.TypeReferenceNode>()).typeName.text == "Array" -> {
+                val typeArguments = originalNodeType.cast<TS.TypeReferenceNode>().typeArguments!!.arr
                 assert(typeArguments.size == 1, "Array should have one generic paramater, but have ${typeArguments.size}.")
                 nodeType = typeArguments[0]
             }
@@ -85,8 +86,8 @@ fun TS.ParameterDeclaration.toKotlinParam(typeMapper: ObjectTypeToKotlinTypeMapp
     val defaultValue = initializer?.let {
         when (it.kind) {
             // TODO
-            TS.SyntaxKind.FirstLiteralToken -> (it as TS.LiteralExpression).text
-            TS.SyntaxKind.StringLiteral -> "\"" + (it as TS.LiteralExpression).text + "\""
+            TS.SyntaxKind.FirstLiteralToken -> (it.cast<TS.LiteralExpression>()).text
+            TS.SyntaxKind.StringLiteral -> "\"" + (it.cast<TS.LiteralExpression>()).text + "\""
 
             else -> unsupportedNode(it)
         }
@@ -106,7 +107,7 @@ fun TS.NodeArray<TS.ParameterDeclaration>.toKotlinParams(typeMapper: ObjectTypeT
 
 fun TS.NodeArray<TS.TypeParameterDeclaration>.toKotlinTypeParams(typeMapper: ObjectTypeToKotlinTypeMapper): List<TypeParam>  =
         arr.map { typeParam ->
-            val typeName = (typeParam.identifierName as TS.TypeNode).toKotlinTypeName(typeMapper)
+            val typeName = (typeParam.identifierName.cast<TS.TypeNode>()).toKotlinTypeName(typeMapper)
             val upperBound = typeParam.constraint?.toKotlinTypeName(typeMapper)
             TypeParam(typeName, upperBound)
         }
@@ -142,24 +143,24 @@ private fun TS.TypeNode.toKotlinTypeNameIfStandardType(typeMapper: ObjectTypeToK
         TS.SyntaxKind.StringKeyword -> STRING
         TS.SyntaxKind.BooleanKeyword -> BOOLEAN
         TS.SyntaxKind.VoidKeyword -> UNIT
-        TS.SyntaxKind.ArrayType -> (this as TS.ArrayTypeNode).toKotlinTypeName(typeMapper)
+        TS.SyntaxKind.ArrayType -> (this.cast<TS.ArrayTypeNode>()).toKotlinTypeName(typeMapper)
         TS.SyntaxKind.ConstructorType,
-        TS.SyntaxKind.FunctionType -> (this as TS.FunctionOrConstructorTypeNode).toKotlinTypeName(typeMapper)
+        TS.SyntaxKind.FunctionType -> (this.cast<TS.FunctionOrConstructorTypeNode>()).toKotlinTypeName(typeMapper)
 
-        TS.SyntaxKind.TypeReference -> (this as TS.TypeReferenceNode).toKotlinTypeName(typeMapper)
-        TS.SyntaxKind.ExpressionWithTypeArguments -> (this as TS.ExpressionWithTypeArguments).toKotlinTypeName(typeMapper)
+        TS.SyntaxKind.TypeReference -> (this.cast<TS.TypeReferenceNode>()).toKotlinTypeName(typeMapper)
+        TS.SyntaxKind.ExpressionWithTypeArguments -> (this.cast<TS.ExpressionWithTypeArguments>()).toKotlinTypeName(typeMapper)
 
-        TS.SyntaxKind.Identifier -> (this as TS.Identifier).unescapedText
-        TS.SyntaxKind.TypeLiteral -> (this as TS.TypeLiteralNode).toKotlinTypeName(typeMapper)
+        TS.SyntaxKind.Identifier -> (this.cast<TS.Identifier>()).unescapedText
+        TS.SyntaxKind.TypeLiteral -> (this.cast<TS.TypeLiteralNode>()).toKotlinTypeName(typeMapper)
 
-        TS.SyntaxKind.UnionType -> (this as TS.UnionTypeNode).toKotlinTypeName(typeMapper)
+        TS.SyntaxKind.UnionType -> (this.cast<TS.UnionTypeNode>()).toKotlinTypeName(typeMapper)
 
-        TS.SyntaxKind.ParenthesizedType -> (this as TS.ParenthesizedTypeNode).type.toKotlinTypeName(typeMapper)
+        TS.SyntaxKind.ParenthesizedType -> (this.cast<TS.ParenthesizedTypeNode>()).type.toKotlinTypeName(typeMapper)
 
         // TODO how to support?
-        TS.SyntaxKind.StringLiteralType -> ANY + " /* \"" + (this as TS.StringLiteralType).text + "\"*/"
+        TS.SyntaxKind.StringLiteralType -> ANY + " /* \"" + (this.cast<TS.StringLiteralType>()).text + "\"*/"
 
-        TS.SyntaxKind.ThisType -> (this as TS.ThisTypeNode).toKotlinTypeName(typeMapper)
+        TS.SyntaxKind.ThisType -> (this.cast<TS.ThisTypeNode>()).toKotlinTypeName(typeMapper)
 
         else -> unsupportedNode(this)
     }
@@ -207,10 +208,10 @@ private fun TS.PropertyAccessExpression.stringify(): String {
 
 private fun TS.Node.stringifyQualifiedName() = when (kind) {
     TS.SyntaxKind.Identifier ->
-        (this as TS.Identifier).unescapedText
+        (this.cast<TS.Identifier>()).unescapedText
 
     TS.SyntaxKind.PropertyAccessExpression ->
-        (this as TS.PropertyAccessExpression).stringify()
+        (this.cast<TS.PropertyAccessExpression>()).stringify()
 
     else -> unsupportedNode(this)
 }
@@ -229,7 +230,7 @@ fun TS.ThisTypeNode.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper): 
         when (parent.kind) {
             TS.SyntaxKind.ClassDeclaration,
             TS.SyntaxKind.InterfaceDeclaration ->
-                return (parent as ClassOrInterfaceDeclaration).toKotlinTypeName(typeMapper) + " /* this */"
+                return parent.cast<ClassOrInterfaceDeclaration>().toKotlinTypeName(typeMapper) + " /* this */"
             // TODO support
             TS.SyntaxKind.TypeLiteral ->
                 return ANY + " /* this */"
@@ -260,34 +261,34 @@ fun visitNode(visitor: Visitor, node: TS.Node?): Unit {
     if (node == null) return
 
     when (node.kind) {
-        TS.SyntaxKind.ModuleDeclaration -> visitor.visitModuleDeclaration(node as TS.ModuleDeclaration)
+        TS.SyntaxKind.ModuleDeclaration -> visitor.visitModuleDeclaration(node.asDynamic())
 
-        TS.SyntaxKind.FunctionDeclaration    -> visitor.visitFunctionDeclaration(node as TS.FunctionDeclaration)
-        TS.SyntaxKind.VariableStatement -> visitor.visitVariableStatement(node as TS.VariableStatement)
+        TS.SyntaxKind.FunctionDeclaration    -> visitor.visitFunctionDeclaration(node.cast<TS.FunctionDeclaration>())
+        TS.SyntaxKind.VariableStatement -> visitor.visitVariableStatement(node.cast<TS.VariableStatement>())
 
-        TS.SyntaxKind.EnumDeclaration -> visitor.visitEnumDeclaration(node as TS.EnumDeclaration)
+        TS.SyntaxKind.EnumDeclaration -> visitor.visitEnumDeclaration(node.cast<TS.EnumDeclaration>())
 
-        TS.SyntaxKind.ClassDeclaration -> visitor.visitClassDeclaration(node as TS.ClassDeclaration)
-        TS.SyntaxKind.InterfaceDeclaration -> visitor.visitInterfaceDeclaration(node as TS.InterfaceDeclaration)
+        TS.SyntaxKind.ClassDeclaration -> visitor.visitClassDeclaration(node.cast<TS.ClassDeclaration>())
+        TS.SyntaxKind.InterfaceDeclaration -> visitor.visitInterfaceDeclaration(node.cast<TS.InterfaceDeclaration>())
         TS.SyntaxKind.TypeAliasDeclaration -> { /* TODO implement */ }
 
-        TS.SyntaxKind.HeritageClause -> visitor.visitHeritageClause(node as TS.HeritageClause)
+        TS.SyntaxKind.HeritageClause -> visitor.visitHeritageClause(node.cast<TS.HeritageClause>())
 
-        TS.SyntaxKind.Constructor -> visitor.visitConstructorDeclaration(node as TS.ConstructorDeclaration)
-        TS.SyntaxKind.ConstructSignature -> visitor.visitConstructSignatureDeclaration(node as TS.ConstructorDeclaration)
+        TS.SyntaxKind.Constructor -> visitor.visitConstructorDeclaration(node.cast<TS.ConstructorDeclaration>())
+        TS.SyntaxKind.ConstructSignature -> visitor.visitConstructSignatureDeclaration(node.cast<TS.ConstructorDeclaration>())
 
         // TODO what is difference between MethodSignature and MethodDeclaration
         TS.SyntaxKind.MethodDeclaration,
-        TS.SyntaxKind.MethodSignature -> visitor.visitMethodDeclaration(node as TS.MethodDeclaration)
+        TS.SyntaxKind.MethodSignature -> visitor.visitMethodDeclaration(node.cast<TS.MethodDeclaration>())
 
         // TODO what is difference between PropertySignature and PropertyDeclaration
         TS.SyntaxKind.PropertyDeclaration,
-        TS.SyntaxKind.PropertySignature -> visitor.visitPropertyDeclaration(node as TS.PropertyDeclaration)
+        TS.SyntaxKind.PropertySignature -> visitor.visitPropertyDeclaration(node.cast<TS.PropertyDeclaration>())
 
-        TS.SyntaxKind.IndexSignature -> visitor.visitIndexSignature(node as TS.IndexSignatureDeclaration)
-        TS.SyntaxKind.CallSignature -> visitor.visitSignatureDeclaration(node as TS.SignatureDeclaration)
+        TS.SyntaxKind.IndexSignature -> visitor.visitIndexSignature(node.cast<TS.IndexSignatureDeclaration>())
+        TS.SyntaxKind.CallSignature -> visitor.visitSignatureDeclaration(node.cast<TS.SignatureDeclaration>())
 
-        TS.SyntaxKind.ExportAssignment -> visitor.visitExportAssignment(node as TS.ExportAssignment)
+        TS.SyntaxKind.ExportAssignment -> visitor.visitExportAssignment(node.cast<TS.ExportAssignment>())
 
         TS.SyntaxKind.EndOfFileToken -> { /* ignore */ }
         else -> {

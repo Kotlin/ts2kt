@@ -17,7 +17,7 @@
 package node
 
 @native
-fun require(name: String): Any = noImpl
+fun require(name: String): dynamic = noImpl
 
 @native
 class path private constructor() {
