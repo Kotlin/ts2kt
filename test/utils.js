@@ -113,7 +113,7 @@ function generateTestFor(srcPath, expectedPath, testConfig) {
 
     if (fs.existsSync(expectedPath)) {
         expected = fs.readFileSync(expectedPath, {encoding: "utf8"});
-        expected = expected.replace(/\n\s*\/\/\s*TODO[^\n]*/g, "");
+        expected = expected.replace(/\n\s*\/\/\s*TODO[^\n]*/g, "").replace(/\r\n/g, "\n");
     }
 
     var isVerified = expected && !expected.startsWith(UNVERIFIED_FILE_PREFIX);
