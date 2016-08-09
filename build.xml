@@ -1,0 +1,96 @@
+<project xmlns:if="ant:if" xmlns:unless="ant:unless">
+
+    <property name="node.version" value="v6.3.1"/>
+
+    <condition property="isWindows">
+        <os family="windows"/>
+    </condition>
+
+    <condition property="isMac">
+        <os family="mac"/>
+    </condition>
+
+    <condition property="isLinux">
+        <and>
+            <os family="unix"/>
+            <not>
+                <os family="mac"/>
+            </not>
+        </and>
+    </condition>
+
+    <property name="dest" value="tools"/>
+
+    <property name="linux-x86" value="linux-x86"/>
+
+    <property name="platform" value="win-x86" if:set="isWindows"/>
+    <property name="platform" value="darwin-x64" if:set="isMac"/>
+    <property name="platform" value="${linux-x86}" if:set="isLinux"/>
+
+    <property name="node.tar.gz" value="${dest}/node.tar.gz"/>
+    <property name="node.dir" value="${dest}/node"/>
+    <property name="node.executable" value="${node.dir}/bin/node"/>
+    <property name="node.exe" value="${node.executable}.exe"/>
+
+    <target name="update.tools">
+        <property name="node.name.prefix" value="${platform}" unless:set="isWindows"/>
+        <property name="node.name.prefix" value="${linux-x86}" if:set="isWindows"/>
+
+        <property name="node.full.name" value="node-${node.version}-${node.name.prefix}"/>
+
+        <property name="url.node.tar.gz" value="https://nodejs.org/dist/${node.version}/${node.full.name}.tar.gz"/>
+        <property name="url.node.exe" value="https://nodejs.org/dist/${node.version}/${platform}/node.exe"/>
+
+        <delete dir="${dest}"/>
+        <mkdir dir="${dest}"/>
+
+        <get src="${url.node.tar.gz}" dest="${node.tar.gz}" usetimestamp="true"/>
+        <exec executable="tar" unless:set="isWindows">
+            <arg value="-zxf"/>
+            <arg path="${node.tar.gz}"/>
+            <arg value="-C"/>
+            <arg path="${dest}"/>
+        </exec>
+        <untar src="${node.tar.gz}" dest="${dest}" compression="gzip" if:set="isWindows"/>
+
+        <move file="${dest}/${node.full.name}" tofile="${dest}/node"/>
+        <delete dir="${dest}/${node.full.name}"/>
+        <delete file="${node.tar.gz}"/>
+
+        <sequential if:set="isWindows">
+            <get src="${url.node.exe}" dest="${node.exe}" usetimestamp="true"/>
+        </sequential>
+    </target>
+
+    <target name="update.node.modules">
+        <exec executable="${node.executable}">
+            <arg file="${node.dir}/lib/node_modules/npm/bin/npm-cli.js"/>
+            <arg value="install"/>
+        </exec>
+    </target>
+
+    <target name="tc.update.node.modules" depends="update.node.modules">
+        <exec executable="${node.executable}">
+            <arg file="${node.dir}/lib/node_modules/npm/bin/npm-cli.js"/>
+            <arg value="install"/>
+            <arg value="nodeunit-teamcity-reporter"/>
+        </exec>
+    </target>
+
+    <target name="run.test.for.testData">
+        <exec executable="${node.executable}">
+            <arg file="node_modules/nodeunit/bin/nodeunit"/>
+            <arg file="test/tests/testData.js"/>
+        </exec>
+    </target>
+
+    <target name="tc.run.test.for.testData">
+        <exec executable="${node.executable}">
+            <arg file="node_modules/nodeunit/bin/nodeunit"/>
+            <arg value="--reporter"/>
+            <arg value="nodeunit-teamcity-reporter"/>
+            <arg file="test/tests/testData.js"/>
+        </exec>
+    </target>
+
+</project>
