@@ -1,22 +1,31 @@
 # Description
 Converter of TypeScript definition files to Kotlin declarations (stubs)
 
-# How to checkout project
+# How to setup project
 1. clone this project
   ```shell
   git clone <this project url>
   ```
 
-2. install dependencies
-  ```shell
-  node install
-  ```
-
-3. get submodules (https://github.com/DefinitelyTyped/DefinitelyTyped)
+2. get submodules (https://github.com/DefinitelyTyped/DefinitelyTyped)
   ```shell
   git submodule init
   git submodule update
   ```
+
+3. install dependencies
+using installed node.js:
+  ```shell
+  npm install
+  ```
+  
+without install node.js:
+  ```shell
+  ant -f build.xml update.tools
+  ant -f build.xml update.node.modules
+  ```
+
+4. setup path to node interpreter in IDEA (Languages & Frameworks | Node.js and NPM)
 
 ###### How to update submodules
   ```shell
