@@ -292,7 +292,7 @@ fun visitNode(visitor: Visitor, node: TS.Node?): Unit {
 
         TS.SyntaxKind.EndOfFileToken -> { /* ignore */ }
         else -> {
-            val message = "Unsupported node.kind: ${node.kind}, name: ${node.kind.str}"
+            val message = "Unsupported node.kind: ${node.kind}, name: ${node.kind.str} (${node.location()})"
             if (reportedKinds.add(node.kind.id)) console.error(message)
             unsupportedNode(node)
         }
@@ -312,8 +312,16 @@ val TS.SyntaxKind.id: Int
 val TS.Identifier.unescapedText: String
     get() = TS.unescapeIdentifier(text)
 
+private fun TS.LineAndCharacter.format(): String = "${line.toInt() + 1}:${character.toInt() + 1}"
+
+private fun TS.Node.location(): String {
+    val start = getSourceFile().getLineAndCharacterOfPosition(pos)
+    val end = getSourceFile().getLineAndCharacterOfPosition(end)
+    return "${getSourceFile().fileName}:${start.format()} to ${end.format()}"
+}
+
 fun unsupportedNode(node: TS.Node): Nothing {
-    val message = "${node.kind.str} kind unsupported yet here! See node in attachment."
+    val message = "${node.kind.str} kind (${node.location()}) unsupported yet here! See node in attachment."
     val exception = JsError(message)
     exception.asDynamic().attachment = node
     throw exception
