@@ -31,7 +31,13 @@ Converter of TypeScript definition files to Kotlin declarations (stubs)
 
 5. Convert the tool to Javascript.  One way is to open the project in IntelliJ and build the project (e.g. Ctrl+Shift+F9).
 
-6. Run the tool in one of these ways:
+6. (optional) Run the unit tests
+
+```shell
+ant -f build.xml run.test.for.testData
+```
+
+7. Run the tool in one of these ways:
   * Run it with node.js (Note: the root of the project should be working dir):
 
     ```shell

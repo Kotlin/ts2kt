@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-var WORKING_DIR = "../compiled/";
+var WORKING_DIR = "../out/production/ts2kt/";
 var ts2kt = require(WORKING_DIR + "ts2kt");
 var fs = require('fs');
 
