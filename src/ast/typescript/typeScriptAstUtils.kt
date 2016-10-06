@@ -298,6 +298,7 @@ fun visitNode(visitor: Visitor, node: TS.Node?): Unit {
         TS.SyntaxKind.CallSignature -> visitor.visitSignatureDeclaration(node.cast<TS.SignatureDeclaration>())
 
         TS.SyntaxKind.ExportAssignment -> visitor.visitExportAssignment(node.cast<TS.ExportAssignment>())
+        TS.SyntaxKind.ImportEqualsDeclaration ->  { /* TODO implement */ }
 
         TS.SyntaxKind.EndOfFileToken -> { /* ignore */ }
         else -> {
