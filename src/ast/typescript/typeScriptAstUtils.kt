@@ -155,6 +155,8 @@ private fun TS.TypeNode.toKotlinTypeNameIfStandardType(typeMapper: ObjectTypeToK
 
         TS.SyntaxKind.UnionType -> (this.cast<TS.UnionTypeNode>()).toKotlinTypeName(typeMapper)
 
+        TS.SyntaxKind.IntersectionType -> (this.cast<TS.IntersectionTypeNode>()).toKotlinTypeName(typeMapper)
+
         TS.SyntaxKind.ParenthesizedType -> (this.cast<TS.ParenthesizedTypeNode>()).type.toKotlinTypeName(typeMapper)
 
         // TODO how to support?
@@ -220,6 +222,13 @@ fun TS.UnionTypeNode.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper):
     val commentWithExpectedType = types.arr.map { it.toKotlinTypeName(typeMapper) }.joinToString(" | ", prefix = " /* ", postfix = " */")
     // TODO should it be `Any`?
     return DYNAMIC + commentWithExpectedType
+}
+
+fun TS.IntersectionTypeNode.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper): String {
+    val kotlinTypeNames = types.arr.map { it.toKotlinTypeName(typeMapper) }
+    val commentWithExpectedType = kotlinTypeNames.joinToString(" & ", prefix = " /* ", postfix = " */")
+    // just take the first one for now since Kotlin doesn't support intersection types.
+    return kotlinTypeNames[0] + commentWithExpectedType
 }
 
 fun TS.ThisTypeNode.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper): String {
