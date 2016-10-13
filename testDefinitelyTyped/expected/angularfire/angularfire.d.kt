@@ -83,7 +83,8 @@ interface AngularFireAuth {
     fun `$authWithPassword`(credentials: FirebaseCredentials, options: Object? = null): ng.IPromise<Any>
     fun `$authWithOAuthPopup`(provider: String, options: Object? = null): ng.IPromise<Any>
     fun `$authWithOAuthRedirect`(provider: String, options: Object? = null): ng.IPromise<Any>
-    fun `$authWithOAuthToken`(provider: String, credentials: dynamic /* Object | String */, options: Object? = null): ng.IPromise<Any>
+    fun `$authWithOAuthToken`(provider: String, credentials: Object, options: Object? = null): ng.IPromise<Any>
+    fun `$authWithOAuthToken`(provider: String, credentials: String, options: Object? = null): ng.IPromise<Any>
     fun `$getAuth`(): FirebaseAuthData
     fun `$onAuth`(callback: Function, context: Any? = null): Function
     fun `$unauth`()

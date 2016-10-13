@@ -53,9 +53,44 @@ fun String.escapeIfNeed(): String {
     }
 }
 
+val TS.ParameterDeclaration.isVararg: Boolean get() = dotDotDotToken != null
+
 fun TS.ParameterDeclaration.toKotlinParam(typeMapper: ObjectTypeToKotlinTypeMapper): FunParam {
+    val nodeType: TS.TypeNode? = getNodeTypeConsideringVararg()
+    val typeName = nodeType?.toKotlinTypeName(typeMapper) ?: ANY
+    return toKotlinParam(nodeType, typeName)
+}
+
+fun TS.ParameterDeclaration.toKotlinParamOverloads(typeMapper: ObjectTypeToKotlinTypeMapper): List<FunParam> {
+    val nodeType: TS.TypeNode? = getNodeTypeConsideringVararg()
+    return (nodeType?.toKotlinTypeNameOverloads(typeMapper) ?: listOf(ANY)).map { typeName ->
+        toKotlinParam(nodeType, typeName)
+    }
+}
+
+private fun TS.ParameterDeclaration.toKotlinParam(nodeType: TS.TypeNode?, typeName: String): FunParam {
+    val isLambda = nodeType?.kind === TS.SyntaxKind.FunctionType
+    val name = declarationName!!.unescapedText
+    val defaultValue = initializer?.let {
+        when (it.kind) {
+        // TODO
+            TS.SyntaxKind.FirstLiteralToken -> (it.cast<TS.LiteralExpression>()).text
+            TS.SyntaxKind.StringLiteral -> "\"" + (it.cast<TS.LiteralExpression>()).text + "\""
+
+            else -> unsupportedNode(it)
+        }
+    }
+    val isNullable = questionToken != null
+    val isVar = hasFlag(flags, TS.NodeFlags.AccessibilityModifier)
+
+    return FunParam(name,
+            TypeAnnotation(typeName, isNullable = isNullable, isLambda = isLambda, isVararg = isVararg),
+            if (defaultValue == null && isNullable) "null" else defaultValue,
+            isVar)
+}
+
+private fun TS.ParameterDeclaration.getNodeTypeConsideringVararg(): TS.TypeNode? {
     val originalNodeType = type
-    val isVararg = dotDotDotToken != null
 
     val nodeType: TS.TypeNode?
     if (isVararg && originalNodeType != null) {
@@ -80,26 +115,23 @@ fun TS.ParameterDeclaration.toKotlinParam(typeMapper: ObjectTypeToKotlinTypeMapp
     else {
         nodeType = originalNodeType
     }
+    return nodeType
+}
 
-    val name = declarationName!!.unescapedText
-    val typeName = nodeType?.toKotlinTypeName(typeMapper) ?: ANY
-    val defaultValue = initializer?.let {
-        when (it.kind) {
-            // TODO
-            TS.SyntaxKind.FirstLiteralToken -> (it.cast<TS.LiteralExpression>()).text
-            TS.SyntaxKind.StringLiteral -> "\"" + (it.cast<TS.LiteralExpression>()).text + "\""
+fun TS.NodeArray<TS.ParameterDeclaration>.toKotlinParamsOverloads(typeMapper: ObjectTypeToKotlinTypeMapper): List<List<FunParam>> =
+        toKotlinParamsOverloads(typeMapper, arr.size - 1)
 
-            else -> unsupportedNode(it)
+private fun TS.NodeArray<TS.ParameterDeclaration>.toKotlinParamsOverloads(typeMapper: ObjectTypeToKotlinTypeMapper, arrIndex: Int): List<List<FunParam>> {
+    if (arrIndex < 0) {
+        return listOf(emptyList())
+    }
+    else {
+        val overloadsOfPriorParams = toKotlinParamsOverloads(typeMapper, arrIndex - 1)
+        val paramOverloads = arr[arrIndex].toKotlinParamOverloads(typeMapper)
+        return overloadsOfPriorParams.flatMap { priorParams ->
+            paramOverloads.map { priorParams.plus(it) }
         }
     }
-    val isNullable = questionToken != null
-    val isLambda = nodeType?.kind === TS.SyntaxKind.FunctionType
-    val isVar = hasFlag(flags, TS.NodeFlags.AccessibilityModifier)
-
-    return FunParam(name,
-            TypeAnnotation(typeName, isNullable = isNullable, isLambda = isLambda, isVararg = isVararg),
-            if (defaultValue == null && isNullable) "null" else defaultValue,
-            isVar)
 }
 
 fun TS.NodeArray<TS.ParameterDeclaration>.toKotlinParams(typeMapper: ObjectTypeToKotlinTypeMapper): List<FunParam>  =
@@ -112,9 +144,19 @@ fun TS.NodeArray<TS.TypeParameterDeclaration>.toKotlinTypeParams(typeMapper: Obj
             TypeParam(typeName, upperBound)
         }
 
+fun TS.SignatureDeclaration.toKotlinCallSignatureOverloads(typeMapper: ObjectTypeToKotlinTypeMapper): List<CallSignature> {
+    return parameters.toKotlinParamsOverloads(typeMapper).map { params ->
+        toKotlinCallSignature(typeMapper, params)
+    }
+}
+
 fun TS.SignatureDeclaration.toKotlinCallSignature(typeMapper: ObjectTypeToKotlinTypeMapper): CallSignature {
-    val typeParams = typeParameters?.toKotlinTypeParams(typeMapper)
     val params = parameters.toKotlinParams(typeMapper)
+    return toKotlinCallSignature(typeMapper, params)
+}
+
+fun TS.SignatureDeclaration.toKotlinCallSignature(typeMapper: ObjectTypeToKotlinTypeMapper, params: List<FunParam>): CallSignature {
+    val typeParams = typeParameters?.toKotlinTypeParams(typeMapper)
     val returnType = type?.toKotlinTypeName(typeMapper) ?: UNIT
 
     return CallSignature(params, typeParams, TypeAnnotation(returnType))
@@ -126,15 +168,40 @@ fun TS.ArrayTypeNode.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper):
     return "$ARRAY<$typeArg>"
 }
 
+fun TS.ArrayTypeNode.toKotlinTypeNameOverloads(typeMapper: ObjectTypeToKotlinTypeMapper): List<String> {
+    return elementType.toKotlinTypeNameOverloads(typeMapper).map { typeArg ->
+        "$ARRAY<$typeArg>"
+    }
+}
+
 //TODO: do we need LambdaType???
 private fun TS.FunctionOrConstructorTypeNode.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper): String {
     val params = parameters.toKotlinParams(typeMapper)
     return "${params.join(", ", start = "(", end = ")")} -> ${type?.toKotlinTypeName(typeMapper) ?: ANY }"
 }
 
+//TODO: do we need LambdaType???
+private fun TS.FunctionOrConstructorTypeNode.toKotlinTypeNameOverloads(typeMapper: ObjectTypeToKotlinTypeMapper): List<String> {
+    return parameters.toKotlinParamsOverloads(typeMapper).map { params ->
+        "${params.join(", ", start = "(", end = ")")} -> ${type?.toKotlinTypeName(typeMapper) ?: ANY }"
+    }
+}
+
 // TODO implement
 private fun TS.TypeLiteralNode.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper): String =
         typeMapper.getKotlinTypeNameForObjectType(this)
+
+private fun TS.TypeNode.toKotlinTypeNameOverloadsIfStandardType(typeMapper: ObjectTypeToKotlinTypeMapper): List<String> {
+    return when (this.kind) {
+        TS.SyntaxKind.ArrayType -> (this.cast<TS.ArrayTypeNode>()).toKotlinTypeNameOverloads(typeMapper)
+        TS.SyntaxKind.ConstructorType,
+        TS.SyntaxKind.FunctionType -> (this.cast<TS.FunctionOrConstructorTypeNode>()).toKotlinTypeNameOverloads(typeMapper)
+
+        TS.SyntaxKind.TypeReference -> (this.cast<TS.TypeReferenceNode>()).toKotlinTypeNameOverloads(typeMapper)
+        TS.SyntaxKind.UnionType -> (this.cast<TS.UnionTypeNode>()).toKotlinTypeNameOverloads(typeMapper)
+        else -> listOf(toKotlinTypeNameIfStandardType(typeMapper))
+    }
+}
 
 private fun TS.TypeNode.toKotlinTypeNameIfStandardType(typeMapper: ObjectTypeToKotlinTypeMapper): String {
     return when (this.kind) {
@@ -169,6 +236,11 @@ private fun TS.TypeNode.toKotlinTypeNameIfStandardType(typeMapper: ObjectTypeToK
 }
 
 // TODO
+fun TS.TypeNode.toKotlinTypeNameOverloads(typeMapper: ObjectTypeToKotlinTypeMapper): List<String> {
+    return this.toKotlinTypeNameOverloadsIfStandardType(typeMapper)
+}
+
+// TODO
 fun TS.TypeNode.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper): String {
     return this.toKotlinTypeNameIfStandardType(typeMapper)
 }
@@ -200,6 +272,14 @@ fun TS.ExpressionWithTypeArguments.toKotlinTypeName(typeMapper: ObjectTypeToKotl
     return "$name<$strTypeArgs>"
 }
 
+fun TS.TypeReferenceNode.toKotlinTypeNameOverloads(typeMapper: ObjectTypeToKotlinTypeMapper): List<String> {
+    // TODO improve
+    val name = typeName.toKotlinTypeName(typeMapper)
+    val typeArgs = typeArguments ?: return listOf(name)
+
+    return typeArgs.arr.map { it.toKotlinTypeNameOverloads(typeMapper) }.map { "$name<${it.joinToString(",")}>" }
+}
+
 private fun TS.PropertyAccessExpression.stringify(): String {
     val identifier = identifierName.unescapedText
 
@@ -219,9 +299,13 @@ private fun TS.Node.stringifyQualifiedName() = when (kind) {
 }
 
 fun TS.UnionTypeNode.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper): String {
-    val commentWithExpectedType = types.arr.map { it.toKotlinTypeName(typeMapper) }.joinToString(" | ", prefix = " /* ", postfix = " */")
+    val commentWithExpectedType = types.arr.flatMap { it.toKotlinTypeNameOverloads(typeMapper) }.joinToString(" | ", prefix = " /* ", postfix = " */")
     // TODO should it be `Any`?
     return DYNAMIC + commentWithExpectedType
+}
+
+fun TS.UnionTypeNode.toKotlinTypeNameOverloads(typeMapper: ObjectTypeToKotlinTypeMapper): List<String> {
+    return types.arr.map { it.toKotlinTypeName(typeMapper) }
 }
 
 fun TS.IntersectionTypeNode.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper): String {
