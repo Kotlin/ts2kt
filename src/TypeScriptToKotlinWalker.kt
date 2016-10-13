@@ -134,8 +134,9 @@ class TypeScriptToKotlinWalker(
 
 //      TODO  visitList(node.modifiers)
         val name = node.propertyName!!.unescapedText
-        val callSignature = node.toKotlinCallSignature(typeMapper)
-        addFunction(name, callSignature, additionalAnnotations = additionalAnnotations)
+        node.toKotlinCallSignatureOverloads(typeMapper).forEach { callSignature ->
+            addFunction(name, callSignature, additionalAnnotations = additionalAnnotations)
+        }
     }
 
     override fun visitInterfaceDeclaration(node: TS.InterfaceDeclaration) {
@@ -475,24 +476,25 @@ abstract class TsClassifierToKt(
 
     private fun translateAccessor(node: TS.IndexSignatureDeclaration, isGetter: Boolean) {
         // TODO type params?
-        val params = node.parameters.toKotlinParams(typeMapper)
-        val propType = node.type?.toKotlinTypeName(typeMapper) ?: ANY
+        node.parameters.toKotlinParamsOverloads(typeMapper).forEach { params ->
+            (node.type?.toKotlinTypeNameOverloads(typeMapper) ?: listOf(ANY)).forEach { propType ->
+                val callSignature: CallSignature
+                val accessorName: String
+                val annotation: Annotation
+                if (isGetter) {
+                    callSignature = CallSignature(params, listOf(), TypeAnnotation(propType))
+                    accessorName = GET
+                    annotation = NATIVE_GETTER_ANNOTATION
+                }
+                else {
+                    callSignature = CallSignature(listOf(params[0], FunParam("value", TypeAnnotation(propType))), listOf(), TypeAnnotation(UNIT))
+                    accessorName = SET
+                    annotation = NATIVE_SETTER_ANNOTATION
+                }
 
-        val callSignature: CallSignature
-        val accessorName: String
-        val annotation: Annotation
-        if (isGetter) {
-            callSignature = CallSignature(params, listOf(), TypeAnnotation(propType))
-            accessorName = GET
-            annotation = NATIVE_GETTER_ANNOTATION
+                addFunction(accessorName, callSignature, needsNoImpl = needsNoImpl, additionalAnnotations = listOf(annotation))
+            }
         }
-        else {
-            callSignature = CallSignature(listOf(params[0], FunParam("value", TypeAnnotation(propType))), listOf(), TypeAnnotation(UNIT))
-            accessorName = SET
-            annotation = NATIVE_SETTER_ANNOTATION
-        }
-
-        addFunction(accessorName, callSignature, needsNoImpl = needsNoImpl, additionalAnnotations = listOf(annotation))
     }
 
     var name: String? = null
@@ -537,7 +539,9 @@ abstract class TsClassifierToKt(
     }
 
     open fun TsClassifierToKt.addFunction(name: String, isOverride: Boolean, needsNoImpl: Boolean, node: TS.MethodDeclaration) {
-        addFunction(name, node.toKotlinCallSignature(typeMapper), isOverride = isOverride, needsNoImpl = needsNoImpl(node))
+        node.toKotlinCallSignatureOverloads(typeMapper).forEach { callSignature ->
+            addFunction(name, callSignature, isOverride = isOverride, needsNoImpl = needsNoImpl(node))
+        }
 
         assert(node.body == null, "An function in declarations file should not have body, function '${this.name}.$name'")
     }
@@ -573,14 +577,15 @@ open class TsInterfaceToKt(
     override fun needsNoImpl(node: TS.MethodDeclaration) = false
     override fun TsClassifierToKt.addFunction(name: String, isOverride: Boolean, needsNoImpl: Boolean, node: TS.MethodDeclaration) {
         val isOptional = node.questionToken != null
-        val call = node.toKotlinCallSignature(typeMapper)
-
         if (isOptional) {
+            val call = node.toKotlinCallSignature(typeMapper)
             val typeAsString = "(${call.params.join(", ")}) -> ${call.returnType.escapedName}" ///??? escapedName
             addVariable(name, typeAsString, typeParams = call.typeParams, isVar = false, isNullable = true, isLambda = true, needsNoImpl = true, isOverride = isOverride)
         }
         else {
-            addFunction(name, call, needsNoImpl = false, isOverride = isOverride)
+            node.toKotlinCallSignatureOverloads(typeMapper).forEach { call ->
+                addFunction(name, call, needsNoImpl = false, isOverride = isOverride)
+            }
         }
 
     }
@@ -596,11 +601,15 @@ open class TsInterfaceToKt(
     }
 
     override fun visitSignatureDeclaration(node: TS.SignatureDeclaration) {
-        addFunction(INVOKE, node.toKotlinCallSignature(typeMapper), needsNoImpl = false, additionalAnnotations = listOf(NATIVE_INVOKE_ANNOTATION))
+        node.toKotlinCallSignatureOverloads(typeMapper).forEach { callSignature ->
+            addFunction(INVOKE, callSignature, needsNoImpl = false, additionalAnnotations = listOf(NATIVE_INVOKE_ANNOTATION))
+        }
     }
 
     override fun visitConstructSignatureDeclaration(node: TS.ConstructorDeclaration) {
-        addFunction(INVOKE, node.toKotlinCallSignature(typeMapper), needsNoImpl = false, additionalAnnotations = listOf(NATIVE_NEW_ANNOTATION))
+        node.toKotlinCallSignatureOverloads(typeMapper).forEach { callSignature ->
+            addFunction(INVOKE, callSignature, needsNoImpl = false, additionalAnnotations = listOf(NATIVE_NEW_ANNOTATION))
+        }
     }
 }
 
@@ -712,8 +721,8 @@ class TsClassToKt(
     }
 
     override fun visitConstructorDeclaration(node: TS.ConstructorDeclaration) {
-        val params = node.parameters.toKotlinParams(typeMapper)
-        paramsOfConstructors.add(params)
+        val paramsOverloads = node.parameters.toKotlinParamsOverloads(typeMapper)
+        paramsOfConstructors.addAll(paramsOverloads)
 
         assert(node.body == null, "A constructor in declarations file should not have body, constructor in '${this.name}")
     }

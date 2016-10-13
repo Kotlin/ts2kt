@@ -162,13 +162,18 @@ class Classifier(
             (if (name.isEmpty()) "" else " ") +
             escapedName +
             (typeParams?.join(", ", startWithIfNotEmpty = "<", endWithIfNotEmpty = ">") ?: "") +
-            (if (paramsOfConstructors.isEmpty()) "" else paramsOfConstructors[0].join(", ", startWithIfNotEmpty = "(", endWithIfNotEmpty = ")")) +
+            (if (paramsOfConstructors.size != 1) "" else paramsOfConstructors[0].join(", ", startWithIfNotEmpty = "(", endWithIfNotEmpty = ")")) +
             parents.join(", ", startWithIfNotEmpty = " : ") +
             (if (bracesRequired) " {\n" else "") +
+            (if (paramsOfConstructors.size > 1) {
+                paramsOfConstructors.map { paramsOfConstructor ->
+                    "constructor(" + paramsOfConstructor.join(", ") + ")"
+                }.join("\n", endWithIfNotEmpty = "\n")
+            } else "") +
             members.join((if (kind == ClassKind.ENUM) "," else "")+ "\n", filter = takeIfNotAnnotatedAsFake) +
             (if (bracesRequired) "\n}" else "")
 
-    val bracesRequired = kind.bracesAlwaysRequired || !members.isEmpty()
+    val bracesRequired = kind.bracesAlwaysRequired || (paramsOfConstructors.size > 1) || !members.isEmpty()
 }
 
 class FunParam(
