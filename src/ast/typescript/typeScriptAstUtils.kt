@@ -303,13 +303,13 @@ private fun TS.Node.stringifyQualifiedName() = when (kind) {
 }
 
 fun TS.UnionTypeNode.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper): String {
-    val commentWithExpectedType = types.arr.flatMap { it.toKotlinTypeNameOverloads(typeMapper) }.joinToString(" | ", prefix = " /* ", postfix = " */")
+    val commentWithExpectedType = toKotlinTypeNameOverloads(typeMapper).joinToString(" | ", prefix = " /* ", postfix = " */")
     // TODO should it be `Any`?
     return DYNAMIC + commentWithExpectedType
 }
 
 fun TS.UnionTypeNode.toKotlinTypeNameOverloads(typeMapper: ObjectTypeToKotlinTypeMapper): List<String> {
-    return types.arr.flatMap { it.toKotlinTypeNameOverloads(typeMapper) }
+    return types.arr.flatMap { it.toKotlinTypeNameOverloads(typeMapper) }.distinct()
 }
 
 fun TS.IntersectionTypeNode.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper): String {
