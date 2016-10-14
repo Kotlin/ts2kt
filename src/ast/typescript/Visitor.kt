@@ -7,6 +7,7 @@ interface Visitor {
     public open fun visitModuleDeclaration(node: TS.ModuleDeclaration): Unit = noImpl
 
     public open fun visitFunctionDeclaration(node: TS.FunctionDeclaration): Unit = noImpl
+    public open fun visitTypeAliasDeclaration(node: TS.TypeAliasDeclaration): Unit = noImpl
     public open fun visitVariableStatement(node: TS.VariableStatement): Unit = noImpl
 
     public open fun visitEnumDeclaration(node: TS.EnumDeclaration): Unit = noImpl

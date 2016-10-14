@@ -255,6 +255,8 @@ fun TS.EntityName.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper): St
 }
 
 fun TS.TypeReferenceNode.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper): String {
+    val typeNameUsingAlias = typeMapper.getKotlinTypeForTypeAlias(typeName.text)?.toKotlinTypeName(typeMapper)
+    if (typeNameUsingAlias != null) return typeNameUsingAlias
     // TODO improve
     val name = typeName.toKotlinTypeName(typeMapper)
     val typeArgs = typeArguments ?: return name
@@ -273,11 +275,13 @@ fun TS.ExpressionWithTypeArguments.toKotlinTypeName(typeMapper: ObjectTypeToKotl
 }
 
 fun TS.TypeReferenceNode.toKotlinTypeNameOverloads(typeMapper: ObjectTypeToKotlinTypeMapper): List<String> {
+    val typeNameOverloadsUsingAlias = typeMapper.getKotlinTypeForTypeAlias(typeName.text)?.toKotlinTypeNameOverloads(typeMapper)
+    if (typeNameOverloadsUsingAlias != null) return typeNameOverloadsUsingAlias
     // TODO improve
     val name = typeName.toKotlinTypeName(typeMapper)
     val typeArgs = typeArguments ?: return listOf(name)
 
-    return typeArgs.arr.map { it.toKotlinTypeNameOverloads(typeMapper) }.map { "$name<${it.joinToString(",")}>" }
+    return typeArgs.arr.map { it.toKotlinTypeName(typeMapper) }.map { "$name<${it}>" }
 }
 
 private fun TS.PropertyAccessExpression.stringify(): String {
@@ -305,7 +309,7 @@ fun TS.UnionTypeNode.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper):
 }
 
 fun TS.UnionTypeNode.toKotlinTypeNameOverloads(typeMapper: ObjectTypeToKotlinTypeMapper): List<String> {
-    return types.arr.map { it.toKotlinTypeName(typeMapper) }
+    return types.arr.flatMap { it.toKotlinTypeNameOverloads(typeMapper) }
 }
 
 fun TS.IntersectionTypeNode.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper): String {
@@ -363,7 +367,7 @@ fun visitNode(visitor: Visitor, node: TS.Node?): Unit {
 
         TS.SyntaxKind.ClassDeclaration -> visitor.visitClassDeclaration(node.cast<TS.ClassDeclaration>())
         TS.SyntaxKind.InterfaceDeclaration -> visitor.visitInterfaceDeclaration(node.cast<TS.InterfaceDeclaration>())
-        TS.SyntaxKind.TypeAliasDeclaration -> { /* TODO implement */ }
+        TS.SyntaxKind.TypeAliasDeclaration -> visitor.visitTypeAliasDeclaration(node.cast<TS.TypeAliasDeclaration>())
 
         TS.SyntaxKind.HeritageClause -> visitor.visitHeritageClause(node.cast<TS.HeritageClause>())
 
