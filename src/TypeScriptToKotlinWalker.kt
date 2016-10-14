@@ -50,6 +50,7 @@ abstract class TypeScriptToKotlinBase : Visitor {
     open val defaultAnnotations: List<Annotation> = listOf()
 
     val declarations = arrayListOf<Member>()
+    val typesByTypeAlias = mutableMapOf<String,TS.TypeNode>()
 
     open fun addVariable(name: String, type: String, extendsType: String? = null, typeParams: List<TypeParam>? = null, isVar: Boolean = true, isNullable: Boolean = false, isLambda: Boolean = false, needsNoImpl: Boolean = true, additionalAnnotations: List<Annotation> = listOf(), isOverride: Boolean = false) {
         val annotations = defaultAnnotations + additionalAnnotations
@@ -93,7 +94,7 @@ class TypeScriptToKotlinWalker(
 
     val exportedByAssignment = hashMapOf<String, Annotation>()
 
-    val typeMapper = typeMapper ?: ObjectTypeToKotlinTypeMapperImpl(defaultAnnotations, declarations)
+    val typeMapper = typeMapper ?: ObjectTypeToKotlinTypeMapperImpl(defaultAnnotations, declarations, typesByTypeAlias)
 
     fun addModule(qualifier: List<String>, name: String, members: List<Member>, additionalAnnotations: List<Annotation> = listOf()) {
         val annotations = DEFAULT_MODULE_ANNOTATION + additionalAnnotations
@@ -114,6 +115,10 @@ class TypeScriptToKotlinWalker(
         if (isShouldSkip) return DEFAULT_FAKE_ANNOTATION
 
         return NO_ANNOTATIONS
+    }
+
+    override fun visitTypeAliasDeclaration(node: TS.TypeAliasDeclaration) {
+        typesByTypeAlias.put(node.identifierName.text, node.type)
     }
 
     override fun visitVariableStatement(node: TS.VariableStatement) {

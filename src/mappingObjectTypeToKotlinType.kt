@@ -24,11 +24,13 @@ import java.util.*
 
 interface ObjectTypeToKotlinTypeMapper {
     fun getKotlinTypeNameForObjectType(objectType: TS.TypeLiteralNode): String
+    fun getKotlinTypeForTypeAlias(typeAlias: String): TS.TypeNode?
 }
 
 class ObjectTypeToKotlinTypeMapperImpl(
         val defaultAnnotations: List<Annotation>,
-        val declarations: MutableList<Member>
+        val declarations: MutableList<Member>,
+        val typeNodeByAlias: MutableMap<String,TS.TypeNode>
 ) : ObjectTypeToKotlinTypeMapper {
 
     companion object {
@@ -66,6 +68,10 @@ class ObjectTypeToKotlinTypeMapperImpl(
 
         cache[typeKey] = traitName
         return traitName
+    }
+
+    override fun getKotlinTypeForTypeAlias(typeAlias: String): TS.TypeNode? {
+        return typeNodeByAlias.get(typeAlias)
     }
 
     fun <T> List<T>.toStringKey(): String =
