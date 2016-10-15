@@ -593,6 +593,8 @@ object TS {
         var _thisTypeNodeBrand: Any
     }
 
+    interface FirstTypeNode : TypeNode
+
     interface FunctionOrConstructorTypeNode : TypeNode, SignatureDeclaration {
         var _functionOrConstructorTypeNodeBrand: Any
     }
