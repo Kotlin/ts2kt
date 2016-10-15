@@ -231,6 +231,8 @@ private fun TS.TypeNode.toKotlinTypeNameIfStandardType(typeMapper: ObjectTypeToK
 
         TS.SyntaxKind.ThisType -> (this.cast<TS.ThisTypeNode>()).toKotlinTypeName(typeMapper)
 
+        TS.SyntaxKind.FirstTypeNode -> (this.cast<TS.FirstTypeNode>()).toKotlinTypeName(typeMapper)
+
         else -> unsupportedNode(this)
     }
 }
@@ -336,6 +338,10 @@ fun TS.ThisTypeNode.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper): 
     }
 
     throw JsError("Illegal State")
+}
+
+fun TS.FirstTypeNode.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper): String {
+    return BOOLEAN
 }
 
 fun ClassOrInterfaceDeclaration.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper): String {
