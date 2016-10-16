@@ -2,40 +2,40 @@ package jquery
 
 @native
 interface JQueryAjaxSettings {
-    var accepts: Any? = noImpl
-    var async: Boolean? = noImpl
-    val beforeSend: ((jqXHR: JQueryXHR, settings: JQueryAjaxSettings) -> Any)? = noImpl
-    var cache: Boolean? = noImpl
-    val complete: ((jqXHR: JQueryXHR, textStatus: String) -> Any)? = noImpl
-    var contents: Json? = noImpl
-    var contentType: Any? = noImpl
-    var context: Any? = noImpl
-    var converters: Json? = noImpl
-    var crossDomain: Boolean? = noImpl
-    var data: Any? = noImpl
-    val dataFilter: ((data: Any, ty: Any) -> Any)? = noImpl
-    var dataType: String? = noImpl
-    val error: ((jqXHR: JQueryXHR, textStatus: String, errorThrown: String) -> Any)? = noImpl
-    var global: Boolean? = noImpl
-    var headers: Json? = noImpl
-    var ifModified: Boolean? = noImpl
-    var isLocal: Boolean? = noImpl
-    var jsonp: Any? = noImpl
-    var jsonpCallback: Any? = noImpl
-    var method: String? = noImpl
-    var mimeType: String? = noImpl
-    var password: String? = noImpl
-    var processData: Boolean? = noImpl
-    var scriptCharset: String? = noImpl
-    var statusCode: Json? = noImpl
-    val success: ((data: Any, textStatus: String, jqXHR: JQueryXHR) -> Any)? = noImpl
-    var timeout: Number? = noImpl
-    var traditional: Boolean? = noImpl
-    var type: String? = noImpl
-    var url: String? = noImpl
-    var username: String? = noImpl
-    var xhr: Any? = noImpl
-    var xhrFields: Json? = noImpl
+    var accepts: Any? get() = noImpl
+    var async: Boolean? get() = noImpl
+    val beforeSend: ((jqXHR: JQueryXHR, settings: JQueryAjaxSettings) -> Any)? get() = noImpl
+    var cache: Boolean? get() = noImpl
+    val complete: ((jqXHR: JQueryXHR, textStatus: String) -> Any)? get() = noImpl
+    var contents: Json? get() = noImpl
+    var contentType: Any? get() = noImpl
+    var context: Any? get() = noImpl
+    var converters: Json? get() = noImpl
+    var crossDomain: Boolean? get() = noImpl
+    var data: Any? get() = noImpl
+    val dataFilter: ((data: Any, ty: Any) -> Any)? get() = noImpl
+    var dataType: String? get() = noImpl
+    val error: ((jqXHR: JQueryXHR, textStatus: String, errorThrown: String) -> Any)? get() = noImpl
+    var global: Boolean? get() = noImpl
+    var headers: Json? get() = noImpl
+    var ifModified: Boolean? get() = noImpl
+    var isLocal: Boolean? get() = noImpl
+    var jsonp: Any? get() = noImpl
+    var jsonpCallback: Any? get() = noImpl
+    var method: String? get() = noImpl
+    var mimeType: String? get() = noImpl
+    var password: String? get() = noImpl
+    var processData: Boolean? get() = noImpl
+    var scriptCharset: String? get() = noImpl
+    var statusCode: Json? get() = noImpl
+    val success: ((data: Any, textStatus: String, jqXHR: JQueryXHR) -> Any)? get() = noImpl
+    var timeout: Number? get() = noImpl
+    var traditional: Boolean? get() = noImpl
+    var type: String? get() = noImpl
+    var url: String? get() = noImpl
+    var username: String? get() = noImpl
+    var xhr: Any? get() = noImpl
+    var xhrFields: Json? get() = noImpl
 }
 @native
 interface JQueryXHR : XMLHttpRequest, JQueryPromise<Any> {
@@ -43,7 +43,7 @@ interface JQueryXHR : XMLHttpRequest, JQueryPromise<Any> {
     fun overrideMimeType(mimeType: String): Any
     fun abort(statusText: String? = null)
     fun <R> then(doneCallback: (data: Any, textStatus: String, jqXHR: JQueryXHR) -> R, failCallback: ((jqXHR: JQueryXHR, textStatus: String, errorThrown: Any) -> Unit)? = null): JQueryPromise<R>
-    var responseJSON: Any? = noImpl
+    var responseJSON: Any? get() = noImpl
     fun error(xhr: JQueryXHR, textStatus: String, errorThrown: String)
 }
 @native
@@ -184,25 +184,25 @@ interface JQueryKeyEventObject : JQueryInputEventObject {
 interface JQueryEventObject : BaseJQueryEventObject, JQueryInputEventObject, JQueryMouseEventObject, JQueryKeyEventObject
 @native
 interface JQuerySupport {
-    var ajax: Boolean? = noImpl
-    var boxModel: Boolean? = noImpl
-    var changeBubbles: Boolean? = noImpl
-    var checkClone: Boolean? = noImpl
-    var checkOn: Boolean? = noImpl
-    var cors: Boolean? = noImpl
-    var cssFloat: Boolean? = noImpl
-    var hrefNormalized: Boolean? = noImpl
-    var htmlSerialize: Boolean? = noImpl
-    var leadingWhitespace: Boolean? = noImpl
-    var noCloneChecked: Boolean? = noImpl
-    var noCloneEvent: Boolean? = noImpl
-    var opacity: Boolean? = noImpl
-    var optDisabled: Boolean? = noImpl
-    var optSelected: Boolean? = noImpl
-    val scriptEval: (() -> Boolean)? = noImpl
-    var style: Boolean? = noImpl
-    var submitBubbles: Boolean? = noImpl
-    var tbody: Boolean? = noImpl
+    var ajax: Boolean? get() = noImpl
+    var boxModel: Boolean? get() = noImpl
+    var changeBubbles: Boolean? get() = noImpl
+    var checkClone: Boolean? get() = noImpl
+    var checkOn: Boolean? get() = noImpl
+    var cors: Boolean? get() = noImpl
+    var cssFloat: Boolean? get() = noImpl
+    var hrefNormalized: Boolean? get() = noImpl
+    var htmlSerialize: Boolean? get() = noImpl
+    var leadingWhitespace: Boolean? get() = noImpl
+    var noCloneChecked: Boolean? get() = noImpl
+    var noCloneEvent: Boolean? get() = noImpl
+    var opacity: Boolean? get() = noImpl
+    var optDisabled: Boolean? get() = noImpl
+    var optSelected: Boolean? get() = noImpl
+    val scriptEval: (() -> Boolean)? get() = noImpl
+    var style: Boolean? get() = noImpl
+    var submitBubbles: Boolean? get() = noImpl
+    var tbody: Boolean? get() = noImpl
 }
 @native
 interface JQueryParam {
@@ -230,17 +230,17 @@ interface JQuerySerializeArrayElement {
 }
 @native
 interface JQueryAnimationOptions {
-    var duration: Any? = noImpl
-    var easing: String? = noImpl
-    var complete: Function? = noImpl
-    var step: ((now: Number, tween: Any) -> Any)? = noImpl
-    var progress: ((animation: JQueryPromise<Any>, progress: Number, remainingMs: Number) -> Any)? = noImpl
-    var start: ((animation: JQueryPromise<Any>) -> Any)? = noImpl
-    var done: ((animation: JQueryPromise<Any>, jumpedToEnd: Boolean) -> Any)? = noImpl
-    var fail: ((animation: JQueryPromise<Any>, jumpedToEnd: Boolean) -> Any)? = noImpl
-    var always: ((animation: JQueryPromise<Any>, jumpedToEnd: Boolean) -> Any)? = noImpl
-    var queue: Any? = noImpl
-    var specialEasing: Object? = noImpl
+    var duration: Any? get() = noImpl
+    var easing: String? get() = noImpl
+    var complete: Function? get() = noImpl
+    var step: ((now: Number, tween: Any) -> Any)? get() = noImpl
+    var progress: ((animation: JQueryPromise<Any>, progress: Number, remainingMs: Number) -> Any)? get() = noImpl
+    var start: ((animation: JQueryPromise<Any>) -> Any)? get() = noImpl
+    var done: ((animation: JQueryPromise<Any>, jumpedToEnd: Boolean) -> Any)? get() = noImpl
+    var fail: ((animation: JQueryPromise<Any>, jumpedToEnd: Boolean) -> Any)? get() = noImpl
+    var always: ((animation: JQueryPromise<Any>, jumpedToEnd: Boolean) -> Any)? get() = noImpl
+    var queue: Any? get() = noImpl
+    var specialEasing: Object? get() = noImpl
 }
 @native
 interface JQueryEasingFunction {

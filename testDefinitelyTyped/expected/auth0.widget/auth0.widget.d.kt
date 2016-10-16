@@ -13,27 +13,27 @@ interface Auth0WidgetStatic {
 }
 @native
 interface Auth0Constructor : Auth0ClientOptions {
-    var assetsUrl: String? = noImpl
-    var cdn: String? = noImpl
-    var dict: Any? = noImpl
+    var assetsUrl: String? get() = noImpl
+    var cdn: String? get() = noImpl
+    var dict: Any? get() = noImpl
 }
 @native
 interface Auth0Options {
-    var access_token: String? = noImpl
-    var connections: Array<String>? = noImpl
-    var container: String? = noImpl
-    var enableReturnUserExperience: Boolean? = noImpl
-    var extraParameters: Any? = noImpl
-    var icon: String? = noImpl
-    var protocol: String? = noImpl
-    var request_id: String? = noImpl
-    var scope: String? = noImpl
-    var showIcon: Boolean? = noImpl
-    var showForgot: Boolean? = noImpl
-    var showSignup: Boolean? = noImpl
-    var state: Any? = noImpl
-    var userPwdConnectionName: String? = noImpl
-    var username_style: String? = noImpl
+    var access_token: String? get() = noImpl
+    var connections: Array<String>? get() = noImpl
+    var container: String? get() = noImpl
+    var enableReturnUserExperience: Boolean? get() = noImpl
+    var extraParameters: Any? get() = noImpl
+    var icon: String? get() = noImpl
+    var protocol: String? get() = noImpl
+    var request_id: String? get() = noImpl
+    var scope: String? get() = noImpl
+    var showIcon: Boolean? get() = noImpl
+    var showForgot: Boolean? get() = noImpl
+    var showSignup: Boolean? get() = noImpl
+    var state: Any? get() = noImpl
+    var userPwdConnectionName: String? get() = noImpl
+    var username_style: String? get() = noImpl
 }
 @native
 @module("Auth0Widget")

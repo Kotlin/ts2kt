@@ -3,22 +3,22 @@ package accounting
 @native
 interface IAccountingCurrencyFormat {
     var pos: String
-    var neg: String? = noImpl
-    var zero: String? = noImpl
+    var neg: String? get() = noImpl
+    var zero: String? get() = noImpl
 }
 @native
 interface IAccountingCurrencySettings<TFormat> {
-    var symbol: String? = noImpl
-    var format: TFormat? = noImpl
-    var decimal: String? = noImpl
-    var thousand: String? = noImpl
-    var precision: Number? = noImpl
+    var symbol: String? get() = noImpl
+    var format: TFormat? get() = noImpl
+    var decimal: String? get() = noImpl
+    var thousand: String? get() = noImpl
+    var precision: Number? get() = noImpl
 }
 @native
 interface IAccountingNumberSettings {
-    var precision: Number? = noImpl
-    var thousand: String? = noImpl
-    var decimal: String? = noImpl
+    var precision: Number? get() = noImpl
+    var thousand: String? get() = noImpl
+    var decimal: String? get() = noImpl
 }
 @native
 interface IAccountingSettings {

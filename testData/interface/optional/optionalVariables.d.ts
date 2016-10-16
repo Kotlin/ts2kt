@@ -4,3 +4,8 @@ interface Foo {
     varAsBoolean?: boolean;
     varAsString?: string;
 }
+declare namespace foo {
+    interface Bar {
+        name?: string;
+    }
+}
