@@ -2,8 +2,8 @@ package optionalVariables
 
 @native
 interface Foo {
-    var varAsAny: Any? = noImpl
-    var varAsNumber: Number? = noImpl
-    var varAsBoolean: Boolean? = noImpl
-    var varAsString: String? = noImpl
+    var varAsAny: Any? get() = noImpl
+    var varAsNumber: Number? get() = noImpl
+    var varAsBoolean: Boolean? get() = noImpl
+    var varAsString: String? get() = noImpl
 }

@@ -4,13 +4,13 @@ package inModuleMembers
 object Foo {
     interface `T$0` {
         fun bar(a: Any): Number
-        var baz: Any? = noImpl
-        var boo: Any? = noImpl
+        var baz: Any? get() = noImpl
+        var boo: Any? get() = noImpl
         var show: (overrideChecks: Boolean) -> Unit
     }
     fun withObjectTypeParam(opt: `T$0`): Unit = noImpl
     interface `T$1` {
-        var value: Any? = noImpl
+        var value: Any? get() = noImpl
         var done: Boolean
     }
     fun returnsObjectType(): `T$1` = noImpl

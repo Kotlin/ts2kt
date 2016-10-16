@@ -16,6 +16,7 @@
 
 package ts2kt.kotlin.ast
 
+import ts2kt.ImplementationType
 import ts2kt.UNIT
 import ts2kt.escapeIfNeed
 import ts2kt.utils.assert
@@ -29,7 +30,8 @@ val FAKE_ANNOTATION = Annotation(FAKE)
 val DEFAULT_FAKE_ANNOTATION = listOf(FAKE_ANNOTATION)
 
 val NO_IMPL = "noImpl"
-private val EQ_NO_IMPL = " = $NO_IMPL"
+internal val EQ_NO_IMPL = " = $NO_IMPL"
+internal val PROPERTY_GETTER = " get()"
 private val OPEN = "open"
 private val OVERRIDE = "override"
 private val VAR = "var"
@@ -234,7 +236,7 @@ class Variable(
         override var annotations: List<Annotation>,
         val typeParams: List<TypeParam>?,
         val isVar: Boolean,
-        val needsNoImpl: Boolean = true,
+        val implementation: ImplementationType = ImplementationType.NO_IMPL,
         val isOverride: Boolean = false,
         val hasOpenModifier: Boolean
 ) : Member, Node() {
@@ -253,8 +255,8 @@ class Variable(
             (typeParams?.join(", ", startWithIfNotEmpty = "<", endWithIfNotEmpty = "> ") ?: "") +
             (if (extendsType == null) "" else extendsType.toString() + "." ) +
             _name.escapeIfNeed() +
-            type.stringify(printUnitType = !needsNoImpl) +
-            if (needsNoImpl) EQ_NO_IMPL else ""
+            type.stringify(printUnitType = implementation == ImplementationType.UNSPECIFIED) +
+            implementation.stringify()
 }
 
 class EnumEntry(override var name: String, val value: String? = null) : Member, Node() {

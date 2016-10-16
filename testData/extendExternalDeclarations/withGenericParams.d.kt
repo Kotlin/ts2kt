@@ -7,7 +7,7 @@ object Q {
     @native
     fun <T0, T, B> Promise<T0>.foo(a: Any, b: B): T = noImpl
     @native
-    var <T> Promise<T>.bar: Array<T> = noImpl
+    var <T> Promise<T>.bar: Array<T> get() = noImpl
 }
 @module
 object ref-array {
@@ -17,7 +17,7 @@ object ref-array {
         @nativeSetter
         fun set(prop: String, value: Number)
         var someField: String
-        var optionalField: T? = noImpl
+        var optionalField: T? get() = noImpl
         @nativeInvoke
         fun invoke(resourceId: String, hash: Any? = null, callback: Function? = null)
     }

@@ -8,3 +8,9 @@ interface Foo {
     var varAsBoolean: Boolean
     var varAsString: String
 }
+@module
+object foo {
+    interface Bar {
+        var name: String? get() = noImpl
+    }
+}
