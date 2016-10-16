@@ -2,7 +2,7 @@ package auth0.widget
 
 @native
 interface Auth0WidgetStatic {
-    @nativeNew
+    @native("new")
     fun invoke(params: Auth0Constructor): Auth0WidgetStatic
     fun getClient(): Auth0Static
     fun getProfile(token: String, callback: Function): Auth0UserProfile
