@@ -13,7 +13,7 @@ object Q {
 object ref-array {
     interface ArrayType<T> {
         @nativeGetter
-        fun get(prop: String): Number
+        fun get(prop: String): Number?
         @nativeSetter
         fun set(prop: String, value: Number)
         var someField: String

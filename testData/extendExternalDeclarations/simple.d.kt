@@ -6,7 +6,7 @@ fun JQuery.foo(): Unit = noImpl
 var JQuery.bar: Any get() = noImpl
 @native
 @nativeGetter
-fun JQueryStatic.get(prop: String): Number = noImpl
+fun JQueryStatic.get(prop: String): Number? = noImpl
 @native
 @nativeSetter
 fun JQueryStatic.set(prop: String, value: Number): Unit = noImpl

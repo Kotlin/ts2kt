@@ -250,7 +250,7 @@ interface JQueryEasingFunction {
 @native
 interface JQueryEasingFunctions {
     @nativeGetter
-    fun get(name: String): JQueryEasingFunction
+    fun get(name: String): JQueryEasingFunction?
     @nativeSetter
     fun set(name: String, value: JQueryEasingFunction)
     var linear: JQueryEasingFunction
@@ -716,11 +716,11 @@ interface JQuery {
     var length: Number
     var selector: String
     @nativeGetter
-    fun get(index: String): Any
+    fun get(index: String): Any?
     @nativeSetter
     fun set(index: String, value: Any)
     @nativeGetter
-    fun get(index: Number): HTMLElement
+    fun get(index: Number): HTMLElement?
     @nativeSetter
     fun set(index: Number, value: HTMLElement)
     fun add(selector: String, context: Element? = null): JQuery
