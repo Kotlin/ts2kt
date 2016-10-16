@@ -13,7 +13,7 @@ interface `T$1` {
     @nativeInvoke
     fun invoke(foo: `T$0`): Any
     @nativeGetter
-    fun get(s: String): Any
+    fun get(s: String): Any?
     @nativeSetter
     fun set(s: String, value: Any)
 }

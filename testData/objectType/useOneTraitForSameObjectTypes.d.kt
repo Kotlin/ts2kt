@@ -7,7 +7,7 @@ interface `T$0` {
     var boo: String
     var show: (overrideChecks: Boolean) -> Unit
     @nativeGetter
-    fun get(s: String): Any
+    fun get(s: String): Any?
     @nativeSetter
     fun set(s: String, value: Any)
 }
@@ -22,7 +22,7 @@ interface `T$1` {
     var boo: String
     var show: (flag: Boolean) -> Unit
     @nativeGetter
-    fun get(s: String): Number
+    fun get(s: String): Number?
     @nativeSetter
     fun set(s: String, value: Number)
 }

@@ -15,7 +15,7 @@ interface amplifyDecoder {
 @native
 interface amplifyDecoders {
     @nativeGetter
-    fun get(decoderName: String): amplifyDecoder
+    fun get(decoderName: String): amplifyDecoder?
     @nativeSetter
     fun set(decoderName: String, value: amplifyDecoder)
     var jsSend: amplifyDecoder

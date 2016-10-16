@@ -492,7 +492,8 @@ abstract class TsClassifierToKt(
                 val accessorName: String
                 val annotation: Annotation
                 if (isGetter) {
-                    callSignature = CallSignature(params, listOf(), TypeAnnotation(propType))
+                    // per Kotlin, all @nativeGetter's must be nullable
+                    callSignature = CallSignature(params, listOf(), TypeAnnotation(propType, isNullable = true))
                     accessorName = GET
                     annotation = NATIVE_GETTER_ANNOTATION
                 }
