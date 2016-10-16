@@ -215,7 +215,7 @@ interface JQueryParam {
 interface JQueryEventConstructor {
     @nativeInvoke
     fun invoke(name: String, eventProperties: Any? = null): JQueryEventObject
-    @nativeNew
+    @native("new")
     fun invoke(name: String, eventProperties: Any? = null): JQueryEventObject
 }
 @native

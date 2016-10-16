@@ -8,7 +8,7 @@ object Atmosphere {
         var AtmosphereRequest: AtmosphereRequest? = noImpl
     }
     interface AtmosphereRequest {
-        @nativeNew
+        @native("new")
         fun invoke(): Request
     }
     interface Request {
