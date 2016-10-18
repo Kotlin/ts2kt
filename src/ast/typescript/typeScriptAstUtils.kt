@@ -168,12 +168,6 @@ fun TS.ArrayTypeNode.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper):
     return "$ARRAY<$typeArg>"
 }
 
-fun TS.ArrayTypeNode.toKotlinTypeNameOverloads(typeMapper: ObjectTypeToKotlinTypeMapper): List<String> {
-    return elementType.toKotlinTypeNameOverloads(typeMapper).map { typeArg ->
-        "$ARRAY<$typeArg>"
-    }
-}
-
 //TODO: do we need LambdaType???
 private fun TS.FunctionOrConstructorTypeNode.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper): String {
     val params = parameters.toKotlinParams(typeMapper)
@@ -193,7 +187,6 @@ private fun TS.TypeLiteralNode.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTy
 
 private fun TS.TypeNode.toKotlinTypeNameOverloadsIfStandardType(typeMapper: ObjectTypeToKotlinTypeMapper): List<String> {
     return when (this.kind) {
-        TS.SyntaxKind.ArrayType -> (this.cast<TS.ArrayTypeNode>()).toKotlinTypeNameOverloads(typeMapper)
         TS.SyntaxKind.ConstructorType,
         TS.SyntaxKind.FunctionType -> (this.cast<TS.FunctionOrConstructorTypeNode>()).toKotlinTypeNameOverloads(typeMapper)
 
