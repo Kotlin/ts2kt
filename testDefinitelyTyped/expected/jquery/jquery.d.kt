@@ -75,24 +75,55 @@ interface JQueryPromiseCallback<T> {
 @native
 interface JQueryPromiseOperator<T, U> {
     @nativeInvoke
-    fun invoke(callback1: dynamic /* JQueryPromiseCallback<T> | Array<JQueryPromiseCallback<T>> */, vararg callbacksN: dynamic /* JQueryPromiseCallback<Any> | Array<JQueryPromiseCallback<Any>> */): JQueryPromise<U>
+    fun invoke(callback1: JQueryPromiseCallback<T>, vararg callbacksN: JQueryPromiseCallback<Any>): JQueryPromise<U>
+    @nativeInvoke
+    fun invoke(callback1: JQueryPromiseCallback<T>, vararg callbacksN: Array<JQueryPromiseCallback<Any>>): JQueryPromise<U>
+    @nativeInvoke
+    fun invoke(callback1: Array<JQueryPromiseCallback<T>>, vararg callbacksN: JQueryPromiseCallback<Any>): JQueryPromise<U>
+    @nativeInvoke
+    fun invoke(callback1: Array<JQueryPromiseCallback<T>>, vararg callbacksN: Array<JQueryPromiseCallback<Any>>): JQueryPromise<U>
 }
 @native
 interface JQueryPromise<T> : JQueryGenericPromise<T> {
     fun state(): String
-    fun always(alwaysCallback1: dynamic /* JQueryPromiseCallback<Any> | Array<JQueryPromiseCallback<Any>> */? = null, vararg alwaysCallbacksN: dynamic /* JQueryPromiseCallback<Any> | Array<JQueryPromiseCallback<Any>> */): JQueryPromise<T>
-    fun done(doneCallback1: dynamic /* JQueryPromiseCallback<T> | Array<JQueryPromiseCallback<T>> */? = null, vararg doneCallbackN: dynamic /* JQueryPromiseCallback<T> | Array<JQueryPromiseCallback<T>> */): JQueryPromise<T>
-    fun fail(failCallback1: dynamic /* JQueryPromiseCallback<Any> | Array<JQueryPromiseCallback<Any>> */? = null, vararg failCallbacksN: dynamic /* JQueryPromiseCallback<Any> | Array<JQueryPromiseCallback<Any>> */): JQueryPromise<T>
-    fun progress(progressCallback1: dynamic /* JQueryPromiseCallback<Any> | Array<JQueryPromiseCallback<Any>> */? = null, vararg progressCallbackN: dynamic /* JQueryPromiseCallback<Any> | Array<JQueryPromiseCallback<Any>> */): JQueryPromise<T>
+    fun always(alwaysCallback1: JQueryPromiseCallback<Any>? = null, vararg alwaysCallbacksN: JQueryPromiseCallback<Any>): JQueryPromise<T>
+    fun always(alwaysCallback1: JQueryPromiseCallback<Any>? = null, vararg alwaysCallbacksN: Array<JQueryPromiseCallback<Any>>): JQueryPromise<T>
+    fun always(alwaysCallback1: Array<JQueryPromiseCallback<Any>>? = null, vararg alwaysCallbacksN: JQueryPromiseCallback<Any>): JQueryPromise<T>
+    fun always(alwaysCallback1: Array<JQueryPromiseCallback<Any>>? = null, vararg alwaysCallbacksN: Array<JQueryPromiseCallback<Any>>): JQueryPromise<T>
+    fun done(doneCallback1: JQueryPromiseCallback<T>? = null, vararg doneCallbackN: JQueryPromiseCallback<T>): JQueryPromise<T>
+    fun done(doneCallback1: JQueryPromiseCallback<T>? = null, vararg doneCallbackN: Array<JQueryPromiseCallback<T>>): JQueryPromise<T>
+    fun done(doneCallback1: Array<JQueryPromiseCallback<T>>? = null, vararg doneCallbackN: JQueryPromiseCallback<T>): JQueryPromise<T>
+    fun done(doneCallback1: Array<JQueryPromiseCallback<T>>? = null, vararg doneCallbackN: Array<JQueryPromiseCallback<T>>): JQueryPromise<T>
+    fun fail(failCallback1: JQueryPromiseCallback<Any>? = null, vararg failCallbacksN: JQueryPromiseCallback<Any>): JQueryPromise<T>
+    fun fail(failCallback1: JQueryPromiseCallback<Any>? = null, vararg failCallbacksN: Array<JQueryPromiseCallback<Any>>): JQueryPromise<T>
+    fun fail(failCallback1: Array<JQueryPromiseCallback<Any>>? = null, vararg failCallbacksN: JQueryPromiseCallback<Any>): JQueryPromise<T>
+    fun fail(failCallback1: Array<JQueryPromiseCallback<Any>>? = null, vararg failCallbacksN: Array<JQueryPromiseCallback<Any>>): JQueryPromise<T>
+    fun progress(progressCallback1: JQueryPromiseCallback<Any>? = null, vararg progressCallbackN: JQueryPromiseCallback<Any>): JQueryPromise<T>
+    fun progress(progressCallback1: JQueryPromiseCallback<Any>? = null, vararg progressCallbackN: Array<JQueryPromiseCallback<Any>>): JQueryPromise<T>
+    fun progress(progressCallback1: Array<JQueryPromiseCallback<Any>>? = null, vararg progressCallbackN: JQueryPromiseCallback<Any>): JQueryPromise<T>
+    fun progress(progressCallback1: Array<JQueryPromiseCallback<Any>>? = null, vararg progressCallbackN: Array<JQueryPromiseCallback<Any>>): JQueryPromise<T>
     fun pipe(doneFilter: ((x: Any) -> Any)? = null, failFilter: ((x: Any) -> Any)? = null, progressFilter: ((x: Any) -> Any)? = null): JQueryPromise<Any>
+    fun promise(target: Any? = null): JQueryPromise<T>
 }
 @native
 interface JQueryDeferred<T> : JQueryGenericPromise<T> {
     fun state(): String
-    fun always(alwaysCallback1: dynamic /* JQueryPromiseCallback<Any> | Array<JQueryPromiseCallback<Any>> */? = null, vararg alwaysCallbacksN: dynamic /* JQueryPromiseCallback<Any> | Array<JQueryPromiseCallback<Any>> */): JQueryDeferred<T>
-    fun done(doneCallback1: dynamic /* JQueryPromiseCallback<T> | Array<JQueryPromiseCallback<T>> */? = null, vararg doneCallbackN: dynamic /* JQueryPromiseCallback<T> | Array<JQueryPromiseCallback<T>> */): JQueryDeferred<T>
-    fun fail(failCallback1: dynamic /* JQueryPromiseCallback<Any> | Array<JQueryPromiseCallback<Any>> */? = null, vararg failCallbacksN: dynamic /* JQueryPromiseCallback<Any> | Array<JQueryPromiseCallback<Any>> */): JQueryDeferred<T>
-    fun progress(progressCallback1: dynamic /* JQueryPromiseCallback<Any> | Array<JQueryPromiseCallback<Any>> */? = null, vararg progressCallbackN: dynamic /* JQueryPromiseCallback<Any> | Array<JQueryPromiseCallback<Any>> */): JQueryDeferred<T>
+    fun always(alwaysCallback1: JQueryPromiseCallback<Any>? = null, vararg alwaysCallbacksN: JQueryPromiseCallback<Any>): JQueryDeferred<T>
+    fun always(alwaysCallback1: JQueryPromiseCallback<Any>? = null, vararg alwaysCallbacksN: Array<JQueryPromiseCallback<Any>>): JQueryDeferred<T>
+    fun always(alwaysCallback1: Array<JQueryPromiseCallback<Any>>? = null, vararg alwaysCallbacksN: JQueryPromiseCallback<Any>): JQueryDeferred<T>
+    fun always(alwaysCallback1: Array<JQueryPromiseCallback<Any>>? = null, vararg alwaysCallbacksN: Array<JQueryPromiseCallback<Any>>): JQueryDeferred<T>
+    fun done(doneCallback1: JQueryPromiseCallback<T>? = null, vararg doneCallbackN: JQueryPromiseCallback<T>): JQueryDeferred<T>
+    fun done(doneCallback1: JQueryPromiseCallback<T>? = null, vararg doneCallbackN: Array<JQueryPromiseCallback<T>>): JQueryDeferred<T>
+    fun done(doneCallback1: Array<JQueryPromiseCallback<T>>? = null, vararg doneCallbackN: JQueryPromiseCallback<T>): JQueryDeferred<T>
+    fun done(doneCallback1: Array<JQueryPromiseCallback<T>>? = null, vararg doneCallbackN: Array<JQueryPromiseCallback<T>>): JQueryDeferred<T>
+    fun fail(failCallback1: JQueryPromiseCallback<Any>? = null, vararg failCallbacksN: JQueryPromiseCallback<Any>): JQueryDeferred<T>
+    fun fail(failCallback1: JQueryPromiseCallback<Any>? = null, vararg failCallbacksN: Array<JQueryPromiseCallback<Any>>): JQueryDeferred<T>
+    fun fail(failCallback1: Array<JQueryPromiseCallback<Any>>? = null, vararg failCallbacksN: JQueryPromiseCallback<Any>): JQueryDeferred<T>
+    fun fail(failCallback1: Array<JQueryPromiseCallback<Any>>? = null, vararg failCallbacksN: Array<JQueryPromiseCallback<Any>>): JQueryDeferred<T>
+    fun progress(progressCallback1: JQueryPromiseCallback<Any>? = null, vararg progressCallbackN: JQueryPromiseCallback<Any>): JQueryDeferred<T>
+    fun progress(progressCallback1: JQueryPromiseCallback<Any>? = null, vararg progressCallbackN: Array<JQueryPromiseCallback<Any>>): JQueryDeferred<T>
+    fun progress(progressCallback1: Array<JQueryPromiseCallback<Any>>? = null, vararg progressCallbackN: JQueryPromiseCallback<Any>): JQueryDeferred<T>
+    fun progress(progressCallback1: Array<JQueryPromiseCallback<Any>>? = null, vararg progressCallbackN: Array<JQueryPromiseCallback<Any>>): JQueryDeferred<T>
     fun notify(value: Any? = null, vararg args: Any): JQueryDeferred<T>
     fun notifyWith(context: Any, value: Array<Any>? = null): JQueryDeferred<T>
     fun reject(value: Any? = null, vararg args: Any): JQueryDeferred<T>
@@ -104,6 +135,7 @@ interface JQueryDeferred<T> : JQueryGenericPromise<T> {
 }
 @native
 interface BaseJQueryEventObject : Event {
+    override var currentTarget: Element
     var data: Any
     var delegateTarget: Element
     fun isDefaultPrevented(): Boolean
@@ -247,17 +279,24 @@ interface JQueryStatic {
     var ajaxSettings: JQueryAjaxSettings
     fun ajaxSetup(options: JQueryAjaxSettings)
     fun get(url: String, success: ((data: Any, textStatus: String, jqXHR: JQueryXHR) -> Any)? = null, dataType: String? = null): JQueryXHR
-    fun get(url: String, data: dynamic /* Object | String */? = null, success: ((data: Any, textStatus: String, jqXHR: JQueryXHR) -> Any)? = null, dataType: String? = null): JQueryXHR
+    fun get(url: String, data: Object? = null, success: ((data: Any, textStatus: String, jqXHR: JQueryXHR) -> Any)? = null, dataType: String? = null): JQueryXHR
+    fun get(url: String, data: String? = null, success: ((data: Any, textStatus: String, jqXHR: JQueryXHR) -> Any)? = null, dataType: String? = null): JQueryXHR
+    fun get(settings: JQueryAjaxSettings): JQueryXHR
     fun getJSON(url: String, success: ((data: Any, textStatus: String, jqXHR: JQueryXHR) -> Any)? = null): JQueryXHR
-    fun getJSON(url: String, data: dynamic /* Object | String */? = null, success: ((data: Any, textStatus: String, jqXHR: JQueryXHR) -> Any)? = null): JQueryXHR
+    fun getJSON(url: String, data: Object? = null, success: ((data: Any, textStatus: String, jqXHR: JQueryXHR) -> Any)? = null): JQueryXHR
+    fun getJSON(url: String, data: String? = null, success: ((data: Any, textStatus: String, jqXHR: JQueryXHR) -> Any)? = null): JQueryXHR
     fun getScript(url: String, success: ((script: String, textStatus: String, jqXHR: JQueryXHR) -> Any)? = null): JQueryXHR
     var param: JQueryParam
     fun post(url: String, success: ((data: Any, textStatus: String, jqXHR: JQueryXHR) -> Any)? = null, dataType: String? = null): JQueryXHR
-    fun post(url: String, data: dynamic /* Object | String */? = null, success: ((data: Any, textStatus: String, jqXHR: JQueryXHR) -> Any)? = null, dataType: String? = null): JQueryXHR
+    fun post(url: String, data: Object? = null, success: ((data: Any, textStatus: String, jqXHR: JQueryXHR) -> Any)? = null, dataType: String? = null): JQueryXHR
+    fun post(url: String, data: String? = null, success: ((data: Any, textStatus: String, jqXHR: JQueryXHR) -> Any)? = null, dataType: String? = null): JQueryXHR
+    fun post(settings: JQueryAjaxSettings): JQueryXHR
     fun Callbacks(flags: String? = null): JQueryCallback
     fun holdReady(hold: Boolean)
     @nativeInvoke
-    fun invoke(selector: String, context: dynamic /* Element | JQuery */? = null): JQuery
+    fun invoke(selector: String, context: Element? = null): JQuery
+    @nativeInvoke
+    fun invoke(selector: String, context: JQuery? = null): JQuery
     @nativeInvoke
     fun invoke(element: Element): JQuery
     @nativeInvoke
@@ -275,7 +314,8 @@ interface JQueryStatic {
     @nativeInvoke
     fun invoke(html: String, attributes: Object): JQuery
     fun noConflict(removeAll: Boolean? = null): JQueryStatic
-    fun <T> `when`(vararg deferreds: dynamic /* T | JQueryPromise<T> */): JQueryPromise<T>
+    fun <T> `when`(vararg deferreds: T): JQueryPromise<T>
+    fun <T> `when`(vararg deferreds: JQueryPromise<T>): JQueryPromise<T>
     var cssHooks: Json
     var cssNumber: Any
     fun <T> data(element: Element, key: String, value: T): T
@@ -304,7 +344,7 @@ interface JQueryStatic {
     fun extend(target: Any, object1: Any? = null, vararg objectN: Any): Any
     fun extend(deep: Boolean, target: Any, object1: Any? = null, vararg objectN: Any): Any
     fun globalEval(code: String): Any
-    fun <T> grep(array: Array<T>, func: (elementOfArray: T, indexInArray: Number) -> Boolean, invert: Boolean? = null): Array<T>
+    fun <T> grep(array: Array<T>, func: (elementOfArray: T? = null, indexInArray: Number? = null) -> Boolean, invert: Boolean? = null): Array<T>
     fun <T> inArray(value: T, array: Array<T>, fromIndex: Number? = null): Number
     fun isArray(obj: Any): Boolean
     fun isEmptyObject(obj: Any): Boolean
@@ -314,8 +354,8 @@ interface JQueryStatic {
     fun isWindow(obj: Any): Boolean
     fun isXMLDoc(node: Node): Boolean
     fun makeArray(obj: Any): Array<Any>
-    fun <T, U> map(array: Array<T>, callback: (elementOfArray: T, indexInArray: Number) -> U): Array<U>
-    fun map(arrayOrObject: Any, callback: (value: Any, indexOrKey: Any) -> Any): Any
+    fun <T, U> map(array: Array<T>, callback: (elementOfArray: T? = null, indexInArray: Number? = null) -> U): Array<U>
+    fun map(arrayOrObject: Any, callback: (value: Any? = null, indexOrKey: Any? = null) -> Any): Any
     fun <T> merge(first: Array<T>, second: Array<T>): Array<T>
     fun noop(): Any
     fun now(): Number
@@ -335,14 +375,16 @@ interface JQuery {
     fun ajaxStart(handler: () -> Any): JQuery
     fun ajaxStop(handler: () -> Any): JQuery
     fun ajaxSuccess(handler: (event: JQueryEventObject, XMLHttpRequest: XMLHttpRequest, ajaxOptions: JQueryAjaxSettings) -> Any): JQuery
-    fun load(url: String, data: dynamic /* String | Object */? = null, complete: ((responseText: String, textStatus: String, XMLHttpRequest: XMLHttpRequest) -> Any)? = null): JQuery
+    fun load(url: String, data: String? = null, complete: ((responseText: String, textStatus: String, XMLHttpRequest: XMLHttpRequest) -> Any)? = null): JQuery
+    fun load(url: String, data: Object? = null, complete: ((responseText: String, textStatus: String, XMLHttpRequest: XMLHttpRequest) -> Any)? = null): JQuery
     fun serialize(): String
     fun serializeArray(): Array<JQuerySerializeArrayElement>
     fun addClass(className: String): JQuery
     fun addClass(func: (index: Number, className: String) -> String): JQuery
     fun addBack(selector: String? = null): JQuery
     fun attr(attributeName: String): String
-    fun attr(attributeName: String, value: dynamic /* String | Number */): JQuery
+    fun attr(attributeName: String, value: String): JQuery
+    fun attr(attributeName: String, value: Number): JQuery
     fun attr(attributeName: String, func: (index: Number, attr: String) -> dynamic /* String | Number */): JQuery
     fun attr(attributes: Object): JQuery
     fun hasClass(className: String): Boolean
@@ -350,7 +392,9 @@ interface JQuery {
     fun html(htmlString: String): JQuery
     fun html(func: (index: Number, oldhtml: String) -> String): JQuery
     fun prop(propertyName: String): Any
-    fun prop(propertyName: String, value: dynamic /* String | Number | Boolean */): JQuery
+    fun prop(propertyName: String, value: String): JQuery
+    fun prop(propertyName: String, value: Number): JQuery
+    fun prop(propertyName: String, value: Boolean): JQuery
     fun prop(properties: Object): JQuery
     fun prop(propertyName: String, func: (index: Number, oldPropertyValue: Any) -> Any): JQuery
     fun removeAttr(attributeName: String): JQuery
@@ -361,33 +405,42 @@ interface JQuery {
     fun toggleClass(swtch: Boolean? = null): JQuery
     fun toggleClass(func: (index: Number, className: String, swtch: Boolean) -> String, swtch: Boolean? = null): JQuery
     fun `val`(): Any
-    fun `val`(value: dynamic /* String | Array<String> | Number */): JQuery
+    fun `val`(value: String): JQuery
+    fun `val`(value: Array<String>): JQuery
+    fun `val`(value: Number): JQuery
     fun `val`(func: (index: Number, value: String) -> String): JQuery
     fun css(propertyName: String): String
-    fun css(propertyName: String, value: dynamic /* String | Number */): JQuery
+    fun css(propertyName: String, value: String): JQuery
+    fun css(propertyName: String, value: Number): JQuery
     fun css(propertyName: String, value: (index: Number, value: String) -> dynamic /* String | Number */): JQuery
     fun css(properties: Object): JQuery
     fun height(): Number
-    fun height(value: dynamic /* Number | String */): JQuery
+    fun height(value: Number): JQuery
+    fun height(value: String): JQuery
     fun height(func: (index: Number, height: Number) -> dynamic /* Number | String */): JQuery
     fun innerHeight(): Number
-    fun innerHeight(height: dynamic /* Number | String */): JQuery
+    fun innerHeight(height: Number): JQuery
+    fun innerHeight(height: String): JQuery
     fun innerWidth(): Number
-    fun innerWidth(width: dynamic /* Number | String */): JQuery
+    fun innerWidth(width: Number): JQuery
+    fun innerWidth(width: String): JQuery
     fun offset(): JQueryCoordinates
     fun offset(coordinates: JQueryCoordinates): JQuery
     fun offset(func: (index: Number, coords: JQueryCoordinates) -> JQueryCoordinates): JQuery
     fun outerHeight(includeMargin: Boolean? = null): Number
-    fun outerHeight(height: dynamic /* Number | String */): JQuery
+    fun outerHeight(height: Number): JQuery
+    fun outerHeight(height: String): JQuery
     fun outerWidth(includeMargin: Boolean? = null): Number
-    fun outerWidth(width: dynamic /* Number | String */): JQuery
+    fun outerWidth(width: Number): JQuery
+    fun outerWidth(width: String): JQuery
     fun position(): JQueryCoordinates
     fun scrollLeft(): Number
     fun scrollLeft(value: Number): JQuery
     fun scrollTop(): Number
     fun scrollTop(value: Number): JQuery
     fun width(): Number
-    fun width(value: dynamic /* Number | String */): JQuery
+    fun width(value: Number): JQuery
+    fun width(value: String): JQuery
     fun width(func: (index: Number, width: Number) -> dynamic /* Number | String */): JQuery
     fun clearQueue(queueName: String? = null): JQuery
     fun data(key: String, value: Any): JQuery
@@ -399,41 +452,63 @@ interface JQuery {
     fun removeData(list: Array<String>): JQuery
     fun removeData(): JQuery
     fun promise(type: String? = null, target: Object? = null): JQueryPromise<Any>
-    fun animate(properties: Object, duration: dynamic /* String | Number */? = null, complete: Function? = null): JQuery
-    fun animate(properties: Object, duration: dynamic /* String | Number */? = null, easing: String? = null, complete: Function? = null): JQuery
+    fun animate(properties: Object, duration: String? = null, complete: Function? = null): JQuery
+    fun animate(properties: Object, duration: Number? = null, complete: Function? = null): JQuery
+    fun animate(properties: Object, duration: String? = null, easing: String? = null, complete: Function? = null): JQuery
+    fun animate(properties: Object, duration: Number? = null, easing: String? = null, complete: Function? = null): JQuery
     fun animate(properties: Object, options: JQueryAnimationOptions): JQuery
     fun delay(duration: Number, queueName: String? = null): JQuery
-    fun fadeIn(duration: dynamic /* Number | String */? = null, complete: Function? = null): JQuery
-    fun fadeIn(duration: dynamic /* Number | String */? = null, easing: String? = null, complete: Function? = null): JQuery
+    fun fadeIn(duration: Number? = null, complete: Function? = null): JQuery
+    fun fadeIn(duration: String? = null, complete: Function? = null): JQuery
+    fun fadeIn(duration: Number? = null, easing: String? = null, complete: Function? = null): JQuery
+    fun fadeIn(duration: String? = null, easing: String? = null, complete: Function? = null): JQuery
     fun fadeIn(options: JQueryAnimationOptions): JQuery
-    fun fadeOut(duration: dynamic /* Number | String */? = null, complete: Function? = null): JQuery
-    fun fadeOut(duration: dynamic /* Number | String */? = null, easing: String? = null, complete: Function? = null): JQuery
+    fun fadeOut(duration: Number? = null, complete: Function? = null): JQuery
+    fun fadeOut(duration: String? = null, complete: Function? = null): JQuery
+    fun fadeOut(duration: Number? = null, easing: String? = null, complete: Function? = null): JQuery
+    fun fadeOut(duration: String? = null, easing: String? = null, complete: Function? = null): JQuery
     fun fadeOut(options: JQueryAnimationOptions): JQuery
-    fun fadeTo(duration: dynamic /* String | Number */, opacity: Number, complete: Function? = null): JQuery
-    fun fadeTo(duration: dynamic /* String | Number */, opacity: Number, easing: String? = null, complete: Function? = null): JQuery
-    fun fadeToggle(duration: dynamic /* Number | String */? = null, complete: Function? = null): JQuery
-    fun fadeToggle(duration: dynamic /* Number | String */? = null, easing: String? = null, complete: Function? = null): JQuery
+    fun fadeTo(duration: String, opacity: Number, complete: Function? = null): JQuery
+    fun fadeTo(duration: Number, opacity: Number, complete: Function? = null): JQuery
+    fun fadeTo(duration: String, opacity: Number, easing: String? = null, complete: Function? = null): JQuery
+    fun fadeTo(duration: Number, opacity: Number, easing: String? = null, complete: Function? = null): JQuery
+    fun fadeToggle(duration: Number? = null, complete: Function? = null): JQuery
+    fun fadeToggle(duration: String? = null, complete: Function? = null): JQuery
+    fun fadeToggle(duration: Number? = null, easing: String? = null, complete: Function? = null): JQuery
+    fun fadeToggle(duration: String? = null, easing: String? = null, complete: Function? = null): JQuery
     fun fadeToggle(options: JQueryAnimationOptions): JQuery
     fun finish(queue: String? = null): JQuery
-    fun hide(duration: dynamic /* Number | String */? = null, complete: Function? = null): JQuery
-    fun hide(duration: dynamic /* Number | String */? = null, easing: String? = null, complete: Function? = null): JQuery
+    fun hide(duration: Number? = null, complete: Function? = null): JQuery
+    fun hide(duration: String? = null, complete: Function? = null): JQuery
+    fun hide(duration: Number? = null, easing: String? = null, complete: Function? = null): JQuery
+    fun hide(duration: String? = null, easing: String? = null, complete: Function? = null): JQuery
     fun hide(options: JQueryAnimationOptions): JQuery
-    fun show(duration: dynamic /* Number | String */? = null, complete: Function? = null): JQuery
-    fun show(duration: dynamic /* Number | String */? = null, easing: String? = null, complete: Function? = null): JQuery
+    fun show(duration: Number? = null, complete: Function? = null): JQuery
+    fun show(duration: String? = null, complete: Function? = null): JQuery
+    fun show(duration: Number? = null, easing: String? = null, complete: Function? = null): JQuery
+    fun show(duration: String? = null, easing: String? = null, complete: Function? = null): JQuery
     fun show(options: JQueryAnimationOptions): JQuery
-    fun slideDown(duration: dynamic /* Number | String */? = null, complete: Function? = null): JQuery
-    fun slideDown(duration: dynamic /* Number | String */? = null, easing: String? = null, complete: Function? = null): JQuery
+    fun slideDown(duration: Number? = null, complete: Function? = null): JQuery
+    fun slideDown(duration: String? = null, complete: Function? = null): JQuery
+    fun slideDown(duration: Number? = null, easing: String? = null, complete: Function? = null): JQuery
+    fun slideDown(duration: String? = null, easing: String? = null, complete: Function? = null): JQuery
     fun slideDown(options: JQueryAnimationOptions): JQuery
-    fun slideToggle(duration: dynamic /* Number | String */? = null, complete: Function? = null): JQuery
-    fun slideToggle(duration: dynamic /* Number | String */? = null, easing: String? = null, complete: Function? = null): JQuery
+    fun slideToggle(duration: Number? = null, complete: Function? = null): JQuery
+    fun slideToggle(duration: String? = null, complete: Function? = null): JQuery
+    fun slideToggle(duration: Number? = null, easing: String? = null, complete: Function? = null): JQuery
+    fun slideToggle(duration: String? = null, easing: String? = null, complete: Function? = null): JQuery
     fun slideToggle(options: JQueryAnimationOptions): JQuery
-    fun slideUp(duration: dynamic /* Number | String */? = null, complete: Function? = null): JQuery
-    fun slideUp(duration: dynamic /* Number | String */? = null, easing: String? = null, complete: Function? = null): JQuery
+    fun slideUp(duration: Number? = null, complete: Function? = null): JQuery
+    fun slideUp(duration: String? = null, complete: Function? = null): JQuery
+    fun slideUp(duration: Number? = null, easing: String? = null, complete: Function? = null): JQuery
+    fun slideUp(duration: String? = null, easing: String? = null, complete: Function? = null): JQuery
     fun slideUp(options: JQueryAnimationOptions): JQuery
     fun stop(clearQueue: Boolean? = null, jumpToEnd: Boolean? = null): JQuery
     fun stop(queue: String? = null, clearQueue: Boolean? = null, jumpToEnd: Boolean? = null): JQuery
-    fun toggle(duration: dynamic /* Number | String */? = null, complete: Function? = null): JQuery
-    fun toggle(duration: dynamic /* Number | String */? = null, easing: String? = null, complete: Function? = null): JQuery
+    fun toggle(duration: Number? = null, complete: Function? = null): JQuery
+    fun toggle(duration: String? = null, complete: Function? = null): JQuery
+    fun toggle(duration: Number? = null, easing: String? = null, complete: Function? = null): JQuery
+    fun toggle(duration: String? = null, easing: String? = null, complete: Function? = null): JQuery
     fun toggle(options: JQueryAnimationOptions): JQuery
     fun toggle(showOrHide: Boolean): JQuery
     fun bind(eventType: String, eventData: Any, handler: (eventObject: JQueryEventObject) -> Any): JQuery
@@ -450,6 +525,9 @@ interface JQuery {
     fun click(): JQuery
     fun click(handler: (eventObject: JQueryEventObject) -> Any): JQuery
     fun click(eventData: Any? = null, handler: ((eventObject: JQueryEventObject) -> Any)? = null): JQuery
+    fun contextmenu(): JQuery
+    fun contextmenu(handler: (eventObject: JQueryMouseEventObject) -> Any): JQuery
+    fun contextmenu(eventData: Object, handler: (eventObject: JQueryMouseEventObject) -> Any): JQuery
     fun dblclick(): JQuery
     fun dblclick(handler: (eventObject: JQueryEventObject) -> Any): JQuery
     fun dblclick(eventData: Any? = null, handler: ((eventObject: JQueryEventObject) -> Any)? = null): JQuery
@@ -528,8 +606,10 @@ interface JQuery {
     fun submit(): JQuery
     fun submit(handler: (eventObject: JQueryEventObject) -> Any): JQuery
     fun submit(eventData: Any? = null, handler: ((eventObject: JQueryEventObject) -> Any)? = null): JQuery
-    fun trigger(eventType: String, extraParameters: dynamic /* Array<Any> | Object */? = null): JQuery
-    fun trigger(event: JQueryEventObject, extraParameters: dynamic /* Array<Any> | Object */? = null): JQuery
+    fun trigger(eventType: String, extraParameters: Array<Any>? = null): JQuery
+    fun trigger(eventType: String, extraParameters: Object? = null): JQuery
+    fun trigger(event: JQueryEventObject, extraParameters: Array<Any>? = null): JQuery
+    fun trigger(event: JQueryEventObject, extraParameters: Object? = null): JQuery
     fun triggerHandler(eventType: String, vararg extraParameters: Any): Object
     fun triggerHandler(event: JQueryEventObject, vararg extraParameters: Any): Object
     fun unbind(eventType: String? = null, handler: ((eventObject: JQueryEventObject) -> Any)? = null): JQuery
@@ -547,41 +627,92 @@ interface JQuery {
     fun error(eventData: Any, handler: (eventObject: JQueryEventObject) -> Any): JQuery
     fun pushStack(elements: Array<Any>): JQuery
     fun pushStack(elements: Array<Any>, name: String, arguments: Array<Any>): JQuery
-    fun after(content1: dynamic /* JQuery | Array<Any> | Element | Text | String */, vararg content2: Any): JQuery
+    fun after(content1: JQuery, vararg content2: Any): JQuery
+    fun after(content1: Array<Any>, vararg content2: Any): JQuery
+    fun after(content1: Element, vararg content2: Any): JQuery
+    fun after(content1: DocumentFragment, vararg content2: Any): JQuery
+    fun after(content1: Text, vararg content2: Any): JQuery
+    fun after(content1: String, vararg content2: Any): JQuery
     fun after(func: (index: Number, html: String) -> dynamic /* String | Element | JQuery */): JQuery
-    fun append(content1: dynamic /* JQuery | Array<Any> | Element | Text | String */, vararg content2: Any): JQuery
+    fun append(content1: JQuery, vararg content2: Any): JQuery
+    fun append(content1: Array<Any>, vararg content2: Any): JQuery
+    fun append(content1: Element, vararg content2: Any): JQuery
+    fun append(content1: DocumentFragment, vararg content2: Any): JQuery
+    fun append(content1: Text, vararg content2: Any): JQuery
+    fun append(content1: String, vararg content2: Any): JQuery
     fun append(func: (index: Number, html: String) -> dynamic /* String | Element | JQuery */): JQuery
-    fun appendTo(target: dynamic /* JQuery | Array<Any> | Element | String */): JQuery
-    fun before(content1: dynamic /* JQuery | Array<Any> | Element | Text | String */, vararg content2: Any): JQuery
+    fun appendTo(target: JQuery): JQuery
+    fun appendTo(target: Array<Any>): JQuery
+    fun appendTo(target: Element): JQuery
+    fun appendTo(target: String): JQuery
+    fun before(content1: JQuery, vararg content2: Any): JQuery
+    fun before(content1: Array<Any>, vararg content2: Any): JQuery
+    fun before(content1: Element, vararg content2: Any): JQuery
+    fun before(content1: DocumentFragment, vararg content2: Any): JQuery
+    fun before(content1: Text, vararg content2: Any): JQuery
+    fun before(content1: String, vararg content2: Any): JQuery
     fun before(func: (index: Number, html: String) -> dynamic /* String | Element | JQuery */): JQuery
     fun clone(withDataAndEvents: Boolean? = null, deepWithDataAndEvents: Boolean? = null): JQuery
     fun detach(selector: String? = null): JQuery
     fun empty(): JQuery
-    fun insertAfter(target: dynamic /* JQuery | Array<Any> | Element | Text | String */): JQuery
-    fun insertBefore(target: dynamic /* JQuery | Array<Any> | Element | Text | String */): JQuery
-    fun prepend(content1: dynamic /* JQuery | Array<Any> | Element | Text | String */, vararg content2: Any): JQuery
+    fun insertAfter(target: JQuery): JQuery
+    fun insertAfter(target: Array<Any>): JQuery
+    fun insertAfter(target: Element): JQuery
+    fun insertAfter(target: Text): JQuery
+    fun insertAfter(target: String): JQuery
+    fun insertBefore(target: JQuery): JQuery
+    fun insertBefore(target: Array<Any>): JQuery
+    fun insertBefore(target: Element): JQuery
+    fun insertBefore(target: Text): JQuery
+    fun insertBefore(target: String): JQuery
+    fun prepend(content1: JQuery, vararg content2: Any): JQuery
+    fun prepend(content1: Array<Any>, vararg content2: Any): JQuery
+    fun prepend(content1: Element, vararg content2: Any): JQuery
+    fun prepend(content1: DocumentFragment, vararg content2: Any): JQuery
+    fun prepend(content1: Text, vararg content2: Any): JQuery
+    fun prepend(content1: String, vararg content2: Any): JQuery
     fun prepend(func: (index: Number, html: String) -> dynamic /* String | Element | JQuery */): JQuery
-    fun prependTo(target: dynamic /* JQuery | Array<Any> | Element | String */): JQuery
+    fun prependTo(target: JQuery): JQuery
+    fun prependTo(target: Array<Any>): JQuery
+    fun prependTo(target: Element): JQuery
+    fun prependTo(target: String): JQuery
     fun remove(selector: String? = null): JQuery
-    fun replaceAll(target: dynamic /* JQuery | Array<Any> | Element | String */): JQuery
-    fun replaceWith(newContent: dynamic /* JQuery | Array<Any> | Element | Text | String */): JQuery
+    fun replaceAll(target: JQuery): JQuery
+    fun replaceAll(target: Array<Any>): JQuery
+    fun replaceAll(target: Element): JQuery
+    fun replaceAll(target: String): JQuery
+    fun replaceWith(newContent: JQuery): JQuery
+    fun replaceWith(newContent: Array<Any>): JQuery
+    fun replaceWith(newContent: Element): JQuery
+    fun replaceWith(newContent: Text): JQuery
+    fun replaceWith(newContent: String): JQuery
     fun replaceWith(func: () -> dynamic /* Element | JQuery */): JQuery
     fun text(): String
-    fun text(text: dynamic /* String | Number | Boolean */): JQuery
+    fun text(text: String): JQuery
+    fun text(text: Number): JQuery
+    fun text(text: Boolean): JQuery
     fun text(func: (index: Number, text: String) -> String): JQuery
-    fun toArray(): Array<Any>
+    fun toArray(): Array<HTMLElement>
     fun unwrap(): JQuery
-    fun wrap(wrappingElement: dynamic /* JQuery | Element | String */): JQuery
+    fun wrap(wrappingElement: JQuery): JQuery
+    fun wrap(wrappingElement: Element): JQuery
+    fun wrap(wrappingElement: String): JQuery
     fun wrap(func: (index: Number) -> dynamic /* String | JQuery */): JQuery
-    fun wrapAll(wrappingElement: dynamic /* JQuery | Element | String */): JQuery
+    fun wrapAll(wrappingElement: JQuery): JQuery
+    fun wrapAll(wrappingElement: Element): JQuery
+    fun wrapAll(wrappingElement: String): JQuery
     fun wrapAll(func: (index: Number) -> String): JQuery
-    fun wrapInner(wrappingElement: dynamic /* JQuery | Element | String */): JQuery
+    fun wrapInner(wrappingElement: JQuery): JQuery
+    fun wrapInner(wrappingElement: Element): JQuery
+    fun wrapInner(wrappingElement: String): JQuery
     fun wrapInner(func: (index: Number) -> String): JQuery
     fun each(func: (index: Number, elem: Element) -> Any): JQuery
     fun get(index: Number): HTMLElement
-    fun get(): Array<Any>
+    fun get(): Array<HTMLElement>
     fun index(): Number
-    fun index(selector: dynamic /* String | JQuery | Element */): Number
+    fun index(selector: String): Number
+    fun index(selector: JQuery): Number
+    fun index(selector: Element): Number
     var length: Number
     var selector: String
     @nativeGetter
@@ -628,7 +759,8 @@ interface JQuery {
     fun nextUntil(obj: JQuery? = null, filter: String? = null): JQuery
     fun not(selector: String): JQuery
     fun not(func: (index: Number, element: Element) -> Boolean): JQuery
-    fun not(elements: dynamic /* Element | Array<Element> */): JQuery
+    fun not(elements: Element): JQuery
+    fun not(elements: Array<Element>): JQuery
     fun not(obj: JQuery): JQuery
     fun offsetParent(): JQuery
     fun parent(selector: String? = null): JQuery
