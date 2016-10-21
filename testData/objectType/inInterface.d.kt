@@ -3,13 +3,13 @@ package inInterface
 @native
 interface `T$0` {
     fun bar(a: Any): Number
-    var baz: Any? = noImpl
-    var boo: Any? = noImpl
+    var baz: Any? get() = noImpl
+    var boo: Any? get() = noImpl
     var show: (overrideChecks: Boolean) -> Unit
 }
 @native
 interface `T$1` {
-    var value: Any? = noImpl
+    var value: Any? get() = noImpl
     var done: Boolean
 }
 @native

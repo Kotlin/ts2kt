@@ -13,7 +13,7 @@ object Module {
 @native
 interface `T$0` {
     @nativeGetter
-    fun get(s: Number): Any
+    fun get(s: Number): Any?
     @nativeSetter
     fun set(s: Number, value: Any)
 }

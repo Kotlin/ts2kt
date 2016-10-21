@@ -67,7 +67,7 @@ interface AngularFireSimpleObject {
     var `$priority`: Number
     var `$value`: Any
     @nativeGetter
-    fun get(key: String): Any
+    fun get(key: String): Any?
     @nativeSetter
     fun set(key: String, value: Any)
 }

@@ -13,11 +13,7 @@ fun barKey(a: Number): Unit = noImpl
 @native
 fun barList(a: List<dynamic /* String | Foo | Number */>): Unit = noImpl
 @native
-fun barArray(a: Array<String>): Unit = noImpl
-@native
-fun barArray(a: Array<Foo>): Unit = noImpl
-@native
-fun barArray(a: Array<Number>): Unit = noImpl
+fun barArray(a: Array<dynamic /* String | Foo | Number */>): Unit = noImpl
 @native
 interface Parent {
     @nativeInvoke

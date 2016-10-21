@@ -17,14 +17,14 @@ interface alertify {
         fun debug()
     }
     interface IProperties {
-        var delay: Number? = noImpl
-        var labels: ILabels? = noImpl
-        var buttonFocus: String? = noImpl
-        var buttonReverse: Boolean? = noImpl
+        var delay: Number? get() = noImpl
+        var labels: ILabels? get() = noImpl
+        var buttonFocus: String? get() = noImpl
+        var buttonReverse: Boolean? get() = noImpl
     }
     interface ILabels {
-        var ok: String? = noImpl
-        var cancel: String? = noImpl
+        var ok: String? get() = noImpl
+        var cancel: String? get() = noImpl
     }
     companion object : alertify.IAlertifyStatic by noImpl: alertify.IAlertifyStatic {
 

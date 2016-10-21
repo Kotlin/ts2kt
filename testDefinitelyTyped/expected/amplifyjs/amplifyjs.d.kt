@@ -3,9 +3,9 @@ package amplifyjs
 @native
 interface amplifyRequestSettings {
     var resourceId: String
-    var data: Any? = noImpl
-    var success: ((vararg args: Any) -> Unit)? = noImpl
-    var error: ((vararg args: Any) -> Unit)? = noImpl
+    var data: Any? get() = noImpl
+    var success: ((vararg args: Any) -> Unit)? get() = noImpl
+    var error: ((vararg args: Any) -> Unit)? get() = noImpl
 }
 @native
 interface amplifyDecoder {
@@ -15,16 +15,16 @@ interface amplifyDecoder {
 @native
 interface amplifyDecoders {
     @nativeGetter
-    fun get(decoderName: String): amplifyDecoder
+    fun get(decoderName: String): amplifyDecoder?
     @nativeSetter
     fun set(decoderName: String, value: amplifyDecoder)
     var jsSend: amplifyDecoder
 }
 @native
 interface amplifyAjaxSettings : JQueryAjaxSettings {
-    var cache: Any? = noImpl
-    var dataMap: dynamic /* Any | (data: Any) -> Any */? = noImpl
-    var decoder: Any? = noImpl
+    var cache: Any? get() = noImpl
+    var dataMap: dynamic /* Any | (data: Any) -> Any */ get() = noImpl
+    var decoder: Any? get() = noImpl
 }
 @native
 interface amplifyRequest {
