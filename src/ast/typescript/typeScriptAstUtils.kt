@@ -252,6 +252,16 @@ fun TS.EntityName.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper): St
 fun TS.TypeReferenceNode.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper): String {
     val typeNameUsingAlias = typeMapper.getKotlinTypeForTypeAlias(typeName.text)?.toKotlinTypeName(typeMapper)
     if (typeNameUsingAlias != null) return typeNameUsingAlias
+    return toKotlinTypeNameIgnoringTypeAliases(typeMapper)
+}
+
+fun TS.TypeReferenceNode.toKotlinTypeNameOverloads(typeMapper: ObjectTypeToKotlinTypeMapper): List<String> {
+    val typeNameUsingAlias = typeMapper.getKotlinTypeForTypeAlias(typeName.text)?.toKotlinTypeNameOverloads(typeMapper)
+    if (typeNameUsingAlias != null) return typeNameUsingAlias
+    return listOf(toKotlinTypeNameIgnoringTypeAliases(typeMapper))
+}
+
+private fun TS.TypeReferenceNode.toKotlinTypeNameIgnoringTypeAliases(typeMapper: ObjectTypeToKotlinTypeMapper): String {
     // TODO improve
     val name = typeName.toKotlinTypeName(typeMapper)
     val typeArgs = typeArguments ?: return name
@@ -267,16 +277,6 @@ fun TS.ExpressionWithTypeArguments.toKotlinTypeName(typeMapper: ObjectTypeToKotl
 
     val strTypeArgs = typeArgs.arr.map { it.toKotlinTypeName(typeMapper) }.joinToString(",")
     return "$name<$strTypeArgs>"
-}
-
-fun TS.TypeReferenceNode.toKotlinTypeNameOverloads(typeMapper: ObjectTypeToKotlinTypeMapper): List<String> {
-    val typeNameOverloadsUsingAlias = typeMapper.getKotlinTypeForTypeAlias(typeName.text)?.toKotlinTypeNameOverloads(typeMapper)
-    if (typeNameOverloadsUsingAlias != null) return typeNameOverloadsUsingAlias
-    // TODO improve
-    val name = typeName.toKotlinTypeName(typeMapper)
-    val typeArgs = typeArguments ?: return listOf(name)
-
-    return typeArgs.arr.map { it.toKotlinTypeName(typeMapper) }.map { "$name<${it}>" }
 }
 
 private fun TS.PropertyAccessExpression.stringify(): String {
