@@ -487,7 +487,12 @@ abstract class TsClassifierToKt(
     private fun translateAccessor(node: TS.IndexSignatureDeclaration, isGetter: Boolean) {
         // TODO type params?
         node.parameters.toKotlinParamsOverloads(typeMapper).forEach { params ->
-            (node.type?.toKotlinTypeNameOverloads(typeMapper) ?: listOf(ANY)).forEach { propType ->
+            val propTypeOverloads = if (isGetter) {
+                listOf(node.type?.toKotlinTypeName(typeMapper) ?: ANY)
+            } else {
+                node.type?.toKotlinTypeNameOverloads(typeMapper) ?: listOf(ANY)
+            }
+            propTypeOverloads.forEach { propType ->
                 val callSignature: CallSignature
                 val accessorName: String
                 val annotation: Annotation
