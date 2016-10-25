@@ -16,6 +16,7 @@
 
 package ts2kt.kotlin.ast
 
+import ts2kt.DYNAMIC
 import ts2kt.ImplementationType
 import ts2kt.UNIT
 import ts2kt.escapeIfNeed
@@ -288,7 +289,7 @@ class TypeAnnotation(
                 (if (isLambda && isNullable) "(" else "") +
                 escapedName +
                 (if (isLambda && isNullable) ")" else "") +
-                (if (isNullable) "?" else "")
+                (if (isNullable && !escapedName.startsWith(DYNAMIC)) "?" else "")
     }
 
     fun isUnit() = escapedName == UNIT && !isNullable && !isLambda && !isVararg
