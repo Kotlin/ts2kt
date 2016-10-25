@@ -23,7 +23,7 @@ fun baz(a: Foo, b: Foo): Unit = noImpl
 @native
 interface `T$0` {
     @nativeGetter
-    fun get(key: String): dynamic /* String | Number */?
+    fun get(key: String): dynamic /* String | Number */
     @nativeSetter
     fun set(key: String, value: String)
     @nativeSetter
