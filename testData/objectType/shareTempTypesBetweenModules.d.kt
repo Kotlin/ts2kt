@@ -4,13 +4,13 @@ package shareTempTypesBetweenModules
 object Foo {
     interface `T$0` {
         fun bar(a: Any): Number
-        var baz: Any? get() = noImpl
-        var boo: Any? get() = noImpl
+        var baz: Any? get() = noImpl; set(value){}
+        var boo: Any? get() = noImpl; set(value){}
         var show: (overrideChecks: Boolean) -> Unit
     }
     fun withObjectTypeParam(opt: `T$0`): Unit = noImpl
     interface `T$1` {
-        var value: Any? get() = noImpl
+        var value: Any? get() = noImpl; set(value){}
         var done: Boolean
     }
     fun returnsObjectType(): `T$1` = noImpl
@@ -24,13 +24,13 @@ object Foo {
 object Bar {
     interface `T$3` {
         fun bar(a: Any): Number
-        var baz: Any? get() = noImpl
-        var boo: Any? get() = noImpl
+        var baz: Any? get() = noImpl; set(value){}
+        var boo: Any? get() = noImpl; set(value){}
         var show: (overrideChecks: Boolean) -> Unit
     }
     fun someFunction(opt: `T$3`): Unit = noImpl
     interface `T$4` {
-        var value: Any? get() = noImpl
+        var value: Any? get() = noImpl; set(value){}
         var done: Boolean
     }
     fun anotherReturnsObjectType(): `T$4` = noImpl
@@ -43,15 +43,15 @@ object Bar {
 @native
 interface `T$6` {
     fun bar(a: Any): Number
-    var baz: Any? get() = noImpl
-    var boo: Any? get() = noImpl
+    var baz: Any? get() = noImpl; set(value){}
+    var boo: Any? get() = noImpl; set(value){}
     var show: (overrideChecks: Boolean) -> Unit
 }
 @native
 fun withObjectTypeParam(opt: `T$6`): Unit = noImpl
 @native
 interface `T$7` {
-    var value: Any? get() = noImpl
+    var value: Any? get() = noImpl; set(value){}
     var done: Boolean
 }
 @native

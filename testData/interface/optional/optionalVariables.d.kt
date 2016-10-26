@@ -2,14 +2,14 @@ package optionalVariables
 
 @native
 interface Foo {
-    var varAsAny: Any? get() = noImpl
-    var varAsNumber: Number? get() = noImpl
-    var varAsBoolean: Boolean? get() = noImpl
-    var varAsString: String? get() = noImpl
+    var varAsAny: Any? get() = noImpl; set(value){}
+    var varAsNumber: Number? get() = noImpl; set(value){}
+    var varAsBoolean: Boolean? get() = noImpl; set(value){}
+    var varAsString: String? get() = noImpl; set(value){}
 }
 @module
 object foo {
     interface Bar {
-        var name: String? get() = noImpl
+        var name: String? get() = noImpl; set(value){}
     }
 }

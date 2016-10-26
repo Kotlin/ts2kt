@@ -7,8 +7,8 @@ interface BrowserifyObject : NodeJS.EventEmitter {
 }
 @native
 interface Options {
-    var entries: Array<String>? get() = noImpl
-    var noParse: Array<String>? get() = noImpl
+    var entries: Array<String>? get() = noImpl; set(value){}
+    var noParse: Array<String>? get() = noImpl; set(value){}
 }
 @module("browserify")
 fun browserify(): BrowserifyObject = noImpl

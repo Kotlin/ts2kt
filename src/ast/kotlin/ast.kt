@@ -17,7 +17,6 @@
 package ts2kt.kotlin.ast
 
 import ts2kt.DYNAMIC
-import ts2kt.ImplementationType
 import ts2kt.UNIT
 import ts2kt.escapeIfNeed
 import ts2kt.utils.assert
@@ -31,8 +30,10 @@ val FAKE_ANNOTATION = Annotation(FAKE)
 val DEFAULT_FAKE_ANNOTATION = listOf(FAKE_ANNOTATION)
 
 val NO_IMPL = "noImpl"
-internal val EQ_NO_IMPL = " = $NO_IMPL"
-internal val PROPERTY_GETTER = " get()"
+private val EQ_NO_IMPL = " = $NO_IMPL"
+private val PROPERTY_GETTER = " get()"
+private val NO_IMPL_PROPERTY_GETTER = PROPERTY_GETTER + EQ_NO_IMPL
+private val NO_IMPL_PROPERTY_SETTER = " set(value){}"
 private val OPEN = "open"
 private val OVERRIDE = "override"
 private val VAR = "var"
@@ -86,7 +87,7 @@ abstract class Node(val needsFixIndent: Boolean = false) {
         var indent = getIndent(indentIdx)
 
         return s.lineSequence().map {
-            if (it.endsWith("}")) {
+            if (it.replace("{}", "").endsWith("}")) {
                 indent = getIndent(--indentIdx)
             }
 
@@ -237,7 +238,8 @@ class Variable(
         override var annotations: List<Annotation>,
         val typeParams: List<TypeParam>?,
         val isVar: Boolean,
-        val implementation: ImplementationType = ImplementationType.NO_IMPL,
+        val needsNoImpl: Boolean = true,
+        val isInInterface: Boolean,
         val isOverride: Boolean = false,
         val hasOpenModifier: Boolean
 ) : Member, Node() {
@@ -256,8 +258,20 @@ class Variable(
             (typeParams?.join(", ", startWithIfNotEmpty = "<", endWithIfNotEmpty = "> ") ?: "") +
             (if (extendsType == null) "" else extendsType.toString() + "." ) +
             _name.escapeIfNeed() +
-            type.stringify(printUnitType = implementation == ImplementationType.UNSPECIFIED) +
-            implementation.stringify()
+            type.stringify(printUnitType = !needsNoImpl) +
+            stringifyImplementation()
+
+    private fun stringifyImplementation(): String {
+        return if (needsNoImpl) {
+            if (isInInterface) {
+                NO_IMPL_PROPERTY_GETTER + if (isVar) ";" + NO_IMPL_PROPERTY_SETTER else ""
+            } else {
+                EQ_NO_IMPL
+            }
+        } else {
+            ""
+        }
+    }
 }
 
 class EnumEntry(override var name: String, val value: String? = null) : Member, Node() {
