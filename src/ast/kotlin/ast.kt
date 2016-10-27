@@ -116,7 +116,7 @@ class KotlinFile(val packageFqName: Package?, val members: List<Member>) : Node(
 }
 
 class Package(val name: String) : Node() {
-    override fun stringify(): String = "package $name"
+    override fun stringify(): String = "package ${name.escapeIfNeed()}"
 }
 
 interface Named {

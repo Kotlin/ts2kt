@@ -1,4 +1,4 @@
-package class
+package `class`
 
 @module("Boo")
 open class Klass {
