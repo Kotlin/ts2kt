@@ -1,4 +1,4 @@
-package var
+package `var`
 
 @native
 interface `T$0` {
