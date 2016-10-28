@@ -170,7 +170,7 @@ fun translate(srcPath: String): String {
     fun TS.TypeChecker.isOverride(candidate: TS.Signature, other: TS.Signature): Boolean {
         if (candidate.parameters.size != other.parameters.size) return false
 
-        if (!candidate.getReturnType().isSubtypeOf(other.getReturnType())) return false
+        // no need to check the return type.  If they are incompatible, It will be a Kotlin compilation error.
 
         for (i in candidate.parameters.indices) {
             val candidateType = getTypeOfSymbol(candidate.parameters[i])
@@ -210,12 +210,8 @@ fun translate(srcPath: String): String {
 
     fun isOverrideProperty(node: TS.PropertyDeclaration): Boolean {
         return isOverrideHelper(node) { typechecker, type, nodeName ->
-            val property = typechecker.getPropertyOfType(type, nodeName) ?: return@isOverrideHelper false
-
-            val candidateType = typechecker.getTypeAtLocation(node)
-            val otherType = typechecker.getTypeOfSymbol(property)
-
-            candidateType != null && candidateType.isSubtypeOf(otherType)
+            // no need to check the property type.  If they are incompatible, It will be a Kotlin compilation error.
+            return@isOverrideHelper typechecker.getPropertyOfType(type, nodeName) != null
         }
     }
 
