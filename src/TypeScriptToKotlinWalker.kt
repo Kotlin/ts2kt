@@ -54,12 +54,12 @@ abstract class TypeScriptToKotlinBase : Visitor {
 
     open fun addVariable(name: String, type: String, extendsType: String? = null, typeParams: List<TypeParam>? = null, isVar: Boolean = true, isNullable: Boolean = false, isLambda: Boolean = false, needsNoImpl: Boolean = true, additionalAnnotations: List<Annotation> = listOf(), isOverride: Boolean = false) {
         val annotations = defaultAnnotations + additionalAnnotations
-        declarations.add(Variable(name, TypeAnnotation(type, isNullable = isNullable, isLambda = isLambda), extendsType?.let { Type(it) }, annotations, typeParams, isVar = isVar, needsNoImpl = needsNoImpl, isInInterface = isInterface, isOverride = isOverride, hasOpenModifier = hasMembersOpenModifier))
+        declarations.add(Variable(name, TypeAnnotation(type, isNullable = isNullable, isLambda = isLambda), extendsType?.let { HeritageType(it) }, annotations, typeParams, isVar = isVar, needsNoImpl = needsNoImpl, isInInterface = isInterface, isOverride = isOverride, hasOpenModifier = hasMembersOpenModifier))
     }
 
     open fun addFunction(name: String, callSignature: CallSignature, extendsType: String? = null, needsNoImpl: Boolean = true, additionalAnnotations: List<Annotation> = listOf(), isOverride: Boolean = false) {
         val annotations = defaultAnnotations + additionalAnnotations
-        declarations.add(Function(name, callSignature, extendsType?.let { Type(it) }, annotations, needsNoImpl = needsNoImpl, isOverride = isOverride, hasOpenModifier = hasMembersOpenModifier))
+        declarations.add(Function(name, callSignature, extendsType?.let { HeritageType(it) }, annotations, needsNoImpl = needsNoImpl, isOverride = isOverride, hasOpenModifier = hasMembersOpenModifier))
     }
 
     // TODO
@@ -387,7 +387,7 @@ class TypeScriptToKotlinWalker(
             val newTrait = Classifier(ClassKind.INTERFACE, a.name, a.paramsOfConstructors, a.typeParams, a.parents, a.members, a.annotations, hasOpenModifier = false)
 
             val varTypeName = b.type.name
-            val delegation = listOf(Type("${varTypeName} by $NO_IMPL: ${varTypeName}"))
+            val delegation = listOf(HeritageType("${varTypeName} by $NO_IMPL: ${varTypeName}"))
 
             // TODO drop hacks
             val classObject = Classifier(ClassKind.COMPANION_OBJECT, "", listOf(), listOf(), delegation, listOf(), listOf(), hasOpenModifier = false)
@@ -464,14 +464,14 @@ abstract class TsClassifierToKt(
 ) : TypeScriptToKotlinBase() {
     abstract val needsNoImpl: Boolean
 
-    var parents = arrayListOf<Type>()
+    var parents = arrayListOf<HeritageType>()
 
     override fun visitHeritageClause(node: TS.HeritageClause) {
         val containingInInterface = this is TsInterfaceToKt
         val isExtends = node.token === TS.SyntaxKind.ExtendsKeyword
         val needParens = !containingInInterface && isExtends
 
-        val types = node.types?.arr?.map { id -> Type(id.toKotlinTypeName(typeMapper), needParens) } ?: listOf()
+        val types = node.types?.arr?.map { id -> HeritageType(id.toKotlinTypeName(typeMapper), needParens) } ?: listOf()
         parents.addAll(types)
     }
 
