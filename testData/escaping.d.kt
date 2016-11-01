@@ -13,6 +13,7 @@ fun `fun`(): Unit = noImpl
 interface `This` {
     var `when`: String
     var `typealias`: Number
+    var `typeof`: Number
     fun `in`(`object`: Foo)
     companion object {
         var `$foo`: Boolean = noImpl
