@@ -1,6 +1,8 @@
 # Description
 Converter of TypeScript definition files to Kotlin declarations (stubs)
 
+This requires Kotlin 1.1+ to run.  It generates Kotlin files that are compatible with Kotlin 1.0.4.
+
 # How to setup project
 1. clone this project
   ```shell
