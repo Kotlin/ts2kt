@@ -16,14 +16,12 @@
 
 package ts2kt
 
-import ts2kt.kotlin.ast.Annotation
-import ts2kt.kotlin.ast.Member
+import ts2kt.kotlin.ast.*
 import ts2kt.utils.replaceAll
 import typescript.TS
-import java.util.*
 
 interface ObjectTypeToKotlinTypeMapper {
-    fun getKotlinTypeNameForObjectType(objectType: TS.TypeLiteralNode): String
+    fun getKotlinTypeForObjectType(objectType: TS.TypeLiteralNode): Type
     fun getKotlinTypeForTypeAlias(typeAlias: String): TS.TypeNode?
 }
 
@@ -41,33 +39,34 @@ class ObjectTypeToKotlinTypeMapperImpl(
         }
     }
 
-    val cache = HashMap<String, String>()
+    val cache = HashMap<String, Type>()
 
     init {
         // TODO better declaration for known classes
-        cache[""] = "Any"
+        cache[""] = Type("Any")
 
         val jsonTypeKey = "@nativeGetter\nfun get(String): Any?, @nativeSetter\nfun set(String, Any)"
-        cache[jsonTypeKey] = "Json"
+        cache[jsonTypeKey] = Type("Json")
     }
 
-    override fun getKotlinTypeNameForObjectType(objectType: TS.TypeLiteralNode): String {
+    override fun getKotlinTypeForObjectType(objectType: TS.TypeLiteralNode): Type {
         val translator = TsInterfaceToKt(annotations = defaultAnnotations, typeMapper = this, isOverride = NOT_OVERRIDE, isOverrideProperty = NOT_OVERRIDE)
 
         forEachChild(translator, objectType)
 
         val typeKey = translator.declarations.toStringKey()
 
-        val cachedTraitName = cache[typeKey]
-        if (cachedTraitName != null) return cachedTraitName
+        val cachedTraitType = cache[typeKey]
+        if (cachedTraitType != null) return cachedTraitType
 
         val traitName = "T$${n++}"
+        val traitType = Type(traitName)
         translator.name = traitName
 
         declarations.add(translator.result)
 
-        cache[typeKey] = traitName
-        return traitName
+        cache[typeKey] = traitType
+        return traitType
     }
 
     override fun getKotlinTypeForTypeAlias(typeAlias: String): TS.TypeNode? {

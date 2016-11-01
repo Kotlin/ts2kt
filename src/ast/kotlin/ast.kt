@@ -280,31 +280,46 @@ class EnumEntry(override var name: String, val value: String? = null) : Member, 
 }
 
 class HeritageType(override var name: String, val needParens: Boolean = false) : Named, Node() {
-    override fun stringify(): String = "$escapedName" + if (needParens) "()" else ""
+    override fun stringify(): String = escapedName + if (needParens) "()" else ""
 }
 
-class TypeParam(override var name: String, val upperBound: String? = null) : Named, Node() {
-    override fun stringify(): String = "$escapedName" + if(upperBound == null) "" else " : $upperBound"
+/**
+ * A reference to a type such as String or Map<String,List<T>> such as for a variable, function param or return type.
+ * @param name the name of the type such as String or Map
+ * @param typeParams the type params such as [String, List<T>], defaulting to empty
+ * @param comment a comment about the type, currently used to document intersection types, defaulting to null.
+ */
+data class Type(override var name: String, val typeParams: List<Type> = emptyList(), val comment: String? = null,
+           val isNullable: Boolean = false, val isLambda: Boolean = false) : Named, Node() {
+
+
+    override fun stringify(): String {
+        return (if (isLambda && isNullable) "(" else "") +
+                escapedName +
+                typeParams.map { it.stringify() }.join(", ", startWithIfNotEmpty = "<", endWithIfNotEmpty = ">") +
+                (if (isLambda && isNullable) ")" else "") +
+                (if (isNullable && !name.startsWith(DYNAMIC)) "?" else "") +
+                (comment?.let { " /* $it */" } ?: "")
+    }
+
+    fun isUnit() = escapedName == UNIT && !isNullable && !isLambda
+}
+
+class TypeParam(override var name: String, val upperBound: Type? = null) : Named, Node() {
+    override fun stringify(): String = escapedName + if(upperBound == null) "" else " : ${upperBound.stringify()}"
 }
 
 class TypeAnnotation(
-        override var name: String,
-        // TODO move to isNullable and isLambda to `Type` class
-        val isNullable: Boolean = false,
-        val isLambda: Boolean = false,
+        var type: Type,
         val isVararg: Boolean = false
-) : Named, Node() {
+) : Node() {
     override fun stringify(): String = stringify(printUnitType = true)
 
     fun stringify(printUnitType: Boolean): String {
         if (!printUnitType && isUnit()) return ""
 
-        return  ": " +
-                (if (isLambda && isNullable) "(" else "") +
-                escapedName +
-                (if (isLambda && isNullable) ")" else "") +
-                (if (isNullable && !escapedName.startsWith(DYNAMIC)) "?" else "")
+        return  ": " + type.stringify()
     }
 
-    fun isUnit() = escapedName == UNIT && !isNullable && !isLambda && !isVararg
+    fun isUnit() = type.isUnit() && !isVararg
 }
