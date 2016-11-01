@@ -154,7 +154,7 @@ class Classifier(
         override var name: String,
         val paramsOfConstructors: List<List<FunParam>>,
         val typeParams: List<TypeParam>?,
-        val parents: List<Type>,
+        val parents: List<HeritageType>,
         val members: List<Member>,
         override var annotations: List<Annotation>,
         val hasOpenModifier: Boolean
@@ -213,7 +213,7 @@ class CallSignature(
 class Function(
         override var name: String,
         val callSignature: CallSignature,
-        val extendsType: Type? = null,
+        val extendsType: HeritageType? = null,
         override var annotations: List<Annotation>,
         val needsNoImpl: Boolean = true,
         val isOverride: Boolean = false,
@@ -234,7 +234,7 @@ class Function(
 class Variable(
         name: String,
         var type: TypeAnnotation,
-        val extendsType: Type? = null,
+        val extendsType: HeritageType? = null,
         override var annotations: List<Annotation>,
         val typeParams: List<TypeParam>?,
         val isVar: Boolean,
@@ -279,7 +279,7 @@ class EnumEntry(override var name: String, val value: String? = null) : Member, 
     override fun stringify(): String = escapedName + if (value == null) "" else " /* = $value */"
 }
 
-class Type(override var name: String, val needParens: Boolean = false) : Named, Node() {
+class HeritageType(override var name: String, val needParens: Boolean = false) : Named, Node() {
     override fun stringify(): String = "$escapedName" + if (needParens) "()" else ""
 }
 
