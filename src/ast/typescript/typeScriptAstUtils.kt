@@ -142,14 +142,15 @@ fun TS.NodeArray<TS.TypeParameterDeclaration>.toKotlinTypeParams(typeMapper: Obj
         }
 
 fun TS.SignatureDeclaration.toKotlinCallSignatureOverloads(typeMapper: ObjectTypeToKotlinTypeMapper): List<CallSignature> {
-    return parameters.toKotlinParamsOverloads(typeMapper).map { params ->
-        toKotlinCallSignature(typeMapper, params)
-    }
+    val newTypeMapper = typeMapper.withTypeParameters(typeParameters)
+    val paramsOverloads = parameters.toKotlinParamsOverloads(newTypeMapper)
+    return paramsOverloads.map { toKotlinCallSignature(newTypeMapper, it) }
 }
 
 fun TS.SignatureDeclaration.toKotlinCallSignature(typeMapper: ObjectTypeToKotlinTypeMapper): CallSignature {
-    val params = parameters.toKotlinParams(typeMapper)
-    return toKotlinCallSignature(typeMapper, params)
+    val newTypeMapper = typeMapper.withTypeParameters(typeParameters)
+    val params = parameters.toKotlinParams(newTypeMapper)
+    return toKotlinCallSignature(newTypeMapper, params)
 }
 
 fun TS.SignatureDeclaration.toKotlinCallSignature(typeMapper: ObjectTypeToKotlinTypeMapper, params: List<FunParam>): CallSignature {

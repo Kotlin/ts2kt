@@ -85,6 +85,8 @@ class TypeScriptToKotlinWalker(
         if (packageFqName != null) ObjectTypeToKotlinTypeMapperImpl.reset()
     }
 
+    private val typeParameterDeclarations = mutableListOf<TS.TypeParameterDeclaration>()
+
     override val result: KotlinFile
         get()  {
             assert(exportedByAssignment.isEmpty(), "exportedByAssignment should be empty, but it contains: ${exportedByAssignment.keys.toString()}")
@@ -95,7 +97,7 @@ class TypeScriptToKotlinWalker(
 
     val exportedByAssignment = hashMapOf<String, Annotation>()
 
-    val typeMapper = typeMapper ?: ObjectTypeToKotlinTypeMapperImpl(defaultAnnotations, declarations, typesByTypeAlias)
+    val typeMapper = typeMapper ?: ObjectTypeToKotlinTypeMapperImpl(defaultAnnotations, declarations, typesByTypeAlias, typeParameterDeclarations)
 
     fun addModule(qualifier: List<String>, name: String, members: List<Member>, additionalAnnotations: List<Annotation> = listOf()) {
         val annotations = DEFAULT_MODULE_ANNOTATION + additionalAnnotations
