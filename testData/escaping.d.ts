@@ -6,6 +6,7 @@ declare function fun();
 interface This {
     when: string;
     typealias: number;
+    typeof: number;
     in(object: Foo);
 }
 declare class is<trait> {
