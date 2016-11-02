@@ -183,18 +183,19 @@ private fun TS.FunctionOrConstructorTypeNode.toKotlinTypeOverloads(typeMapper: O
 private fun TS.TypeLiteralNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): Type =
         typeMapper.getKotlinTypeForObjectType(this)
 
-private fun TS.TypeNode.toKotlinTypeOverloadsIfStandardType(typeMapper: ObjectTypeToKotlinTypeMapper): List<Type> {
+fun TS.TypeNode.toKotlinTypeOverloads(typeMapper: ObjectTypeToKotlinTypeMapper): List<Type> {
     return when (this.kind) {
         TS.SyntaxKind.ConstructorType,
         TS.SyntaxKind.FunctionType -> (this.cast<TS.FunctionOrConstructorTypeNode>()).toKotlinTypeOverloads(typeMapper)
 
-        TS.SyntaxKind.TypeReference -> (this.cast<TS.TypeReferenceNode>()).toKotlinTypeNameOverloads(typeMapper)
+        TS.SyntaxKind.TypeReference -> (this.cast<TS.TypeReferenceNode>()).toKotlinTypeOverloads(typeMapper)
         TS.SyntaxKind.UnionType -> (this.cast<TS.UnionTypeNode>()).toKotlinTypeOverloads(typeMapper)
-        else -> listOf(toKotlinTypeIfStandardType(typeMapper))
+        else -> listOf(toKotlinType(typeMapper))
     }
 }
 
-private fun TS.TypeNode.toKotlinTypeIfStandardType(typeMapper: ObjectTypeToKotlinTypeMapper): Type {
+// TODO
+fun TS.TypeNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): Type {
     return when (this.kind) {
         TS.SyntaxKind.AnyKeyword -> Type(ANY)
         TS.SyntaxKind.NumberKeyword -> Type(NUMBER)
@@ -228,16 +229,6 @@ private fun TS.TypeNode.toKotlinTypeIfStandardType(typeMapper: ObjectTypeToKotli
     }
 }
 
-// TODO
-fun TS.TypeNode.toKotlinTypeOverloads(typeMapper: ObjectTypeToKotlinTypeMapper): List<Type> {
-    return this.toKotlinTypeOverloadsIfStandardType(typeMapper)
-}
-
-// TODO
-fun TS.TypeNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): Type {
-    return this.toKotlinTypeIfStandardType(typeMapper)
-}
-
 fun TS.EntityName.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper): String {
     return when (kind) {
         TS.SyntaxKind.Identifier ->
@@ -253,7 +244,7 @@ fun TS.TypeReferenceNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper):
     return toKotlinTypeIgnoringTypeAliases(typeMapper)
 }
 
-fun TS.TypeReferenceNode.toKotlinTypeNameOverloads(typeMapper: ObjectTypeToKotlinTypeMapper): List<Type> {
+fun TS.TypeReferenceNode.toKotlinTypeOverloads(typeMapper: ObjectTypeToKotlinTypeMapper): List<Type> {
     val typeUsingAlias = typeMapper.getKotlinTypeForTypeAlias(typeName.text)?.toKotlinTypeOverloads(typeMapper)
     if (typeUsingAlias != null) return typeUsingAlias
     return listOf(toKotlinTypeIgnoringTypeAliases(typeMapper))
