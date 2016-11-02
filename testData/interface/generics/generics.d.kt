@@ -3,7 +3,7 @@ package generics
 @native
 interface ComponentSpec<P, S>
 @native
-interface Foo<T> {
+interface FooBaz<T> {
     var varT: T
     fun withoutArgumentsReturnsT(): T
     fun withOneT(a: T): T

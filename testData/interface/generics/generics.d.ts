@@ -1,6 +1,6 @@
 interface ComponentSpec<P,S> {}
 
-interface Foo<T> {
+interface FooBaz<T> {
     varT: T;
     withoutArgumentsReturnsT(): T;
     withOneT(a: T): T;
