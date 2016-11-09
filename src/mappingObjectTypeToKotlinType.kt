@@ -22,14 +22,14 @@ import typescript.TS
 
 interface ObjectTypeToKotlinTypeMapper {
     fun getKotlinTypeForObjectType(objectType: TS.TypeLiteralNode): Type
-    fun getKotlinTypeForTypeAlias(typeAlias: String): TS.TypeNode?
+    fun resolveUsingAliases(referencedType: Type): TypeUnion
     fun withTypeParameters(typeParameters: TS.NodeArray<TS.TypeParameterDeclaration>?): ObjectTypeToKotlinTypeMapper
 }
 
 data class ObjectTypeToKotlinTypeMapperImpl(
         val defaultAnnotations: List<Annotation>,
         val declarations: MutableList<Member>,
-        val typeNodeByAlias: MutableMap<String,TS.TypeNode>,
+        val typeAliases: List<TypeAlias>,
         val typeParameterDeclarations: List<TS.TypeParameterDeclaration> = listOf()
 ) : ObjectTypeToKotlinTypeMapper {
 
@@ -85,8 +85,41 @@ data class ObjectTypeToKotlinTypeMapperImpl(
         return traitType
     }
 
-    override fun getKotlinTypeForTypeAlias(typeAlias: String): TS.TypeNode? {
-        return typeNodeByAlias.get(typeAlias)
+    override fun resolveUsingAliases(referencedType: Type): TypeUnion {
+        val matchingTypeAlias = typeAliases.find { it.name == referencedType.name }
+        if (matchingTypeAlias != null) {
+            val resolvedTypeUnion = replaceTypeParamsWithTypeArgs(referencedType, matchingTypeAlias, typeAliases)
+            return resolvedTypeUnion.flatMap { if (referencedType.name != it.name) resolveUsingAliases(it) else TypeUnion(it) }
+        } else if (referencedType.typeArgs.isNotEmpty()) {
+            return TypeUnion(referencedType.copy(typeArgs = referencedType.typeArgs.map { resolveUsingAliases(it).singleType }))
+        } else {
+            return TypeUnion(referencedType)
+        }
+    }
+
+    private fun replaceTypeParamsWithTypeArgs(fromType: Type, matchingTypeAlias: TypeAlias, replacements: List<TypeAlias>): TypeUnion {
+        val toTypeWithUnresolvedArgs = matchingTypeAlias.actualTypeUnionUsingAliasParams
+        val boundTypeAliases: List<TypeAlias> = getReplacementsForTypeParams(fromType, matchingTypeAlias)
+        return toTypeWithUnresolvedArgs.map { resolveTypeArgs(it, replacements + boundTypeAliases) }
+    }
+
+    private fun TypeUnion.flatMap(function: (Type) -> TypeUnion): TypeUnion = TypeUnion(possibleTypes.flatMap { function(it).possibleTypes })
+
+    private fun TypeUnion.map(function: (Type) -> Type): TypeUnion = TypeUnion(possibleTypes.map(function))
+
+    private fun resolveTypeArgs(type: Type, replacements: List<TypeAlias>): Type {
+        if (type.typeArgs.isNotEmpty()) {
+            val aliasMapper = copy(typeAliases = replacements)
+            return type.copy(typeArgs = type.typeArgs.map { aliasMapper.resolveUsingAliases(it).singleType })
+        } else {
+            return type
+        }
+    }
+
+    private fun getReplacementsForTypeParams(fromType: Type, matchingTypeAlias: TypeAlias): List<TypeAlias> {
+        return matchingTypeAlias.typeParams?.zip(fromType.typeArgs)?.map {
+            TypeAlias(it.first.name, actualTypeUsingAliasParams = it.second)
+        } ?: emptyList()
     }
 
     override fun withTypeParameters(typeParameters: TS.NodeArray<TS.TypeParameterDeclaration>?): ObjectTypeToKotlinTypeMapper {

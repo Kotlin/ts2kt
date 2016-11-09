@@ -50,7 +50,6 @@ abstract class TypeScriptToKotlinBase : Visitor {
     open val defaultAnnotations: List<Annotation> = listOf()
 
     val declarations = arrayListOf<Member>()
-    val typesByTypeAlias = mutableMapOf<String,TS.TypeNode>()
 
     open fun addVariable(name: String, type: Type, extendsType: String? = null, typeParams: List<TypeParam>? = null, isVar: Boolean = true, needsNoImpl: Boolean = true, additionalAnnotations: List<Annotation> = listOf(), isOverride: Boolean = false) {
         val annotations = defaultAnnotations + additionalAnnotations
@@ -95,7 +94,9 @@ class TypeScriptToKotlinWalker(
 
     val exportedByAssignment = hashMapOf<String, Annotation>()
 
-    val typeMapper = typeMapper ?: ObjectTypeToKotlinTypeMapperImpl(defaultAnnotations, declarations, typesByTypeAlias)
+    private val typeAliases = mutableListOf<TypeAlias>()
+
+    val typeMapper = typeMapper ?: ObjectTypeToKotlinTypeMapperImpl(defaultAnnotations, declarations, typeAliases)
 
     fun addModule(qualifier: List<String>, name: String, members: List<Member>, additionalAnnotations: List<Annotation> = listOf()) {
         val annotations = DEFAULT_MODULE_ANNOTATION + additionalAnnotations
@@ -119,7 +120,9 @@ class TypeScriptToKotlinWalker(
     }
 
     override fun visitTypeAliasDeclaration(node: TS.TypeAliasDeclaration) {
-        typesByTypeAlias.put(node.identifierName.text, node.type)
+        val newTypeMapper = typeMapper.withTypeParameters(node.typeParameters)
+        val typeParams = node.typeParameters?.toKotlinTypeParams(newTypeMapper)
+        typeAliases.add(TypeAlias(node.identifierName.text, typeParams, node.type.toKotlinTypeUnion(newTypeMapper)))
     }
 
     override fun visitVariableStatement(node: TS.VariableStatement) {
@@ -483,12 +486,12 @@ abstract class TsClassifierToKt(
     private fun translateAccessor(node: TS.IndexSignatureDeclaration, isGetter: Boolean) {
         // TODO type params?
         node.parameters.toKotlinParamsOverloads(typeMapper).forEach { params ->
-            val propTypeOverloads = if (isGetter) {
-                listOf(node.type?.toKotlinType(typeMapper) ?: Type(ANY))
+            val propTypeUnion = if (isGetter) {
+                TypeUnion(node.type?.toKotlinType(typeMapper) ?: Type(ANY))
             } else {
-                node.type?.toKotlinTypeOverloads(typeMapper) ?: listOf(Type(ANY))
+                node.type?.toKotlinTypeUnion(typeMapper) ?: TypeUnion(Type(ANY))
             }
-            propTypeOverloads.forEach { propType ->
+            propTypeUnion.possibleTypes.forEach { propType ->
                 val callSignature: CallSignature
                 val accessorName: String
                 val annotation: Annotation
