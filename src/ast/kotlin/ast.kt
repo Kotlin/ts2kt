@@ -283,22 +283,33 @@ class HeritageType(override var name: String, val needParens: Boolean = false) :
     override fun stringify(): String = escapedName + if (needParens) "()" else ""
 }
 
+fun TypeUnion(vararg possibleTypes: Type): TypeUnion = TypeUnion(possibleTypes.toList())
+
+data class TypeUnion(val possibleTypes: List<Type>) : Node() {
+    val singleType: Type = if (possibleTypes.size == 1) possibleTypes.single() else {
+        // TODO should it be `Any`?
+        Type(DYNAMIC, comment = toString(), isNullable = possibleTypes.first().isNullable)
+    }
+
+    override fun stringify() = possibleTypes.joinToString(" | ")
+}
+
 /**
  * A reference to a type such as String or Map<String,List<T>> such as for a variable, function param or return type.
  * @param name the name of the type such as String or Map
- * @param typeParams the type params such as [String, List<T>], defaulting to empty
+ * @param typeArgs the type params such as [String, List<T>], defaulting to empty
  * @param comment a comment about the type, currently used to document intersection types, defaulting to null.
  */
-data class Type(override var name: String, val typeParams: List<Type> = emptyList(), val comment: String? = null,
-           val isNullable: Boolean = false, val isLambda: Boolean = false) : Named, Node() {
+data class Type(override var name: String, val typeArgs: List<Type> = emptyList(), val comment: String? = null,
+                val isNullable: Boolean = false, val isLambda: Boolean = false) : Named, Node() {
 
 
     override fun stringify(): String {
         return (if (isLambda && isNullable) "(" else "") +
                 escapedName +
-                typeParams.map { it.stringify() }.join(", ", startWithIfNotEmpty = "<", endWithIfNotEmpty = ">") +
+                typeArgs.map { it.stringify() }.join(", ", startWithIfNotEmpty = "<", endWithIfNotEmpty = ">") +
                 (if (isLambda && isNullable) ")" else "") +
-                (if (isNullable && !name.startsWith(DYNAMIC)) "?" else "") +
+                (if (isNullable && name != DYNAMIC) "?" else "") +
                 (comment?.let { " /* $it */" } ?: "")
     }
 
@@ -309,10 +320,14 @@ class TypeParam(override var name: String, val upperBound: Type? = null) : Named
     override fun stringify(): String = escapedName + if(upperBound == null) "" else " : ${upperBound.stringify()}"
 }
 
-class TypeAnnotation(
-        var type: Type,
-        val isVararg: Boolean = false
-) : Node() {
+/** A Kotlin representation as in: typealias name<typeParams> = actualTypeUnionUsingAliasParams */
+data class TypeAlias(val name: String, val typeParams: List<TypeParam>? = null, val actualTypeUnionUsingAliasParams: TypeUnion)
+
+fun TypeAlias(name: String, typeParams: List<TypeParam>? = null, actualTypeUsingAliasParams: Type): TypeAlias {
+    return TypeAlias(name, typeParams, TypeUnion(actualTypeUsingAliasParams))
+}
+
+class TypeAnnotation(var type: Type, val isVararg: Boolean = false) : Node() {
     override fun stringify(): String = stringify(printUnitType = true)
 
     fun stringify(printUnitType: Boolean): String {
