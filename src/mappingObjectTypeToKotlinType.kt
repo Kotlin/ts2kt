@@ -23,12 +23,14 @@ import typescript.TS
 interface ObjectTypeToKotlinTypeMapper {
     fun getKotlinTypeForObjectType(objectType: TS.TypeLiteralNode): Type
     fun getKotlinTypeForTypeAlias(typeAlias: String): TS.TypeNode?
+    fun withTypeParameters(typeParameters: TS.NodeArray<TS.TypeParameterDeclaration>?): ObjectTypeToKotlinTypeMapper
 }
 
-class ObjectTypeToKotlinTypeMapperImpl(
+data class ObjectTypeToKotlinTypeMapperImpl(
         val defaultAnnotations: List<Annotation>,
         val declarations: MutableList<Member>,
-        val typeNodeByAlias: MutableMap<String,TS.TypeNode>
+        val typeNodeByAlias: MutableMap<String,TS.TypeNode>,
+        val typeParameterDeclarations: List<TS.TypeParameterDeclaration>
 ) : ObjectTypeToKotlinTypeMapper {
 
     companion object {
@@ -59,9 +61,23 @@ class ObjectTypeToKotlinTypeMapperImpl(
         val cachedTraitType = cache[typeKey]
         if (cachedTraitType != null) return cachedTraitType
 
+        val usedTypeParams = translator.declarations.flatMap {
+            when (it) {
+                is Variable ->
+                    listOf(it.type.type.name)
+                is Function ->
+                    it.callSignature.params.map { it.type.type.name } + it.callSignature.returnType.type.name
+                else ->
+                    emptyList()
+            }
+        }.distinct()
+        val typeParams = typeParameterDeclarations.filter { usedTypeParams.contains(it.identifierName.text) }
+                .map { TypeParam(it.identifierName.text) }
+
         val traitName = "T$${n++}"
-        val traitType = Type(traitName)
+        val traitType = Type(traitName, typeParams.map { Type(it.name) })
         translator.name = traitName
+        translator.typeParams = typeParams
 
         declarations.add(translator.result)
 
@@ -71,6 +87,10 @@ class ObjectTypeToKotlinTypeMapperImpl(
 
     override fun getKotlinTypeForTypeAlias(typeAlias: String): TS.TypeNode? {
         return typeNodeByAlias.get(typeAlias)
+    }
+
+    override fun withTypeParameters(typeParameters: TS.NodeArray<TS.TypeParameterDeclaration>?): ObjectTypeToKotlinTypeMapper {
+        return copy(typeParameterDeclarations = typeParameterDeclarations.toList() + (typeParameters?.arr ?: emptyArray()))
     }
 
     fun <T> List<T>.toStringKey(): String =
