@@ -45,7 +45,7 @@
         <mkdir dir="${dest}"/>
 
         <get src="${url.node.tar.gz}" dest="${node.tar.gz}" usetimestamp="true"/>
-        <exec executable="tar" unless:set="isWindows">
+        <exec executable="tar" unless:set="isWindows" failonerror="true">
             <arg value="-zxf"/>
             <arg path="${node.tar.gz}"/>
             <arg value="-C"/>
@@ -63,14 +63,14 @@
     </target>
 
     <target name="update.node.modules">
-        <exec executable="${node.executable}">
+        <exec executable="${node.executable}" failonerror="true">
             <arg file="${node.dir}/lib/node_modules/npm/bin/npm-cli.js"/>
             <arg value="install"/>
         </exec>
     </target>
 
     <target name="tc.update.node.modules" depends="update.node.modules">
-        <exec executable="${node.executable}">
+        <exec executable="${node.executable}" failonerror="true">
             <arg file="${node.dir}/lib/node_modules/npm/bin/npm-cli.js"/>
             <arg value="install"/>
             <arg value="nodeunit-teamcity-reporter"/>
@@ -78,14 +78,14 @@
     </target>
 
     <target name="run.test.for.testData">
-        <exec executable="${node.executable}">
+        <exec executable="${node.executable}" failonerror="true">
             <arg file="node_modules/nodeunit/bin/nodeunit"/>
             <arg file="test/tests/testData.js"/>
         </exec>
     </target>
 
     <target name="tc.run.test.for.testData">
-        <exec executable="${node.executable}">
+        <exec executable="${node.executable}" failonerror="true">
             <arg file="node_modules/nodeunit/bin/nodeunit"/>
             <arg value="--reporter"/>
             <arg value="nodeunit-teamcity-reporter"/>
