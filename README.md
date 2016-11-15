@@ -1,3 +1,5 @@
+[![TeamCity (simple build status)](https://img.shields.io/teamcity/http/teamcity.jetbrains.com/s/Kotlin_ts2kt.svg)](https://teamcity.jetbrains.com/viewType.html?buildTypeId=Kotlin_ts2kt&branch_Kotlin=%3Cdefault%3E&tab=buildTypeStatusDiv)
+
 # Description
 Converter of TypeScript definition files to Kotlin declarations (stubs)
 
