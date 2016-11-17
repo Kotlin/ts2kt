@@ -26,6 +26,10 @@ import ts2kt.utils.join
 import ts2kt.utils.merge
 import typescript.TS
 
+// workaround for new compiler
+private val MODULE = "module"
+private val NATIVE = "native"
+
 private val NATIVE_ANNOTATION = Annotation(NATIVE)
 private val NATIVE_GETTER_ANNOTATION = Annotation("nativeGetter")
 private val NATIVE_SETTER_ANNOTATION = Annotation("nativeSetter")
