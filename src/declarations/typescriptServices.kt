@@ -189,7 +189,7 @@ object TS {
         IntersectionType /* = 160 */,
         ParenthesizedType /* = 161 */,
         ThisType /* = 162 */,
-        StringLiteralType /* = 163 */,
+        LiteralType /* = 163 */,
         ObjectBindingPattern /* = 164 */,
         ArrayBindingPattern /* = 165 */,
         BindingElement /* = 166 */,

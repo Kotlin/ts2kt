@@ -165,7 +165,7 @@ fun translate(srcPath: String): String {
 
     fun TS.TypeChecker.getTypeOfSymbol(symbol: TS.Symbol) : TS.Type =
             // TODO find better solution
-            getTypeOfSymbolAtLocation(symbol, symbol.valueDeclaration.asDynamic().type)
+            getTypeOfSymbolAtLocation(symbol, symbol.valueDeclaration.cast()/*.asDynamic().type*/)
 
     fun TS.TypeChecker.isOverride(candidate: TS.Signature, other: TS.Signature): Boolean {
         if (candidate.parameters.size != other.parameters.size) return false

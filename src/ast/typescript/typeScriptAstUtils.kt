@@ -225,7 +225,8 @@ fun TS.TypeNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): Type {
         TS.SyntaxKind.ParenthesizedType -> (this.cast<TS.ParenthesizedTypeNode>()).type.toKotlinType(typeMapper)
 
         // TODO how to support?
-        TS.SyntaxKind.StringLiteralType -> Type(ANY, comment = "\"" + (this.cast<TS.StringLiteralType>()).text + "\"")
+        // TODO fix after regenerate declarations
+        TS.SyntaxKind.LiteralType -> Type(ANY, comment = "\"" + this.asDynamic().literal.text + "\"")
 
         TS.SyntaxKind.ThisType -> (this.cast<TS.ThisTypeNode>()).toKotlinType(typeMapper)
 

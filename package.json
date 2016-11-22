@@ -21,12 +21,12 @@
     "url": "https://github.com/bashor/ts2kt.git"
   },
   "engines": {
-    "node": ">=0.8.0"
+    "node": ">=4.0.0"
   },
   "dependencies": {
-    "typescript": "^1.8"
+    "typescript": "2.0.10"
   },
   "devDependencies": {
-    "nodeunit": "^0.9.1"
+    "nodeunit": "0.9.1"
   }
 }
