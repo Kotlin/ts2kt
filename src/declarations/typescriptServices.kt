@@ -1183,7 +1183,7 @@ object TS {
         fun getTypeOfSymbolAtLocation(symbol: Symbol, node: Node): Type
         fun getDeclaredTypeOfSymbol(symbol: Symbol): Type
         fun getPropertiesOfType(type: Type): Array<Symbol>
-        fun getPropertyOfType(type: Type, propertyName: String): Symbol
+        fun getPropertyOfType(type: Type, propertyName: String): Symbol?
         fun getSignaturesOfType(type: Type, kind: SignatureKind): Array<Signature>
         fun getIndexTypeOfType(type: Type, kind: IndexKind): Type
         fun getBaseTypes(type: InterfaceType): Array<ObjectType>
@@ -1195,7 +1195,7 @@ object TS {
         fun getShorthandAssignmentValueSymbol(location: Node): Symbol
         fun getExportSpecifierLocalTargetSymbol(location: ExportSpecifier): Symbol
         fun getPropertySymbolOfDestructuringAssignment(location: Identifier): Symbol
-        fun getTypeAtLocation(node: Node): Type
+        fun getTypeAtLocation(node: Node): Type?
         fun typeToString(type: Type, enclosingDeclaration: Node? = null, flags: TypeFormatFlags? = null): String
         fun symbolToString(symbol: Symbol, enclosingDeclaration: Node? = null, meaning: SymbolFlags? = null): String
         fun getSymbolDisplayBuilder(): SymbolDisplayBuilder
@@ -1419,7 +1419,7 @@ object TS {
         fun getConstructSignatures(): Array<Signature>
         fun getStringIndexType(): Type
         fun getNumberIndexType(): Type
-        fun getBaseTypes(): Array<ObjectType>
+        fun getBaseTypes(): Array<ObjectType>?
         fun getNonNullableType(): Type
     }
     interface LiteralType : Type {
