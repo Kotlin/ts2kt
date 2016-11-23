@@ -25,6 +25,7 @@ import ts2kt.utils.join
 import typescript.*
 
 val ANY = "Any"
+val NOTHING = "Nothing"
 val NUMBER = "Number"
 val STRING = "String"
 val BOOLEAN = "Boolean"
@@ -63,7 +64,7 @@ fun TS.ParameterDeclaration.toKotlinParamOverloads(typeMapper: ObjectTypeToKotli
 }
 
 private fun TS.ParameterDeclaration.toKotlinParam(nodeType: TS.TypeNode?, typeWithoutFlags: Type): FunParam {
-    val isNullable = questionToken != null
+    val isNullable = questionToken != null || typeWithoutFlags.isNullable
     val isLambda = nodeType?.kind === TS.SyntaxKind.FunctionType
     return toKotlinParam(typeWithoutFlags.copy(isNullable = isNullable, isLambda = isLambda))
 }
@@ -81,9 +82,10 @@ private fun TS.ParameterDeclaration.toKotlinParam(type: Type): FunParam {
     }
     val isVar = hasFlag(flags, TS.NodeFlags.AccessibilityModifier)
 
+    val isOptional = questionToken != null
     return FunParam(name,
             TypeAnnotation(type, isVararg = isVararg),
-            if (defaultValue == null && type.isNullable) "null" else defaultValue,
+            if (defaultValue == null && isOptional) "null" else defaultValue,
             isVar)
 }
 
@@ -206,6 +208,9 @@ fun TS.TypeNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): Type {
         TS.SyntaxKind.StringKeyword -> Type(STRING)
         TS.SyntaxKind.BooleanKeyword -> Type(BOOLEAN)
         TS.SyntaxKind.VoidKeyword -> Type(UNIT)
+        TS.SyntaxKind.NullKeyword,
+        TS.SyntaxKind.UndefinedKeyword -> Type(NOTHING, isNullable = true)
+
         TS.SyntaxKind.ArrayType -> (this.cast<TS.ArrayTypeNode>()).toKotlinType(typeMapper)
         TS.SyntaxKind.ConstructorType,
         TS.SyntaxKind.FunctionType -> (this.cast<TS.FunctionOrConstructorTypeNode>()).toKotlinType(typeMapper)
