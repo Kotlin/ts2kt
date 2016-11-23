@@ -1,7 +1,7 @@
-package typescriptServices
+package typescript
 
-@module
-object ts {
+@native("ts")
+object TS {
     interface MapLike<T> {
         @nativeGetter
         fun get(index: String): T?
@@ -19,7 +19,7 @@ object ts {
         fun set(fileName: String /* String & `T$0` */, value: T)
         fun contains(fileName: String /* String & `T$0` */): Boolean
         fun remove(fileName: String /* String & `T$0` */)
-        fun forEachValue(f: `(key: String /* String & `T$0` */, v: T) -> Unit`)
+        fun forEachValue(f: (key: String /* String & `T$0` */, v: T) -> Unit)
         fun getKeys(): Array<String /* String & `T$0` */>
         fun clear()
     }
@@ -414,7 +414,7 @@ object ts {
         fun getFirstToken(sourceFile: SourceFile? = null): Node
         fun getLastToken(sourceFile: SourceFile? = null): Node
     }
-    interface NodeArray<T> : Array<T>, TextRange {
+    interface NodeArray<T> : JsArray<T>, TextRange {
         var hasTrailingComma: Boolean? get() = noImpl; set(value){}
     }
     interface ModifiersArray : NodeArray<Modifier> {
@@ -456,10 +456,14 @@ object ts {
         var parameters: NodeArray<ParameterDeclaration>
         var type: TypeNode? get() = noImpl; set(value){}
     }
-    interface CallSignatureDeclaration : SignatureDeclaration, TypeElement
-    interface ConstructSignatureDeclaration : SignatureDeclaration, TypeElement
+    interface CallSignatureDeclaration : SignatureDeclaration, TypeElement {
+        override var name: dynamic /* Identifier | LiteralExpression | ComputedPropertyName */ get() = noImpl; set(value){}
+    }
+    interface ConstructSignatureDeclaration : SignatureDeclaration, TypeElement {
+        override var name: dynamic /* Identifier | LiteralExpression | ComputedPropertyName */ get() = noImpl; set(value){}
+    }
     interface VariableDeclaration : Declaration {
-        override var parent: VariableDeclarationList? get() = noImpl; set(value){}
+//        override var parent: VariableDeclarationList? get() = noImpl; set(value){}
         override var name: dynamic /* Identifier | BindingPattern */
         var type: TypeNode? get() = noImpl; set(value){}
         var initializer: Expression? get() = noImpl; set(value){}
@@ -542,6 +546,7 @@ object ts {
         override var body: FunctionBody? get() = noImpl; set(value){}
     }
     interface ConstructorDeclaration : FunctionLikeDeclaration, ClassElement {
+        override var name: dynamic get() = noImpl; set(value){}
         override var body: FunctionBody? get() = noImpl; set(value){}
     }
     interface SemicolonClassElement : ClassElement {
@@ -555,6 +560,7 @@ object ts {
     interface GetAccessorDeclaration : AccessorDeclaration
     interface SetAccessorDeclaration : AccessorDeclaration
     interface IndexSignatureDeclaration : SignatureDeclaration, ClassElement, TypeElement {
+        override var name: dynamic get() = noImpl; set(value){}
         var _indexSignatureDeclarationBrand: Any
     }
     interface TypeNode : Node {
@@ -875,7 +881,7 @@ object ts {
         var questionToken: Node? get() = noImpl; set(value){}
     }
     interface InterfaceDeclaration : DeclarationStatement {
-        override var name: Identifier
+        override var name: Identifier?
         var typeParameters: NodeArray<TypeParameterDeclaration>? get() = noImpl; set(value){}
         var heritageClauses: NodeArray<HeritageClause>? get() = noImpl; set(value){}
         var members: NodeArray<TypeElement>
@@ -885,7 +891,7 @@ object ts {
         var types: NodeArray<ExpressionWithTypeArguments>? get() = noImpl; set(value){}
     }
     interface TypeAliasDeclaration : DeclarationStatement {
-        override var name: Identifier
+        override var name: Identifier?
         var typeParameters: NodeArray<TypeParameterDeclaration>? get() = noImpl; set(value){}
         var type: TypeNode
     }
@@ -894,7 +900,7 @@ object ts {
         var initializer: Expression? get() = noImpl; set(value){}
     }
     interface EnumDeclaration : DeclarationStatement {
-        override var name: Identifier
+        override var name: Identifier?
         var members: NodeArray<EnumMember>
     }
     interface ModuleDeclaration : DeclarationStatement {
@@ -905,7 +911,7 @@ object ts {
         var statements: NodeArray<Statement>
     }
     interface ImportEqualsDeclaration : DeclarationStatement {
-        override var name: Identifier
+        override var name: Identifier?
         var moduleReference: dynamic /* Identifier | QualifiedName | ExternalModuleReference */
     }
     interface ExternalModuleReference : Node {
@@ -923,7 +929,7 @@ object ts {
         override var name: Identifier
     }
     interface NamespaceExportDeclaration : DeclarationStatement {
-        override var name: Identifier
+        override var name: Identifier?
         var moduleReference: LiteralLikeNode
     }
     interface ExportDeclaration : DeclarationStatement {
@@ -983,7 +989,7 @@ object ts {
         var type: JSDocType
     }
     interface JSDocRecordType : JSDocType, TypeLiteralNode {
-        override var members: NodeArray<JSDocRecordMember>
+//        override var members: NodeArray<JSDocRecordMember>
     }
     interface JSDocTypeReference : JSDocType {
         var name: dynamic /* Identifier | QualifiedName */
@@ -994,7 +1000,7 @@ object ts {
     }
     interface JSDocFunctionType : JSDocType, SignatureDeclaration {
         override var parameters: NodeArray<ParameterDeclaration>
-        override var type: JSDocType
+//        override var type: JSDocType
     }
     interface JSDocVariadicType : JSDocType {
         var type: JSDocType
@@ -1010,7 +1016,7 @@ object ts {
     }
     interface JSDocRecordMember : PropertySignature {
         override var name: dynamic /* Identifier | LiteralExpression */
-        override var type: JSDocType? get() = noImpl; set(value){}
+//        override var type: JSDocType? get() = noImpl; set(value){}
     }
     interface JSDocComment : Node {
         var tags: NodeArray<JSDocTag>
@@ -1225,7 +1231,7 @@ object ts {
         fun buildSignatureDisplay(signatures: Signature, writer: SymbolWriter, enclosingDeclaration: Node? = null, flags: TypeFormatFlags? = null, kind: SignatureKind? = null)
         fun buildParameterDisplay(parameter: Symbol, writer: SymbolWriter, enclosingDeclaration: Node? = null, flags: TypeFormatFlags? = null)
         fun buildTypeParameterDisplay(tp: TypeParameter, writer: SymbolWriter, enclosingDeclaration: Node? = null, flags: TypeFormatFlags? = null)
-        fun buildTypePredicateDisplay(predicate: TypePredicate, writer: SymbolWriter, enclosingDeclaration: Node? = null, flags: TypeFormatFlags? = null)
+        fun buildTypePredicateDisplay(predicate: dynamic /*TypePredicate*/, writer: SymbolWriter, enclosingDeclaration: Node? = null, flags: TypeFormatFlags? = null)
         fun buildTypeParameterDisplayFromSymbol(symbol: Symbol, writer: SymbolWriter, enclosingDeclaration: Node? = null, flags: TypeFormatFlags? = null)
         fun buildDisplayForParametersAndDelimiters(thisParameter: Symbol, parameters: Array<Symbol>, writer: SymbolWriter, enclosingDeclaration: Node? = null, flags: TypeFormatFlags? = null)
         fun buildDisplayForTypeParametersAndDelimiters(typeParameters: Array<TypeParameter>, writer: SymbolWriter, enclosingDeclaration: Node? = null, flags: TypeFormatFlags? = null)
@@ -1571,10 +1577,11 @@ object ts {
         fun set(option: String, value: Number)
         @nativeSetter
         fun set(option: String, value: Boolean)
+        // TODO bug?
         @nativeSetter
         fun set(option: String, value: Array<dynamic /* String | Number */>)
-        @nativeSetter
-        fun set(option: String, value: Array<String>)
+//        @nativeSetter
+//        fun set(option: String, value: Array<String>)
         @nativeSetter
         fun set(option: String, value: MapLike<Array<String>>)
     }
@@ -1681,13 +1688,14 @@ object ts {
     }
     interface CompilerHost : ModuleResolutionHost {
         fun getSourceFile(fileName: String, languageVersion: ScriptTarget, onError: ((message: String) -> Unit)? = null): SourceFile
-        val getSourceFileByPath: (`(fileName: String, path: String /* String & `T$0` */, languageVersion: ScriptTarget, onError: ((message: String) -> Unit)? = null) -> SourceFile`)? get() = noImpl
+        val getSourceFileByPath: ((fileName: String, path: String /* String & `T$0` */, languageVersion: ScriptTarget, onError: ((message: String) -> Unit)?/* = null*/) -> SourceFile)? get() = noImpl
         val getCancellationToken: (() -> CancellationToken)? get() = noImpl
         fun getDefaultLibFileName(options: CompilerOptions): String
         val getDefaultLibLocation: (() -> String)? get() = noImpl
         var writeFile: WriteFileCallback
-        override fun getCurrentDirectory(): String
-        override fun getDirectories(path: String): Array<String>
+        // TODO bug
+        fun getCurrentDirectory(): String
+        fun getDirectories(path: String): Array<String>
         fun getCanonicalFileName(fileName: String): String
         fun useCaseSensitiveFileNames(): Boolean
         fun getNewLine(): String
@@ -1708,7 +1716,7 @@ object ts {
     var version: String = noImpl
     interface WatchedFile {
         var fileName: String
-        var callback: (fileName: String, removed: Boolean? = null) -> Unit
+        var callback: (fileName: String, removed: Boolean?/* = null*/) -> Unit
         var mtime: Date? get() = noImpl; set(value){}
     }
     interface System {
@@ -1719,8 +1727,8 @@ object ts {
         fun readFile(path: String, encoding: String? = null): String
         val getFileSize: ((path: String) -> Number)? get() = noImpl
         fun writeFile(path: String, data: String, writeByteOrderMark: Boolean? = null)
-        val watchFile: ((path: String, callback: (fileName: String, removed: Boolean? = null) -> Unit, pollingInterval: Number? = null) -> FileWatcher)? get() = noImpl
-        val watchDirectory: ((path: String, callback: (fileName: String) -> Unit, recursive: Boolean? = null) -> FileWatcher)? get() = noImpl
+        val watchFile: ((path: String, callback: (fileName: String, removed: Boolean?/* = null*/) -> Unit, pollingInterval: Number?/* = null*/) -> FileWatcher)? get() = noImpl
+        val watchDirectory: ((path: String, callback: (fileName: String) -> Unit, recursive: Boolean?/* = null*/) -> FileWatcher)? get() = noImpl
         fun resolvePath(path: String): String
         fun fileExists(path: String): Boolean
         fun directoryExists(path: String): Boolean
@@ -1858,12 +1866,12 @@ object ts {
     fun convertTypingOptionsFromJson(jsonOptions: Any, basePath: String, configFileName: String? = null): `T$4` = noImpl
     var servicesVersion: String = noImpl
     interface IScriptSnapshot {
-        fun getText(start: Number, end: Number): String
+        // TODO bug?
+        fun getText(start: Number = noImpl, end: Number = noImpl): String
         fun getLength(): Number
         fun getChangeRange(oldSnapshot: IScriptSnapshot): TextChangeRange
         val dispose: (() -> Unit)? get() = noImpl
     }
-    @module
     object ScriptSnapshot {
         fun fromString(text: String): IScriptSnapshot = noImpl
     }
@@ -1900,7 +1908,7 @@ object ts {
         fun getScriptFileNames(): Array<String>
         val getScriptKind: ((fileName: String) -> ScriptKind)? get() = noImpl
         fun getScriptVersion(fileName: String): String
-        fun getScriptSnapshot(fileName: String): IScriptSnapshot
+        fun getScriptSnapshot(fileName: String): IScriptSnapshot?
         val getLocalizedDiagnosticMessages: (() -> Any)? get() = noImpl
         val getCancellationToken: (() -> HostCancellationToken)? get() = noImpl
         fun getCurrentDirectory(): String
@@ -1909,8 +1917,8 @@ object ts {
         val trace: ((s: String) -> Unit)? get() = noImpl
         val error: ((s: String) -> Unit)? get() = noImpl
         val useCaseSensitiveFileNames: (() -> Boolean)? get() = noImpl
-        val readDirectory: ((path: String, extensions: Array<String>? = null, exclude: Array<String>? = null, include: Array<String>? = null) -> Array<String>)? get() = noImpl
-        val readFile: ((path: String, encoding: String? = null) -> String)? get() = noImpl
+        val readDirectory: ((path: String, extensions: Array<String>?/* = null*/, exclude: Array<String>?/* = null*/, include: Array<String>?/* = null*/) -> Array<String>)? get() = noImpl
+        val readFile: ((path: String, encoding: String?/* = null*/) -> String)? get() = noImpl
         val fileExists: ((path: String) -> Boolean)? get() = noImpl
         val getTypeRootsVersion: (() -> Number)? get() = noImpl
         val resolveModuleNames: ((moduleNames: Array<String>, containingFile: String) -> Array<ResolvedModule>)? get() = noImpl
@@ -2017,7 +2025,6 @@ object ts {
         var fileName: String
         var highlightSpans: Array<HighlightSpan>
     }
-    @module
     object HighlightSpanKind {
         var none: String = noImpl
         var definition: String = noImpl
@@ -2253,7 +2260,6 @@ object ts {
     interface `T$7` {
         var __bucketKey: Any
     }
-    @module
     object ScriptElementKind {
         var unknown: String = noImpl
         var warning: String = noImpl
@@ -2288,7 +2294,6 @@ object ts {
         var directory: String = noImpl
         var externalModuleName: String = noImpl
     }
-    @module
     object ScriptElementKindModifier {
         var none: String = noImpl
         var publicMemberModifier: String = noImpl

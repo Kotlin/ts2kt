@@ -22,9 +22,7 @@ import ts2kt.utils.assert
 import ts2kt.utils.cast
 import ts2kt.utils.hasFlag
 import ts2kt.utils.join
-import typescript.ClassOrInterfaceDeclaration
-import typescript.TS
-import typescript.unescapeIdentifier
+import typescript.*
 
 val ANY = "Any"
 val NUMBER = "Number"
@@ -102,7 +100,7 @@ private fun TS.ParameterDeclaration.getNodeTypeConsideringVararg(): TS.TypeNode?
             }
 
             originalNodeKind === TS.SyntaxKind.TypeReference &&
-            (originalNodeType.cast<TS.TypeReferenceNode>()).typeName.text == "Array" -> {
+            (originalNodeType.cast<TS.TypeReferenceNode>()).typeName.cast<EntityName>().text == "Array" -> {
                 val typeArguments = originalNodeType.cast<TS.TypeReferenceNode>().typeArguments!!.arr
                 assert(typeArguments.size == 1, "Array should have one generic paramater, but have ${typeArguments.size}.")
                 nodeType = typeArguments[0]
@@ -236,7 +234,7 @@ fun TS.TypeNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): Type {
     }
 }
 
-fun TS.EntityName.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper): String {
+fun EntityName.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper): String {
     return when (kind) {
         TS.SyntaxKind.Identifier ->
             this.unescapedText
@@ -251,7 +249,7 @@ fun TS.TypeReferenceNode.toKotlinTypeUnion(typeMapper: ObjectTypeToKotlinTypeMap
 
 private fun TS.TypeReferenceNode.toKotlinTypeIgnoringTypeAliases(typeMapper: ObjectTypeToKotlinTypeMapper): Type {
     // TODO improve
-    val name = typeName.toKotlinTypeName(typeMapper)
+    val name = typeName.cast<EntityName>().toKotlinTypeName(typeMapper)
 
     return Type(name, typeArguments?.arr?.map { it.toKotlinType(typeMapper) } ?: emptyList())
 }

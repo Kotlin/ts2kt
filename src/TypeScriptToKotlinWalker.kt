@@ -25,6 +25,9 @@ import ts2kt.utils.cast
 import ts2kt.utils.join
 import ts2kt.utils.merge
 import typescript.TS
+import typescript.declarationName
+import typescript.identifierName
+import typescript.propertyName
 
 // workaround for new compiler
 private val MODULE = "module"

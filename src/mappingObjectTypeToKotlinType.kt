@@ -19,6 +19,7 @@ package ts2kt
 import ts2kt.kotlin.ast.*
 import ts2kt.utils.replaceAll
 import typescript.TS
+import typescript.identifierName
 
 interface ObjectTypeToKotlinTypeMapper {
     fun getKotlinTypeForObjectType(objectType: TS.TypeLiteralNode): Type

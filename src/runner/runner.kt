@@ -22,9 +22,7 @@ import ts2kt.utils.cast
 import ts2kt.utils.hasFlag
 import ts2kt.utils.push
 import ts2kt.utils.shift
-import typescript.TS
-import typescript.getDirectoryPath
-import typescript.normalizePath
+import typescript.*
 import java.util.*
 import kotlin.js.native
 
