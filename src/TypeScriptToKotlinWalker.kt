@@ -552,7 +552,9 @@ abstract class TsClassifierToKt(
 
         val isOverride = isOverrideProperty(node)
 
-        getTranslator(node).addVariable(name, type = varType.copy(isNullable = isNullable(node), isLambda = isLambda(node)),
+        getTranslator(node).addVariable(
+                name,
+                type = varType.copy(isNullable = varType.isNullable || isNullable(node), isLambda = isLambda(node)),
                 isOverride = isOverride,
                 needsNoImpl = needsNoImpl(node)
         )

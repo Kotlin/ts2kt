@@ -33,6 +33,8 @@ val UNIT = "Unit"
 val DYNAMIC = "dynamic"
 val ARRAY = "Array"
 
+val NOTHING_TYPE = Type(NOTHING, isNullable = true)
+
 val SHOULD_BE_ESCAPED =
         setOf("as", "break", "class", "continue", "do", "else", "false", "for", "fun", "if",
               "in", "is", "null", "object", "package", "return", "super", "this", "This", "throw",
@@ -209,7 +211,7 @@ fun TS.TypeNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): Type {
         TS.SyntaxKind.BooleanKeyword -> Type(BOOLEAN)
         TS.SyntaxKind.VoidKeyword -> Type(UNIT)
         TS.SyntaxKind.NullKeyword,
-        TS.SyntaxKind.UndefinedKeyword -> Type(NOTHING, isNullable = true)
+        TS.SyntaxKind.UndefinedKeyword -> NOTHING_TYPE
 
         TS.SyntaxKind.ArrayType -> (this.cast<TS.ArrayTypeNode>()).toKotlinType(typeMapper)
         TS.SyntaxKind.ConstructorType,
@@ -284,7 +286,21 @@ private fun TS.Node.stringifyQualifiedName() = when (kind) {
 }
 
 fun TS.UnionTypeNode.toKotlinTypeUnion(typeMapper: ObjectTypeToKotlinTypeMapper): TypeUnion {
-    return TypeUnion(types.arr.flatMap { it.toKotlinTypeUnion(typeMapper).possibleTypes }.distinct())
+    val possibleTypes = types.arr.flatMap { it.toKotlinTypeUnion(typeMapper).possibleTypes }.distinct()
+
+    // TODO unify TypeUnion and Type and implement it better
+    if (possibleTypes.size == 2) {
+        val a = possibleTypes[0]
+        val b = possibleTypes[1]
+
+        val t = if (a == NOTHING_TYPE) b else if (b == NOTHING_TYPE) a else null
+
+        t?.let {
+            return TypeUnion(listOf(it.copy(isNullable = true)))
+        }
+    }
+
+    return TypeUnion(possibleTypes)
 }
 
 fun TS.IntersectionTypeNode.toKotlinTypeUnion(typeMapper: ObjectTypeToKotlinTypeMapper): TypeUnion {
