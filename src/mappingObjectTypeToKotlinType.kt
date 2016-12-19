@@ -124,7 +124,7 @@ data class ObjectTypeToKotlinTypeMapperImpl(
     }
 
     override fun withTypeParameters(typeParameters: TS.NodeArray<TS.TypeParameterDeclaration>?): ObjectTypeToKotlinTypeMapper {
-        return copy(typeParameterDeclarations = typeParameterDeclarations.toList() + (typeParameters?.arr ?: emptyArray()))
+        return copy(typeParameterDeclarations = typeParameterDeclarations.toList() + (typeParameters?.arr ?: arrayOf()))
     }
 
     fun <T> List<T>.toStringKey(): String =

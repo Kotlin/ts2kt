@@ -16,22 +16,18 @@
 
 package node
 
-@native
-fun require(name: String): dynamic = noImpl
+external fun require(name: String): dynamic
 
-@native
-class path private constructor() {
-    fun basename(path: String, postfix: String): String = noImpl
+external interface path {
+    fun basename(path: String, postfix: String): String
 }
 
-@native
-class process private constructor() {
-    val argv: Array<String?> = noImpl
+external interface process {
+    val argv: Array<String?>
 }
 
-@native
-class fs private constructor() {
-    fun argv(index: Int): String = noImpl
-    fun writeFileSync(path: String, text: String): Unit = noImpl
-    fun readFileSync(path: String): String = noImpl
+external interface fs {
+    fun argv(index: Int): String
+    fun writeFileSync(path: String, text: String): Unit
+    fun readFileSync(path: String): String
 }

@@ -104,7 +104,7 @@ private fun TS.ParameterDeclaration.getNodeTypeConsideringVararg(): TS.TypeNode?
             }
 
             originalNodeKind === TS.SyntaxKind.TypeReference &&
-            (originalNodeType.cast<TS.TypeReferenceNode>()).typeName.cast<EntityName>().text == "Array" -> {
+                ((originalNodeType.cast<TS.TypeReferenceNode>()).typeName as EntityName).text == "Array" -> {
                 val typeArguments = originalNodeType.cast<TS.TypeReferenceNode>().typeArguments!!.arr
                 assert(typeArguments.size == 1, "Array should have one generic paramater, but have ${typeArguments.size}.")
                 nodeType = typeArguments[0]
@@ -256,7 +256,7 @@ fun TS.TypeReferenceNode.toKotlinTypeUnion(typeMapper: ObjectTypeToKotlinTypeMap
 
 private fun TS.TypeReferenceNode.toKotlinTypeIgnoringTypeAliases(typeMapper: ObjectTypeToKotlinTypeMapper): Type {
     // TODO improve
-    val name = typeName.cast<EntityName>().toKotlinTypeName(typeMapper)
+    val name = (typeName as EntityName).toKotlinTypeName(typeMapper)
 
     return Type(name, typeArguments?.arr?.map { it.toKotlinType(typeMapper) } ?: emptyList())
 }

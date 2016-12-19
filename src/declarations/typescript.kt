@@ -1,10 +1,9 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package typescript
 
-@native
-fun TS.unescapeIdentifier(identifier: String): String
+inline fun TS.unescapeIdentifier(identifier: String): String = asDynamic().unescapeIdentifier(identifier)
 
-@native
-fun TS.normalizePath(path: String): String
+inline fun TS.normalizePath(path: String): String = asDynamic().normalizePath(path)
 
-@native
-fun TS.getDirectoryPath(path: String): String
+inline fun TS.getDirectoryPath(path: String): String = asDynamic().getDirectoryPath(path)

@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
+@file:Suppress("NOTHING_TO_INLINE")
+
 package ts2kt.utils
 
 import js.JsError
 
-@Suppress("NOTHING_TO_INLINE")
-inline fun <T> dynamic.cast(): T = this
+inline fun <T> Any?.cast(): T = this.unsafeCast<T>()
 
 fun <T> List<T>.join(
         delimiter: String = ", ",
@@ -103,24 +104,21 @@ private fun <T: Any> MutableList<T>.mergeAllTo(mergeTo: Int, candidateIndexes: L
 
 // JS Array methods
 
-@native
-fun <T> Array<T>.push(vararg element: T): Unit = noImpl
+//inline fun <T> Array<T>.push(vararg elements: T): Unit = asDynamic().push.apply(this, elements)
+inline fun <T> Array<T>.push(element: T): Unit = asDynamic().push(element)
 
-@native
-fun <T> Array<T>.shift(): T = noImpl
+inline fun <T> Array<T>.shift(): T = asDynamic().shift()
 
-@native
-fun <T> Array<T>.splice(index: Int, removeCount: Int, vararg newItems: T): Array<T> = noImpl
+//fun <T> Array<T>.splice(index: Int, removeCount: Int, vararg newItems: T): Array<T> = ...
+inline fun <T> Array<T>.splice(index: Int, removeCount: Int, newItem: T): Array<T> = asDynamic().splice(index, removeCount, newItem)
 
 //
 
-@native
-class RegExp(s: String, flags: String = "")
+external class RegExp(s: String, flags: String = "")
 
 // JS String methods
 
-@native
-fun String.replace(r: RegExp, s: String): String = noImpl
+inline fun String.replace(r: RegExp, s: String): String = asDynamic().replace(r, s)
 
 fun String.replaceAll(r: String, s: String): String = replace(RegExp(r, "g"), s)
 
@@ -135,5 +133,4 @@ fun assert(condition: Boolean, message: String) {
 }
 
 // TS AST utils
-@Suppress("NOTHING_TO_INLINE", "UNUSED_PARAMETER")
-inline fun <E : Enum<E>> hasFlag(flags: Enum<E>, flag: E): Boolean = js("(flags & flag) != 0")
+inline fun <E : Enum<E>> hasFlag(flags: Enum<E>, flag: E): Boolean = flags.unsafeCast<Int>() and flag.unsafeCast<Int>() != 0

@@ -23,8 +23,6 @@ import ts2kt.utils.hasFlag
 import ts2kt.utils.push
 import ts2kt.utils.shift
 import typescript.*
-import java.util.*
-import kotlin.js.native
 
 // HACK to replace `Kotlin.throwNPE` since Kotlin Exceptions unusable now because don't have stacktrace
 private val init = run {

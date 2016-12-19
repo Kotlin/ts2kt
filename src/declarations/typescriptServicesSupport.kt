@@ -40,99 +40,104 @@ interface PropertyName : TS.Identifier, TS.LiteralExpression, TS.ComputedPropert
 interface DeclarationName : TS.Identifier, TS.LiteralExpression, TS.ComputedPropertyName, TS.BindingPattern
 
 
-@native("name")
-val TS.Declaration.declarationName: DeclarationName?
+inline val TS.Declaration.declarationName: DeclarationName?
+    get() = asDynamic().name
 
-@native("name")
-val TS.DeclarationStatement.identifierName: TS.Identifier?
+inline val TS.DeclarationStatement.identifierName: TS.Identifier?
+    get() = asDynamic().name
 
-@native("name")
-val TS.TypeParameterDeclaration.identifierName: TS.Identifier
+inline val TS.TypeParameterDeclaration.identifierName: TS.Identifier
+    get() = asDynamic().name
 
-@native("name")
-val TS.SignatureDeclaration.propertyName: PropertyName?
+inline val TS.SignatureDeclaration.propertyName: PropertyName?
+    get() = asDynamic().name
 
-@native("name")
-val TS.PropertySignature.propertyName: PropertyName
+inline val TS.PropertySignature.propertyName: PropertyName
+    get() = asDynamic().name
 
-@native("name")
-val TS.PropertyDeclaration.propertyName: PropertyName
+inline val TS.PropertyDeclaration.propertyName: PropertyName
+    get() = asDynamic().name
 
-@native("name")
-val TS.ObjectLiteralElement.propertyName: PropertyName? // = noImpl
+inline val TS.ObjectLiteralElement.propertyName: PropertyName? // = noImpl
+    get() = asDynamic().name
 
-@native("name")
-val TS.PropertyAssignment.propertyName: PropertyName
+inline val TS.PropertyAssignment.propertyName: PropertyName
+    get() = asDynamic().name
 
-@native("name")
-val TS.ShorthandPropertyAssignment.identifierName: TS.Identifier
+inline val TS.ShorthandPropertyAssignment.identifierName: TS.Identifier
+    get() = asDynamic().name
 
-@native("name")
-val TS.VariableLikeDeclaration.declarationName: DeclarationName
+inline val TS.VariableLikeDeclaration.declarationName: DeclarationName
+    get() = asDynamic().name
 
-@native("name")
-val TS.PropertyLikeDeclaration.propertyName: PropertyName
+inline val TS.PropertyLikeDeclaration.propertyName: PropertyName
+    get() = asDynamic().name
 
-@native("name")
-val TS.FunctionDeclaration.identifierName: TS.Identifier? // = noImpl
+inline val TS.FunctionDeclaration.identifierName: TS.Identifier? // = noImpl
+    get() = asDynamic().name
 
-@native("name")
-val TS.MethodSignature.propertyName: PropertyName
+inline val TS.MethodSignature.propertyName: PropertyName
+    get() = asDynamic().name
 
-@native("name")
-var TS.MethodDeclaration.propertyName: PropertyName
+inline var TS.MethodDeclaration.propertyName: PropertyName
+    get() = asDynamic().name
+    set(v) { asDynamic().name = v }
 
-@native("name")
-val TS.AccessorDeclaration.propertyName: PropertyName
+inline val TS.AccessorDeclaration.propertyName: PropertyName
+    get() = asDynamic().name
 
-@native("name")
-val TS.FunctionExpression.identifierName: TS.Identifier? // = noImpl
+inline val TS.FunctionExpression.identifierName: TS.Identifier? // = noImpl
+    get() = asDynamic().name
 
-@native("name")
-val TS.PropertyAccessExpression.identifierName: TS.Identifier
+inline val TS.PropertyAccessExpression.identifierName: TS.Identifier
+    get() = asDynamic().name
 
-@native
-val TS.MissingDeclaration.identifierName: TS.Identifier? // = noImpl
+inline val TS.MissingDeclaration.identifierName: TS.Identifier? // = noImpl
+    get() = asDynamic().name
 
-@native("name")
-var TS.ClassLikeDeclaration.identifierName: TS.Identifier? // = noImpl
+inline var TS.ClassLikeDeclaration.identifierName: TS.Identifier? // = noImpl
+    get() = asDynamic().name
+    set(v) { asDynamic().name = v }
 
-@native("name")
-var TS.ClassDeclaration.identifierName: TS.Identifier? // = noImpl
+inline var TS.ClassDeclaration.identifierName: TS.Identifier? // = noImpl
+    get() = asDynamic().name
+    set(v) { asDynamic().name = v }
 
-@native("name")
-val TS.ClassElement.propertyName: PropertyName? // = noImpl
+inline val TS.ClassElement.propertyName: PropertyName? // = noImpl
+    get() = asDynamic().name
 
-@native("name")
-val TS.TypeElement.propertyName: PropertyName? // = noImpl
+inline val TS.TypeElement.propertyName: PropertyName? // = noImpl
+    get() = asDynamic().name
 
-@native("name")
-val TS.InterfaceDeclaration.identifierName: TS.Identifier
+inline val TS.InterfaceDeclaration.identifierName: TS.Identifier
+    get() = asDynamic().name
 
-@native("name")
-var TS.TypeAliasDeclaration.identifierName: TS.Identifier
+inline var TS.TypeAliasDeclaration.identifierName: TS.Identifier
+    get() = asDynamic().name
+    set(v) { asDynamic().name = v }
 
-@native("name")
-val TS.EnumMember.declarationName: DeclarationName
+inline val TS.EnumMember.declarationName: DeclarationName
+    get() = asDynamic().name
 
-@native("name")
-val TS.EnumDeclaration.identifierName: TS.Identifier
+inline val TS.EnumDeclaration.identifierName: TS.Identifier
+    get() = asDynamic().name
 
-@native("name")
-val TS.ImportEqualsDeclaration.identifierName: TS.Identifier
+inline val TS.ImportEqualsDeclaration.identifierName: TS.Identifier
+    get() = asDynamic().name
 
-@native("name")
-val TS.NamespaceExportDeclaration.identifierName: TS.Identifier
+inline val TS.NamespaceExportDeclaration.identifierName: TS.Identifier
+    get() = asDynamic().name
 
-@native("name")
-var TS.ImportClause.identifierName: TS.Identifier? // = noImpl
+inline var TS.ImportClause.identifierName: TS.Identifier?
+    get() = asDynamic().name
+    set(v) { asDynamic().name = v }
 
-@native("name")
-val TS.NamespaceImport.identifierName: TS.Identifier
+inline val TS.NamespaceImport.identifierName: TS.Identifier
+    get() = asDynamic().name
 
-@native("name")
-val TS.ImportSpecifier.identifierName: TS.Identifier
+inline val TS.ImportSpecifier.identifierName: TS.Identifier
+    get() = asDynamic().name
 
-@native("name")
-val TS.ExportSpecifier.identifierName: TS.Identifier
+inline val TS.ExportSpecifier.identifierName: TS.Identifier
+    get() = asDynamic().name
 
