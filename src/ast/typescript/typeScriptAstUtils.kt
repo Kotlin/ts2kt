@@ -16,7 +16,6 @@
 
 package ts2kt
 
-import js.JsError
 import ts2kt.kotlin.ast.*
 import ts2kt.utils.assert
 import ts2kt.utils.cast
@@ -110,7 +109,7 @@ private fun TS.ParameterDeclaration.getNodeTypeConsideringVararg(): TS.TypeNode?
                 nodeType = typeArguments[0]
             }
             else -> {
-                throw JsError("Rest parameter must be array types, but ${originalNodeKind.str}")
+                throw IllegalStateException("Rest parameter must be array types, but ${originalNodeKind.str}")
             }
         }
     }
@@ -328,7 +327,7 @@ fun TS.ThisTypeNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): Type
         parent = parent.parent
     }
 
-    throw JsError("Illegal State")
+    throw IllegalStateException("Illegal State")
 }
 
 fun TS.TypePredicateNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): Type {
@@ -413,7 +412,7 @@ private fun TS.Node.location(): String {
 
 fun unsupportedNode(node: TS.Node): Nothing {
     val message = "${node.kind.str} kind (${node.location()}) unsupported yet here! See node in attachment."
-    val exception = JsError(message)
+    val exception = Exception(message)
     exception.asDynamic().attachment = node
     throw exception
 }

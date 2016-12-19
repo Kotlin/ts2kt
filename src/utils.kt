@@ -18,8 +18,6 @@
 
 package ts2kt.utils
 
-import js.JsError
-
 inline fun <T> Any?.cast(): T = this.unsafeCast<T>()
 
 fun <T> List<T>.join(
@@ -129,7 +127,7 @@ fun <T> eval(code: String): T = noImpl
 // Assert
 
 fun assert(condition: Boolean, message: String) {
-    if (!condition) throw JsError(message)
+    if (!condition) throw AssertionError(message)
 }
 
 // TS AST utils
