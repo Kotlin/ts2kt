@@ -112,7 +112,7 @@ inline fun <T> Array<T>.splice(index: Int, removeCount: Int, newItem: T): Array<
 
 //
 
-external class RegExp(s: String, flags: String = "")
+external class RegExp(s: String, flags: String = noImpl)
 
 // JS String methods
 

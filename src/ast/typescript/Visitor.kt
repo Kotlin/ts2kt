@@ -2,28 +2,27 @@ package ts2kt
 
 import typescript.*
 
-@native
 interface Visitor {
-    public open fun visitModuleDeclaration(node: TS.ModuleDeclaration): Unit = noImpl
+    fun visitModuleDeclaration(node: TS.ModuleDeclaration): Unit = TODO()
 
-    public open fun visitFunctionDeclaration(node: TS.FunctionDeclaration): Unit = noImpl
-    public open fun visitTypeAliasDeclaration(node: TS.TypeAliasDeclaration): Unit = noImpl
-    public open fun visitVariableStatement(node: TS.VariableStatement): Unit = noImpl
+    fun visitFunctionDeclaration(node: TS.FunctionDeclaration): Unit = TODO()
+    fun visitTypeAliasDeclaration(node: TS.TypeAliasDeclaration): Unit = TODO()
+    fun visitVariableStatement(node: TS.VariableStatement): Unit = TODO()
 
-    public open fun visitEnumDeclaration(node: TS.EnumDeclaration): Unit = noImpl
+    fun visitEnumDeclaration(node: TS.EnumDeclaration): Unit = TODO()
 
-    public open fun visitClassDeclaration(node: TS.ClassDeclaration): Unit = noImpl
-    public open fun visitInterfaceDeclaration(node: TS.InterfaceDeclaration): Unit = noImpl
+    fun visitClassDeclaration(node: TS.ClassDeclaration): Unit = TODO()
+    fun visitInterfaceDeclaration(node: TS.InterfaceDeclaration): Unit = TODO()
 
-    public open fun visitHeritageClause(node: TS.HeritageClause): Unit = noImpl
+    fun visitHeritageClause(node: TS.HeritageClause): Unit = TODO()
 
-    public open fun visitConstructorDeclaration(node: TS.ConstructorDeclaration): Unit = noImpl
-    public open fun visitConstructSignatureDeclaration(node: TS.ConstructorDeclaration): Unit = noImpl
+    fun visitConstructorDeclaration(node: TS.ConstructorDeclaration): Unit = TODO()
+    fun visitConstructSignatureDeclaration(node: TS.ConstructorDeclaration): Unit = TODO()
 
-    public open fun visitMethodDeclaration(node: TS.MethodDeclaration): Unit = noImpl
-    public open fun visitPropertyDeclaration(node: TS.PropertyDeclaration): Unit = noImpl
-    public open fun visitIndexSignature(node: TS.IndexSignatureDeclaration): Unit = noImpl
-    public open fun visitSignatureDeclaration(node: TS.SignatureDeclaration): Unit = noImpl
+    fun visitMethodDeclaration(node: TS.MethodDeclaration): Unit = TODO()
+    fun visitPropertyDeclaration(node: TS.PropertyDeclaration): Unit = TODO()
+    fun visitIndexSignature(node: TS.IndexSignatureDeclaration): Unit = TODO()
+    fun visitSignatureDeclaration(node: TS.SignatureDeclaration): Unit = TODO()
 
-    public open fun visitExportAssignment(node: TS.ExportAssignment): Unit = noImpl
+    fun visitExportAssignment(node: TS.ExportAssignment): Unit = TODO()
 }

@@ -232,7 +232,7 @@ fun translateToFile(srcPath: String, outPath: String) {
 
 @native
 object module {
-    val parent: Any? = null
+    val parent: Any? = noImpl
 }
 
 fun main(args: Array<String>) {
