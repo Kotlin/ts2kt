@@ -1,10 +1,8 @@
 package typescript
 
-@native
-interface JsArray<T>
+external interface JsArray<T>
 
-@native
-interface ClassOrInterfaceDeclaration : TS.DeclarationStatement {
+external interface ClassOrInterfaceDeclaration : TS.DeclarationStatement {
     var typeParameters: TS.NodeArray<TS.TypeParameterDeclaration>? // = noImpl
 }
 
@@ -12,8 +10,7 @@ typealias Path = String
 
 typealias DocumentRegistryBucketKey = String
 
-@native
-interface SymbolTable {
+external interface SymbolTable {
     @nativeGetter
     fun get(index: String): TS.Symbol?
 
@@ -21,23 +18,17 @@ interface SymbolTable {
     fun set(index: String, value: TS.Symbol)
 }
 
-@native
-interface CaseOrDefaultClause : TS.CaseClause, TS.DefaultClause
+external interface CaseOrDefaultClause : TS.CaseClause, TS.DefaultClause
 
-@native
-interface FunctionBody : TS.Block
+external interface FunctionBody : TS.Block
 
-@native
-interface JsxChild : TS.JsxText, TS.JsxExpression, TS.JsxElement, TS.JsxSelfClosingElement
+external interface JsxChild : TS.JsxText, TS.JsxExpression, TS.JsxElement, TS.JsxSelfClosingElement
 
-@native
-interface EntityName : TS.Identifier, TS.QualifiedName
+external interface EntityName : TS.Identifier, TS.QualifiedName
 
-@native
-interface PropertyName : TS.Identifier, TS.LiteralExpression, TS.ComputedPropertyName
+external interface PropertyName : TS.Identifier, TS.LiteralExpression, TS.ComputedPropertyName
 
-@native
-interface DeclarationName : TS.Identifier, TS.LiteralExpression, TS.ComputedPropertyName, TS.BindingPattern
+external interface DeclarationName : TS.Identifier, TS.LiteralExpression, TS.ComputedPropertyName, TS.BindingPattern
 
 
 inline val TS.Declaration.declarationName: DeclarationName?

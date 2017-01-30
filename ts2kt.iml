@@ -16,7 +16,9 @@
               </K2JSCompilerArguments>
             </option>
             <option name="_commonCompilerArguments">
-              <DummyImpl />
+              <DummyImpl>
+                <option name="coroutinesWarn" value="true" />
+              </DummyImpl>
             </option>
           </KotlinCompilerInfo>
         </option>

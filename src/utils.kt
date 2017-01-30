@@ -112,7 +112,7 @@ inline fun <T> Array<T>.splice(index: Int, removeCount: Int, newItem: T): Array<
 
 //
 
-external class RegExp(s: String, flags: String = noImpl)
+external class RegExp(s: String, flags: String = definedExternally)
 
 // JS String methods
 
@@ -120,9 +120,6 @@ inline fun String.replace(r: RegExp, s: String): String = asDynamic().replace(r,
 
 fun String.replaceAll(r: String, s: String): String = replace(RegExp(r, "g"), s)
 
-
-@native
-fun <T> eval(code: String): T = noImpl
 
 // Assert
 

@@ -230,9 +230,8 @@ fun translateToFile(srcPath: String, outPath: String) {
     fs.writeFileSync(outPath, translate(srcPath))
 }
 
-@native
-object module {
-    val parent: Any? = noImpl
+external object module {
+    val parent: Any?
 }
 
 fun main(args: Array<String>) {
