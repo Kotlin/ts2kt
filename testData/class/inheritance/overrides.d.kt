@@ -8,9 +8,9 @@ external interface BaseEvent {
     fun getElement(): Element
 }
 external open class BoxStringEvent : BaseEvent {
-    override var data: String = noImpl
-    override fun getDelegateTarget(): Box = noImpl
-    override fun getElement(): HTMLElement = noImpl
+    override var data: String = definedExternally
+    override fun getDelegateTarget(): Box = definedExternally
+    override fun getElement(): HTMLElement = definedExternally
 }
 external interface NumberEvent : BaseEvent {
     override var data: Number

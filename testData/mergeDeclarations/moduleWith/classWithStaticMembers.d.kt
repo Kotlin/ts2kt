@@ -2,10 +2,10 @@ package classWithStaticMembers
 
 @module
 external open class Foo {
-    open fun bar(): Number = noImpl
+    open fun bar(): Number = definedExternally
     companion object {
-        var variable: String = noImpl
-        fun bar(): Unit = noImpl
-        fun baz(a: Any): Unit = noImpl
+        var variable: String = definedExternally
+        fun bar(): Unit = definedExternally
+        fun baz(a: Any): Unit = definedExternally
     }
 }

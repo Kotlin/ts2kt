@@ -9,4 +9,4 @@ object jquery {
 
 }
 @module("jquery")
-external var `$`: JQueryStatic = noImpl
+external var `$`: JQueryStatic = definedExternally

@@ -5,10 +5,10 @@ object LazyJS {
     interface LazyStatic {
         fun foo(a: Number)
     }
-    var a: Any = noImpl
+    var a: Any = definedExternally
 }
 @module("lazy.js")
-external var Lazy: LazyJS.LazyStatic = noImpl
+external var Lazy: LazyJS.LazyStatic = definedExternally
 @module
 object lazy.js {
 

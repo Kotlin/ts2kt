@@ -10,7 +10,7 @@ object AceAjax {
         fun getKeyboardHandler(): Any
         fun onCommandKey(e: Any, hashId: Any, keyCode: Any)
         fun onTextInput(text: Any)
-        companion object : Foo by noImpl: Foo {
+        companion object : Foo by definedExternally: Foo {
 
         }
     }

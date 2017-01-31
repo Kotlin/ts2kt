@@ -1,7 +1,7 @@
 package unionTypeParams
 
-external var aliasUnionVar: dynamic /* List<Number> | Map<String, List<Number>> */ = noImpl
-external fun aliasUnionFunction(a: List<String>): Unit = noImpl
-external fun aliasUnionFunction(a: Map<Number, List<String>>): Unit = noImpl
-external var listOfUnionVar: List<dynamic /* String | Number */> = noImpl
-external fun listOfUnionFunction(a: List<dynamic /* Number | String */>): Unit = noImpl
+external var aliasUnionVar: dynamic /* List<Number> | Map<String, List<Number>> */ = definedExternally
+external fun aliasUnionFunction(a: List<String>): Unit = definedExternally
+external fun aliasUnionFunction(a: Map<Number, List<String>>): Unit = definedExternally
+external var listOfUnionVar: List<dynamic /* String | Number */> = definedExternally
+external fun listOfUnionFunction(a: List<dynamic /* Number | String */>): Unit = definedExternally

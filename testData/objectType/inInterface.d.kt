@@ -2,12 +2,12 @@ package inInterface
 
 external interface `T$0` {
     fun bar(a: Any): Number
-    var baz: Any? get() = noImpl; set(value){}
-    var boo: Any? get() = noImpl; set(value){}
+    var baz: Any? get() = definedExternally; set(value) = definedExternally
+    var boo: Any? get() = definedExternally; set(value) = definedExternally
     var show: (overrideChecks: Boolean) -> Unit
 }
 external interface `T$1` {
-    var value: Any? get() = noImpl; set(value){}
+    var value: Any? get() = definedExternally; set(value) = definedExternally
     var done: Boolean
 }
 external interface `T$2` {

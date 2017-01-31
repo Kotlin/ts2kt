@@ -1,12 +1,12 @@
 package useJsonWhenPossible
 
-external var foo: Json = noImpl
+external var foo: Json = definedExternally
 @module
 object Module {
-    var bar: Json = noImpl
-    fun withObjectTypeParam(bar: Json): Unit = noImpl
+    var bar: Json = definedExternally
+    fun withObjectTypeParam(bar: Json): Unit = definedExternally
     open class Foo {
-        open var prop: Json = noImpl
+        open var prop: Json = definedExternally
     }
 }
 external interface `T$0` {

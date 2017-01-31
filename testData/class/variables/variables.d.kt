@@ -1,9 +1,9 @@
 package variables
 
 external open class Foo {
-    open var varWithoutTypeAnnotation: Any = noImpl
-    open var varAsAny: Any = noImpl
-    open var varAsNumber: Number = noImpl
-    open var varAsBoolean: Boolean = noImpl
-    open var varAsString: String = noImpl
+    open var varWithoutTypeAnnotation: Any = definedExternally
+    open var varAsAny: Any = definedExternally
+    open var varAsNumber: Number = definedExternally
+    open var varAsBoolean: Boolean = definedExternally
+    open var varAsString: String = definedExternally
 }

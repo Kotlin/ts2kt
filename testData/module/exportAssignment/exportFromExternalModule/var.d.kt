@@ -8,4 +8,4 @@ object Mixto {
     }
 }
 @module
-var mixto: Mixto.IMixinStatic = noImpl
+var mixto: Mixto.IMixinStatic = definedExternally

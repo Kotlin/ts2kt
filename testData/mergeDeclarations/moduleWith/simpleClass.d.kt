@@ -2,9 +2,9 @@ package simpleClass
 
 @module
 external open class Foo {
-    open fun bar(): Number = noImpl
+    open fun bar(): Number = definedExternally
     companion object {
-        fun baz(a: Any): Unit = noImpl
-        fun bar(): Number = noImpl
+        fun baz(a: Any): Unit = definedExternally
+        fun bar(): Number = definedExternally
     }
 }

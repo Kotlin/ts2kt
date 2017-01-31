@@ -1,5 +1,5 @@
 package functionsWithOptionalParameter
 
-external fun withOneAny(a: Any? = null): Any = noImpl
-external fun withOneString(s: String? = null): String = noImpl
-external fun withManyArguments(s: String? = null, settings: JQueryAjaxSettings? = null): Boolean = noImpl
+external fun withOneAny(a: Any? = null): Any = definedExternally
+external fun withOneString(s: String? = null): String = definedExternally
+external fun withManyArguments(s: String? = null, settings: JQueryAjaxSettings? = null): Boolean = definedExternally

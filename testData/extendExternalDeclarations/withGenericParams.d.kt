@@ -2,9 +2,9 @@ package withGenericParams
 
 @module
 object Q {
-    external fun <T, B> Promise<T>.foo(b: B): T = noImpl
-    external fun <T0, T, B> Promise<T0>.foo(a: Any, b: B): T = noImpl
-    external var <T> Promise<T>.bar: Array<T> get() = noImpl; set(value){}
+    external fun <T, B> Promise<T>.foo(b: B): T = definedExternally
+    external fun <T0, T, B> Promise<T0>.foo(a: Any, b: B): T = definedExternally
+    external var <T> Promise<T>.bar: Array<T> get() = definedExternally; set(value) = definedExternally
 }
 @module
 object ref-array {
@@ -14,7 +14,7 @@ object ref-array {
         @nativeSetter
         fun set(prop: String, value: Number)
         var someField: String
-        var optionalField: T? get() = noImpl; set(value){}
+        var optionalField: T? get() = definedExternally; set(value) = definedExternally
         @nativeInvoke
         fun invoke(resourceId: String, hash: Any? = null, callback: Function? = null)
     }

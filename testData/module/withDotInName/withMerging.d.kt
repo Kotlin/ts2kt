@@ -6,18 +6,18 @@ object Foo {
     object Bar {
         @module
         object Baz {
-            var variableFooBarBaz: Number = noImpl
-            fun funcFooBarBaz(): Unit = noImpl
+            var variableFooBarBaz: Number = definedExternally
+            fun funcFooBarBaz(): Unit = definedExternally
             open class AFooBarBaz
-            var anotherVariableFooBarBaz: Number = noImpl
-            fun anotherFuncFooBarBaz(): Unit = noImpl
+            var anotherVariableFooBarBaz: Number = definedExternally
+            fun anotherFuncFooBarBaz(): Unit = definedExternally
             open class AnotherAFooBarBaz
         }
-        var variableFooBar: Number = noImpl
-        fun funcFooBar(): Unit = noImpl
+        var variableFooBar: Number = definedExternally
+        fun funcFooBar(): Unit = definedExternally
         open class AFooBar
     }
-    var variableFoo: Number = noImpl
-    fun funcFoo(): Unit = noImpl
+    var variableFoo: Number = definedExternally
+    fun funcFoo(): Unit = definedExternally
     open class AFoo
 }

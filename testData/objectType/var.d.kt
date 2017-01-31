@@ -15,4 +15,4 @@ external interface `T$1` {
     @nativeSetter
     fun set(s: String, value: Any)
 }
-external var foo: `T$1` = noImpl
+external var foo: `T$1` = definedExternally

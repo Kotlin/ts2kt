@@ -1,12 +1,12 @@
 package aliases
 
 external open class Foo
-external var fooKey: dynamic /* String | Foo | Number */ = noImpl
-external fun barKey(a: String): Unit = noImpl
-external fun barKey(a: Foo): Unit = noImpl
-external fun barKey(a: Number): Unit = noImpl
-external fun barList(a: List<dynamic /* String | Foo | Number */>): Unit = noImpl
-external fun barArray(a: Array<dynamic /* String | Foo | Number */>): Unit = noImpl
+external var fooKey: dynamic /* String | Foo | Number */ = definedExternally
+external fun barKey(a: String): Unit = definedExternally
+external fun barKey(a: Foo): Unit = definedExternally
+external fun barKey(a: Number): Unit = definedExternally
+external fun barList(a: List<dynamic /* String | Foo | Number */>): Unit = definedExternally
+external fun barArray(a: Array<dynamic /* String | Foo | Number */>): Unit = definedExternally
 external interface Parent {
     @nativeInvoke
     fun invoke(vararg children: String): Foo

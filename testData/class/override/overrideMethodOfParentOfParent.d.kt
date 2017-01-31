@@ -5,7 +5,7 @@ object TypeScript {
     @module
     object Syntax {
         open class EmptySyntaxList : ISyntaxList {
-            override fun kind(): SyntaxKind = noImpl
+            override fun kind(): SyntaxKind = definedExternally
         }
     }
     interface ISyntaxElement {

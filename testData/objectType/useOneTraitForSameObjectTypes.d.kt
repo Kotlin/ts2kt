@@ -10,8 +10,8 @@ external interface `T$0` {
     @nativeSetter
     fun set(s: String, value: Any)
 }
-external var foo: `T$0` = noImpl
-external var bar: `T$0` = noImpl
+external var foo: `T$0` = definedExternally
+external var bar: `T$0` = definedExternally
 external interface `T$1` {
     fun bar(a: Any): Number
     var baz: Any
@@ -22,7 +22,7 @@ external interface `T$1` {
     @nativeSetter
     fun set(s: String, value: Number)
 }
-external var baz: `T$1` = noImpl
+external var baz: `T$1` = definedExternally
 external interface Interface {
     var bar: `T$0`
     var baz: `T$1`

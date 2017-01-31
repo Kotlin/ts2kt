@@ -8,7 +8,7 @@ object TypeScript {
             fun sourceUnit(moduleElements: ISyntaxList, endOfFileToken: ISyntaxToken): SourceUnitSyntax
         }
         open class NormalModeFactory : IFactory {
-            override fun sourceUnit(moduleElements: ISyntaxList, endOfFileToken: ISyntaxToken): SourceUnitSyntax = noImpl
+            override fun sourceUnit(moduleElements: ISyntaxList, endOfFileToken: ISyntaxToken): SourceUnitSyntax = definedExternally
         }
     }
 }

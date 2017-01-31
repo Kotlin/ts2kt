@@ -1,9 +1,9 @@
 package escaping
 
-external var `val`: Any = noImpl
-external var `$foo`: Boolean = noImpl
-external fun `bar$`(`ba$z`: Number): Unit = noImpl
-external fun `fun`(): Unit = noImpl
+external var `val`: Any = definedExternally
+external var `$foo`: Boolean = definedExternally
+external fun `bar$`(`ba$z`: Number): Unit = definedExternally
+external fun `fun`(): Unit = definedExternally
 @module
 external interface `This` {
     var `when`: String
@@ -11,18 +11,18 @@ external interface `This` {
     var `typeof`: Number
     fun `in`(`object`: Foo)
     companion object {
-        var `$foo`: Boolean = noImpl
-        fun `bar$`(`ba$z`: Number): Unit = noImpl
+        var `$foo`: Boolean = definedExternally
+        fun `bar$`(`ba$z`: Number): Unit = definedExternally
     }
 }
 external open class `is`<`trait`> {
-    open var `as`: Number = noImpl
-    open fun `package`(a: Any): Boolean = noImpl
+    open var `as`: Number = definedExternally
+    open fun `package`(a: Any): Boolean = definedExternally
 }
 @module
 object `when` {
-    var `$`: Boolean = noImpl
-    fun `package`(`as`: Number): `$tring` = noImpl
+    var `$`: Boolean = definedExternally
+    fun `package`(`as`: Number): `$tring` = definedExternally
 }
 @module
 object AllKeywords {

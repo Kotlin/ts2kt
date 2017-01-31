@@ -2,9 +2,9 @@ package variables
 
 external open class Foo {
     companion object {
-        var varAsAny: Any = noImpl
-        var varAsNumber: Number = noImpl
-        var varAsBoolean: Boolean = noImpl
-        var varAsString: String = noImpl
+        var varAsAny: Any = definedExternally
+        var varAsNumber: Number = definedExternally
+        var varAsBoolean: Boolean = definedExternally
+        var varAsString: String = definedExternally
     }
 }

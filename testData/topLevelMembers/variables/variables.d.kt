@@ -1,8 +1,8 @@
 package variables
 
-external var varWithoutTypeAnnotation: Any = noImpl
-external var varAsAny: Any = noImpl
-external var varAsNumber: Number = noImpl
-external var varAsBoolean: Boolean = noImpl
-external var varAsString: String = noImpl
-external var varAsFoo: Foo = noImpl
+external var varWithoutTypeAnnotation: Any = definedExternally
+external var varAsAny: Any = definedExternally
+external var varAsNumber: Number = definedExternally
+external var varAsBoolean: Boolean = definedExternally
+external var varAsString: String = definedExternally
+external var varAsFoo: Foo = definedExternally

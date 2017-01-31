@@ -10,6 +10,6 @@ external interface `T$1`<T> {
     var sup: Any
 }
 external open class FooTypedUnion {
-    open fun <T> baz(p: `T$1`<T>): Unit = noImpl
-    open fun <T> bar(p: `T$0`<T> /* `T$0`<T> & FooPart<T> */): Unit = noImpl
+    open fun <T> baz(p: `T$1`<T>): Unit = definedExternally
+    open fun <T> bar(p: `T$0`<T> /* `T$0`<T> & FooPart<T> */): Unit = definedExternally
 }

@@ -5,12 +5,12 @@ external interface BrowserifyObject : NodeJS.EventEmitter {
     fun require(file: String): BrowserifyObject
 }
 external interface Options {
-    var entries: Array<String>? get() = noImpl; set(value){}
-    var noParse: Array<String>? get() = noImpl; set(value){}
+    var entries: Array<String>? get() = definedExternally; set(value) = definedExternally
+    var noParse: Array<String>? get() = definedExternally; set(value) = definedExternally
 }
 @module("browserify")
-fun browserify(): BrowserifyObject = noImpl
+fun browserify(): BrowserifyObject = definedExternally
 @module("browserify")
-fun browserify(files: Array<String>): BrowserifyObject = noImpl
+fun browserify(files: Array<String>): BrowserifyObject = definedExternally
 @module("browserify")
-fun browserify(opts: Options): BrowserifyObject = noImpl
+fun browserify(opts: Options): BrowserifyObject = definedExternally
