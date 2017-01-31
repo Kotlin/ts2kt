@@ -1,8 +1,7 @@
 package classWithStaticMembers
 
-@native
 @module
-open class Foo {
+external open class Foo {
     open fun bar(): Number = noImpl
     companion object {
         var variable: String = noImpl

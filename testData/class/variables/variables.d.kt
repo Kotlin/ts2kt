@@ -1,7 +1,6 @@
 package variables
 
-@native
-open class Foo {
+external open class Foo {
     open var varWithoutTypeAnnotation: Any = noImpl
     open var varAsAny: Any = noImpl
     open var varAsNumber: Number = noImpl

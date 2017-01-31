@@ -1,8 +1,7 @@
 package module
 
-@native
 @module("lodash")
-interface _ {
+external interface _ {
     interface LoDashStatic {
         @nativeInvoke
         fun invoke(value: Number): LoDashWrapper<Number>

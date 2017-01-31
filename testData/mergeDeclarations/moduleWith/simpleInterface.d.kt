@@ -1,8 +1,7 @@
 package simpleInterface
 
-@native
 @module
-interface Foo {
+external interface Foo {
     fun bar(): Number
     companion object {
         fun baz(a: Any): Unit = noImpl

@@ -1,11 +1,9 @@
 package `var`
 
-@native
-interface `T$0` {
+external interface `T$0` {
     var bar: Number
 }
-@native
-interface `T$1` {
+external interface `T$1` {
     fun bar(a: Any): Number
     var baz: Any
     var boo: String
@@ -17,5 +15,4 @@ interface `T$1` {
     @nativeSetter
     fun set(s: String, value: Any)
 }
-@native
-var foo: `T$1` = noImpl
+external var foo: `T$1` = noImpl

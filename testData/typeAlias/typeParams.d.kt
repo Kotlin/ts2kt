@@ -1,28 +1,15 @@
 package typeParams
 
-@native
-var fooMap: Map<String, List<Number>> = noImpl
-@native
-fun mapKey(a: Map<Number, List<String>>): Unit = noImpl
-@native
-var fooStringOrMap: dynamic /* String | Map<String, List<Number>> */ = noImpl
-@native
-fun stringOrMapKey(a: String): Unit = noImpl
-@native
-fun stringOrMapKey(a: Map<Number, List<String>>): Unit = noImpl
-@native
-var listOfStringOrNumber: dynamic /* String | List<dynamic /* String | Number */> */ = noImpl
-@native
-fun listOfNumberOrString(a: List<dynamic /* Number | String */>): Unit = noImpl
-@native
-var headers: Map<String, List<String>> = noImpl
-@native
-fun getHeaders(): Map<String, List<String>> = noImpl
-@native
-fun addHeaders(headers: Map<String, List<String>>): Unit = noImpl
-@native
-var someRef: dynamic /* String | (instance: T) -> Any */ = noImpl
-@native
-fun addRef(ref: String): Unit = noImpl
-@native
-fun addRef(ref: (instance: T) -> Any): Unit = noImpl
+external var fooMap: Map<String, List<Number>> = noImpl
+external fun mapKey(a: Map<Number, List<String>>): Unit = noImpl
+external var fooStringOrMap: dynamic /* String | Map<String, List<Number>> */ = noImpl
+external fun stringOrMapKey(a: String): Unit = noImpl
+external fun stringOrMapKey(a: Map<Number, List<String>>): Unit = noImpl
+external var listOfStringOrNumber: dynamic /* String | List<dynamic /* String | Number */> */ = noImpl
+external fun listOfNumberOrString(a: List<dynamic /* Number | String */>): Unit = noImpl
+external var headers: Map<String, List<String>> = noImpl
+external fun getHeaders(): Map<String, List<String>> = noImpl
+external fun addHeaders(headers: Map<String, List<String>>): Unit = noImpl
+external var someRef: dynamic /* String | (instance: T) -> Any */ = noImpl
+external fun addRef(ref: String): Unit = noImpl
+external fun addRef(ref: (instance: T) -> Any): Unit = noImpl

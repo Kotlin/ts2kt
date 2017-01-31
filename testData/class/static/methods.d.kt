@@ -1,7 +1,6 @@
 package methods
 
-@native
-open class Foo {
+external open class Foo {
     companion object {
         fun methodWithOutArgs(): Unit = noImpl
         fun methodWithString(s: String): String = noImpl

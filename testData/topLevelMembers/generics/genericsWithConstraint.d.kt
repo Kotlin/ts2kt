@@ -1,8 +1,5 @@
 package genericsWithConstraint
 
-@native
-fun <T : Foo> extendsFooT(a: T): T = noImpl
-@native
-fun <T : Any> extendsAny(a: T): T = noImpl
-@native
-fun <A : Bar, B : A> withManyExtends(a: A, b: B): Boolean = noImpl
+external fun <T : Foo> extendsFooT(a: T): T = noImpl
+external fun <T : Any> extendsAny(a: T): T = noImpl
+external fun <A : Bar, B : A> withManyExtends(a: A, b: B): Boolean = noImpl

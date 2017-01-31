@@ -1,16 +1,11 @@
 package escaping
 
-@native
-var `val`: Any = noImpl
-@native
-var `$foo`: Boolean = noImpl
-@native
-fun `bar$`(`ba$z`: Number): Unit = noImpl
-@native
-fun `fun`(): Unit = noImpl
-@native
+external var `val`: Any = noImpl
+external var `$foo`: Boolean = noImpl
+external fun `bar$`(`ba$z`: Number): Unit = noImpl
+external fun `fun`(): Unit = noImpl
 @module
-interface `This` {
+external interface `This` {
     var `when`: String
     var `typealias`: Number
     var `typeof`: Number
@@ -20,8 +15,7 @@ interface `This` {
         fun `bar$`(`ba$z`: Number): Unit = noImpl
     }
 }
-@native
-open class `is`<`trait`> {
+external open class `is`<`trait`> {
     open var `as`: Number = noImpl
     open fun `package`(a: Any): Boolean = noImpl
 }

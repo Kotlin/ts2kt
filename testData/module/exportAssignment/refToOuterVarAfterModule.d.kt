@@ -1,7 +1,6 @@
 package refToOuterVarAfterModule
 
-@native
-interface JQueryStatic {
+external interface JQueryStatic {
     fun ajax(settings: JQueryAjaxSettings): JQueryXHR
     fun ajax(url: String, settings: JQueryAjaxSettings? = null): JQueryXHR
 }
@@ -9,6 +8,5 @@ interface JQueryStatic {
 object jquery {
 
 }
-@native
 @module("jquery")
-var `$`: JQueryStatic = noImpl
+external var `$`: JQueryStatic = noImpl

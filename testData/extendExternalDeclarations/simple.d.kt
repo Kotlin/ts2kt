@@ -1,19 +1,12 @@
 package simple
 
-@native
-fun JQuery.foo(): Unit = noImpl
-@native
-var JQuery.bar: Any get() = noImpl; set(value){}
-@native
+external fun JQuery.foo(): Unit = noImpl
+external var JQuery.bar: Any get() = noImpl; set(value){}
 @nativeGetter
-fun JQueryStatic.get(prop: String): Number? = noImpl
-@native
+external fun JQueryStatic.get(prop: String): Number? = noImpl
 @nativeSetter
-fun JQueryStatic.set(prop: String, value: Number): Unit = noImpl
-@native
-var JQueryStatic.someField: String get() = noImpl; set(value){}
-@native
-var JQueryStatic.optionalField: Any? get() = noImpl; set(value){}
-@native
+external fun JQueryStatic.set(prop: String, value: Number): Unit = noImpl
+external var JQueryStatic.someField: String get() = noImpl; set(value){}
+external var JQueryStatic.optionalField: Any? get() = noImpl; set(value){}
 @nativeInvoke
-fun JQueryStatic.invoke(resourceId: String, hash: Any? = null, callback: Function? = null): Unit = noImpl
+external fun JQueryStatic.invoke(resourceId: String, hash: Any? = null, callback: Function? = null): Unit = noImpl

@@ -1,10 +1,6 @@
 package variableAsFunctionType
 
-@native
-var withoutArguments: () -> Unit = noImpl
-@native
-var withOneArgument: (withOutType: Any) -> String = noImpl
-@native
-var withManyArguments: (num: Number, s: String, a: Any) -> Boolean = noImpl
-@native
-var withOptionalArguments: (num: Number? = null, s: String? = null) -> Boolean = noImpl
+external var withoutArguments: () -> Unit = noImpl
+external var withOneArgument: (withOutType: Any) -> String = noImpl
+external var withManyArguments: (num: Number, s: String, a: Any) -> Boolean = noImpl
+external var withOptionalArguments: (num: Number? = null, s: String? = null) -> Boolean = noImpl

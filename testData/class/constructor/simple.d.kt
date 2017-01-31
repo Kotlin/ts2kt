@@ -1,6 +1,4 @@
 package simple
 
-@native
-open class Foo
-@native
-open class Bar(a: Number)
+external open class Foo
+external open class Bar(a: Number)

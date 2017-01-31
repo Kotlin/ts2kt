@@ -1,9 +1,7 @@
 package generics
 
-@native
-interface ComponentSpec<P, S>
-@native
-interface Foo<T> {
+external interface ComponentSpec<P, S>
+external interface Foo<T> {
     var varT: T
     fun withoutArgumentsReturnsT(): T
     fun withOneT(a: T): T

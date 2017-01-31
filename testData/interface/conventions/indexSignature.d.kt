@@ -1,7 +1,6 @@
 package indexSignature
 
-@native
-interface Foo {
+external interface Foo {
     @nativeGetter
     fun get(n: Number): Bar?
     @nativeSetter

@@ -1,17 +1,14 @@
 package anyMembers
 
-@native
-open class ExpectedOverrides {
+external open class ExpectedOverrides {
     override fun equals(a: Any): Unit = noImpl
     override fun hashCode(): Number = noImpl
     override fun toString(): String = noImpl
 }
-@native
-open class ExpectedOverrides2 {
+external open class ExpectedOverrides2 {
     override fun equals(a: Any): Unit = noImpl
 }
-@native
-open class ExpectedNoOverrides {
+external open class ExpectedNoOverrides {
     open fun equals(): Unit = noImpl
     open fun equals(a: Number): Unit = noImpl
     open fun equals(a: String): Unit = noImpl

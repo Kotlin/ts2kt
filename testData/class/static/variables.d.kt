@@ -1,7 +1,6 @@
 package variables
 
-@native
-open class Foo {
+external open class Foo {
     companion object {
         var varAsAny: Any = noImpl
         var varAsNumber: Number = noImpl

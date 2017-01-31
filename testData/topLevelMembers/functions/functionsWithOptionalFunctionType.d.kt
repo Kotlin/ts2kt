@@ -1,4 +1,3 @@
 package functionsWithOptionalFunctionType
 
-@native
-fun foo(f: ((a: Any) -> Boolean)? = null): Boolean = noImpl
+external fun foo(f: ((a: Any) -> Boolean)? = null): Boolean = noImpl

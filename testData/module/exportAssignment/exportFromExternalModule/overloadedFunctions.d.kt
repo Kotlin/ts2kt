@@ -1,12 +1,10 @@
 package overloadedFunctions
 
-@native
-interface BrowserifyObject : NodeJS.EventEmitter {
+external interface BrowserifyObject : NodeJS.EventEmitter {
     fun add(file: String): BrowserifyObject
     fun require(file: String): BrowserifyObject
 }
-@native
-interface Options {
+external interface Options {
     var entries: Array<String>? get() = noImpl; set(value){}
     var noParse: Array<String>? get() = noImpl; set(value){}
 }

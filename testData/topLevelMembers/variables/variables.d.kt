@@ -1,14 +1,8 @@
 package variables
 
-@native
-var varWithoutTypeAnnotation: Any = noImpl
-@native
-var varAsAny: Any = noImpl
-@native
-var varAsNumber: Number = noImpl
-@native
-var varAsBoolean: Boolean = noImpl
-@native
-var varAsString: String = noImpl
-@native
-var varAsFoo: Foo = noImpl
+external var varWithoutTypeAnnotation: Any = noImpl
+external var varAsAny: Any = noImpl
+external var varAsNumber: Number = noImpl
+external var varAsBoolean: Boolean = noImpl
+external var varAsString: String = noImpl
+external var varAsFoo: Foo = noImpl

@@ -7,9 +7,8 @@ object LazyJS {
     }
     var a: Any = noImpl
 }
-@native
 @module("lazy.js")
-var Lazy: LazyJS.LazyStatic = noImpl
+external var Lazy: LazyJS.LazyStatic = noImpl
 @module
 object lazy.js {
 

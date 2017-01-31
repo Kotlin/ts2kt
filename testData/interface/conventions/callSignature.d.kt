@@ -1,7 +1,6 @@
 package callSignature
 
-@native
-interface Foo {
+external interface Foo {
     @nativeInvoke
     fun invoke()
     @nativeInvoke

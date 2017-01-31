@@ -1,7 +1,6 @@
 package function
 
-@native
-interface Fiber_ {
+external interface Fiber_ {
     var reset: () -> Any
     var run: (param: Any? = null) -> Any
     var throwInto: (ex: Any) -> Any

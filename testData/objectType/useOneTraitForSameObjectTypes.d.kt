@@ -1,7 +1,6 @@
 package useOneTraitForSameObjectTypes
 
-@native
-interface `T$0` {
+external interface `T$0` {
     fun bar(a: Any): Number
     var baz: Any
     var boo: String
@@ -11,12 +10,9 @@ interface `T$0` {
     @nativeSetter
     fun set(s: String, value: Any)
 }
-@native
-var foo: `T$0` = noImpl
-@native
-var bar: `T$0` = noImpl
-@native
-interface `T$1` {
+external var foo: `T$0` = noImpl
+external var bar: `T$0` = noImpl
+external interface `T$1` {
     fun bar(a: Any): Number
     var baz: Any
     var boo: String
@@ -26,10 +22,8 @@ interface `T$1` {
     @nativeSetter
     fun set(s: String, value: Number)
 }
-@native
-var baz: `T$1` = noImpl
-@native
-interface Interface {
+external var baz: `T$1` = noImpl
+external interface Interface {
     var bar: `T$0`
     var baz: `T$1`
 }

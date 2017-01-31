@@ -1,7 +1,6 @@
 package simple
 
-@native
-open class BaseJQueryEventObject : Event {
+external open class BaseJQueryEventObject : Event {
     open var data: Any = noImpl
     open var delegateTarget: Element = noImpl
     open fun isDefaultPrevented(): Boolean = noImpl

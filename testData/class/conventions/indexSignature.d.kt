@@ -1,7 +1,6 @@
 package indexSignature
 
-@native
-open class Foo {
+external open class Foo {
     @nativeGetter
     open fun get(n: Number): Bar? = noImpl
     @nativeSetter

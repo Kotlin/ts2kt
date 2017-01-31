@@ -1,7 +1,6 @@
 package methods
 
-@native
-interface Foo {
+external interface Foo {
     @native("new")
     fun invoke(n: Number): Bar
     fun methodWithOutArgs()

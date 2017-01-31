@@ -1,7 +1,6 @@
 package genericsWithConstraint
 
-@native
-open class Foo<T : Bar> {
+external open class Foo<T : Bar> {
     open var varT: T = noImpl
     open fun withoutArgumentsReturnsT(): T = noImpl
     open fun withOneT(a: T): T = noImpl

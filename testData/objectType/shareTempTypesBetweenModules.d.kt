@@ -40,26 +40,20 @@ object Bar {
     }
     var foo: `T$5` = noImpl
 }
-@native
-interface `T$6` {
+external interface `T$6` {
     fun bar(a: Any): Number
     var baz: Any? get() = noImpl; set(value){}
     var boo: Any? get() = noImpl; set(value){}
     var show: (overrideChecks: Boolean) -> Unit
 }
-@native
-fun withObjectTypeParam(opt: `T$6`): Unit = noImpl
-@native
-interface `T$7` {
+external fun withObjectTypeParam(opt: `T$6`): Unit = noImpl
+external interface `T$7` {
     var value: Any? get() = noImpl; set(value){}
     var done: Boolean
 }
-@native
-fun returnsObjectType(): `T$7` = noImpl
-@native
-interface `T$8` {
+external fun returnsObjectType(): `T$7` = noImpl
+external interface `T$8` {
     fun bar(a: Any): Number
     fun baz(a: Any, b: Any, c: String): Boolean
 }
-@native
-var foo: `T$8` = noImpl
+external var foo: `T$8` = noImpl

@@ -1,8 +1,7 @@
 package functionAndSecondaryWithTrait
 
-@native
 @module("fibers")
-interface Fiber {
+external interface Fiber {
     var reset: () -> Any
     var run: (param: Any? = null) -> Any
     var throwInto: (ex: Any) -> Any

@@ -1,27 +1,16 @@
 package simple
 
-@native
-var foo: dynamic /* String | Number */ = noImpl
-@native
-fun bar(a: String): Unit = noImpl
-@native
-fun bar(a: Number): Unit = noImpl
-@native
-fun bar(a: Foo): Unit = noImpl
-@native
-fun baz(a: String, b: Number): Unit = noImpl
-@native
-fun baz(a: String, b: Foo): Unit = noImpl
-@native
-fun baz(a: Number, b: Number): Unit = noImpl
-@native
-fun baz(a: Number, b: Foo): Unit = noImpl
-@native
-fun baz(a: Foo, b: Number): Unit = noImpl
-@native
-fun baz(a: Foo, b: Foo): Unit = noImpl
-@native
-interface `T$0` {
+external var foo: dynamic /* String | Number */ = noImpl
+external fun bar(a: String): Unit = noImpl
+external fun bar(a: Number): Unit = noImpl
+external fun bar(a: Foo): Unit = noImpl
+external fun baz(a: String, b: Number): Unit = noImpl
+external fun baz(a: String, b: Foo): Unit = noImpl
+external fun baz(a: Number, b: Number): Unit = noImpl
+external fun baz(a: Number, b: Foo): Unit = noImpl
+external fun baz(a: Foo, b: Number): Unit = noImpl
+external fun baz(a: Foo, b: Foo): Unit = noImpl
+external interface `T$0` {
     @nativeGetter
     fun get(key: String): dynamic /* String | Number */
     @nativeSetter
@@ -29,8 +18,7 @@ interface `T$0` {
     @nativeSetter
     fun set(key: String, value: Number)
 }
-@native
-open class Foo {
+external open class Foo {
     constructor(a: String)
     constructor(a: Number)
     open fun someMethod(): dynamic /* String | Number */ = noImpl

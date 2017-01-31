@@ -1,7 +1,6 @@
 package simple
 
-@native
-interface BaseJQueryEventObject : Event {
+external interface BaseJQueryEventObject : Event {
     var data: Any
     var delegateTarget: Element
     fun isDefaultPrevented(): Boolean

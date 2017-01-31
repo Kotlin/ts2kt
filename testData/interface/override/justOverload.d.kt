@@ -1,10 +1,8 @@
 package justOverload
 
-@native
-interface Foo {
+external interface Foo {
     fun bar(a: Number)
 }
-@native
-interface Boo : Foo {
+external interface Boo : Foo {
     fun bar(a: String)
 }

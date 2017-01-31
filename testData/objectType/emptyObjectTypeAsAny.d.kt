@@ -1,8 +1,6 @@
 package emptyObjectTypeAsAny
 
-@native
-var foo: Any = noImpl
-@native
-interface Foo {
+external var foo: Any = noImpl
+external interface Foo {
     var boo: Any
 }

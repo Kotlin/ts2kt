@@ -1,17 +1,14 @@
 package anyMembers
 
-@native
-interface ExpectedOverrides {
+external interface ExpectedOverrides {
     override fun equals(a: Any)
     override fun hashCode(): Number
     override fun toString(): String
 }
-@native
-interface ExpectedOverrides2 {
+external interface ExpectedOverrides2 {
     override fun equals(a: Any)
 }
-@native
-interface ExpectedNoOverrides {
+external interface ExpectedNoOverrides {
     fun equals()
     fun equals(a: Number)
     fun equals(a: String)

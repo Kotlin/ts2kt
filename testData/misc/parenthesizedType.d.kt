@@ -1,10 +1,6 @@
 package parenthesizedType
 
-@native
-interface Interface
-@native
-fun foo(p: Interface, p2: Number): String = noImpl
-@native
-var a: Any = noImpl
-@native
-var b: Interface = noImpl
+external interface Interface
+external fun foo(p: Interface, p2: Number): String = noImpl
+external var a: Any = noImpl
+external var b: Interface = noImpl

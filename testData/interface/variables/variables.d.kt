@@ -1,7 +1,6 @@
 package variables
 
-@native
-interface Foo {
+external interface Foo {
     var varWithoutTypeAnnotation: Any
     var varAsAny: Any
     var varAsNumber: Number

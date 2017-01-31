@@ -1,7 +1,6 @@
 package inInterface
 
-@native
-interface MyInterface {
+external interface MyInterface {
     var self: MyInterface /* this */
     fun that(): MyInterface /* this */
 }
