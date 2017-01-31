@@ -396,26 +396,26 @@ external object TS {
     interface Node : TextRange {
         var kind: SyntaxKind
         var flags: NodeFlags
-        var decorators: NodeArray<Decorator>? get() = definedExternally; set(value){ definedExternally }
-        var modifiers: ModifiersArray? get() = definedExternally; set(value){ definedExternally }
-        var parent: Node? get() = definedExternally; set(value){ definedExternally }
+        var decorators: NodeArray<Decorator>? get() = definedExternally; set(value) = definedExternally
+        var modifiers: ModifiersArray? get() = definedExternally; set(value) = definedExternally
+        var parent: Node? get() = definedExternally; set(value) = definedExternally
         fun getSourceFile(): SourceFile
-        fun getChildCount(sourceFile: SourceFile? = definedExternally): Number
-        fun getChildAt(index: Number, sourceFile: SourceFile? = definedExternally): Node
-        fun getChildren(sourceFile: SourceFile? = definedExternally): Array<Node>
-        fun getStart(sourceFile: SourceFile? = definedExternally, includeJsDocComment: Boolean? = definedExternally): Number
+        fun getChildCount(sourceFile: SourceFile? = definedExternally /* null */): Number
+        fun getChildAt(index: Number, sourceFile: SourceFile? = definedExternally /* null */): Node
+        fun getChildren(sourceFile: SourceFile? = definedExternally /* null */): Array<Node>
+        fun getStart(sourceFile: SourceFile? = definedExternally /* null */, includeJsDocComment: Boolean? = definedExternally /* null */): Number
         fun getFullStart(): Number
         fun getEnd(): Number
-        fun getWidth(sourceFile: SourceFile? = definedExternally): Number
+        fun getWidth(sourceFile: SourceFile? = definedExternally /* null */): Number
         fun getFullWidth(): Number
-        fun getLeadingTriviaWidth(sourceFile: SourceFile? = definedExternally): Number
-        fun getFullText(sourceFile: SourceFile? = definedExternally): String
-        fun getText(sourceFile: SourceFile? = definedExternally): String
-        fun getFirstToken(sourceFile: SourceFile? = definedExternally): Node
-        fun getLastToken(sourceFile: SourceFile? = definedExternally): Node
+        fun getLeadingTriviaWidth(sourceFile: SourceFile? = definedExternally /* null */): Number
+        fun getFullText(sourceFile: SourceFile? = definedExternally /* null */): String
+        fun getText(sourceFile: SourceFile? = definedExternally /* null */): String
+        fun getFirstToken(sourceFile: SourceFile? = definedExternally /* null */): Node
+        fun getLastToken(sourceFile: SourceFile? = definedExternally /* null */): Node
     }
     interface NodeArray<T> : JsArray<T>, TextRange {
-        var hasTrailingComma: Boolean? get() = definedExternally; set(value){ definedExternally }
+        var hasTrailingComma: Boolean? get() = definedExternally; set(value) = definedExternally
     }
     interface ModifiersArray : NodeArray<Modifier> {
         var flags: NodeFlags
@@ -426,7 +426,7 @@ external object TS {
     interface Modifier : Token
     interface Identifier : PrimaryExpression {
         var text: String
-        var originalKeywordKind: SyntaxKind? get() = definedExternally; set(value){ definedExternally }
+        var originalKeywordKind: SyntaxKind? get() = definedExternally; set(value) = definedExternally
     }
     interface QualifiedName : Node {
         var left: EntityName
@@ -434,10 +434,10 @@ external object TS {
     }
     interface Declaration : Node {
         var _declarationBrand: Any
-        var name: dynamic /* Identifier | LiteralExpression | ComputedPropertyName | BindingPattern */ get() = definedExternally; set(value){ definedExternally }
+        var name: dynamic /* Identifier | LiteralExpression | ComputedPropertyName | BindingPattern */ get() = definedExternally; set(value) = definedExternally
     }
     interface DeclarationStatement : Declaration, Statement {
-        override var name: Identifier? get() = definedExternally; set(value){ definedExternally }
+        override var name: Identifier? get() = definedExternally; set(value) = definedExternally
     }
     interface ComputedPropertyName : Node {
         var expression: Expression
@@ -447,78 +447,78 @@ external object TS {
     }
     interface TypeParameterDeclaration : Declaration {
         override var name: Identifier
-        var constraint: TypeNode? get() = definedExternally; set(value){ definedExternally }
-        var expression: Expression? get() = definedExternally; set(value){ definedExternally }
+        var constraint: TypeNode? get() = definedExternally; set(value) = definedExternally
+        var expression: Expression? get() = definedExternally; set(value) = definedExternally
     }
     interface SignatureDeclaration : Declaration {
-        override var name: dynamic /* Identifier | LiteralExpression | ComputedPropertyName */ get() = definedExternally; set(value){ definedExternally }
-        var typeParameters: NodeArray<TypeParameterDeclaration>? get() = definedExternally; set(value){ definedExternally }
+        override var name: dynamic /* Identifier | LiteralExpression | ComputedPropertyName */ get() = definedExternally; set(value) = definedExternally
+        var typeParameters: NodeArray<TypeParameterDeclaration>? get() = definedExternally; set(value) = definedExternally
         var parameters: NodeArray<ParameterDeclaration>
-        var type: TypeNode? get() = definedExternally; set(value){ definedExternally }
+        var type: TypeNode? get() = definedExternally; set(value) = definedExternally
     }
     interface CallSignatureDeclaration : SignatureDeclaration, TypeElement {
-        override var name: dynamic /* Identifier | LiteralExpression | ComputedPropertyName */ get() = definedExternally; set(value){ definedExternally }
+        override var name: dynamic /* Identifier | LiteralExpression | ComputedPropertyName */ get() = definedExternally; set(value) = definedExternally
     }
     interface ConstructSignatureDeclaration : SignatureDeclaration, TypeElement {
-        override var name: dynamic /* Identifier | LiteralExpression | ComputedPropertyName */ get() = definedExternally; set(value){ definedExternally }
+        override var name: dynamic /* Identifier | LiteralExpression | ComputedPropertyName */ get() = definedExternally; set(value) = definedExternally
     }
     interface VariableDeclaration : Declaration {
-//        override var parent: VariableDeclarationList? get() = definedExternally; set(value){ definedExternally }
+//        override var parent: VariableDeclarationList? get() = definedExternally; set(value) = definedExternally
         override var name: dynamic /* Identifier | BindingPattern */
-        var type: TypeNode? get() = definedExternally; set(value){ definedExternally }
-        var initializer: Expression? get() = definedExternally; set(value){ definedExternally }
+        var type: TypeNode? get() = definedExternally; set(value) = definedExternally
+        var initializer: Expression? get() = definedExternally; set(value) = definedExternally
     }
     interface VariableDeclarationList : Node {
         var declarations: NodeArray<VariableDeclaration>
     }
     interface ParameterDeclaration : Declaration {
-        var dotDotDotToken: Node? get() = definedExternally; set(value){ definedExternally }
+        var dotDotDotToken: Node? get() = definedExternally; set(value) = definedExternally
         override var name: dynamic /* Identifier | BindingPattern */
-        var questionToken: Node? get() = definedExternally; set(value){ definedExternally }
-        var type: TypeNode? get() = definedExternally; set(value){ definedExternally }
-        var initializer: Expression? get() = definedExternally; set(value){ definedExternally }
+        var questionToken: Node? get() = definedExternally; set(value) = definedExternally
+        var type: TypeNode? get() = definedExternally; set(value) = definedExternally
+        var initializer: Expression? get() = definedExternally; set(value) = definedExternally
     }
     interface BindingElement : Declaration {
-        var propertyName: dynamic /* Identifier | LiteralExpression | ComputedPropertyName */ get() = definedExternally; set(value){ definedExternally }
-        var dotDotDotToken: Node? get() = definedExternally; set(value){ definedExternally }
+        var propertyName: dynamic /* Identifier | LiteralExpression | ComputedPropertyName */ get() = definedExternally; set(value) = definedExternally
+        var dotDotDotToken: Node? get() = definedExternally; set(value) = definedExternally
         override var name: dynamic /* Identifier | BindingPattern */
-        var initializer: Expression? get() = definedExternally; set(value){ definedExternally }
+        var initializer: Expression? get() = definedExternally; set(value) = definedExternally
     }
     interface PropertySignature : TypeElement {
         override var name: dynamic /* Identifier | LiteralExpression | ComputedPropertyName */
-        override var questionToken: Node? get() = definedExternally; set(value){ definedExternally }
-        var type: TypeNode? get() = definedExternally; set(value){ definedExternally }
-        var initializer: Expression? get() = definedExternally; set(value){ definedExternally }
+        override var questionToken: Node? get() = definedExternally; set(value) = definedExternally
+        var type: TypeNode? get() = definedExternally; set(value) = definedExternally
+        var initializer: Expression? get() = definedExternally; set(value) = definedExternally
     }
     interface PropertyDeclaration : ClassElement {
-        var questionToken: Node? get() = definedExternally; set(value){ definedExternally }
+        var questionToken: Node? get() = definedExternally; set(value) = definedExternally
         override var name: dynamic /* Identifier | LiteralExpression | ComputedPropertyName */
-        var type: TypeNode? get() = definedExternally; set(value){ definedExternally }
-        var initializer: Expression? get() = definedExternally; set(value){ definedExternally }
+        var type: TypeNode? get() = definedExternally; set(value) = definedExternally
+        var initializer: Expression? get() = definedExternally; set(value) = definedExternally
     }
     interface ObjectLiteralElement : Declaration {
         var _objectLiteralBrandBrand: Any
-        override var name: dynamic /* Identifier | LiteralExpression | ComputedPropertyName */ get() = definedExternally; set(value){ definedExternally }
+        override var name: dynamic /* Identifier | LiteralExpression | ComputedPropertyName */ get() = definedExternally; set(value) = definedExternally
     }
     interface PropertyAssignment : ObjectLiteralElement {
         var _propertyAssignmentBrand: Any
         override var name: dynamic /* Identifier | LiteralExpression | ComputedPropertyName */
-        var questionToken: Node? get() = definedExternally; set(value){ definedExternally }
+        var questionToken: Node? get() = definedExternally; set(value) = definedExternally
         var initializer: Expression
     }
     interface ShorthandPropertyAssignment : ObjectLiteralElement {
         override var name: Identifier
-        var questionToken: Node? get() = definedExternally; set(value){ definedExternally }
-        var equalsToken: Node? get() = definedExternally; set(value){ definedExternally }
-        var objectAssignmentInitializer: Expression? get() = definedExternally; set(value){ definedExternally }
+        var questionToken: Node? get() = definedExternally; set(value) = definedExternally
+        var equalsToken: Node? get() = definedExternally; set(value) = definedExternally
+        var objectAssignmentInitializer: Expression? get() = definedExternally; set(value) = definedExternally
     }
     interface VariableLikeDeclaration : Declaration {
-        var propertyName: dynamic /* Identifier | LiteralExpression | ComputedPropertyName */ get() = definedExternally; set(value){ definedExternally }
-        var dotDotDotToken: Node? get() = definedExternally; set(value){ definedExternally }
+        var propertyName: dynamic /* Identifier | LiteralExpression | ComputedPropertyName */ get() = definedExternally; set(value) = definedExternally
+        var dotDotDotToken: Node? get() = definedExternally; set(value) = definedExternally
         override var name: dynamic /* Identifier | LiteralExpression | ComputedPropertyName | BindingPattern */
-        var questionToken: Node? get() = definedExternally; set(value){ definedExternally }
-        var type: TypeNode? get() = definedExternally; set(value){ definedExternally }
-        var initializer: Expression? get() = definedExternally; set(value){ definedExternally }
+        var questionToken: Node? get() = definedExternally; set(value) = definedExternally
+        var type: TypeNode? get() = definedExternally; set(value) = definedExternally
+        var initializer: Expression? get() = definedExternally; set(value) = definedExternally
     }
     interface PropertyLikeDeclaration : Declaration {
         override var name: dynamic /* Identifier | LiteralExpression | ComputedPropertyName */
@@ -530,24 +530,24 @@ external object TS {
     interface ArrayBindingPattern : BindingPattern
     interface FunctionLikeDeclaration : SignatureDeclaration {
         var _functionLikeDeclarationBrand: Any
-        var asteriskToken: Node? get() = definedExternally; set(value){ definedExternally }
-        var questionToken: Node? get() = definedExternally; set(value){ definedExternally }
-        var body: dynamic /* Block | Expression */ get() = definedExternally; set(value){ definedExternally }
+        var asteriskToken: Node? get() = definedExternally; set(value) = definedExternally
+        var questionToken: Node? get() = definedExternally; set(value) = definedExternally
+        var body: dynamic /* Block | Expression */ get() = definedExternally; set(value) = definedExternally
     }
     interface FunctionDeclaration : FunctionLikeDeclaration, DeclarationStatement {
-        override var name: Identifier? get() = definedExternally; set(value){ definedExternally }
-        override var body: FunctionBody? get() = definedExternally; set(value){ definedExternally }
+        override var name: Identifier? get() = definedExternally; set(value) = definedExternally
+        override var body: FunctionBody? get() = definedExternally; set(value) = definedExternally
     }
     interface MethodSignature : SignatureDeclaration, TypeElement {
         override var name: dynamic /* Identifier | LiteralExpression | ComputedPropertyName */
     }
     interface MethodDeclaration : FunctionLikeDeclaration, ClassElement, ObjectLiteralElement {
         override var name: dynamic /* Identifier | LiteralExpression | ComputedPropertyName */
-        override var body: FunctionBody? get() = definedExternally; set(value){ definedExternally }
+        override var body: FunctionBody? get() = definedExternally; set(value) = definedExternally
     }
     interface ConstructorDeclaration : FunctionLikeDeclaration, ClassElement {
-        override var name: dynamic get() = definedExternally; set(value){ definedExternally }
-        override var body: FunctionBody? get() = definedExternally; set(value){ definedExternally }
+        override var name: dynamic get() = definedExternally; set(value) = definedExternally
+        override var body: FunctionBody? get() = definedExternally; set(value) = definedExternally
     }
     interface SemicolonClassElement : ClassElement {
         var _semicolonClassElementBrand: Any
@@ -560,7 +560,7 @@ external object TS {
     interface GetAccessorDeclaration : AccessorDeclaration
     interface SetAccessorDeclaration : AccessorDeclaration
     interface IndexSignatureDeclaration : SignatureDeclaration, ClassElement, TypeElement {
-        override var name: dynamic get() = definedExternally; set(value){ definedExternally }
+        override var name: dynamic get() = definedExternally; set(value) = definedExternally
         var _indexSignatureDeclarationBrand: Any
     }
     interface TypeNode : Node {
@@ -576,7 +576,7 @@ external object TS {
     interface ConstructorTypeNode : FunctionOrConstructorTypeNode
     interface TypeReferenceNode : TypeNode {
         var typeName: dynamic /* Identifier | QualifiedName */
-        var typeArguments: NodeArray<TypeNode>? get() = definedExternally; set(value){ definedExternally }
+        var typeArguments: NodeArray<TypeNode>? get() = definedExternally; set(value) = definedExternally
     }
     interface TypePredicateNode : TypeNode {
         var parameterName: dynamic /* Identifier | ThisTypeNode */
@@ -611,7 +611,7 @@ external object TS {
     }
     interface Expression : Node {
         var _expressionBrand: Any
-        var contextualType: Type? get() = definedExternally; set(value){ definedExternally }
+        var contextualType: Type? get() = definedExternally; set(value) = definedExternally
     }
     interface OmittedExpression : Expression
     interface UnaryExpression : Expression {
@@ -653,8 +653,8 @@ external object TS {
         var expression: UnaryExpression
     }
     interface YieldExpression : Expression {
-        var asteriskToken: Node? get() = definedExternally; set(value){ definedExternally }
-        var expression: Expression? get() = definedExternally; set(value){ definedExternally }
+        var asteriskToken: Node? get() = definedExternally; set(value) = definedExternally
+        var expression: Expression? get() = definedExternally; set(value) = definedExternally
     }
     interface BinaryExpression : Expression, Declaration {
         var left: Expression
@@ -669,7 +669,7 @@ external object TS {
         var whenFalse: Expression
     }
     interface FunctionExpression : PrimaryExpression, FunctionLikeDeclaration {
-        override var name: Identifier? get() = definedExternally; set(value){ definedExternally }
+        override var name: Identifier? get() = definedExternally; set(value) = definedExternally
         override var body: Block
     }
     interface ArrowFunction : Expression, FunctionLikeDeclaration {
@@ -678,8 +678,8 @@ external object TS {
     }
     interface LiteralLikeNode : Node {
         var text: String
-        var isUnterminated: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var hasExtendedUnicodeEscape: Boolean? get() = definedExternally; set(value){ definedExternally }
+        var isUnterminated: Boolean? get() = definedExternally; set(value) = definedExternally
+        var hasExtendedUnicodeEscape: Boolean? get() = definedExternally; set(value) = definedExternally
     }
     interface LiteralExpression : LiteralLikeNode, PrimaryExpression {
         var _literalExpressionBrand: Any
@@ -712,21 +712,21 @@ external object TS {
         override var name: Identifier
     }
     interface PropertyAccessEntityNameExpression : PropertyAccessExpression {
-        var _propertyAccessExpressionLikeQualifiedNameBrand: Any? get() = definedExternally; set(value){ definedExternally }
+        var _propertyAccessExpressionLikeQualifiedNameBrand: Any? get() = definedExternally; set(value) = definedExternally
         override var expression: dynamic /* Identifier | PropertyAccessEntityNameExpression */
     }
     interface ElementAccessExpression : MemberExpression {
         var expression: LeftHandSideExpression
-        var argumentExpression: Expression? get() = definedExternally; set(value){ definedExternally }
+        var argumentExpression: Expression? get() = definedExternally; set(value) = definedExternally
     }
     interface CallExpression : LeftHandSideExpression, Declaration {
         var expression: LeftHandSideExpression
-        var typeArguments: NodeArray<TypeNode>? get() = definedExternally; set(value){ definedExternally }
+        var typeArguments: NodeArray<TypeNode>? get() = definedExternally; set(value) = definedExternally
         var arguments: NodeArray<Expression>
     }
     interface ExpressionWithTypeArguments : TypeNode {
         var expression: LeftHandSideExpression
-        var typeArguments: NodeArray<TypeNode>? get() = definedExternally; set(value){ definedExternally }
+        var typeArguments: NodeArray<TypeNode>? get() = definedExternally; set(value) = definedExternally
     }
     interface NewExpression : CallExpression, PrimaryExpression
     interface TaggedTemplateExpression : MemberExpression {
@@ -750,16 +750,16 @@ external object TS {
         var closingElement: JsxClosingElement
     }
     interface JsxOpeningElement : Expression {
-        var _openingElementBrand: Any? get() = definedExternally; set(value){ definedExternally }
+        var _openingElementBrand: Any? get() = definedExternally; set(value) = definedExternally
         var tagName: dynamic /* PrimaryExpression | PropertyAccessExpression */
         var attributes: NodeArray<dynamic /* JsxAttribute | JsxSpreadAttribute */>
     }
     interface JsxSelfClosingElement : PrimaryExpression, JsxOpeningElement {
-        var _selfClosingElementBrand: Any? get() = definedExternally; set(value){ definedExternally }
+        var _selfClosingElementBrand: Any? get() = definedExternally; set(value) = definedExternally
     }
     interface JsxAttribute : Node {
         var name: Identifier
-        var initializer: Expression? get() = definedExternally; set(value){ definedExternally }
+        var initializer: Expression? get() = definedExternally; set(value) = definedExternally
     }
     interface JsxSpreadAttribute : Node {
         var expression: Expression
@@ -768,7 +768,7 @@ external object TS {
         var tagName: dynamic /* PrimaryExpression | PropertyAccessExpression */
     }
     interface JsxExpression : Expression {
-        var expression: Expression? get() = definedExternally; set(value){ definedExternally }
+        var expression: Expression? get() = definedExternally; set(value) = definedExternally
     }
     interface JsxText : Node {
         var _jsxTextExpressionBrand: Any
@@ -779,7 +779,7 @@ external object TS {
     interface EmptyStatement : Statement
     interface DebuggerStatement : Statement
     interface MissingDeclaration : DeclarationStatement, ClassElement, ObjectLiteralElement, TypeElement {
-        override var name: Identifier? get() = definedExternally; set(value){ definedExternally }
+        override var name: Identifier? get() = definedExternally; set(value) = definedExternally
     }
     interface Block : Statement {
         var statements: NodeArray<Statement>
@@ -793,7 +793,7 @@ external object TS {
     interface IfStatement : Statement {
         var expression: Expression
         var thenStatement: Statement
-        var elseStatement: Statement? get() = definedExternally; set(value){ definedExternally }
+        var elseStatement: Statement? get() = definedExternally; set(value) = definedExternally
     }
     interface IterationStatement : Statement {
         var statement: Statement
@@ -805,9 +805,9 @@ external object TS {
         var expression: Expression
     }
     interface ForStatement : IterationStatement {
-        var initializer: dynamic /* VariableDeclarationList | Expression */ get() = definedExternally; set(value){ definedExternally }
-        var condition: Expression? get() = definedExternally; set(value){ definedExternally }
-        var incrementor: Expression? get() = definedExternally; set(value){ definedExternally }
+        var initializer: dynamic /* VariableDeclarationList | Expression */ get() = definedExternally; set(value) = definedExternally
+        var condition: Expression? get() = definedExternally; set(value) = definedExternally
+        var incrementor: Expression? get() = definedExternally; set(value) = definedExternally
     }
     interface ForInStatement : IterationStatement {
         var initializer: dynamic /* VariableDeclarationList | Expression */
@@ -818,13 +818,13 @@ external object TS {
         var expression: Expression
     }
     interface BreakStatement : Statement {
-        var label: Identifier? get() = definedExternally; set(value){ definedExternally }
+        var label: Identifier? get() = definedExternally; set(value) = definedExternally
     }
     interface ContinueStatement : Statement {
-        var label: Identifier? get() = definedExternally; set(value){ definedExternally }
+        var label: Identifier? get() = definedExternally; set(value) = definedExternally
     }
     interface ReturnStatement : Statement {
-        var expression: Expression? get() = definedExternally; set(value){ definedExternally }
+        var expression: Expression? get() = definedExternally; set(value) = definedExternally
     }
     interface WithStatement : Statement {
         var expression: Expression
@@ -833,7 +833,7 @@ external object TS {
     interface SwitchStatement : Statement {
         var expression: Expression
         var caseBlock: CaseBlock
-        var possiblyExhaustive: Boolean? get() = definedExternally; set(value){ definedExternally }
+        var possiblyExhaustive: Boolean? get() = definedExternally; set(value) = definedExternally
     }
     interface CaseBlock : Node {
         var clauses: NodeArray<CaseOrDefaultClause>
@@ -854,50 +854,50 @@ external object TS {
     }
     interface TryStatement : Statement {
         var tryBlock: Block
-        var catchClause: CatchClause? get() = definedExternally; set(value){ definedExternally }
-        var finallyBlock: Block? get() = definedExternally; set(value){ definedExternally }
+        var catchClause: CatchClause? get() = definedExternally; set(value) = definedExternally
+        var finallyBlock: Block? get() = definedExternally; set(value) = definedExternally
     }
     interface CatchClause : Node {
         var variableDeclaration: VariableDeclaration
         var block: Block
     }
     interface ClassLikeDeclaration : Declaration {
-        override var name: Identifier? get() = definedExternally; set(value){ definedExternally }
-        var typeParameters: NodeArray<TypeParameterDeclaration>? get() = definedExternally; set(value){ definedExternally }
-        var heritageClauses: NodeArray<HeritageClause>? get() = definedExternally; set(value){ definedExternally }
+        override var name: Identifier? get() = definedExternally; set(value) = definedExternally
+        var typeParameters: NodeArray<TypeParameterDeclaration>? get() = definedExternally; set(value) = definedExternally
+        var heritageClauses: NodeArray<HeritageClause>? get() = definedExternally; set(value) = definedExternally
         var members: NodeArray<ClassElement>
     }
     interface ClassDeclaration : ClassLikeDeclaration, DeclarationStatement {
-        override var name: Identifier? get() = definedExternally; set(value){ definedExternally }
+        override var name: Identifier? get() = definedExternally; set(value) = definedExternally
     }
     interface ClassExpression : ClassLikeDeclaration, PrimaryExpression
     interface ClassElement : Declaration {
         var _classElementBrand: Any
-        override var name: dynamic /* Identifier | LiteralExpression | ComputedPropertyName */ get() = definedExternally; set(value){ definedExternally }
+        override var name: dynamic /* Identifier | LiteralExpression | ComputedPropertyName */ get() = definedExternally; set(value) = definedExternally
     }
     interface TypeElement : Declaration {
         var _typeElementBrand: Any
-        override var name: dynamic /* Identifier | LiteralExpression | ComputedPropertyName */ get() = definedExternally; set(value){ definedExternally }
-        var questionToken: Node? get() = definedExternally; set(value){ definedExternally }
+        override var name: dynamic /* Identifier | LiteralExpression | ComputedPropertyName */ get() = definedExternally; set(value) = definedExternally
+        var questionToken: Node? get() = definedExternally; set(value) = definedExternally
     }
     interface InterfaceDeclaration : DeclarationStatement {
         override var name: Identifier?
-        var typeParameters: NodeArray<TypeParameterDeclaration>? get() = definedExternally; set(value){ definedExternally }
-        var heritageClauses: NodeArray<HeritageClause>? get() = definedExternally; set(value){ definedExternally }
+        var typeParameters: NodeArray<TypeParameterDeclaration>? get() = definedExternally; set(value) = definedExternally
+        var heritageClauses: NodeArray<HeritageClause>? get() = definedExternally; set(value) = definedExternally
         var members: NodeArray<TypeElement>
     }
     interface HeritageClause : Node {
         var token: SyntaxKind
-        var types: NodeArray<ExpressionWithTypeArguments>? get() = definedExternally; set(value){ definedExternally }
+        var types: NodeArray<ExpressionWithTypeArguments>? get() = definedExternally; set(value) = definedExternally
     }
     interface TypeAliasDeclaration : DeclarationStatement {
         override var name: Identifier?
-        var typeParameters: NodeArray<TypeParameterDeclaration>? get() = definedExternally; set(value){ definedExternally }
+        var typeParameters: NodeArray<TypeParameterDeclaration>? get() = definedExternally; set(value) = definedExternally
         var type: TypeNode
     }
     interface EnumMember : Declaration {
         override var name: dynamic /* Identifier | LiteralExpression | ComputedPropertyName | BindingPattern */
-        var initializer: Expression? get() = definedExternally; set(value){ definedExternally }
+        var initializer: Expression? get() = definedExternally; set(value) = definedExternally
     }
     interface EnumDeclaration : DeclarationStatement {
         override var name: Identifier?
@@ -905,7 +905,7 @@ external object TS {
     }
     interface ModuleDeclaration : DeclarationStatement {
         override var name: dynamic /* Identifier | LiteralExpression */
-        var body: dynamic /* ModuleBlock | ModuleDeclaration */ get() = definedExternally; set(value){ definedExternally }
+        var body: dynamic /* ModuleBlock | ModuleDeclaration */ get() = definedExternally; set(value) = definedExternally
     }
     interface ModuleBlock : Node, Statement {
         var statements: NodeArray<Statement>
@@ -915,15 +915,15 @@ external object TS {
         var moduleReference: dynamic /* Identifier | QualifiedName | ExternalModuleReference */
     }
     interface ExternalModuleReference : Node {
-        var expression: Expression? get() = definedExternally; set(value){ definedExternally }
+        var expression: Expression? get() = definedExternally; set(value) = definedExternally
     }
     interface ImportDeclaration : Statement {
-        var importClause: ImportClause? get() = definedExternally; set(value){ definedExternally }
+        var importClause: ImportClause? get() = definedExternally; set(value) = definedExternally
         var moduleSpecifier: Expression
     }
     interface ImportClause : Declaration {
-        override var name: Identifier? get() = definedExternally; set(value){ definedExternally }
-        var namedBindings: dynamic /* NamespaceImport | NamedImports */ get() = definedExternally; set(value){ definedExternally }
+        override var name: Identifier? get() = definedExternally; set(value) = definedExternally
+        var namedBindings: dynamic /* NamespaceImport | NamedImports */ get() = definedExternally; set(value) = definedExternally
     }
     interface NamespaceImport : Declaration {
         override var name: Identifier
@@ -933,8 +933,8 @@ external object TS {
         var moduleReference: LiteralLikeNode
     }
     interface ExportDeclaration : DeclarationStatement {
-        var exportClause: NamedExports? get() = definedExternally; set(value){ definedExternally }
-        var moduleSpecifier: Expression? get() = definedExternally; set(value){ definedExternally }
+        var exportClause: NamedExports? get() = definedExternally; set(value) = definedExternally
+        var moduleSpecifier: Expression? get() = definedExternally; set(value) = definedExternally
     }
     interface NamedImports : Node {
         var elements: NodeArray<ImportSpecifier>
@@ -943,22 +943,22 @@ external object TS {
         var elements: NodeArray<ExportSpecifier>
     }
     interface ImportSpecifier : Declaration {
-        var propertyName: Identifier? get() = definedExternally; set(value){ definedExternally }
+        var propertyName: Identifier? get() = definedExternally; set(value) = definedExternally
         override var name: Identifier
     }
     interface ExportSpecifier : Declaration {
-        var propertyName: Identifier? get() = definedExternally; set(value){ definedExternally }
+        var propertyName: Identifier? get() = definedExternally; set(value) = definedExternally
         override var name: Identifier
     }
     interface ExportAssignment : DeclarationStatement {
-        var isExportEquals: Boolean? get() = definedExternally; set(value){ definedExternally }
+        var isExportEquals: Boolean? get() = definedExternally; set(value) = definedExternally
         var expression: Expression
     }
     interface FileReference : TextRange {
         var fileName: String
     }
     interface CommentRange : TextRange {
-        var hasTrailingNewLine: Boolean? get() = definedExternally; set(value){ definedExternally }
+        var hasTrailingNewLine: Boolean? get() = definedExternally; set(value) = definedExternally
         var kind: SyntaxKind
     }
     interface JSDocTypeExpression : Node {
@@ -1016,7 +1016,7 @@ external object TS {
     }
     interface JSDocRecordMember : PropertySignature {
         override var name: dynamic /* Identifier | LiteralExpression */
-//        override var type: JSDocType? get() = definedExternally; set(value){ definedExternally }
+//        override var type: JSDocType? get() = definedExternally; set(value) = definedExternally
     }
     interface JSDocComment : Node {
         var tags: NodeArray<JSDocTag>
@@ -1035,22 +1035,22 @@ external object TS {
         var typeExpression: JSDocTypeExpression
     }
     interface JSDocTypedefTag : JSDocTag, Declaration {
-        override var name: Identifier? get() = definedExternally; set(value){ definedExternally }
-        var typeExpression: JSDocTypeExpression? get() = definedExternally; set(value){ definedExternally }
-        var jsDocTypeLiteral: JSDocTypeLiteral? get() = definedExternally; set(value){ definedExternally }
+        override var name: Identifier? get() = definedExternally; set(value) = definedExternally
+        var typeExpression: JSDocTypeExpression? get() = definedExternally; set(value) = definedExternally
+        var jsDocTypeLiteral: JSDocTypeLiteral? get() = definedExternally; set(value) = definedExternally
     }
     interface JSDocPropertyTag : JSDocTag, TypeElement {
         override var name: Identifier
         var typeExpression: JSDocTypeExpression
     }
     interface JSDocTypeLiteral : JSDocType {
-        var jsDocPropertyTags: NodeArray<JSDocPropertyTag>? get() = definedExternally; set(value){ definedExternally }
-        var jsDocTypeTag: JSDocTypeTag? get() = definedExternally; set(value){ definedExternally }
+        var jsDocPropertyTags: NodeArray<JSDocPropertyTag>? get() = definedExternally; set(value) = definedExternally
+        var jsDocTypeTag: JSDocTypeTag? get() = definedExternally; set(value) = definedExternally
     }
     interface JSDocParameterTag : JSDocTag {
-        var preParameterName: Identifier? get() = definedExternally; set(value){ definedExternally }
-        var typeExpression: JSDocTypeExpression? get() = definedExternally; set(value){ definedExternally }
-        var postParameterName: Identifier? get() = definedExternally; set(value){ definedExternally }
+        var preParameterName: Identifier? get() = definedExternally; set(value) = definedExternally
+        var typeExpression: JSDocTypeExpression? get() = definedExternally; set(value) = definedExternally
+        var postParameterName: Identifier? get() = definedExternally; set(value) = definedExternally
         var isBracketed: Boolean
     }
     enum class FlowFlags {
@@ -1069,10 +1069,10 @@ external object TS {
     }
     interface FlowNode {
         var flags: FlowFlags
-        var id: Number? get() = definedExternally; set(value){ definedExternally }
+        var id: Number? get() = definedExternally; set(value) = definedExternally
     }
     interface FlowStart : FlowNode {
-        var container: dynamic /* FunctionExpression | ArrowFunction */ get() = definedExternally; set(value){ definedExternally }
+        var container: dynamic /* FunctionExpression | ArrowFunction */ get() = definedExternally; set(value) = definedExternally
     }
     interface FlowLabel : FlowNode {
         var antecedents: Array<FlowNode>
@@ -1131,7 +1131,7 @@ external object TS {
     }
     interface WriteFileCallback {
         @nativeInvoke
-        fun invoke(fileName: String, data: String, writeByteOrderMark: Boolean, onError: ((message: String) -> Unit)? = definedExternally, sourceFiles: Array<SourceFile>? = definedExternally)
+        fun invoke(fileName: String, data: String, writeByteOrderMark: Boolean, onError: ((message: String) -> Unit)? = definedExternally /* null */, sourceFiles: Array<SourceFile>? = definedExternally /* null */)
     }
     open class OperationCanceledException
     interface CancellationToken {
@@ -1141,12 +1141,12 @@ external object TS {
     interface Program : ScriptReferenceHost {
         fun getRootFileNames(): Array<String>
         fun getSourceFiles(): Array<SourceFile>
-        fun emit(targetSourceFile: SourceFile? = definedExternally, writeFile: WriteFileCallback? = definedExternally, cancellationToken: CancellationToken? = definedExternally, emitOnlyDtsFiles: Boolean? = definedExternally): EmitResult
-        fun getOptionsDiagnostics(cancellationToken: CancellationToken? = definedExternally): Array<Diagnostic>
-        fun getGlobalDiagnostics(cancellationToken: CancellationToken? = definedExternally): Array<Diagnostic>
-        fun getSyntacticDiagnostics(sourceFile: SourceFile? = definedExternally, cancellationToken: CancellationToken? = definedExternally): Array<Diagnostic>
-        fun getSemanticDiagnostics(sourceFile: SourceFile? = definedExternally, cancellationToken: CancellationToken? = definedExternally): Array<Diagnostic>
-        fun getDeclarationDiagnostics(sourceFile: SourceFile? = definedExternally, cancellationToken: CancellationToken? = definedExternally): Array<Diagnostic>
+        fun emit(targetSourceFile: SourceFile? = definedExternally /* null */, writeFile: WriteFileCallback? = definedExternally /* null */, cancellationToken: CancellationToken? = definedExternally /* null */, emitOnlyDtsFiles: Boolean? = definedExternally /* null */): EmitResult
+        fun getOptionsDiagnostics(cancellationToken: CancellationToken? = definedExternally /* null */): Array<Diagnostic>
+        fun getGlobalDiagnostics(cancellationToken: CancellationToken? = definedExternally /* null */): Array<Diagnostic>
+        fun getSyntacticDiagnostics(sourceFile: SourceFile? = definedExternally /* null */, cancellationToken: CancellationToken? = definedExternally /* null */): Array<Diagnostic>
+        fun getSemanticDiagnostics(sourceFile: SourceFile? = definedExternally /* null */, cancellationToken: CancellationToken? = definedExternally /* null */): Array<Diagnostic>
+        fun getDeclarationDiagnostics(sourceFile: SourceFile? = definedExternally /* null */, cancellationToken: CancellationToken? = definedExternally /* null */): Array<Diagnostic>
         fun getTypeChecker(): TypeChecker
     }
     interface SourceMapSpan {
@@ -1154,7 +1154,7 @@ external object TS {
         var emittedColumn: Number
         var sourceLine: Number
         var sourceColumn: Number
-        var nameIndex: Number? get() = definedExternally; set(value){ definedExternally }
+        var nameIndex: Number? get() = definedExternally; set(value) = definedExternally
         var sourceIndex: Number
     }
     interface SourceMapData {
@@ -1163,9 +1163,9 @@ external object TS {
         var sourceMapFile: String
         var sourceMapSourceRoot: String
         var sourceMapSources: Array<String>
-        var sourceMapSourcesContent: Array<String>? get() = definedExternally; set(value){ definedExternally }
+        var sourceMapSourcesContent: Array<String>? get() = definedExternally; set(value) = definedExternally
         var inputSourceFileNames: Array<String>
-        var sourceMapNames: Array<String>? get() = definedExternally; set(value){ definedExternally }
+        var sourceMapNames: Array<String>? get() = definedExternally; set(value) = definedExternally
         var sourceMapMappings: String
         var sourceMapDecodedMappings: Array<SourceMapSpan>
     }
@@ -1196,17 +1196,17 @@ external object TS {
         fun getExportSpecifierLocalTargetSymbol(location: ExportSpecifier): Symbol
         fun getPropertySymbolOfDestructuringAssignment(location: Identifier): Symbol
         fun getTypeAtLocation(node: Node): Type?
-        fun typeToString(type: Type, enclosingDeclaration: Node? = definedExternally, flags: TypeFormatFlags? = definedExternally): String
-        fun symbolToString(symbol: Symbol, enclosingDeclaration: Node? = definedExternally, meaning: SymbolFlags? = definedExternally): String
+        fun typeToString(type: Type, enclosingDeclaration: Node? = definedExternally /* null */, flags: TypeFormatFlags? = definedExternally /* null */): String
+        fun symbolToString(symbol: Symbol, enclosingDeclaration: Node? = definedExternally /* null */, meaning: SymbolFlags? = definedExternally /* null */): String
         fun getSymbolDisplayBuilder(): SymbolDisplayBuilder
         fun getFullyQualifiedName(symbol: Symbol): String
         fun getAugmentedPropertiesOfType(type: Type): Array<Symbol>
         fun getRootSymbols(symbol: Symbol): Array<Symbol>
         fun getContextualType(node: Expression): Type
-        fun getResolvedSignature(node: CallExpression, candidatesOutArray: Array<Signature>? = definedExternally): Signature
-        fun getResolvedSignature(node: NewExpression, candidatesOutArray: Array<Signature>? = definedExternally): Signature
-        fun getResolvedSignature(node: TaggedTemplateExpression, candidatesOutArray: Array<Signature>? = definedExternally): Signature
-        fun getResolvedSignature(node: Decorator, candidatesOutArray: Array<Signature>? = definedExternally): Signature
+        fun getResolvedSignature(node: CallExpression, candidatesOutArray: Array<Signature>? = definedExternally /* null */): Signature
+        fun getResolvedSignature(node: NewExpression, candidatesOutArray: Array<Signature>? = definedExternally /* null */): Signature
+        fun getResolvedSignature(node: TaggedTemplateExpression, candidatesOutArray: Array<Signature>? = definedExternally /* null */): Signature
+        fun getResolvedSignature(node: Decorator, candidatesOutArray: Array<Signature>? = definedExternally /* null */): Signature
         fun getSignatureFromDeclaration(declaration: SignatureDeclaration): Signature
         fun isImplementationOfOverload(node: FunctionLikeDeclaration): Boolean
         fun isUndefinedSymbol(symbol: Symbol): Boolean
@@ -1226,16 +1226,16 @@ external object TS {
         fun getAmbientModules(): Array<Symbol>
     }
     interface SymbolDisplayBuilder {
-        fun buildTypeDisplay(type: Type, writer: SymbolWriter, enclosingDeclaration: Node? = definedExternally, flags: TypeFormatFlags? = definedExternally)
-        fun buildSymbolDisplay(symbol: Symbol, writer: SymbolWriter, enclosingDeclaration: Node? = definedExternally, meaning: SymbolFlags? = definedExternally, flags: SymbolFormatFlags? = definedExternally)
-        fun buildSignatureDisplay(signatures: Signature, writer: SymbolWriter, enclosingDeclaration: Node? = definedExternally, flags: TypeFormatFlags? = definedExternally, kind: SignatureKind? = definedExternally)
-        fun buildParameterDisplay(parameter: Symbol, writer: SymbolWriter, enclosingDeclaration: Node? = definedExternally, flags: TypeFormatFlags? = definedExternally)
-        fun buildTypeParameterDisplay(tp: TypeParameter, writer: SymbolWriter, enclosingDeclaration: Node? = definedExternally, flags: TypeFormatFlags? = definedExternally)
-        fun buildTypePredicateDisplay(predicate: dynamic /*TypePredicate*/, writer: SymbolWriter, enclosingDeclaration: Node? = definedExternally, flags: TypeFormatFlags? = definedExternally)
-        fun buildTypeParameterDisplayFromSymbol(symbol: Symbol, writer: SymbolWriter, enclosingDeclaration: Node? = definedExternally, flags: TypeFormatFlags? = definedExternally)
-        fun buildDisplayForParametersAndDelimiters(thisParameter: Symbol, parameters: Array<Symbol>, writer: SymbolWriter, enclosingDeclaration: Node? = definedExternally, flags: TypeFormatFlags? = definedExternally)
-        fun buildDisplayForTypeParametersAndDelimiters(typeParameters: Array<TypeParameter>, writer: SymbolWriter, enclosingDeclaration: Node? = definedExternally, flags: TypeFormatFlags? = definedExternally)
-        fun buildReturnTypeDisplay(signature: Signature, writer: SymbolWriter, enclosingDeclaration: Node? = definedExternally, flags: TypeFormatFlags? = definedExternally)
+        fun buildTypeDisplay(type: Type, writer: SymbolWriter, enclosingDeclaration: Node? = definedExternally /* null */, flags: TypeFormatFlags? = definedExternally /* null */)
+        fun buildSymbolDisplay(symbol: Symbol, writer: SymbolWriter, enclosingDeclaration: Node? = definedExternally /* null */, meaning: SymbolFlags? = definedExternally /* null */, flags: SymbolFormatFlags? = definedExternally /* null */)
+        fun buildSignatureDisplay(signatures: Signature, writer: SymbolWriter, enclosingDeclaration: Node? = definedExternally /* null */, flags: TypeFormatFlags? = definedExternally /* null */, kind: SignatureKind? = definedExternally /* null */)
+        fun buildParameterDisplay(parameter: Symbol, writer: SymbolWriter, enclosingDeclaration: Node? = definedExternally /* null */, flags: TypeFormatFlags? = definedExternally /* null */)
+        fun buildTypeParameterDisplay(tp: TypeParameter, writer: SymbolWriter, enclosingDeclaration: Node? = definedExternally /* null */, flags: TypeFormatFlags? = definedExternally /* null */)
+        fun buildTypePredicateDisplay(predicate: dynamic /*TypePredicate*/, writer: SymbolWriter, enclosingDeclaration: Node? = definedExternally /* null */, flags: TypeFormatFlags? = definedExternally /* null */)
+        fun buildTypeParameterDisplayFromSymbol(symbol: Symbol, writer: SymbolWriter, enclosingDeclaration: Node? = definedExternally /* null */, flags: TypeFormatFlags? = definedExternally /* null */)
+        fun buildDisplayForParametersAndDelimiters(thisParameter: Symbol, parameters: Array<Symbol>, writer: SymbolWriter, enclosingDeclaration: Node? = definedExternally /* null */, flags: TypeFormatFlags? = definedExternally /* null */)
+        fun buildDisplayForTypeParametersAndDelimiters(typeParameters: Array<TypeParameter>, writer: SymbolWriter, enclosingDeclaration: Node? = definedExternally /* null */, flags: TypeFormatFlags? = definedExternally /* null */)
+        fun buildReturnTypeDisplay(signature: Signature, writer: SymbolWriter, enclosingDeclaration: Node? = definedExternally /* null */, flags: TypeFormatFlags? = definedExternally /* null */)
     }
     interface SymbolWriter {
         fun writeKeyword(text: String)
@@ -1249,7 +1249,7 @@ external object TS {
         fun increaseIndent()
         fun decreaseIndent()
         fun clear()
-        fun trackSymbol(symbol: Symbol, enclosingDeclaration: Node? = definedExternally, meaning: SymbolFlags? = definedExternally)
+        fun trackSymbol(symbol: Symbol, enclosingDeclaration: Node? = definedExternally /* null */, meaning: SymbolFlags? = definedExternally /* null */)
         fun reportInaccessibleThisError()
     }
     enum class TypeFormatFlags {
@@ -1355,11 +1355,11 @@ external object TS {
     interface Symbol {
         var flags: SymbolFlags
         var name: String
-        var declarations: Array<Declaration>? get() = definedExternally; set(value){ definedExternally }
-        var valueDeclaration: Declaration? get() = definedExternally; set(value){ definedExternally }
-        var members: SymbolTable? get() = definedExternally; set(value){ definedExternally }
-        var exports: SymbolTable? get() = definedExternally; set(value){ definedExternally }
-        var globalExports: SymbolTable? get() = definedExternally; set(value){ definedExternally }
+        var declarations: Array<Declaration>? get() = definedExternally; set(value) = definedExternally
+        var valueDeclaration: Declaration? get() = definedExternally; set(value) = definedExternally
+        var members: SymbolTable? get() = definedExternally; set(value) = definedExternally
+        var exports: SymbolTable? get() = definedExternally; set(value) = definedExternally
+        var globalExports: SymbolTable? get() = definedExternally; set(value) = definedExternally
         fun getFlags(): SymbolFlags
         fun getName(): String
         fun getDeclarations(): Array<Declaration>
@@ -1406,10 +1406,10 @@ external object TS {
     }
     interface Type {
         var flags: TypeFlags
-        var symbol: Symbol? get() = definedExternally; set(value){ definedExternally }
-        var pattern: dynamic /* BindingPattern | ObjectLiteralExpression | ArrayLiteralExpression */ get() = definedExternally; set(value){ definedExternally }
-        var aliasSymbol: Symbol? get() = definedExternally; set(value){ definedExternally }
-        var aliasTypeArguments: Array<Type>? get() = definedExternally; set(value){ definedExternally }
+        var symbol: Symbol? get() = definedExternally; set(value) = definedExternally
+        var pattern: dynamic /* BindingPattern | ObjectLiteralExpression | ArrayLiteralExpression */ get() = definedExternally; set(value) = definedExternally
+        var aliasSymbol: Symbol? get() = definedExternally; set(value) = definedExternally
+        var aliasTypeArguments: Array<Type>? get() = definedExternally; set(value) = definedExternally
         fun getFlags(): TypeFlags
         fun getSymbol(): Symbol
         fun getProperties(): Array<Symbol>
@@ -1479,7 +1479,7 @@ external object TS {
     interface IndexInfo {
         var type: Type
         var isReadonly: Boolean
-        var declaration: SignatureDeclaration? get() = definedExternally; set(value){ definedExternally }
+        var declaration: SignatureDeclaration? get() = definedExternally; set(value) = definedExternally
     }
     interface DiagnosticMessage {
         var key: String
@@ -1491,7 +1491,7 @@ external object TS {
         var messageText: String
         var category: DiagnosticCategory
         var code: Number
-        var next: DiagnosticMessageChain? get() = definedExternally; set(value){ definedExternally }
+        var next: DiagnosticMessageChain? get() = definedExternally; set(value) = definedExternally
     }
     interface Diagnostic {
         var file: SourceFile
@@ -1511,66 +1511,66 @@ external object TS {
         NodeJs /* = 2 */
     }
     interface CompilerOptions {
-        var allowJs: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var allowSyntheticDefaultImports: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var allowUnreachableCode: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var allowUnusedLabels: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var baseUrl: String? get() = definedExternally; set(value){ definedExternally }
-        var charset: String? get() = definedExternally; set(value){ definedExternally }
-        var declaration: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var declarationDir: String? get() = definedExternally; set(value){ definedExternally }
-        var disableSizeLimit: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var emitBOM: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var emitDecoratorMetadata: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var experimentalDecorators: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var forceConsistentCasingInFileNames: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var inlineSourceMap: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var inlineSources: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var isolatedModules: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var jsx: JsxEmit? get() = definedExternally; set(value){ definedExternally }
-        var lib: Array<String>? get() = definedExternally; set(value){ definedExternally }
-        var locale: String? get() = definedExternally; set(value){ definedExternally }
-        var mapRoot: String? get() = definedExternally; set(value){ definedExternally }
-        var maxNodeModuleJsDepth: Number? get() = definedExternally; set(value){ definedExternally }
-        var module: ModuleKind? get() = definedExternally; set(value){ definedExternally }
-        var moduleResolution: ModuleResolutionKind? get() = definedExternally; set(value){ definedExternally }
-        var newLine: NewLineKind? get() = definedExternally; set(value){ definedExternally }
-        var noEmit: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var noEmitHelpers: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var noEmitOnError: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var noErrorTruncation: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var noFallthroughCasesInSwitch: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var noImplicitAny: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var noImplicitReturns: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var noImplicitThis: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var noUnusedLocals: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var noUnusedParameters: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var noImplicitUseStrict: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var noLib: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var noResolve: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var out: String? get() = definedExternally; set(value){ definedExternally }
-        var outDir: String? get() = definedExternally; set(value){ definedExternally }
-        var outFile: String? get() = definedExternally; set(value){ definedExternally }
-        var paths: MapLike<Array<String>>? get() = definedExternally; set(value){ definedExternally }
-        var preserveConstEnums: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var project: String? get() = definedExternally; set(value){ definedExternally }
-        var reactNamespace: String? get() = definedExternally; set(value){ definedExternally }
-        var removeComments: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var rootDir: String? get() = definedExternally; set(value){ definedExternally }
-        var rootDirs: Array<String>? get() = definedExternally; set(value){ definedExternally }
-        var skipLibCheck: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var skipDefaultLibCheck: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var sourceMap: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var sourceRoot: String? get() = definedExternally; set(value){ definedExternally }
-        var strictNullChecks: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var suppressExcessPropertyErrors: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var suppressImplicitAnyIndexErrors: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var target: ScriptTarget? get() = definedExternally; set(value){ definedExternally }
-        var traceResolution: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var types: Array<String>? get() = definedExternally; set(value){ definedExternally }
-        var typeRoots: Array<String>? get() = definedExternally; set(value){ definedExternally }
+        var allowJs: Boolean? get() = definedExternally; set(value) = definedExternally
+        var allowSyntheticDefaultImports: Boolean? get() = definedExternally; set(value) = definedExternally
+        var allowUnreachableCode: Boolean? get() = definedExternally; set(value) = definedExternally
+        var allowUnusedLabels: Boolean? get() = definedExternally; set(value) = definedExternally
+        var baseUrl: String? get() = definedExternally; set(value) = definedExternally
+        var charset: String? get() = definedExternally; set(value) = definedExternally
+        var declaration: Boolean? get() = definedExternally; set(value) = definedExternally
+        var declarationDir: String? get() = definedExternally; set(value) = definedExternally
+        var disableSizeLimit: Boolean? get() = definedExternally; set(value) = definedExternally
+        var emitBOM: Boolean? get() = definedExternally; set(value) = definedExternally
+        var emitDecoratorMetadata: Boolean? get() = definedExternally; set(value) = definedExternally
+        var experimentalDecorators: Boolean? get() = definedExternally; set(value) = definedExternally
+        var forceConsistentCasingInFileNames: Boolean? get() = definedExternally; set(value) = definedExternally
+        var inlineSourceMap: Boolean? get() = definedExternally; set(value) = definedExternally
+        var inlineSources: Boolean? get() = definedExternally; set(value) = definedExternally
+        var isolatedModules: Boolean? get() = definedExternally; set(value) = definedExternally
+        var jsx: JsxEmit? get() = definedExternally; set(value) = definedExternally
+        var lib: Array<String>? get() = definedExternally; set(value) = definedExternally
+        var locale: String? get() = definedExternally; set(value) = definedExternally
+        var mapRoot: String? get() = definedExternally; set(value) = definedExternally
+        var maxNodeModuleJsDepth: Number? get() = definedExternally; set(value) = definedExternally
+        var module: ModuleKind? get() = definedExternally; set(value) = definedExternally
+        var moduleResolution: ModuleResolutionKind? get() = definedExternally; set(value) = definedExternally
+        var newLine: NewLineKind? get() = definedExternally; set(value) = definedExternally
+        var noEmit: Boolean? get() = definedExternally; set(value) = definedExternally
+        var noEmitHelpers: Boolean? get() = definedExternally; set(value) = definedExternally
+        var noEmitOnError: Boolean? get() = definedExternally; set(value) = definedExternally
+        var noErrorTruncation: Boolean? get() = definedExternally; set(value) = definedExternally
+        var noFallthroughCasesInSwitch: Boolean? get() = definedExternally; set(value) = definedExternally
+        var noImplicitAny: Boolean? get() = definedExternally; set(value) = definedExternally
+        var noImplicitReturns: Boolean? get() = definedExternally; set(value) = definedExternally
+        var noImplicitThis: Boolean? get() = definedExternally; set(value) = definedExternally
+        var noUnusedLocals: Boolean? get() = definedExternally; set(value) = definedExternally
+        var noUnusedParameters: Boolean? get() = definedExternally; set(value) = definedExternally
+        var noImplicitUseStrict: Boolean? get() = definedExternally; set(value) = definedExternally
+        var noLib: Boolean? get() = definedExternally; set(value) = definedExternally
+        var noResolve: Boolean? get() = definedExternally; set(value) = definedExternally
+        var out: String? get() = definedExternally; set(value) = definedExternally
+        var outDir: String? get() = definedExternally; set(value) = definedExternally
+        var outFile: String? get() = definedExternally; set(value) = definedExternally
+        var paths: MapLike<Array<String>>? get() = definedExternally; set(value) = definedExternally
+        var preserveConstEnums: Boolean? get() = definedExternally; set(value) = definedExternally
+        var project: String? get() = definedExternally; set(value) = definedExternally
+        var reactNamespace: String? get() = definedExternally; set(value) = definedExternally
+        var removeComments: Boolean? get() = definedExternally; set(value) = definedExternally
+        var rootDir: String? get() = definedExternally; set(value) = definedExternally
+        var rootDirs: Array<String>? get() = definedExternally; set(value) = definedExternally
+        var skipLibCheck: Boolean? get() = definedExternally; set(value) = definedExternally
+        var skipDefaultLibCheck: Boolean? get() = definedExternally; set(value) = definedExternally
+        var sourceMap: Boolean? get() = definedExternally; set(value) = definedExternally
+        var sourceRoot: String? get() = definedExternally; set(value) = definedExternally
+        var strictNullChecks: Boolean? get() = definedExternally; set(value) = definedExternally
+        var suppressExcessPropertyErrors: Boolean? get() = definedExternally; set(value) = definedExternally
+        var suppressImplicitAnyIndexErrors: Boolean? get() = definedExternally; set(value) = definedExternally
+        var target: ScriptTarget? get() = definedExternally; set(value) = definedExternally
+        var traceResolution: Boolean? get() = definedExternally; set(value) = definedExternally
+        var types: Array<String>? get() = definedExternally; set(value) = definedExternally
+        var typeRoots: Array<String>? get() = definedExternally; set(value) = definedExternally
         @nativeGetter
-        fun get(option: String): dynamic /* String | Number | Boolean | Array<dynamic /* String | Number */> | Array<String> | MapLike<Array<String>> */
+        fun get(option: String): dynamic /* String | Number | Boolean | Array<dynamic /* String | Number */> | Array<String> | MapLike<Array<String>> | Nothing? */
         @nativeSetter
         fun set(option: String, value: String)
         @nativeSetter
@@ -1586,9 +1586,9 @@ external object TS {
         fun set(option: String, value: MapLike<Array<String>>)
     }
     interface TypingOptions {
-        var enableAutoDiscovery: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var include: Array<String>? get() = definedExternally; set(value){ definedExternally }
-        var exclude: Array<String>? get() = definedExternally; set(value){ definedExternally }
+        var enableAutoDiscovery: Boolean? get() = definedExternally; set(value) = definedExternally
+        var include: Array<String>? get() = definedExternally; set(value) = definedExternally
+        var exclude: Array<String>? get() = definedExternally; set(value) = definedExternally
         @nativeGetter
         fun get(option: String): dynamic /* Array<String> | Boolean */
         @nativeSetter
@@ -1646,12 +1646,12 @@ external object TS {
     }
     interface ParsedCommandLine {
         var options: CompilerOptions
-        var typingOptions: TypingOptions? get() = definedExternally; set(value){ definedExternally }
+        var typingOptions: TypingOptions? get() = definedExternally; set(value) = definedExternally
         var fileNames: Array<String>
-        var raw: Any? get() = definedExternally; set(value){ definedExternally }
+        var raw: Any? get() = definedExternally; set(value) = definedExternally
         var errors: Array<Diagnostic>
-        var wildcardDirectories: MapLike<WatchDirectoryFlags>? get() = definedExternally; set(value){ definedExternally }
-        var compileOnSave: Boolean? get() = definedExternally; set(value){ definedExternally }
+        var wildcardDirectories: MapLike<WatchDirectoryFlags>? get() = definedExternally; set(value) = definedExternally
+        var compileOnSave: Boolean? get() = definedExternally; set(value) = definedExternally
     }
     enum class WatchDirectoryFlags {
         None /* = 0 */,
@@ -1672,7 +1672,7 @@ external object TS {
     }
     interface ResolvedModule {
         var resolvedFileName: String
-        var isExternalLibraryImport: Boolean? get() = definedExternally; set(value){ definedExternally }
+        var isExternalLibraryImport: Boolean? get() = definedExternally; set(value) = definedExternally
     }
     interface ResolvedModuleWithFailedLookupLocations {
         var resolvedModule: ResolvedModule
@@ -1680,7 +1680,7 @@ external object TS {
     }
     interface ResolvedTypeReferenceDirective {
         var primary: Boolean
-        var resolvedFileName: String? get() = definedExternally; set(value){ definedExternally }
+        var resolvedFileName: String? get() = definedExternally; set(value) = definedExternally
     }
     interface ResolvedTypeReferenceDirectiveWithFailedLookupLocations {
         var resolvedTypeReferenceDirective: ResolvedTypeReferenceDirective
@@ -1716,19 +1716,19 @@ external object TS {
     var version: String = definedExternally
     interface WatchedFile {
         var fileName: String
-        var callback: (fileName: String, removed: Boolean?/* = definedExternally*/) -> Unit
-        var mtime: Date? get() = definedExternally; set(value){ definedExternally }
+        var callback: (fileName: String, removed: Boolean?/* = definedExternally /* null */*/) -> Unit
+        var mtime: Date? get() = definedExternally; set(value) = definedExternally
     }
     interface System {
         var args: Array<String>
         var newLine: String
         var useCaseSensitiveFileNames: Boolean
         fun write(s: String)
-        fun readFile(path: String, encoding: String? = definedExternally): String
+        fun readFile(path: String, encoding: String? = definedExternally /* null */): String
         val getFileSize: ((path: String) -> Number)? get() = definedExternally
-        fun writeFile(path: String, data: String, writeByteOrderMark: Boolean? = definedExternally)
-        val watchFile: ((path: String, callback: (fileName: String, removed: Boolean?/* = definedExternally*/) -> Unit, pollingInterval: Number?/* = definedExternally*/) -> FileWatcher)? get() = definedExternally
-        val watchDirectory: ((path: String, callback: (fileName: String) -> Unit, recursive: Boolean?/* = definedExternally*/) -> FileWatcher)? get() = definedExternally
+        fun writeFile(path: String, data: String, writeByteOrderMark: Boolean? = definedExternally /* null */)
+        val watchFile: ((path: String, callback: (fileName: String, removed: Boolean?/* = definedExternally /* null */*/) -> Unit, pollingInterval: Number?/* = definedExternally /* null */*/) -> FileWatcher)? get() = definedExternally
+        val watchDirectory: ((path: String, callback: (fileName: String) -> Unit, recursive: Boolean?/* = definedExternally /* null */*/) -> FileWatcher)? get() = definedExternally
         fun resolvePath(path: String): String
         fun fileExists(path: String): Boolean
         fun directoryExists(path: String): Boolean
@@ -1736,11 +1736,11 @@ external object TS {
         fun getExecutingFilePath(): String
         fun getCurrentDirectory(): String
         fun getDirectories(path: String): Array<String>
-        fun readDirectory(path: String, extensions: Array<String>? = definedExternally, exclude: Array<String>? = definedExternally, include: Array<String>? = definedExternally): Array<String>
+        fun readDirectory(path: String, extensions: Array<String>? = definedExternally /* null */, exclude: Array<String>? = definedExternally /* null */, include: Array<String>? = definedExternally /* null */): Array<String>
         val getModifiedTime: ((path: String) -> Date)? get() = definedExternally
         val createHash: ((data: String) -> String)? get() = definedExternally
         val getMemoryUsage: (() -> Number)? get() = definedExternally
-        fun exit(exitCode: Number? = definedExternally)
+        fun exit(exitCode: Number? = definedExternally /* null */)
         val realpath: ((path: String) -> String)? get() = definedExternally
     }
     interface FileWatcher {
@@ -1776,7 +1776,7 @@ external object TS {
         fun scanJSDocToken(): SyntaxKind
         fun scan(): SyntaxKind
         fun getText(): String
-        fun setText(text: String, start: Number? = definedExternally, length: Number? = definedExternally)
+        fun setText(text: String, start: Number? = definedExternally /* null */, length: Number? = definedExternally /* null */)
         fun setOnError(onError: ErrorCallback)
         fun setScriptTarget(scriptTarget: ScriptTarget)
         fun setLanguageVariant(variant: LanguageVariant)
@@ -1797,7 +1797,7 @@ external object TS {
     fun getShebang(text: String): String = definedExternally
     fun isIdentifierStart(ch: Number, languageVersion: ScriptTarget): Boolean = definedExternally
     fun isIdentifierPart(ch: Number, languageVersion: ScriptTarget): Boolean = definedExternally
-    fun createScanner(languageVersion: ScriptTarget, skipTrivia: Boolean, languageVariant: LanguageVariant? = definedExternally, text: String? = definedExternally, onError: ErrorCallback? = definedExternally, start: Number? = definedExternally, length: Number? = definedExternally): Scanner = definedExternally
+    fun createScanner(languageVersion: ScriptTarget, skipTrivia: Boolean, languageVariant: LanguageVariant? = definedExternally /* null */, text: String? = definedExternally /* null */, onError: ErrorCallback? = definedExternally /* null */, start: Number? = definedExternally /* null */, length: Number? = definedExternally /* null */): Scanner = definedExternally
     fun getDefaultLibFileName(options: CompilerOptions): String = definedExternally
     fun textSpanEnd(span: TextSpan): Number = definedExternally
     fun textSpanIsEmpty(span: TextSpan): Boolean = definedExternally
@@ -1819,19 +1819,19 @@ external object TS {
     fun collapseTextChangeRangesAcrossMultipleVersions(changes: Array<TextChangeRange>): TextChangeRange = definedExternally
     fun getTypeParameterOwner(d: Declaration): Declaration = definedExternally
     fun isParameterPropertyDeclaration(node: ParameterDeclaration): Boolean = definedExternally
-    fun createNode(kind: SyntaxKind, pos: Number? = definedExternally, end: Number? = definedExternally): Node = definedExternally
-    fun <T> forEachChild(node: Node, cbNode: (node: Node) -> T, cbNodeArray: ((nodes: Array<Node>) -> T)? = definedExternally): T = definedExternally
-    fun createSourceFile(fileName: String, sourceText: String, languageVersion: ScriptTarget, setParentNodes: Boolean? = definedExternally, scriptKind: ScriptKind? = definedExternally): SourceFile = definedExternally
+    fun createNode(kind: SyntaxKind, pos: Number? = definedExternally /* null */, end: Number? = definedExternally /* null */): Node = definedExternally
+    fun <T> forEachChild(node: Node, cbNode: (node: Node) -> T, cbNodeArray: ((nodes: Array<Node>) -> T)? = definedExternally /* null */): T = definedExternally
+    fun createSourceFile(fileName: String, sourceText: String, languageVersion: ScriptTarget, setParentNodes: Boolean? = definedExternally /* null */, scriptKind: ScriptKind? = definedExternally /* null */): SourceFile = definedExternally
     fun isExternalModule(file: SourceFile): Boolean = definedExternally
-    fun updateSourceFile(sourceFile: SourceFile, newText: String, textChangeRange: TextChangeRange, aggressiveChecks: Boolean? = definedExternally): SourceFile = definedExternally
+    fun updateSourceFile(sourceFile: SourceFile, newText: String, textChangeRange: TextChangeRange, aggressiveChecks: Boolean? = definedExternally /* null */): SourceFile = definedExternally
     fun classicNameResolver(moduleName: String, containingFile: String, compilerOptions: CompilerOptions, host: ModuleResolutionHost): ResolvedModuleWithFailedLookupLocations = definedExternally
     fun nodeModuleNameResolver(moduleName: String, containingFile: String, compilerOptions: CompilerOptions, host: ModuleResolutionHost): ResolvedModuleWithFailedLookupLocations = definedExternally
     fun resolveModuleName(moduleName: String, containingFile: String, compilerOptions: CompilerOptions, host: ModuleResolutionHost): ResolvedModuleWithFailedLookupLocations = definedExternally
-    fun findConfigFile(searchPath: String, fileExists: (fileName: String) -> Boolean, configName: String? = definedExternally): String = definedExternally
+    fun findConfigFile(searchPath: String, fileExists: (fileName: String) -> Boolean, configName: String? = definedExternally /* null */): String = definedExternally
     fun resolveTripleslashReference(moduleName: String, containingFile: String): String = definedExternally
     fun resolveTypeReferenceDirective(typeReferenceDirectiveName: String, containingFile: String, options: CompilerOptions, host: ModuleResolutionHost): ResolvedTypeReferenceDirectiveWithFailedLookupLocations = definedExternally
-    fun createCompilerHost(options: CompilerOptions, setParentNodes: Boolean? = definedExternally): CompilerHost = definedExternally
-    fun getPreEmitDiagnostics(program: Program, sourceFile: SourceFile? = definedExternally, cancellationToken: CancellationToken? = definedExternally): Array<Diagnostic> = definedExternally
+    fun createCompilerHost(options: CompilerOptions, setParentNodes: Boolean? = definedExternally /* null */): CompilerHost = definedExternally
+    fun getPreEmitDiagnostics(program: Program, sourceFile: SourceFile? = definedExternally /* null */, cancellationToken: CancellationToken? = definedExternally /* null */): Array<Diagnostic> = definedExternally
     interface FormatDiagnosticsHost {
         fun getCurrentDirectory(): String
         fun getCanonicalFileName(fileName: String): String
@@ -1841,29 +1841,29 @@ external object TS {
     fun flattenDiagnosticMessageText(messageText: String, newLine: String): String = definedExternally
     fun flattenDiagnosticMessageText(messageText: DiagnosticMessageChain, newLine: String): String = definedExternally
     fun getAutomaticTypeDirectiveNames(options: CompilerOptions, host: ModuleResolutionHost): Array<String> = definedExternally
-    fun createProgram(rootNames: Array<String>, options: CompilerOptions, host: CompilerHost? = definedExternally, oldProgram: Program? = definedExternally): Program = definedExternally
+    fun createProgram(rootNames: Array<String>, options: CompilerOptions, host: CompilerHost? = definedExternally /* null */, oldProgram: Program? = definedExternally /* null */): Program = definedExternally
     interface `T$1` {
-        var config: Any? get() = definedExternally; set(value){ definedExternally }
-        var error: Diagnostic? get() = definedExternally; set(value){ definedExternally }
+        var config: Any? get() = definedExternally; set(value) = definedExternally
+        var error: Diagnostic? get() = definedExternally; set(value) = definedExternally
     }
     fun readConfigFile(fileName: String, readFile: (path: String) -> String): `T$1` = definedExternally
     interface `T$2` {
-        var config: Any? get() = definedExternally; set(value){ definedExternally }
-        var error: Diagnostic? get() = definedExternally; set(value){ definedExternally }
+        var config: Any? get() = definedExternally; set(value) = definedExternally
+        var error: Diagnostic? get() = definedExternally; set(value) = definedExternally
     }
-    fun parseConfigFileTextToJson(fileName: String, jsonText: String, stripComments: Boolean? = definedExternally): `T$2` = definedExternally
-    fun parseJsonConfigFileContent(json: Any, host: ParseConfigHost, basePath: String, existingOptions: CompilerOptions? = definedExternally, configFileName: String? = definedExternally): ParsedCommandLine = definedExternally
+    fun parseConfigFileTextToJson(fileName: String, jsonText: String, stripComments: Boolean? = definedExternally /* null */): `T$2` = definedExternally
+    fun parseJsonConfigFileContent(json: Any, host: ParseConfigHost, basePath: String, existingOptions: CompilerOptions? = definedExternally /* null */, configFileName: String? = definedExternally /* null */): ParsedCommandLine = definedExternally
     fun convertCompileOnSaveOptionFromJson(jsonOption: Any, basePath: String, errors: Array<Diagnostic>): Boolean = definedExternally
     interface `T$3` {
         var options: CompilerOptions
         var errors: Array<Diagnostic>
     }
-    fun convertCompilerOptionsFromJson(jsonOptions: Any, basePath: String, configFileName: String? = definedExternally): `T$3` = definedExternally
+    fun convertCompilerOptionsFromJson(jsonOptions: Any, basePath: String, configFileName: String? = definedExternally /* null */): `T$3` = definedExternally
     interface `T$4` {
         var options: TypingOptions
         var errors: Array<Diagnostic>
     }
-    fun convertTypingOptionsFromJson(jsonOptions: Any, basePath: String, configFileName: String? = definedExternally): `T$4` = definedExternally
+    fun convertTypingOptionsFromJson(jsonOptions: Any, basePath: String, configFileName: String? = definedExternally /* null */): `T$4` = definedExternally
     var servicesVersion: String = definedExternally
     interface IScriptSnapshot {
         // TODO bug?
@@ -1917,8 +1917,8 @@ external object TS {
         val trace: ((s: String) -> Unit)? get() = definedExternally
         val error: ((s: String) -> Unit)? get() = definedExternally
         val useCaseSensitiveFileNames: (() -> Boolean)? get() = definedExternally
-        val readDirectory: ((path: String, extensions: Array<String>?/* = definedExternally*/, exclude: Array<String>?/* = definedExternally*/, include: Array<String>?/* = definedExternally*/) -> Array<String>)? get() = definedExternally
-        val readFile: ((path: String, encoding: String?/* = definedExternally*/) -> String)? get() = definedExternally
+        val readDirectory: ((path: String, extensions: Array<String>?/* = definedExternally /* null */*/, exclude: Array<String>?/* = definedExternally /* null */*/, include: Array<String>?/* = definedExternally /* null */*/) -> Array<String>)? get() = definedExternally
+        val readFile: ((path: String, encoding: String?/* = definedExternally /* null */*/) -> String)? get() = definedExternally
         val fileExists: ((path: String) -> Boolean)? get() = definedExternally
         val getTypeRootsVersion: (() -> Number)? get() = definedExternally
         val resolveModuleNames: ((moduleNames: Array<String>, containingFile: String) -> Array<ResolvedModule>)? get() = definedExternally
@@ -1949,7 +1949,7 @@ external object TS {
         fun findReferences(fileName: String, position: Number): Array<ReferencedSymbol>
         fun getDocumentHighlights(fileName: String, position: Number, filesToSearch: Array<String>): Array<DocumentHighlights>
         fun getOccurrencesAtPosition(fileName: String, position: Number): Array<ReferenceEntry>
-        fun getNavigateToItems(searchValue: String, maxResultCount: Number? = definedExternally, excludeDts: Boolean? = definedExternally): Array<NavigateToItem>
+        fun getNavigateToItems(searchValue: String, maxResultCount: Number? = definedExternally /* null */, excludeDts: Boolean? = definedExternally /* null */): Array<NavigateToItem>
         fun getNavigationBarItems(fileName: String): Array<NavigationBarItem>
         fun getNavigationTree(fileName: String): NavigationTree
         fun getOutliningSpans(fileName: String): Array<OutliningSpan>
@@ -1965,7 +1965,7 @@ external object TS {
         fun getFormattingEditsAfterKeystroke(fileName: String, position: Number, key: String, options: FormatCodeSettings): Array<TextChange>
         fun getDocCommentTemplateAtPosition(fileName: String, position: Number): TextInsertion
         fun isValidBraceCompletionAtPosition(fileName: String, position: Number, openingBrace: Number): Boolean
-        fun getEmitOutput(fileName: String, emitOnlyDtsFiles: Boolean? = definedExternally): EmitOutput
+        fun getEmitOutput(fileName: String, emitOnlyDtsFiles: Boolean? = definedExternally /* null */): EmitOutput
         fun getProgram(): Program
         fun dispose()
     }
@@ -1992,7 +1992,7 @@ external object TS {
         var kind: String
         var kindModifiers: String
         var spans: Array<TextSpan>
-        var childItems: Array<NavigationTree>? get() = definedExternally; set(value){ definedExternally }
+        var childItems: Array<NavigationTree>? get() = definedExternally; set(value) = definedExternally
     }
     interface TodoCommentDescriptor {
         var text: String
@@ -2032,7 +2032,7 @@ external object TS {
         var writtenReference: String = definedExternally
     }
     interface HighlightSpan {
-        var fileName: String? get() = definedExternally; set(value){ definedExternally }
+        var fileName: String? get() = definedExternally; set(value) = definedExternally
         var textSpan: TextSpan
         var kind: String
     }
@@ -2048,7 +2048,7 @@ external object TS {
         var containerKind: String
     }
     interface EditorOptions {
-        var BaseIndentSize: Number? get() = definedExternally; set(value){ definedExternally }
+        var BaseIndentSize: Number? get() = definedExternally; set(value) = definedExternally
         var IndentSize: Number
         var TabSize: Number
         var NewLineCharacter: String
@@ -2056,12 +2056,12 @@ external object TS {
         var IndentStyle: IndentStyle
     }
     interface EditorSettings {
-        var baseIndentSize: Number? get() = definedExternally; set(value){ definedExternally }
-        var indentSize: Number? get() = definedExternally; set(value){ definedExternally }
-        var tabSize: Number? get() = definedExternally; set(value){ definedExternally }
-        var newLineCharacter: String? get() = definedExternally; set(value){ definedExternally }
-        var convertTabsToSpaces: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var indentStyle: IndentStyle? get() = definedExternally; set(value){ definedExternally }
+        var baseIndentSize: Number? get() = definedExternally; set(value) = definedExternally
+        var indentSize: Number? get() = definedExternally; set(value) = definedExternally
+        var tabSize: Number? get() = definedExternally; set(value) = definedExternally
+        var newLineCharacter: String? get() = definedExternally; set(value) = definedExternally
+        var convertTabsToSpaces: Boolean? get() = definedExternally; set(value) = definedExternally
+        var indentStyle: IndentStyle? get() = definedExternally; set(value) = definedExternally
     }
     enum class IndentStyle {
         None /* = 0 */,
@@ -2077,22 +2077,22 @@ external object TS {
         var InsertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis: Boolean
         var InsertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets: Boolean
         var InsertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces: Boolean
-        var InsertSpaceAfterOpeningAndBeforeClosingJsxExpressionBraces: Boolean? get() = definedExternally; set(value){ definedExternally }
+        var InsertSpaceAfterOpeningAndBeforeClosingJsxExpressionBraces: Boolean? get() = definedExternally; set(value) = definedExternally
         var PlaceOpenBraceOnNewLineForFunctions: Boolean
         var PlaceOpenBraceOnNewLineForControlBlocks: Boolean
     }
     interface FormatCodeSettings : EditorSettings {
-        var insertSpaceAfterCommaDelimiter: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var insertSpaceAfterSemicolonInForStatements: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var insertSpaceBeforeAndAfterBinaryOperators: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var insertSpaceAfterKeywordsInControlFlowStatements: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var insertSpaceAfterFunctionKeywordForAnonymousFunctions: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var insertSpaceAfterOpeningAndBeforeClosingJsxExpressionBraces: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var placeOpenBraceOnNewLineForFunctions: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var placeOpenBraceOnNewLineForControlBlocks: Boolean? get() = definedExternally; set(value){ definedExternally }
+        var insertSpaceAfterCommaDelimiter: Boolean? get() = definedExternally; set(value) = definedExternally
+        var insertSpaceAfterSemicolonInForStatements: Boolean? get() = definedExternally; set(value) = definedExternally
+        var insertSpaceBeforeAndAfterBinaryOperators: Boolean? get() = definedExternally; set(value) = definedExternally
+        var insertSpaceAfterKeywordsInControlFlowStatements: Boolean? get() = definedExternally; set(value) = definedExternally
+        var insertSpaceAfterFunctionKeywordForAnonymousFunctions: Boolean? get() = definedExternally; set(value) = definedExternally
+        var insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis: Boolean? get() = definedExternally; set(value) = definedExternally
+        var insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets: Boolean? get() = definedExternally; set(value) = definedExternally
+        var insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces: Boolean? get() = definedExternally; set(value) = definedExternally
+        var insertSpaceAfterOpeningAndBeforeClosingJsxExpressionBraces: Boolean? get() = definedExternally; set(value) = definedExternally
+        var placeOpenBraceOnNewLineForFunctions: Boolean? get() = definedExternally; set(value) = definedExternally
+        var placeOpenBraceOnNewLineForControlBlocks: Boolean? get() = definedExternally; set(value) = definedExternally
     }
     fun toEditorSettings(options: EditorOptions): EditorSettings = definedExternally
     fun toEditorSettings(options: EditorSettings): EditorSettings = definedExternally
@@ -2186,7 +2186,7 @@ external object TS {
         var kind: String
         var kindModifiers: String
         var sortText: String
-        var replacementSpan: TextSpan? get() = definedExternally; set(value){ definedExternally }
+        var replacementSpan: TextSpan? get() = definedExternally; set(value) = definedExternally
     }
     interface CompletionEntryDetails {
         var name: String
@@ -2248,10 +2248,10 @@ external object TS {
         fun getEncodedLexicalClassifications(text: String, endOfLineState: EndOfLineState, syntacticClassifierAbsent: Boolean): Classifications
     }
     interface DocumentRegistry {
-        fun acquireDocument(fileName: String, compilationSettings: CompilerOptions, scriptSnapshot: IScriptSnapshot, version: String, scriptKind: ScriptKind? = definedExternally): SourceFile
-        fun acquireDocumentWithKey(fileName: String, path: Path, compilationSettings: CompilerOptions, key: DocumentRegistryBucketKey, scriptSnapshot: IScriptSnapshot, version: String, scriptKind: ScriptKind? = definedExternally): SourceFile
-        fun updateDocument(fileName: String, compilationSettings: CompilerOptions, scriptSnapshot: IScriptSnapshot, version: String, scriptKind: ScriptKind? = definedExternally): SourceFile
-        fun updateDocumentWithKey(fileName: String, path: Path, compilationSettings: CompilerOptions, key: DocumentRegistryBucketKey, scriptSnapshot: IScriptSnapshot, version: String, scriptKind: ScriptKind? = definedExternally): SourceFile
+        fun acquireDocument(fileName: String, compilationSettings: CompilerOptions, scriptSnapshot: IScriptSnapshot, version: String, scriptKind: ScriptKind? = definedExternally /* null */): SourceFile
+        fun acquireDocumentWithKey(fileName: String, path: Path, compilationSettings: CompilerOptions, key: DocumentRegistryBucketKey, scriptSnapshot: IScriptSnapshot, version: String, scriptKind: ScriptKind? = definedExternally /* null */): SourceFile
+        fun updateDocument(fileName: String, compilationSettings: CompilerOptions, scriptSnapshot: IScriptSnapshot, version: String, scriptKind: ScriptKind? = definedExternally /* null */): SourceFile
+        fun updateDocumentWithKey(fileName: String, path: Path, compilationSettings: CompilerOptions, key: DocumentRegistryBucketKey, scriptSnapshot: IScriptSnapshot, version: String, scriptKind: ScriptKind? = definedExternally /* null */): SourceFile
         fun getKeyForCompilationSettings(settings: CompilerOptions): DocumentRegistryBucketKey
         fun releaseDocument(fileName: String, compilationSettings: CompilerOptions)
         fun releaseDocumentWithKey(path: Path, key: DocumentRegistryBucketKey)
@@ -2363,25 +2363,25 @@ external object TS {
     fun displayPartsToString(displayParts: Array<SymbolDisplayPart>): String = definedExternally
     fun getDefaultCompilerOptions(): CompilerOptions = definedExternally
     interface TranspileOptions {
-        var compilerOptions: CompilerOptions? get() = definedExternally; set(value){ definedExternally }
-        var fileName: String? get() = definedExternally; set(value){ definedExternally }
-        var reportDiagnostics: Boolean? get() = definedExternally; set(value){ definedExternally }
-        var moduleName: String? get() = definedExternally; set(value){ definedExternally }
-        var renamedDependencies: MapLike<String>? get() = definedExternally; set(value){ definedExternally }
+        var compilerOptions: CompilerOptions? get() = definedExternally; set(value) = definedExternally
+        var fileName: String? get() = definedExternally; set(value) = definedExternally
+        var reportDiagnostics: Boolean? get() = definedExternally; set(value) = definedExternally
+        var moduleName: String? get() = definedExternally; set(value) = definedExternally
+        var renamedDependencies: MapLike<String>? get() = definedExternally; set(value) = definedExternally
     }
     interface TranspileOutput {
         var outputText: String
-        var diagnostics: Array<Diagnostic>? get() = definedExternally; set(value){ definedExternally }
-        var sourceMapText: String? get() = definedExternally; set(value){ definedExternally }
+        var diagnostics: Array<Diagnostic>? get() = definedExternally; set(value) = definedExternally
+        var sourceMapText: String? get() = definedExternally; set(value) = definedExternally
     }
     fun transpileModule(input: String, transpileOptions: TranspileOptions): TranspileOutput = definedExternally
-    fun transpile(input: String, compilerOptions: CompilerOptions? = definedExternally, fileName: String? = definedExternally, diagnostics: Array<Diagnostic>? = definedExternally, moduleName: String? = definedExternally): String = definedExternally
-    fun createLanguageServiceSourceFile(fileName: String, scriptSnapshot: IScriptSnapshot, scriptTarget: ScriptTarget, version: String, setNodeParents: Boolean, scriptKind: ScriptKind? = definedExternally): SourceFile = definedExternally
+    fun transpile(input: String, compilerOptions: CompilerOptions? = definedExternally /* null */, fileName: String? = definedExternally /* null */, diagnostics: Array<Diagnostic>? = definedExternally /* null */, moduleName: String? = definedExternally /* null */): String = definedExternally
+    fun createLanguageServiceSourceFile(fileName: String, scriptSnapshot: IScriptSnapshot, scriptTarget: ScriptTarget, version: String, setNodeParents: Boolean, scriptKind: ScriptKind? = definedExternally /* null */): SourceFile = definedExternally
     var disableIncrementalParsing: Boolean = definedExternally
-    fun updateLanguageServiceSourceFile(sourceFile: SourceFile, scriptSnapshot: IScriptSnapshot, version: String, textChangeRange: TextChangeRange, aggressiveChecks: Boolean? = definedExternally): SourceFile = definedExternally
-    fun createDocumentRegistry(useCaseSensitiveFileNames: Boolean? = definedExternally, currentDirectory: String? = definedExternally): DocumentRegistry = definedExternally
-    fun preProcessFile(sourceText: String, readImportFiles: Boolean? = definedExternally, detectJavaScriptImports: Boolean? = definedExternally): PreProcessedFileInfo = definedExternally
-    fun createLanguageService(host: LanguageServiceHost, documentRegistry: DocumentRegistry? = definedExternally): LanguageService = definedExternally
+    fun updateLanguageServiceSourceFile(sourceFile: SourceFile, scriptSnapshot: IScriptSnapshot, version: String, textChangeRange: TextChangeRange, aggressiveChecks: Boolean? = definedExternally /* null */): SourceFile = definedExternally
+    fun createDocumentRegistry(useCaseSensitiveFileNames: Boolean? = definedExternally /* null */, currentDirectory: String? = definedExternally /* null */): DocumentRegistry = definedExternally
+    fun preProcessFile(sourceText: String, readImportFiles: Boolean? = definedExternally /* null */, detectJavaScriptImports: Boolean? = definedExternally /* null */): PreProcessedFileInfo = definedExternally
+    fun createLanguageService(host: LanguageServiceHost, documentRegistry: DocumentRegistry? = definedExternally /* null */): LanguageService = definedExternally
     fun createClassifier(): Classifier = definedExternally
     fun getDefaultLibFilePath(options: CompilerOptions): String = definedExternally
 }
