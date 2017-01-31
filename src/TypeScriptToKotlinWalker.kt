@@ -32,7 +32,7 @@ import typescript.propertyName
 private val MODULE = "module"
 private val NATIVE = "native"
 
-private val NATIVE_ANNOTATION = Annotation(NATIVE)
+val NATIVE_ANNOTATION = Annotation(NATIVE)
 private val NATIVE_GETTER_ANNOTATION = Annotation("nativeGetter")
 private val NATIVE_SETTER_ANNOTATION = Annotation("nativeSetter")
 private val NATIVE_INVOKE_ANNOTATION = Annotation("nativeInvoke")

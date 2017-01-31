@@ -17,6 +17,7 @@
 package ts2kt.kotlin.ast
 
 import ts2kt.DYNAMIC
+import ts2kt.NATIVE_ANNOTATION
 import ts2kt.UNIT
 import ts2kt.escapeIfNeed
 import ts2kt.utils.assert
@@ -34,6 +35,7 @@ private val EQ_NO_IMPL = " = $NO_IMPL"
 private val PROPERTY_GETTER = " get()"
 private val NO_IMPL_PROPERTY_GETTER = PROPERTY_GETTER + EQ_NO_IMPL
 private val NO_IMPL_PROPERTY_SETTER = " set(value){}"
+private val EXTERNAL = "external"
 private val OPEN = "open"
 private val OVERRIDE = "override"
 private val VAR = "var"
@@ -149,6 +151,11 @@ enum class ClassKind(val keyword: String, val bracesAlwaysRequired: Boolean = fa
     COMPANION_OBJECT("companion object", bracesAlwaysRequired = true)
 }
 
+fun Annotated.stringifyAnnotations(): String {
+    val withoutNative = annotations.filter { it != NATIVE_ANNOTATION }
+    return withoutNative.stringify() + if (withoutNative.size != annotations.size) EXTERNAL + " " else ""
+}
+
 class Classifier(
         val kind: ClassKind,
         override var name: String,
@@ -160,7 +167,7 @@ class Classifier(
         val hasOpenModifier: Boolean
 ) : Member, Node(needsFixIndent = true) {
     override fun stringify(): String =
-            annotations.stringify() +
+            stringifyAnnotations() +
             (if (hasOpenModifier) OPEN + " " else "") +
             kind.keyword +
             (if (name.isEmpty()) "" else " ") +
@@ -220,7 +227,7 @@ class Function(
         val hasOpenModifier: Boolean
 ) : Member, Node() {
     override fun stringify(): String =
-            annotations.stringify() +
+            stringifyAnnotations() +
             (if (isOverride) OVERRIDE + " " else if (hasOpenModifier) OPEN + " " else "") +
             "$FUN " +
             callSignature.stringifyTypeParams(withSpaceAfter = true) +
@@ -251,7 +258,7 @@ class Variable(
         set(value) { _name = value }
 
     override fun stringify(): String =
-            annotations.stringify() +
+            stringifyAnnotations() +
             // TODO extract common logic between Variable and Function
             (if (isOverride) OVERRIDE + " " else if (hasOpenModifier) OPEN + " " else "") +
             (if (isVar) VAR else VAL) + " " +
