@@ -30,11 +30,10 @@ val FAKE = "fake"
 val FAKE_ANNOTATION = Annotation(FAKE)
 val DEFAULT_FAKE_ANNOTATION = listOf(FAKE_ANNOTATION)
 
-val NO_IMPL = "noImpl"
+val NO_IMPL = "definedExternally"
 private val EQ_NO_IMPL = " = $NO_IMPL"
-private val PROPERTY_GETTER = " get()"
-private val NO_IMPL_PROPERTY_GETTER = PROPERTY_GETTER + EQ_NO_IMPL
-private val NO_IMPL_PROPERTY_SETTER = " set(value){}"
+private val NO_IMPL_PROPERTY_GETTER = " get()" + EQ_NO_IMPL
+private val NO_IMPL_PROPERTY_SETTER = " set(value)" + EQ_NO_IMPL
 private val EXTERNAL = "external"
 private val OPEN = "open"
 private val OVERRIDE = "override"
