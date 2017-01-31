@@ -17,6 +17,7 @@
 var WORKING_DIR = "../out/production/ts2kt/";
 var ts2kt = require(WORKING_DIR + "ts2kt");
 var fs = require('fs');
+var assert = require('assert');
 
 var TS_EXT = ".ts";
 var KT_EXT = ".kt";
@@ -142,7 +143,14 @@ function generateTestFor(srcPath, expectedPath, testConfig) {
         }
 
         if (isVerified && testConfig.verified >= OPERATION_LEVEL.CHECK || !isVerified && testConfig.other >= OPERATION_LEVEL.CHECK) {
-            test.equals(actual,  expected);
+            try {
+                assert.equal(actual, expected);
+            }
+            catch (e) {
+                e.expectedFilePath = fs.realpathSync(expectedPath);
+                e.actualFilePath = fs.realpathSync(outPath);
+                throw e;
+            }
         }
 
         test.done();
