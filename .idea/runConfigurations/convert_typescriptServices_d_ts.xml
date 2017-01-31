@@ -1,5 +1,9 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="convert typescriptServices.d.ts" type="NodeJSConfigurationType" factoryName="Node.js" singleton="false" path-to-node="project" path-to-js-file="compiled/ts2kt.js" application-parameters="node_modules/typescript/lib/typescriptServices.d.ts tmp/typescriptServices.kt" working-dir="$PROJECT_DIR$">
+  <configuration default="false" name="convert typescriptServices.d.ts" type="NodeJSConfigurationType" factoryName="Node.js" singleton="false" path-to-node="project" path-to-js-file="out/production/ts2kt/ts2kt.js" application-parameters="node_modules/typescript/lib/typescriptServices.d.ts tmp/typescriptServices.kt" working-dir="$PROJECT_DIR$">
+    <profiling v8-profiler-path="" />
+    <EXTENSION ID="com.jetbrains.nodejs.run.NodeJSProfilingRunConfigurationExtension">
+      <profiling v8-profiler-path="" />
+    </EXTENSION>
     <RunnerSettings RunnerId="Basic" />
     <RunnerSettings RunnerId="debuggableProgram" />
     <ConfigurationWrapper RunnerId="Basic" />
