@@ -197,7 +197,7 @@ class FunParam(
     fun stringify(printDefaultValue: Boolean): String =
             (if (isVar) "$OPEN $VAR " else "") +
             (if (type.isVararg) VARARG + " " else "") + escapedName + type +
-            if (defaultValue == null || !printDefaultValue) "" else " = $defaultValue"
+            if (defaultValue == null || !printDefaultValue) "" else " = $NO_IMPL /* $defaultValue */"
 }
 
 class CallSignature(
