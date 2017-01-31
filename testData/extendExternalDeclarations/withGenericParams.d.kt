@@ -16,6 +16,6 @@ object ref-array {
         var someField: String
         var optionalField: T? get() = definedExternally; set(value) = definedExternally
         @nativeInvoke
-        fun invoke(resourceId: String, hash: Any? = null, callback: Function? = null)
+        fun invoke(resourceId: String, hash: Any? = definedExternally /* null */, callback: Function? = definedExternally /* null */)
     }
 }

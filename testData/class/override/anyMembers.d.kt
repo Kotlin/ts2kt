@@ -13,5 +13,5 @@ external open class ExpectedNoOverrides {
     open fun equals(a: Number): Unit = definedExternally
     open fun equals(a: String): Unit = definedExternally
     open fun hashCode(a: String): Number = definedExternally
-    open fun toString(a: Number = 1): Unit = definedExternally
+    open fun toString(a: Number = definedExternally /* 1 */): Unit = definedExternally
 }

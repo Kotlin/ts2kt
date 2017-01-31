@@ -9,4 +9,4 @@ external fun JQueryStatic.set(prop: String, value: Number): Unit = definedExtern
 external var JQueryStatic.someField: String get() = definedExternally; set(value) = definedExternally
 external var JQueryStatic.optionalField: Any? get() = definedExternally; set(value) = definedExternally
 @nativeInvoke
-external fun JQueryStatic.invoke(resourceId: String, hash: Any? = null, callback: Function? = null): Unit = definedExternally
+external fun JQueryStatic.invoke(resourceId: String, hash: Any? = definedExternally /* null */, callback: Function? = definedExternally /* null */): Unit = definedExternally
