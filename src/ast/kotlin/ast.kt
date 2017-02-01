@@ -17,35 +17,15 @@
 package ts2kt.kotlin.ast
 
 import ts2kt.DYNAMIC
-import ts2kt.NATIVE_ANNOTATION
 import ts2kt.UNIT
-import ts2kt.escapeIfNeed
-import ts2kt.utils.assert
-import ts2kt.utils.join
 
 val MODULE = "module"
-val NATIVE = "native"
-val FAKE = "fake"
+private val FAKE = "fake"
 
 val FAKE_ANNOTATION = Annotation(FAKE)
 val DEFAULT_FAKE_ANNOTATION = listOf(FAKE_ANNOTATION)
 
-val NO_IMPL = "definedExternally"
-private val EQ_NO_IMPL = " = $NO_IMPL"
-private val NO_IMPL_PROPERTY_GETTER = " get()" + EQ_NO_IMPL
-private val NO_IMPL_PROPERTY_SETTER = " set(value)" + EQ_NO_IMPL
-private val EXTERNAL = "external"
-private val OPEN = "open"
-private val OVERRIDE = "override"
-private val VAR = "var"
-private val VAL = "val"
-private val FUN = "fun"
-private val VARARG = "vararg"
-
-private val INDENT = "    "
-private val indents = listOf("") as MutableList<String>
-
-private val takeIfNotAnnotatedAsFake = { node: Annotated ->
+internal val takeIfNotAnnotatedAsFake = { node: Annotated ->
     var result = true
     for (a in node.annotations) {
         if (a == FAKE_ANNOTATION) {
@@ -58,66 +38,30 @@ private val takeIfNotAnnotatedAsFake = { node: Annotated ->
 }
 
 
-fun getIndent(n: Int): String {
-    assert(n >= 0, "The indent index should be >= 0")
-    if (n < indents.size) return indents[n]
-
-    for (i in indents.size..n) {
-        indents.add(indents[i - 1] + INDENT)
-    }
-
-    return indents[n]
+interface INode {
+    fun accept(visitor: Visitor)
 }
 
-abstract class Node(val needsFixIndent: Boolean = false) {
-    private var cachedToString: String? = null
-
-    abstract fun stringify(): String
+abstract class Node : INode {
+    override fun accept(visitor: Visitor) {
+        visitor.visitNode(this)
+    }
 
     final override fun toString(): String {
-        if (cachedToString == null) {
-            cachedToString = fixIndentation(stringify())
-        }
-        return cachedToString!!
+        return Stringify().also { this.accept(it) }.result
     }
-
-    private fun fixIndentation(s: String): String {
-        if (!needsFixIndent) return s
-
-        var indentIdx = 0
-        var indent = getIndent(indentIdx)
-
-        return s.lineSequence().map {
-            if (it.replace("{}", "").endsWith("}")) {
-                indent = getIndent(--indentIdx)
-            }
-
-            val result = if (it.isEmpty() || indentIdx == 0) it else indent + it.trimStart()
-
-            if (it.endsWith('{')) {
-                indent = getIndent(++indentIdx)
-            }
-
-            result
-        }.joinToString("\n")
-    }
-}
-
-class MemberList(val elements: List<Member>) : Node() {
-    override fun stringify(): String = throw UnsupportedOperationException()
 }
 
 class KotlinFile(val packageFqName: Package?, val members: List<Member>) : Node() {
-    override fun stringify(): String =
-            (packageFqName?.toString()?.plus("\n") ?: "") +
-            members.join("\n",
-                    startWithIfNotEmpty = if (packageFqName == null) "" else "\n",
-                    endWithIfNotEmpty = "\n",
-                    filter = takeIfNotAnnotatedAsFake)
+    override fun accept(visitor: Visitor) {
+        visitor.visitFile(this)
+    }
 }
 
 class Package(val name: String) : Node() {
-    override fun stringify(): String = "package ${name.escapeIfNeed()}"
+    override fun accept(visitor: Visitor) {
+        visitor.visitPackage(this)
+    }
 }
 
 interface Named {
@@ -130,16 +74,20 @@ interface Annotated {
     var annotations: List<Annotation>
 }
 
-interface Member : Named, Annotated
+interface Member : INode, Named, Annotated
 
 // TODO should be Named?
 // TODO should we escape name here?
-class Argument(val name: String? = null, val value: Any /* TODO ??? */) {
-    override fun toString() = (if (name == null) "" else "$name = ") + value
+class Argument(val name: String? = null, val value: Any /* TODO ??? */) : Node() {
+    override fun accept(visitor: Visitor) {
+        visitor.visitArgument(this)
+    }
 }
 
 class Annotation(override var name: String, val parameters: List<Argument> = listOf()) : Named, Node() {
-    override fun stringify(): String = "@$escapedName" + if (parameters.isEmpty()) "" else "(${parameters.join()})"
+    override fun accept(visitor: Visitor) {
+        visitor.visitAnnotation(this)
+    }
 }
 
 enum class ClassKind(val keyword: String, val bracesAlwaysRequired: Boolean = false) {
@@ -148,11 +96,6 @@ enum class ClassKind(val keyword: String, val bracesAlwaysRequired: Boolean = fa
     ENUM("enum class"),
     OBJECT("object", bracesAlwaysRequired = true),
     COMPANION_OBJECT("companion object", bracesAlwaysRequired = true)
-}
-
-fun Annotated.stringifyAnnotations(): String {
-    val withoutNative = annotations.filter { it != NATIVE_ANNOTATION }
-    return withoutNative.stringify() + if (withoutNative.size != annotations.size) EXTERNAL + " " else ""
 }
 
 class Classifier(
@@ -164,26 +107,10 @@ class Classifier(
         val members: List<Member>,
         override var annotations: List<Annotation>,
         val hasOpenModifier: Boolean
-) : Member, Node(needsFixIndent = true) {
-    override fun stringify(): String =
-            stringifyAnnotations() +
-            (if (hasOpenModifier) OPEN + " " else "") +
-            kind.keyword +
-            (if (name.isEmpty()) "" else " ") +
-            escapedName +
-            (typeParams?.join(", ", startWithIfNotEmpty = "<", endWithIfNotEmpty = ">") ?: "") +
-            (if (paramsOfConstructors.size != 1) "" else paramsOfConstructors[0].join(", ", startWithIfNotEmpty = "(", endWithIfNotEmpty = ")")) +
-            parents.join(", ", startWithIfNotEmpty = " : ") +
-            (if (bracesRequired) " {\n" else "") +
-            (if (paramsOfConstructors.size > 1) {
-                paramsOfConstructors.map { paramsOfConstructor ->
-                    "constructor(" + paramsOfConstructor.join(", ") + ")"
-                }.join("\n", endWithIfNotEmpty = "\n")
-            } else "") +
-            members.join((if (kind == ClassKind.ENUM) "," else "")+ "\n", filter = takeIfNotAnnotatedAsFake) +
-            (if (bracesRequired) "\n}" else "")
-
-    val bracesRequired = kind.bracesAlwaysRequired || (paramsOfConstructors.size > 1) || !members.isEmpty()
+) : Member, Node() {
+    override fun accept(visitor: Visitor) {
+        visitor.visitClassifier(this)
+    }
 }
 
 class FunParam(
@@ -192,12 +119,9 @@ class FunParam(
         val defaultValue: Any? = null,
         val isVar: Boolean = false
 ) : Named, Node() {
-    override fun stringify(): String = stringify(printDefaultValue = true)
-
-    fun stringify(printDefaultValue: Boolean): String =
-            (if (isVar) "$OPEN $VAR " else "") +
-            (if (type.isVararg) VARARG + " " else "") + escapedName + type +
-            if (defaultValue == null || !printDefaultValue) "" else " = $NO_IMPL /* $defaultValue */"
+    override fun accept(visitor: Visitor) {
+        visitor.visitFunParam(this)
+    }
 }
 
 class CallSignature(
@@ -205,15 +129,9 @@ class CallSignature(
         val typeParams: List<TypeParam>?,
         val returnType: TypeAnnotation
 ) : Node() {
-    override fun stringify(): String = stringify(withTypeParams = true, printUnitReturnType = true, printDefaultValues = true)
-
-    fun stringify(withTypeParams: Boolean, printUnitReturnType: Boolean, printDefaultValues: Boolean): String =
-            (if (withTypeParams) stringifyTypeParams() else  "") +
-            params.join(start = "(", end = ")", stringify = { it.stringify(printDefaultValues) }) +
-            returnType.stringify(printUnitType = printUnitReturnType)
-
-    fun stringifyTypeParams(withSpaceAfter: Boolean = false) =
-            typeParams?.join(startWithIfNotEmpty = "<", endWithIfNotEmpty = ">" + if (withSpaceAfter) " " else "") ?:  ""
+    override fun accept(visitor: Visitor) {
+        visitor.visitCallSignature(this)
+    }
 }
 
 class Function(
@@ -225,16 +143,9 @@ class Function(
         val isOverride: Boolean = false,
         val hasOpenModifier: Boolean
 ) : Member, Node() {
-    override fun stringify(): String =
-            stringifyAnnotations() +
-            (if (isOverride) OVERRIDE + " " else if (hasOpenModifier) OPEN + " " else "") +
-            "$FUN " +
-            callSignature.stringifyTypeParams(withSpaceAfter = true) +
-            // TODO refactor this
-            (if (extendsType == null) "" else extendsType.toString() + "." ) +
-            escapedName +
-            callSignature.stringify(withTypeParams = false, printUnitReturnType = needsNoImpl, printDefaultValues = !isOverride) +
-            if (needsNoImpl) EQ_NO_IMPL else ""
+    override fun accept(visitor: Visitor) {
+        visitor.visitFunction(this)
+    }
 }
 
 class Variable(
@@ -253,51 +164,39 @@ class Variable(
     // TODO is it HACK???
     var _name = name
     override var name: String
-        get() = (if (extendsType == null) "" else extendsType.stringify() + ".") + _name
+        get() = (if (extendsType == null) "" else extendsType.toString() + ".") + _name
         set(value) { _name = value }
 
-    override fun stringify(): String =
-            stringifyAnnotations() +
-            // TODO extract common logic between Variable and Function
-            (if (isOverride) OVERRIDE + " " else if (hasOpenModifier) OPEN + " " else "") +
-            (if (isVar) VAR else VAL) + " " +
-            (typeParams?.join(", ", startWithIfNotEmpty = "<", endWithIfNotEmpty = "> ") ?: "") +
-            (if (extendsType == null) "" else extendsType.toString() + "." ) +
-            _name.escapeIfNeed() +
-            type.stringify(printUnitType = !needsNoImpl) +
-            stringifyImplementation()
-
-    private fun stringifyImplementation(): String {
-        return if (needsNoImpl) {
-            if (isInInterface) {
-                NO_IMPL_PROPERTY_GETTER + if (isVar) ";" + NO_IMPL_PROPERTY_SETTER else ""
-            } else {
-                EQ_NO_IMPL
-            }
-        } else {
-            ""
-        }
+    override fun accept(visitor: Visitor) {
+        visitor.visitVariable(this)
     }
 }
 
 class EnumEntry(override var name: String, val value: String? = null) : Member, Node() {
     override var annotations = listOf<Annotation>()
-    override fun stringify(): String = escapedName + if (value == null) "" else " /* = $value */"
+
+    override fun accept(visitor: Visitor) {
+        visitor.visitEnumEntry(this)
+    }
 }
 
 class HeritageType(override var name: String, val needParens: Boolean = false) : Named, Node() {
-    override fun stringify(): String = escapedName + if (needParens) "()" else ""
+    override fun accept(visitor: Visitor) {
+        visitor.visitHeritageType(this)
+    }
 }
 
 fun TypeUnion(vararg possibleTypes: Type): TypeUnion = TypeUnion(possibleTypes.toList())
 
 data class TypeUnion(val possibleTypes: List<Type>) : Node() {
+    override fun accept(visitor: Visitor) {
+        visitor.visitTypeUnion(this)
+    }
+
     val singleType: Type = if (possibleTypes.size == 1) possibleTypes.single() else {
         // TODO should it be `Any`?
         Type(DYNAMIC, comment = toString(), isNullable = possibleTypes.first().isNullable)
     }
-
-    override fun stringify() = possibleTypes.joinToString(" | ")
 }
 
 /**
@@ -306,24 +205,26 @@ data class TypeUnion(val possibleTypes: List<Type>) : Node() {
  * @param typeArgs the type params such as [String, List<T>], defaulting to empty
  * @param comment a comment about the type, currently used to document intersection types, defaulting to null.
  */
-data class Type(override var name: String, val typeArgs: List<Type> = emptyList(), val comment: String? = null,
-                val isNullable: Boolean = false, val isLambda: Boolean = false) : Named, Node() {
+data class Type(
+        override var name: String,
+        val typeArgs: List<Type> = emptyList(),
+        val comment: String? = null,
+        val isNullable: Boolean = false,
+        val isLambda: Boolean = false
+) : Named, Node() {
 
-
-    override fun stringify(): String {
-        return (if (isLambda && isNullable) "(" else "") +
-                escapedName +
-                typeArgs.map { it.stringify() }.join(", ", startWithIfNotEmpty = "<", endWithIfNotEmpty = ">") +
-                (if (isLambda && isNullable) ")" else "") +
-                (if (isNullable && name != DYNAMIC) "?" else "") +
-                (comment?.let { " /* $it */" } ?: "")
+    override fun accept(visitor: Visitor) {
+        visitor.visitType(this)
     }
 
+    // TODO make extension function
     fun isUnit() = escapedName == UNIT && !isNullable && !isLambda
 }
 
 class TypeParam(override var name: String, val upperBound: Type? = null) : Named, Node() {
-    override fun stringify(): String = escapedName + if(upperBound == null) "" else " : ${upperBound.stringify()}"
+    override fun accept(visitor: Visitor) {
+        visitor.visitTypeParam(this)
+    }
 }
 
 /** A Kotlin representation as in: typealias name<typeParams> = actualTypeUnionUsingAliasParams */
@@ -334,13 +235,7 @@ fun TypeAlias(name: String, typeParams: List<TypeParam>? = null, actualTypeUsing
 }
 
 class TypeAnnotation(var type: Type, val isVararg: Boolean = false) : Node() {
-    override fun stringify(): String = stringify(printUnitType = true)
-
-    fun stringify(printUnitType: Boolean): String {
-        if (!printUnitType && isUnit()) return ""
-
-        return  ": " + type.stringify()
+    override fun accept(visitor: Visitor) {
+        visitor.visitTypeAnnotation(this)
     }
-
-    fun isUnit() = type.isUnit() && !isVararg
 }

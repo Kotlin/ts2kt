@@ -175,13 +175,13 @@ fun TS.ArrayTypeNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): Typ
 //TODO: do we need LambdaType???
 private fun TS.FunctionOrConstructorTypeNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): Type {
     val params = parameters.toKotlinParams(typeMapper)
-    return Type("${params.join(", ", start = "(", end = ")")} -> ${(type?.toKotlinType(typeMapper) ?: Type(ANY)).stringify() }")
+    return Type("${params.join(", ", start = "(", end = ")")} -> ${(type?.toKotlinType(typeMapper) ?: Type(ANY)).toString() }")
 }
 
 //TODO: do we need LambdaType???
 private fun TS.FunctionOrConstructorTypeNode.toKotlinTypeUnion(typeMapper: ObjectTypeToKotlinTypeMapper): TypeUnion {
     return TypeUnion(parameters.toKotlinParamsOverloads(typeMapper).map { params ->
-        Type("${params.join(", ", start = "(", end = ")")} -> ${(type?.toKotlinType(typeMapper) ?: Type(ANY)).stringify() }")
+        Type("${params.join(", ", start = "(", end = ")")} -> ${(type?.toKotlinType(typeMapper) ?: Type(ANY)).toString() }")
     })
 }
 

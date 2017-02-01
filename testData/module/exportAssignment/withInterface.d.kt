@@ -11,5 +11,4 @@ object LazyJS {
 external var Lazy: LazyJS.LazyStatic = definedExternally
 @module
 object lazy.js {
-
 }

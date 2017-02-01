@@ -6,7 +6,6 @@ external interface JQueryStatic {
 }
 @module
 object jquery {
-
 }
 @module("jquery")
 external var `$`: JQueryStatic = definedExternally

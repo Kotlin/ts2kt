@@ -17,10 +17,8 @@ external interface _ {
         fun difference(vararg others: List<T>): LoDashArrayWrapper<T>
     }
     companion object : _.LoDashStatic by definedExternally: _.LoDashStatic {
-
     }
 }
 @module
 object lodash {
-
 }

@@ -48,7 +48,14 @@ data class ObjectTypeToKotlinTypeMapperImpl(
         // TODO better declaration for known classes
         cache[""] = Type("Any")
 
-        val jsonTypeKey = "@nativeGetter\nfun get(String): Any?, @nativeSetter\nfun set(String, Any)"
+        val jsonTypeKey = """
+                @nativeGetter
+                fun get(String): Any?
+                @nativeSetter
+                fun set(String, Any)
+
+                """.trimIndent()
+
         cache[jsonTypeKey] = Type("Json")
     }
 
@@ -128,5 +135,5 @@ data class ObjectTypeToKotlinTypeMapperImpl(
     }
 
     fun <T> List<T>.toStringKey(): String =
-            map { it.toString().replaceAll("(\\(|,\\s*)\\w+: ", "$1") }.sorted().joinToString(", ")
+            map { it.toString().replaceAll("(\\(|,\\s*)\\w+: ", "$1") }.sorted().joinToString("")
 }

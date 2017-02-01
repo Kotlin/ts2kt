@@ -395,7 +395,7 @@ class TypeScriptToKotlinWalker(
         if (a.kind === ClassKind.INTERFACE || a.isModule()) {
             val newTrait = Classifier(ClassKind.INTERFACE, a.name, a.paramsOfConstructors, a.typeParams, a.parents, a.members, a.annotations, hasOpenModifier = false)
 
-            val varTypeName = b.type.type.stringify()
+            val varTypeName = b.type.type.toString()
             val delegation = listOf(HeritageType("${varTypeName} by $NO_IMPL: ${varTypeName}"))
 
             // TODO drop hacks
@@ -480,7 +480,7 @@ abstract class TsClassifierToKt(
         val isExtends = node.token === TS.SyntaxKind.ExtendsKeyword
         val needParens = !containingInInterface && isExtends
 
-        val types = node.types?.arr?.map { id -> HeritageType(id.toKotlinType(typeMapper).stringify(), needParens) } ?: listOf()
+        val types = node.types?.arr?.map { id -> HeritageType(id.toKotlinType(typeMapper).toString(), needParens) } ?: listOf()
         parents.addAll(types)
     }
 
@@ -602,7 +602,7 @@ open class TsInterfaceToKt(
         val isOptional = node.questionToken != null
         if (isOptional) {
             val call = node.toKotlinCallSignature(typeMapper)
-            val typeAsString = "(${call.params.join(", ")}) -> ${call.returnType.type.stringify()}"
+            val typeAsString = "(${call.params.join(", ")}) -> ${call.returnType.type.toString()}"
             addVariable(name, type = Type(typeAsString, isNullable = true, isLambda = true), typeParams = call.typeParams, isVar = false, needsNoImpl = true, isOverride = isOverride)
         }
         else {
