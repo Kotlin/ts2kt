@@ -476,11 +476,7 @@ abstract class TsClassifierToKt(
     var parents = arrayListOf<HeritageType>()
 
     override fun visitHeritageClause(node: TS.HeritageClause) {
-        val containingInInterface = this is TsInterfaceToKt
-        val isExtends = node.token === TS.SyntaxKind.ExtendsKeyword
-        val needParens = !containingInInterface && isExtends
-
-        val types = node.types?.arr?.map { id -> HeritageType(id.toKotlinType(typeMapper).toString(), needParens) } ?: listOf()
+        val types = node.types?.arr?.map { id -> HeritageType(id.toKotlinType(typeMapper).toString()) } ?: listOf()
         parents.addAll(types)
     }
 

@@ -313,9 +313,6 @@ class Stringify : Visitor {
 
     override fun visitHeritageType(heritageType: HeritageType) {
         out.print(heritageType.escapedName)
-        if (heritageType.needParens) {
-            out.print("()")
-        }
     }
 
     override fun visitArgument(argument: Argument) {

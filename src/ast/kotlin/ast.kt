@@ -180,7 +180,7 @@ class EnumEntry(override var name: String, val value: String? = null) : Member, 
     }
 }
 
-class HeritageType(override var name: String, val needParens: Boolean = false) : Named, AbstractNode() {
+class HeritageType(override var name: String) : Named, AbstractNode() {
     override fun accept(visitor: Visitor) {
         visitor.visitHeritageType(this)
     }
