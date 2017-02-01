@@ -25,7 +25,7 @@ class Stringify : Visitor {
 
     private val out = Output()
 
-    private fun List<INode>.acceptForEach(visitor: Visitor, delimiter: String? = null, startWithIfNotEmpty: String? = null, endWithIfNotEmpty: String? = null) {
+    private fun List<Node>.acceptForEach(visitor: Visitor, delimiter: String? = null, startWithIfNotEmpty: String? = null, endWithIfNotEmpty: String? = null) {
         if (isNotEmpty() && startWithIfNotEmpty != null) {
             out.print(startWithIfNotEmpty)
         }
@@ -42,7 +42,7 @@ class Stringify : Visitor {
         }
     }
 
-    override fun visitNode(node: INode) {
+    override fun visitNode(node: Node) {
         TODO()
     }
 

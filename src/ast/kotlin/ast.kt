@@ -38,11 +38,11 @@ internal val takeIfNotAnnotatedAsFake = { node: Annotated ->
 }
 
 
-interface INode {
+interface Node {
     fun accept(visitor: Visitor)
 }
 
-abstract class Node : INode {
+abstract class AbstractNode : Node {
     override fun accept(visitor: Visitor) {
         visitor.visitNode(this)
     }
@@ -52,13 +52,13 @@ abstract class Node : INode {
     }
 }
 
-class KotlinFile(val packageFqName: Package?, val members: List<Member>) : Node() {
+class KotlinFile(val packageFqName: Package?, val members: List<Member>) : AbstractNode() {
     override fun accept(visitor: Visitor) {
         visitor.visitFile(this)
     }
 }
 
-class Package(val name: String) : Node() {
+class Package(val name: String) : AbstractNode() {
     override fun accept(visitor: Visitor) {
         visitor.visitPackage(this)
     }
@@ -74,17 +74,17 @@ interface Annotated {
     var annotations: List<Annotation>
 }
 
-interface Member : INode, Named, Annotated
+interface Member : Node, Named, Annotated
 
 // TODO should be Named?
 // TODO should we escape name here?
-class Argument(val name: String? = null, val value: Any /* TODO ??? */) : Node() {
+class Argument(val name: String? = null, val value: Any /* TODO ??? */) : AbstractNode() {
     override fun accept(visitor: Visitor) {
         visitor.visitArgument(this)
     }
 }
 
-class Annotation(override var name: String, val parameters: List<Argument> = listOf()) : Named, Node() {
+class Annotation(override var name: String, val parameters: List<Argument> = listOf()) : Named, AbstractNode() {
     override fun accept(visitor: Visitor) {
         visitor.visitAnnotation(this)
     }
@@ -107,7 +107,7 @@ class Classifier(
         val members: List<Member>,
         override var annotations: List<Annotation>,
         val hasOpenModifier: Boolean
-) : Member, Node() {
+) : Member, AbstractNode() {
     override fun accept(visitor: Visitor) {
         visitor.visitClassifier(this)
     }
@@ -118,7 +118,7 @@ class FunParam(
         val type: TypeAnnotation,
         val defaultValue: Any? = null,
         val isVar: Boolean = false
-) : Named, Node() {
+) : Named, AbstractNode() {
     override fun accept(visitor: Visitor) {
         visitor.visitFunParam(this)
     }
@@ -128,7 +128,7 @@ class CallSignature(
         val params: List<FunParam>,
         val typeParams: List<TypeParam>?,
         val returnType: TypeAnnotation
-) : Node() {
+) : AbstractNode() {
     override fun accept(visitor: Visitor) {
         visitor.visitCallSignature(this)
     }
@@ -142,7 +142,7 @@ class Function(
         val needsNoImpl: Boolean = true,
         val isOverride: Boolean = false,
         val hasOpenModifier: Boolean
-) : Member, Node() {
+) : Member, AbstractNode() {
     override fun accept(visitor: Visitor) {
         visitor.visitFunction(this)
     }
@@ -159,7 +159,7 @@ class Variable(
         val isInInterface: Boolean,
         val isOverride: Boolean = false,
         val hasOpenModifier: Boolean
-) : Member, Node() {
+) : Member, AbstractNode() {
 
     // TODO is it HACK???
     var _name = name
@@ -172,7 +172,7 @@ class Variable(
     }
 }
 
-class EnumEntry(override var name: String, val value: String? = null) : Member, Node() {
+class EnumEntry(override var name: String, val value: String? = null) : Member, AbstractNode() {
     override var annotations = listOf<Annotation>()
 
     override fun accept(visitor: Visitor) {
@@ -180,7 +180,7 @@ class EnumEntry(override var name: String, val value: String? = null) : Member, 
     }
 }
 
-class HeritageType(override var name: String, val needParens: Boolean = false) : Named, Node() {
+class HeritageType(override var name: String, val needParens: Boolean = false) : Named, AbstractNode() {
     override fun accept(visitor: Visitor) {
         visitor.visitHeritageType(this)
     }
@@ -188,7 +188,7 @@ class HeritageType(override var name: String, val needParens: Boolean = false) :
 
 fun TypeUnion(vararg possibleTypes: Type): TypeUnion = TypeUnion(possibleTypes.toList())
 
-data class TypeUnion(val possibleTypes: List<Type>) : Node() {
+data class TypeUnion(val possibleTypes: List<Type>) : AbstractNode() {
     override fun accept(visitor: Visitor) {
         visitor.visitTypeUnion(this)
     }
@@ -211,7 +211,7 @@ data class Type(
         val comment: String? = null,
         val isNullable: Boolean = false,
         val isLambda: Boolean = false
-) : Named, Node() {
+) : Named, AbstractNode() {
 
     override fun accept(visitor: Visitor) {
         visitor.visitType(this)
@@ -221,7 +221,7 @@ data class Type(
     fun isUnit() = escapedName == UNIT && !isNullable && !isLambda
 }
 
-class TypeParam(override var name: String, val upperBound: Type? = null) : Named, Node() {
+class TypeParam(override var name: String, val upperBound: Type? = null) : Named, AbstractNode() {
     override fun accept(visitor: Visitor) {
         visitor.visitTypeParam(this)
     }
@@ -234,7 +234,7 @@ fun TypeAlias(name: String, typeParams: List<TypeParam>? = null, actualTypeUsing
     return TypeAlias(name, typeParams, TypeUnion(actualTypeUsingAliasParams))
 }
 
-class TypeAnnotation(var type: Type, val isVararg: Boolean = false) : Node() {
+class TypeAnnotation(var type: Type, val isVararg: Boolean = false) : AbstractNode() {
     override fun accept(visitor: Visitor) {
         visitor.visitTypeAnnotation(this)
     }

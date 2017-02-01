@@ -1,7 +1,7 @@
 package ts2kt.kotlin.ast
 
 interface Visitor {
-    fun visitNode(node: INode)
+    fun visitNode(node: Node)
     fun visitAnnotation(annotation: Annotation)
     fun visitClassifier(classifier: Classifier)
     fun visitFunction(function: Function)
