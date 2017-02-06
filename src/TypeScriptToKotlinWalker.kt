@@ -90,10 +90,10 @@ class TypeScriptToKotlinWalker(
         if (packageFqName != null) ObjectTypeToKotlinTypeMapperImpl.reset()
     }
 
-    override val result: KotlinFile
+    override val result: PackagePart
         get()  {
             assert(exportedByAssignment.isEmpty(), "exportedByAssignment should be empty, but it contains: ${exportedByAssignment.keys.toString()}")
-            return KotlinFile(if (packageFqName != null) Package(packageFqName) else null, declarations)
+            return PackagePart(packageFqName, declarations)
         }
 
     override val hasMembersOpenModifier = false

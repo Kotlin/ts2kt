@@ -1,5 +1,7 @@
 package typescript
 
+import kotlin.js.Date
+
 @JsName("ts")
 external object TS {
     interface MapLike<T> {

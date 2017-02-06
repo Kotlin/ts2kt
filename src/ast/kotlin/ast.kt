@@ -52,13 +52,7 @@ abstract class AbstractNode : Node {
     }
 }
 
-class KotlinFile(val packageFqName: Package?, val members: List<Member>) : AbstractNode() {
-    override fun accept(visitor: Visitor) {
-        visitor.visitFile(this)
-    }
-}
-
-class Package(val name: String) : AbstractNode() {
+class PackagePart(val fqName: String?, val members: List<Member>) : AbstractNode() {
     override fun accept(visitor: Visitor) {
         visitor.visitPackage(this)
     }

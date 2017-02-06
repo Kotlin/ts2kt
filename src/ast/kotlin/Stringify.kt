@@ -194,17 +194,13 @@ class Stringify : Visitor {
         out.println()
     }
 
-    override fun visitFile(kotlinFile: KotlinFile) {
-        kotlinFile.packageFqName?.let {
-            it.accept(this)
+    override fun visitPackage(packagePart: PackagePart) {
+        packagePart.fqName?.let {
+            out.println("package " + it.escapeIfNeed())
             out.println()
         }
-        kotlinFile.members.filter(takeIfNotAnnotatedAsFake).acceptForEach(this)
-    }
 
-    override fun visitPackage(package_: Package) {
-        out.print("package " + package_.name.escapeIfNeed())
-        out.println()
+        packagePart.members.filter(takeIfNotAnnotatedAsFake).acceptForEach(this)
     }
 
     fun FunParam.printToOut(printDefaultValue: Boolean) {
