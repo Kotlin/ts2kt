@@ -18,7 +18,7 @@ private val FUN = "fun"
 private val VARARG = "vararg"
 
 
-class Stringify : Visitor {
+class Stringify(private val packagePartPrefix: String?) : Visitor {
     val result: String
         get() = out.toString()
 
@@ -195,8 +195,17 @@ class Stringify : Visitor {
     }
 
     override fun visitPackage(packagePart: PackagePart) {
+        val packageNameParts = mutableListOf<String>()
+
+        packagePartPrefix?.let {
+            packageNameParts += it
+        }
         packagePart.fqName?.let {
-            out.println("package " + it.escapeIfNeed())
+            packageNameParts += it
+        }
+
+        if (packageNameParts.isNotEmpty()) {
+            out.println("package " + packageNameParts.joinToString(".", transform = String::escapeIfNeed))
             out.println()
         }
 

@@ -207,7 +207,10 @@ fun translate(srcPath: String): String {
     }
 
 
-    val typeScriptToKotlinWalker = TypeScriptToKotlinWalker(srcName,
+    // TODO drop hack for reset temp class indexer for each file
+    ObjectTypeToKotlinTypeMapperImpl.reset()
+
+    val typeScriptToKotlinWalker = TypeScriptToKotlinWalker(
             isOwnDeclaration = {
                 val definitions = languageService.getDefinitionAtPosition(normalizeSrcPath, it.end)
                 definitions.all { it.fileName == normalizeSrcPath }
@@ -220,9 +223,11 @@ fun translate(srcPath: String): String {
     // note we have side effect here
     typeScriptToKotlinWalker.visitList(fileNode)
 
-    val ktTree = typeScriptToKotlinWalker.result
+    val packageParts = typeScriptToKotlinWalker.packageParts
 
-    val out = ktTree.stringify()
+    val out = packageParts.joinToString("\n---------------\n") {
+        it.stringify(packagePartPrefix = srcName)
+    }
 
     return out
 }

@@ -87,7 +87,7 @@ data class ObjectTypeToKotlinTypeMapperImpl(
         translator.name = traitName
         translator.typeParams = typeParams
 
-        declarations.add(translator.result)
+        declarations.add(translator.createClassifier())
 
         cache[typeKey] = traitType
         return traitType

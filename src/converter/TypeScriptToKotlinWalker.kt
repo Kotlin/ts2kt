@@ -49,7 +49,6 @@ private val COMPARE_BY_NAME = { a: Named, b: Named -> a.name == b.name }
 private val IS_NATIVE_ANNOTATION = { a: Annotation -> a.name == NATIVE }
 
 abstract class TypeScriptToKotlinBase : Visitor {
-    abstract val result: Node?
     abstract val hasMembersOpenModifier: Boolean
     abstract val isInterface: Boolean
 
@@ -74,7 +73,6 @@ abstract class TypeScriptToKotlinBase : Visitor {
 }
 
 class TypeScriptToKotlinWalker(
-        val packageFqName: String? = null,
         override val defaultAnnotations: List<Annotation> = DEFAULT_ANNOTATION,
         val requiredModifier: TS.SyntaxKind? = TS.SyntaxKind.DeclareKeyword,
         val moduleName: String? = null,
@@ -85,15 +83,10 @@ class TypeScriptToKotlinWalker(
         val isOverrideProperty: (TS.PropertyDeclaration) -> Boolean
 ) : TypeScriptToKotlinBase() {
 
-    init {
-        // TODO drop hack for reset temp class indexer for each file
-        if (packageFqName != null) ObjectTypeToKotlinTypeMapperImpl.reset()
-    }
-
-    override val result: PackagePart
-        get()  {
+    val packageParts: List<PackagePart>
+        get() {
             assert(exportedByAssignment.isEmpty(), "exportedByAssignment should be empty, but it contains: ${exportedByAssignment.keys.toString()}")
-            return PackagePart(packageFqName, declarations)
+            return listOf(PackagePart(null, declarations))
         }
 
     override val hasMembersOpenModifier = false
@@ -166,7 +159,7 @@ class TypeScriptToKotlinWalker(
         else {
             val translator = TsInterfaceToKt(typeMapper, annotations = defaultAnnotations, isOverride = isOverride, isOverrideProperty = isOverrideProperty)
             translator.visitInterfaceDeclaration(node)
-            declarations.add(translator.result)
+            declarations.add(translator.createClassifier())
         }
     }
 
@@ -176,7 +169,7 @@ class TypeScriptToKotlinWalker(
         val translator = TsClassToKt(typeMapper, annotations = defaultAnnotations + additionalAnnotations, isOverride = isOverride, isOverrideProperty = isOverrideProperty)
         translator.visitClassDeclaration(node)
 
-        val result = translator.result
+        val result = translator.createClassifier()
         if (result != null) {
             declarations.add(result)
         }
@@ -578,8 +571,6 @@ open class TsInterfaceToKt(
         isOverride: (TS.MethodDeclaration) -> Boolean,
         isOverrideProperty: (TS.PropertyDeclaration) -> Boolean
 ) : TsClassifierToKt(typeMapper, isOverride, isOverrideProperty) {
-    override val result: Classifier
-        get() = Classifier(ClassKind.INTERFACE, name!!, listOf(), typeParams, parents, declarations, annotations, hasOpenModifier = false)
 
     override val hasMembersOpenModifier = false
 
@@ -705,26 +696,6 @@ class TsClassToKt(
         isOverrideProperty: (TS.PropertyDeclaration) -> Boolean,
         override val hasMembersOpenModifier: Boolean = true
 ) : TsClassifierToKt(typeMapper, isOverride, isOverrideProperty) {
-    override val result: Classifier?
-        get()  {
-            if (name == null) return null
-
-            if (cachedDeclarations == null) {
-                cachedDeclarations =
-                        if (staticTranslator == null) {
-                            declarations
-                        } else {
-                            val t = arrayListOf<Member>()
-                            t.addAll(declarations)
-                            t.add(staticTranslator!!.result!!)
-                            t
-                        }
-            }
-
-            return Classifier(kind, name!!, paramsOfConstructors, typeParams, parents, cachedDeclarations!!, annotations, hasOpenModifier = kind === ClassKind.CLASS)
-        }
-
-    var cachedDeclarations: List<Member>? = null
 
     override val needsNoImpl = true
 

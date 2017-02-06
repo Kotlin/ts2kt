@@ -4,7 +4,8 @@ import ts2kt.escapeIfNeed
 
 
 // TODO: review usages
-fun Node.stringify() = Stringify().also { this.accept(it) }.result
+fun Node.stringify() = stringify(null)
+fun Node.stringify(packagePartPrefix: String?) = Stringify(packagePartPrefix).also { this.accept(it) }.result
 
 fun Annotation.getFirstParamAsString(): String? {
     if (this.parameters.isEmpty()) return null
