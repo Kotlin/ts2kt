@@ -139,7 +139,7 @@ class Function(
 }
 
 class Variable(
-        name: String,
+        override var name: String,
         var type: TypeAnnotation,
         val extendsType: HeritageType? = null,
         override var annotations: List<Annotation>,
@@ -150,13 +150,6 @@ class Variable(
         val isOverride: Boolean = false,
         val hasOpenModifier: Boolean
 ) : Member, AbstractNode() {
-
-    // TODO is it HACK???
-    var _name = name
-    override var name: String
-        get() = (if (extendsType == null) "" else extendsType.stringify() + ".") + _name
-        set(value) { _name = value }
-
     override fun accept(visitor: Visitor) {
         visitor.visitVariable(this)
     }

@@ -176,7 +176,7 @@ class Stringify : Visitor {
                 out.print(".")
             }
 
-            out.print(_name.escapeIfNeed())
+            out.print(name.escapeIfNeed())
 
             type.printToOut(printUnitType = !needsNoImpl)
 
