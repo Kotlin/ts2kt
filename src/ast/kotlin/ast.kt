@@ -46,10 +46,6 @@ abstract class AbstractNode : Node {
     override fun accept(visitor: Visitor) {
         visitor.visitNode(this)
     }
-
-    final override fun toString(): String {
-        return Stringify().also { this.accept(it) }.result
-    }
 }
 
 class PackagePart(val fqName: String?, val members: List<Member>) : AbstractNode() {
@@ -158,7 +154,7 @@ class Variable(
     // TODO is it HACK???
     var _name = name
     override var name: String
-        get() = (if (extendsType == null) "" else extendsType.toString() + ".") + _name
+        get() = (if (extendsType == null) "" else extendsType.stringify() + ".") + _name
         set(value) { _name = value }
 
     override fun accept(visitor: Visitor) {
@@ -189,7 +185,7 @@ data class TypeUnion(val possibleTypes: List<Type>) : AbstractNode() {
 
     val singleType: Type = if (possibleTypes.size == 1) possibleTypes.single() else {
         // TODO should it be `Any`?
-        Type(DYNAMIC, comment = toString(), isNullable = possibleTypes.first().isNullable)
+        Type(DYNAMIC, comment = stringify(), isNullable = possibleTypes.first().isNullable)
     }
 }
 

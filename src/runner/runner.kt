@@ -17,6 +17,7 @@
 package ts2kt
 
 import node.require
+import ts2kt.kotlin.ast.stringify
 import ts2kt.utils.cast
 import ts2kt.utils.hasFlag
 import ts2kt.utils.push
@@ -221,7 +222,7 @@ fun translate(srcPath: String): String {
 
     val ktTree = typeScriptToKotlinWalker.result
 
-    val out = ktTree.toString()
+    val out = ktTree.stringify()
 
     return out
 }

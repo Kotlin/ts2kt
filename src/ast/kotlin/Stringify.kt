@@ -3,7 +3,6 @@ package ts2kt.kotlin.ast
 import ts2kt.DYNAMIC
 import ts2kt.NATIVE_ANNOTATION
 import ts2kt.escapeIfNeed
-import ts2kt.utils.join
 
 
 val NO_IMPL = "definedExternally"
@@ -80,10 +79,10 @@ class Stringify : Visitor {
             typeParams?.acceptForEach(this@Stringify, ", ", startWithIfNotEmpty = "<", endWithIfNotEmpty = ">")
 
             if (paramsOfConstructors.size == 1) {
-                out.print(paramsOfConstructors[0].join(", ", startWithIfNotEmpty = "(", endWithIfNotEmpty = ")"))
+                paramsOfConstructors[0].acceptForEach(this@Stringify, delimiter = ", ", startWithIfNotEmpty = "(", endWithIfNotEmpty = ")")
             }
 
-            out.print(parents.join(", ", startWithIfNotEmpty = " : "))
+            parents.acceptForEach(this@Stringify, delimiter = ", ", startWithIfNotEmpty = " : ")
 
             val bracesRequired = kind.bracesAlwaysRequired || (paramsOfConstructors.size > 1) || !members.isEmpty()
 
@@ -135,7 +134,8 @@ class Stringify : Visitor {
             callSignature.printTypeParams(withSpaceAfter = true)
 
             if (extendsType != null) {
-                out.print(extendsType.toString() + ".")
+                extendsType.accept(this@Stringify)
+                out.print(".")
             }
 
             out.print(escapedName)

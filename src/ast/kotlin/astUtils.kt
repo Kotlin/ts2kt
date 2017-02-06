@@ -1,9 +1,10 @@
 package ts2kt.kotlin.ast
 
 import ts2kt.escapeIfNeed
-import ts2kt.utils.join
 
-fun <T> List<T>.stringify() = join("\n", endWithIfNotEmpty = "\n")
+
+// TODO: review usages
+fun Node.stringify() = Stringify().also { this.accept(it) }.result
 
 fun Annotation.getFirstParamAsString(): String? {
     if (this.parameters.isEmpty()) return null

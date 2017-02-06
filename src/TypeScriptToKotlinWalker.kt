@@ -395,7 +395,7 @@ class TypeScriptToKotlinWalker(
         if (a.kind === ClassKind.INTERFACE || a.isModule()) {
             val newTrait = Classifier(ClassKind.INTERFACE, a.name, a.paramsOfConstructors, a.typeParams, a.parents, a.members, a.annotations, hasOpenModifier = false)
 
-            val varTypeName = b.type.type.toString()
+            val varTypeName = b.type.type.stringify()
             val delegation = listOf(HeritageType("${varTypeName} by $NO_IMPL: ${varTypeName}"))
 
             // TODO drop hacks
@@ -476,7 +476,7 @@ abstract class TsClassifierToKt(
     var parents = arrayListOf<HeritageType>()
 
     override fun visitHeritageClause(node: TS.HeritageClause) {
-        val types = node.types?.arr?.map { id -> HeritageType(id.toKotlinType(typeMapper).toString()) } ?: listOf()
+        val types = node.types?.arr?.map { id -> HeritageType(id.toKotlinType(typeMapper).stringify()) } ?: listOf()
         parents.addAll(types)
     }
 
@@ -598,7 +598,7 @@ open class TsInterfaceToKt(
         val isOptional = node.questionToken != null
         if (isOptional) {
             val call = node.toKotlinCallSignature(typeMapper)
-            val typeAsString = "(${call.params.join(", ")}) -> ${call.returnType.type.toString()}"
+            val typeAsString = "(${call.params.join(", ", stringify = FunParam::stringify)}) -> ${call.returnType.type.stringify()}"
             addVariable(name, type = Type(typeAsString, isNullable = true, isLambda = true), typeParams = call.typeParams, isVar = false, needsNoImpl = true, isOverride = isOverride)
         }
         else {
@@ -641,7 +641,7 @@ class TsInterfaceToKtExtensions(
 
     val cachedExtendsType by lazy { getExtendsType(typeParams) }
 
-    fun getExtendsType(typeParams: List<TypeParam>?) = name!! + (typeParams?.join(startWithIfNotEmpty = "<", endWithIfNotEmpty = ">") ?: "")
+    fun getExtendsType(typeParams: List<TypeParam>?) = name!! + (typeParams?.join(startWithIfNotEmpty = "<", endWithIfNotEmpty = ">", stringify = TypeParam::stringify) ?: "")
 
     fun List<TypeParam>?.fixIfClashWith(another: List<TypeParam>?): List<TypeParam>? {
         if (this == null || another == null) return this

@@ -134,6 +134,6 @@ data class ObjectTypeToKotlinTypeMapperImpl(
         return copy(typeParameterDeclarations = typeParameterDeclarations.toList() + (typeParameters?.arr ?: arrayOf()))
     }
 
-    fun <T> List<T>.toStringKey(): String =
-            map { it.toString().replaceAll("(\\(|,\\s*)\\w+: ", "$1") }.sorted().joinToString("")
+    fun List<Node>.toStringKey(): String =
+            map { it.stringify().replaceAll("(\\(|,\\s*)\\w+: ", "$1") }.sorted().joinToString("")
 }

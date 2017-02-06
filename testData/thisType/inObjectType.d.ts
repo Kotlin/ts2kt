@@ -1,5 +1,5 @@
 
-function foo(p: {
+declare function foo(p: {
     foo: this;
     bar(): this;
 }): {

@@ -175,13 +175,13 @@ fun TS.ArrayTypeNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): Typ
 //TODO: do we need LambdaType???
 private fun TS.FunctionOrConstructorTypeNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): Type {
     val params = parameters.toKotlinParams(typeMapper)
-    return Type("${params.join(", ", start = "(", end = ")")} -> ${(type?.toKotlinType(typeMapper) ?: Type(ANY)).toString() }")
+    return Type("${params.join(", ", start = "(", end = ")", stringify = FunParam::stringify)} -> ${(type?.toKotlinType(typeMapper) ?: Type(ANY)).stringify() }")
 }
 
 //TODO: do we need LambdaType???
 private fun TS.FunctionOrConstructorTypeNode.toKotlinTypeUnion(typeMapper: ObjectTypeToKotlinTypeMapper): TypeUnion {
     return TypeUnion(parameters.toKotlinParamsOverloads(typeMapper).map { params ->
-        Type("${params.join(", ", start = "(", end = ")")} -> ${(type?.toKotlinType(typeMapper) ?: Type(ANY)).toString() }")
+        Type("${params.join(", ", start = "(", end = ")", stringify = FunParam::stringify)} -> ${(type?.toKotlinType(typeMapper) ?: Type(ANY)).stringify() }")
     })
 }
 
@@ -304,7 +304,7 @@ fun TS.UnionTypeNode.toKotlinTypeUnion(typeMapper: ObjectTypeToKotlinTypeMapper)
 
 fun TS.IntersectionTypeNode.toKotlinTypeUnion(typeMapper: ObjectTypeToKotlinTypeMapper): TypeUnion {
     val kotlinTypeUnions = types.arr.map { it.toKotlinTypeUnion(typeMapper) }
-    val commentWithExpectedType = kotlinTypeUnions.joinToString(" & ")
+    val commentWithExpectedType = kotlinTypeUnions.join(" & ", stringify = TypeUnion::stringify)
     // just take the first one for now since Kotlin doesn't support intersection types.
     return kotlinTypeUnions[0].mapLast { it.copy(comment = commentWithExpectedType) }
 }
