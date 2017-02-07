@@ -1,4 +1,4 @@
-package interface
+package `interface`
 
 @module("Boo")
 interface IBaz {

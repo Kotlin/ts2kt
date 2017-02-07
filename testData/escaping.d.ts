@@ -9,7 +9,7 @@ interface This {
     typeof: number;
     in(object: Foo);
 }
-declare class is<trait> {
+declare class is<interface> {
     as: number;
     package(a): boolean;
 }
@@ -45,7 +45,7 @@ declare module AllKeywords {
     export module "this" {}
     export module "This" {}
     export module "throw" {}
-    export module "trait" {}
+    export module "interface" {}
     export module "true" {}
     export module "try" {}
     export module "typealias" {}
@@ -55,5 +55,5 @@ declare module AllKeywords {
     export module "while" {}
 }
 
-// val var is as trait package object when typealias fun in This
+// val var is as interface package object when typealias fun in This
 // contains any of: $ \s

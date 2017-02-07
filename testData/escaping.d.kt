@@ -15,7 +15,7 @@ external interface `This` {
         fun `bar$`(`ba$z`: Number): Unit = definedExternally
     }
 }
-external open class `is`<`trait`> {
+external open class `is`<`interface`> {
     open var `as`: Number = definedExternally
     open fun `package`(a: Any): Boolean = definedExternally
 }
@@ -87,7 +87,7 @@ object AllKeywords {
     object `throw` {
     }
     @module
-    object `trait` {
+    object `interface` {
     }
     @module
     object `true` {
