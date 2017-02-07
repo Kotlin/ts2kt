@@ -17,11 +17,8 @@
 package ts2kt
 
 import ts2kt.kotlin.ast.*
-import ts2kt.kotlin.ast.Annotation
-import ts2kt.kotlin.ast.Function
 import ts2kt.utils.assert
 import ts2kt.utils.cast
-import ts2kt.utils.join
 import ts2kt.utils.merge
 import typescript.TS
 import typescript.declarationName
@@ -33,46 +30,22 @@ private val MODULE = "module"
 private val NATIVE = "native"
 
 val NATIVE_ANNOTATION = Annotation(NATIVE)
-private val NATIVE_GETTER_ANNOTATION = Annotation("nativeGetter")
-private val NATIVE_SETTER_ANNOTATION = Annotation("nativeSetter")
-private val NATIVE_INVOKE_ANNOTATION = Annotation("nativeInvoke")
-private val NATIVE_NEW_ANNOTATION = Annotation("native(\"new\")")
+internal val NATIVE_GETTER_ANNOTATION = Annotation("nativeGetter")
+internal val NATIVE_SETTER_ANNOTATION = Annotation("nativeSetter")
+internal val NATIVE_INVOKE_ANNOTATION = Annotation("nativeInvoke")
+internal val NATIVE_NEW_ANNOTATION = Annotation("native(\"new\")")
 private val MODULE_ANNOTATION = Annotation(MODULE)
-private val DEFAULT_ANNOTATION = listOf(NATIVE_ANNOTATION)
+internal val DEFAULT_ANNOTATION = listOf(NATIVE_ANNOTATION)
 private val DEFAULT_MODULE_ANNOTATION = listOf(MODULE_ANNOTATION)
 private val NO_ANNOTATIONS = listOf<Annotation>()
-private val INVOKE = "invoke"
-private val GET = "get"
-private val SET = "set"
+internal val INVOKE = "invoke"
+internal val GET = "get"
+internal val SET = "set"
 
 private val COMPARE_BY_NAME = { a: Named, b: Named -> a.name == b.name }
-private val IS_NATIVE_ANNOTATION = { a: Annotation -> a.name == NATIVE }
+internal val IS_NATIVE_ANNOTATION = { a: Annotation -> a.name == NATIVE }
 
-abstract class TypeScriptToKotlinBase : Visitor {
-    abstract val hasMembersOpenModifier: Boolean
-    abstract val isInterface: Boolean
-
-    open val defaultAnnotations: List<Annotation> = listOf()
-
-    val declarations = arrayListOf<Member>()
-
-    open fun addVariable(name: String, type: Type, extendsType: String? = null, typeParams: List<TypeParam>? = null, isVar: Boolean = true, needsNoImpl: Boolean = true, additionalAnnotations: List<Annotation> = listOf(), isOverride: Boolean = false) {
-        val annotations = defaultAnnotations + additionalAnnotations
-        declarations.add(Variable(name, TypeAnnotation(type), extendsType?.let { HeritageType(it) }, annotations, typeParams, isVar = isVar, needsNoImpl = needsNoImpl, isInInterface = isInterface, isOverride = isOverride, hasOpenModifier = hasMembersOpenModifier))
-    }
-
-    open fun addFunction(name: String, callSignature: CallSignature, extendsType: String? = null, needsNoImpl: Boolean = true, additionalAnnotations: List<Annotation> = listOf(), isOverride: Boolean = false) {
-        val annotations = defaultAnnotations + additionalAnnotations
-        declarations.add(Function(name, callSignature, extendsType?.let { HeritageType(it) }, annotations, needsNoImpl = needsNoImpl, isOverride = isOverride, hasOpenModifier = hasMembersOpenModifier))
-    }
-
-    // TODO
-    open fun visitList(node: TS.Node) {
-        forEachChild(this, node)
-    }
-}
-
-class TypeScriptToKotlinWalker(
+class TypeScriptToKotlin(
         override val defaultAnnotations: List<Annotation> = DEFAULT_ANNOTATION,
         val requiredModifier: TS.SyntaxKind? = TS.SyntaxKind.DeclareKeyword,
         val moduleName: String? = null,
@@ -219,7 +192,7 @@ class TypeScriptToKotlinWalker(
         val name = getName(rightNode)
 
         val tr =
-                TypeScriptToKotlinWalker(
+                TypeScriptToKotlin(
                         moduleName = name,
                         defaultAnnotations = listOf(),
                         requiredModifier = TS.SyntaxKind.ExportKeyword,
@@ -456,267 +429,5 @@ class TypeScriptToKotlinWalker(
 
     private fun Classifier.addMember(member: Member) {
         (members as MutableList).add(member)
-    }
-}
-
-abstract class TsClassifierToKt(
-        val typeMapper: ObjectTypeToKotlinTypeMapper,
-        val isOverride: (TS.MethodDeclaration) -> Boolean,
-        val isOverrideProperty: (TS.PropertyDeclaration) -> Boolean
-) : TypeScriptToKotlinBase() {
-    abstract val needsNoImpl: Boolean
-
-    var parents = arrayListOf<HeritageType>()
-
-    override fun visitHeritageClause(node: TS.HeritageClause) {
-        val types = node.types?.arr?.map { id -> HeritageType(id.toKotlinType(typeMapper).stringify()) } ?: listOf()
-        parents.addAll(types)
-    }
-
-    override fun visitIndexSignature(node: TS.IndexSignatureDeclaration) {
-        translateAccessor(node, isGetter = true)
-        translateAccessor(node, isGetter = false)
-    }
-
-    private fun translateAccessor(node: TS.IndexSignatureDeclaration, isGetter: Boolean) {
-        // TODO type params?
-        node.parameters.toKotlinParamsOverloads(typeMapper).forEach { params ->
-            val propTypeUnion = if (isGetter) {
-                TypeUnion(node.type?.toKotlinType(typeMapper) ?: Type(ANY))
-            } else {
-                node.type?.toKotlinTypeUnion(typeMapper) ?: TypeUnion(Type(ANY))
-            }
-            propTypeUnion.possibleTypes.forEach { propType ->
-                val callSignature: CallSignature
-                val accessorName: String
-                val annotation: Annotation
-                if (isGetter) {
-                    // per Kotlin, all @nativeGetter's must be nullable
-                    callSignature = CallSignature(params, listOf(), TypeAnnotation(propType.copy(isNullable = true)))
-                    accessorName = GET
-                    annotation = NATIVE_GETTER_ANNOTATION
-                }
-                else {
-                    callSignature = CallSignature(listOf(params[0], FunParam("value", TypeAnnotation(propType))), listOf(), TypeAnnotation(Type(UNIT)))
-                    accessorName = SET
-                    annotation = NATIVE_SETTER_ANNOTATION
-                }
-
-                addFunction(accessorName, callSignature, needsNoImpl = needsNoImpl, additionalAnnotations = listOf(annotation))
-            }
-        }
-    }
-
-    var name: String? = null
-
-    var staticTranslator: TsClassToKt? = null
-
-    ///???
-    // TODO should be abstract? is static declarations inside (TS) interfaces allowed?
-    fun getTranslator(node: TS.ClassElement): TsClassifierToKt {
-        if (node.modifiers?.arr?.any { it.kind === TS.SyntaxKind.StaticKeyword } ?: false) {
-            if (staticTranslator == null) {
-                // TODO support override for static members
-                staticTranslator = TsClassToKt(typeMapper, ClassKind.COMPANION_OBJECT, listOf(), NOT_OVERRIDE, NOT_OVERRIDE, hasMembersOpenModifier = false)
-                staticTranslator?.name = ""
-            }
-            return staticTranslator!!
-        }
-
-        return this
-    }
-
-    open fun needsNoImpl(node: TS.PropertyDeclaration): Boolean = true
-    open fun isNullable(node: TS.PropertyDeclaration): Boolean = false
-    open fun isLambda(node: TS.PropertyDeclaration): Boolean = false
-
-    open fun needsNoImpl(node: TS.MethodDeclaration): Boolean = true
-
-    override fun visitPropertyDeclaration(node: TS.PropertyDeclaration) {
-        val declarationName = node.propertyName!!
-
-        val name = declarationName.unescapedText
-        val varType = node.type?.toKotlinType(typeMapper) ?: Type(ANY)
-
-        val isOverride = isOverrideProperty(node)
-
-        getTranslator(node).addVariable(
-                name,
-                type = varType.copy(isNullable = varType.isNullable || isNullable(node), isLambda = isLambda(node)),
-                isOverride = isOverride,
-                needsNoImpl = needsNoImpl(node)
-        )
-    }
-
-    open fun TsClassifierToKt.addFunction(name: String, isOverride: Boolean, needsNoImpl: Boolean, node: TS.MethodDeclaration) {
-        node.toKotlinCallSignatureOverloads(typeMapper).forEach { callSignature ->
-            addFunction(name, callSignature, isOverride = isOverride, needsNoImpl = needsNoImpl(node))
-        }
-
-        assert(node.body == null, "An function in declarations file should not have body, function '${this.name}.$name'")
-    }
-
-    override fun visitMethodDeclaration(node: TS.MethodDeclaration) {
-        val declarationName = node.propertyName!!
-        val name = declarationName.unescapedText
-        val isOverride = isOverride(node)
-
-        getTranslator(node).addFunction(name, isOverride, needsNoImpl, node)
-    }
-}
-
-open class TsInterfaceToKt(
-        typeMapper: ObjectTypeToKotlinTypeMapper,
-        val annotations: List<Annotation>,
-        isOverride: (TS.MethodDeclaration) -> Boolean,
-        isOverrideProperty: (TS.PropertyDeclaration) -> Boolean
-) : TsClassifierToKt(typeMapper, isOverride, isOverrideProperty) {
-
-    override val hasMembersOpenModifier = false
-
-    override val needsNoImpl = false
-
-    override val isInterface: Boolean = true
-
-    var typeParams: List<TypeParam>? = null
-
-    override fun needsNoImpl(node: TS.PropertyDeclaration) = node.questionToken != null
-    override fun isNullable(node: TS.PropertyDeclaration) = node.questionToken != null
-    override fun isLambda(node: TS.PropertyDeclaration) = node.type?.kind === TS.SyntaxKind.FunctionType
-
-    override fun needsNoImpl(node: TS.MethodDeclaration) = false
-    override fun TsClassifierToKt.addFunction(name: String, isOverride: Boolean, needsNoImpl: Boolean, node: TS.MethodDeclaration) {
-        val isOptional = node.questionToken != null
-        if (isOptional) {
-            val call = node.toKotlinCallSignature(typeMapper)
-            val typeAsString = "(${call.params.join(", ", stringify = FunParam::stringify)}) -> ${call.returnType.type.stringify()}"
-            addVariable(name, type = Type(typeAsString, isNullable = true, isLambda = true), typeParams = call.typeParams, isVar = false, needsNoImpl = true, isOverride = isOverride)
-        }
-        else {
-            node.toKotlinCallSignatureOverloads(typeMapper).forEach { call ->
-                addFunction(name, call, needsNoImpl = false, isOverride = isOverride)
-            }
-        }
-
-    }
-
-    override fun visitInterfaceDeclaration(node: TS.InterfaceDeclaration) {
-//      todo visitList(node.modifiers)
-        name = node.identifierName.unescapedText
-        typeParams = node.typeParameters?.toKotlinTypeParams(typeMapper)
-
-        // TODO merge with class?
-        node.heritageClauses?.arr?.forEach { visitNode(this, it) }
-        node.members.arr.forEach { visitNode(this, it) }
-    }
-
-    override fun visitSignatureDeclaration(node: TS.SignatureDeclaration) {
-        node.toKotlinCallSignatureOverloads(typeMapper).forEach { callSignature ->
-            addFunction(INVOKE, callSignature, needsNoImpl = false, additionalAnnotations = listOf(NATIVE_INVOKE_ANNOTATION))
-        }
-    }
-
-    override fun visitConstructSignatureDeclaration(node: TS.ConstructorDeclaration) {
-        node.toKotlinCallSignatureOverloads(typeMapper).forEach { callSignature ->
-            addFunction(INVOKE, callSignature, needsNoImpl = false, additionalAnnotations = listOf(NATIVE_NEW_ANNOTATION))
-        }
-    }
-}
-
-class TsInterfaceToKtExtensions(
-        typeMapper: ObjectTypeToKotlinTypeMapper,
-        annotations: List<Annotation>,
-        isOverride: (TS.MethodDeclaration) -> Boolean,
-        isOverrideProperty: (TS.PropertyDeclaration) -> Boolean
-) : TsInterfaceToKt(typeMapper, annotations, isOverride, isOverrideProperty){
-
-    val cachedExtendsType by lazy { getExtendsType(typeParams) }
-
-    fun getExtendsType(typeParams: List<TypeParam>?) = name!! + (typeParams?.join(startWithIfNotEmpty = "<", endWithIfNotEmpty = ">", stringify = TypeParam::stringify) ?: "")
-
-    fun List<TypeParam>?.fixIfClashWith(another: List<TypeParam>?): List<TypeParam>? {
-        if (this == null || another == null) return this
-
-        assert(!(this === another), "expected this !== another, this = $this, another = $another")
-
-        val extendsTypeParams = arrayListOf<TypeParam>()
-        for (e in this) {
-            var toAdd = e.name
-            var i = 0
-            while (another.any { it.name == toAdd }) toAdd = e.name + i++
-
-            extendsTypeParams.add(TypeParam(toAdd, e.upperBound))
-        }
-
-        return extendsTypeParams
-    }
-
-    infix fun List<TypeParam>?.merge(another: List<TypeParam>?): List<TypeParam>? = when {
-                this == null -> another
-                another == null -> this
-                else -> this + another
-            }
-
-    fun List<Annotation>.withNativeAnnotation() = when {
-                defaultAnnotations.any(IS_NATIVE_ANNOTATION) || this.any(IS_NATIVE_ANNOTATION) -> {
-                    this
-                }
-                else -> {
-                    val list = arrayListOf<Annotation>()
-                    list.add(NATIVE_ANNOTATION)
-                    list.addAll(this)
-                    list
-                }
-            }
-
-    override fun addVariable(name: String, type: Type, extendsType: String?, typeParams: List<TypeParam>?, isVar: Boolean, needsNoImpl: Boolean, additionalAnnotations: List<Annotation>, isOverride: Boolean) {
-        val typeParamsWithoutClashes = this.typeParams.fixIfClashWith(typeParams)
-        val actualExtendsType = if (typeParamsWithoutClashes === this.typeParams) cachedExtendsType else getExtendsType(typeParamsWithoutClashes)
-        val annotations = additionalAnnotations.withNativeAnnotation()
-
-        super.addVariable(name, type, actualExtendsType, typeParamsWithoutClashes merge typeParams, isVar,
-                needsNoImpl = true, additionalAnnotations = annotations, isOverride = isOverride)
-    }
-
-    override fun addFunction(name: String, callSignature: CallSignature, extendsType: String?, needsNoImpl: Boolean, additionalAnnotations: List<Annotation>, isOverride: Boolean) {
-        val typeParamsWithoutClashes = this.typeParams.fixIfClashWith(callSignature.typeParams)
-        val actualExtendsType = if (typeParamsWithoutClashes === this.typeParams) cachedExtendsType else getExtendsType(typeParamsWithoutClashes)
-        val annotations = additionalAnnotations.withNativeAnnotation()
-
-        super.addFunction(name, CallSignature(callSignature.params, typeParamsWithoutClashes merge callSignature.typeParams, callSignature.returnType), actualExtendsType, true, annotations, isOverride)
-    }
-
-}
-
-class TsClassToKt(
-        typeMapper: ObjectTypeToKotlinTypeMapper,
-        val kind: ClassKind = ClassKind.CLASS,
-        val annotations: List<Annotation> = DEFAULT_ANNOTATION,
-        isOverride: (TS.MethodDeclaration) -> Boolean,
-        isOverrideProperty: (TS.PropertyDeclaration) -> Boolean,
-        override val hasMembersOpenModifier: Boolean = true
-) : TsClassifierToKt(typeMapper, isOverride, isOverrideProperty) {
-
-    override val needsNoImpl = true
-
-    override val isInterface = false
-
-    var typeParams: List<TypeParam>? = null
-    val paramsOfConstructors = arrayListOf<List<FunParam>>()
-
-    override fun visitClassDeclaration(node: TS.ClassDeclaration) {
-//      todo visitList(node.modifiers)
-        name = node.identifierName!!.unescapedText
-        typeParams = node.typeParameters?.toKotlinTypeParams(typeMapper)
-
-        node.heritageClauses?.arr?.forEach { visitNode(this, it) }
-        node.members.arr.forEach { visitNode(this, it) }
-    }
-
-    override fun visitConstructorDeclaration(node: TS.ConstructorDeclaration) {
-        val paramsOverloads = node.parameters.toKotlinParamsOverloads(typeMapper)
-        paramsOfConstructors.addAll(paramsOverloads)
-
-        assert(node.body == null, "A constructor in declarations file should not have body, constructor in '${this.name}")
     }
 }

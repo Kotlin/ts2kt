@@ -210,7 +210,7 @@ fun translate(srcPath: String): String {
     // TODO drop hack for reset temp class indexer for each file
     ObjectTypeToKotlinTypeMapperImpl.reset()
 
-    val typeScriptToKotlinWalker = TypeScriptToKotlinWalker(
+    val typeScriptToKotlin = TypeScriptToKotlin(
             isOwnDeclaration = {
                 val definitions = languageService.getDefinitionAtPosition(normalizeSrcPath, it.end)
                 definitions.all { it.fileName == normalizeSrcPath }
@@ -221,9 +221,9 @@ fun translate(srcPath: String): String {
 
     // TODO fix
     // note we have side effect here
-    typeScriptToKotlinWalker.visitList(fileNode)
+    typeScriptToKotlin.visitList(fileNode)
 
-    val packageParts = typeScriptToKotlinWalker.packageParts
+    val packageParts = typeScriptToKotlin.packageParts
 
     val out = packageParts.joinToString("\n---------------\n") {
         it.stringify(packagePartPrefix = srcName)
