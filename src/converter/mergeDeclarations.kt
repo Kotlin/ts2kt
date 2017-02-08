@@ -11,37 +11,37 @@ fun List<PackagePart>.merge(): List<PackagePart> =
                     val members = parts.flatMap { it.members }
                     val annotations = parts.flatMap { it.annotations }.distinct()
 
-                    PackagePart(fqName, members, annotations)
+                    val mergedMembers = members.mergeDeclarationsWithSameNameIfNeed()
+                    PackagePart(fqName, mergedMembers, annotations)
                 }
 
 
-fun MutableList<Member>.mergeDeclarationsWithSameNameIfNeed() {
-    this.merge({ it !is Function }, COMPARE_BY_NAME) { a, b ->
-        val result =
-                when (a) {
-                    is Classifier ->
-                        when (b) {
-                            is Classifier -> mergeClassifiers(a, b)
-                            is Variable -> mergeClassifierAndVariable(a, b)
-                            else -> throw IllegalStateException("Merging ${a.kind} and ??? unsupported yet, a: $a, b: $b")
-                        }
+private fun List<Member>.mergeDeclarationsWithSameNameIfNeed() =
+        merge({ it !is Function }, COMPARE_BY_NAME) { a, b ->
+            val result =
+                    when (a) {
+                        is Classifier ->
+                            when (b) {
+                                is Classifier -> mergeClassifiers(a, b)
+                                is Variable -> mergeClassifierAndVariable(a, b)
+                                else -> throw IllegalStateException("Merging ${a.kind} and ??? unsupported yet, a: $a, b: $b")
+                            }
 
-                    is Variable ->
-                        when (b) {
-                            is Classifier -> mergeClassifierAndVariable(b, a)
-                            else -> throw IllegalStateException("Merging Variable and ??? unsupported yet, a: $a, b: $b")
-                        }
+                        is Variable ->
+                            when (b) {
+                                is Classifier -> mergeClassifierAndVariable(b, a)
+                                else -> throw IllegalStateException("Merging Variable and ??? unsupported yet, a: $a, b: $b")
+                            }
 
-                    else ->
-                        throw IllegalStateException("Unsupported types for merging, a: $a, b: $b")
-                }
+                        else ->
+                            throw IllegalStateException("Unsupported types for merging, a: $a, b: $b")
+                    }
 
 
-        result.annotations = mergeAnnotations(a.annotations, b.annotations)
+            result.annotations = mergeAnnotations(a.annotations, b.annotations)
 
-        result
-    }
-}
+            result
+        }
 
 private fun mergeClassifiers(a: Classifier, b: Classifier): Classifier {
     when (a.kind) {
@@ -93,11 +93,7 @@ private fun mergeAnnotations(a: List<Annotation>, b: List<Annotation>): List<Ann
             a
         }
         else {
-            val merged = arrayListOf<Annotation>()
-            merged.addAll(a)
-            merged.addAll(b)
-
-            merged.merge({ true }, COMPARE_BY_NAME) { a, b ->
+            val merged = (a + b).merge({ true }, COMPARE_BY_NAME) { a, b ->
                 when {
                     a.parameters.isEmpty() -> b
                     b.parameters.isEmpty() -> a

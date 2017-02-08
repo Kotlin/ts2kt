@@ -51,7 +51,10 @@ fun <T> List<T>.join(
     return start + startWithIfNotEmpty + s + endWithIfNotEmpty + end
 }
 
-fun <T: Any> MutableList<T>.merge(acceptor: (T) -> Boolean, comparator: (T, T) -> Boolean, merger: (T, T) -> T) {
+fun <T: Any> List<T>.merge(acceptor: (T) -> Boolean, comparator: (T, T) -> Boolean, merger: (T, T) -> T): List<T> =
+        toMutableList().apply { merge(acceptor, comparator, merger) }
+
+private fun <T: Any> MutableList<T>.merge(acceptor: (T) -> Boolean, comparator: (T, T) -> Boolean, merger: (T, T) -> T) {
     var i = 0
     while (i < size) {
         val current = this[i]
