@@ -1,7 +1,12 @@
 package module
 
-@module("Boo")
-object MM {
-    fun method(s: Any): String = definedExternally
-    var variable: Any = definedExternally
-}
+
+// ------------------------------------------------------------------------------------------
+package module.Boo
+
+
+// ------------------------------------------------------------------------------------------
+package module.Boo.MM
+
+fun method(s: Any): String = definedExternally
+var variable: Any = definedExternally

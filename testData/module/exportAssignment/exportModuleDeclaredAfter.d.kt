@@ -1,8 +1,10 @@
 package exportModuleDeclaredAfter
 
-@module
-object semver {
-}
-@module("semver")
-object SemverModule {
-}
+
+// ------------------------------------------------------------------------------------------
+package exportModuleDeclaredAfter.semver
+
+
+// ------------------------------------------------------------------------------------------
+package exportModuleDeclaredAfter.SemverModule
+

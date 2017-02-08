@@ -260,32 +260,36 @@ class TypeScriptToKotlin(
     fun fixExportAssignments() {
         val found = hashSetOf<String>()
 
-        overDeclarations@
-        for (declaration in declarations) {
-            val annotation = exportedByAssignment[declaration.name]
-            if (annotation != null) {
-                val annotationParamString = annotation.getFirstParamAsString()
+        fun process(annotated: Annotated, declarationName: String) {
+            val annotation = exportedByAssignment[declarationName] ?: return
 
-                // TODO: fix this HACK
-                val t = arrayListOf<Annotation>()
-                for (a in declaration.annotations) {
-                    if (a == FAKE_ANNOTATION) continue
+            val annotationParamString = annotation.getFirstParamAsString()
 
-                    if (a.name == MODULE) {
-                        if (declaration.name == annotationParamString) continue@overDeclarations
+            val t = arrayListOf<Annotation>()
+            for (a in annotated.annotations) {
+                if (a == FAKE_ANNOTATION) continue
 
-                        continue
-                    }
+                if (a.name == MODULE) {
+                    if (declarationName == annotationParamString) return
 
-                    t.add(a)
+                    continue
                 }
 
-                t.add(annotation)
-                declaration.annotations = t
-
-                found.add(declaration.name)
+                t.add(a)
             }
+
+            t.add(annotation)
+            annotated.annotations = t
+
+            found.add(declarationName)
         }
+
+        declarations
+                .forEach { process(it, it.name) }
+
+        _packageParts
+                .filter { it.fqName.isNotEmpty() && it.fqName.dropLast(1) == qualifier }
+                .forEach { process(it, it.fqName.last()) }
 
         for (key in found) {
             exportedByAssignment.remove(key)
