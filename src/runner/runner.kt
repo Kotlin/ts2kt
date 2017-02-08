@@ -225,9 +225,11 @@ fun translate(srcPath: String): String {
 
     val packageParts = typeScriptToKotlin.packageParts
 
-    val out = packageParts.joinToString("\n---------------\n") {
-        it.stringify(packagePartPrefix = srcName)
-    }
+    val out = packageParts
+            .merge()
+            .joinToString("\n// ${"-".repeat(90)}\n") {
+                it.stringify(packagePartPrefix = srcName)
+            }
 
     return out
 }

@@ -194,15 +194,8 @@ class Stringify(private val packagePartPrefix: String?) : Visitor {
         out.println()
     }
 
-    override fun visitPackage(packagePart: PackagePart) {
-        val packageNameParts = mutableListOf<String>()
-
-        packagePartPrefix?.let {
-            packageNameParts += it
-        }
-        packagePart.fqName?.let {
-            packageNameParts += it
-        }
+    override fun visitPackagePart(packagePart: PackagePart) {
+        val packageNameParts = (packagePartPrefix?.let(::listOf) ?: emptyList()) + packagePart.fqName
 
         if (packageNameParts.isNotEmpty()) {
             out.println("package " + packageNameParts.joinToString(".", transform = String::escapeIfNeed))

@@ -6,7 +6,7 @@ interface Visitor {
     fun visitClassifier(classifier: Classifier)
     fun visitFunction(function: Function)
     fun  visitVariable(variable: Variable)
-    fun visitPackage(packagePart: PackagePart)
+    fun visitPackagePart(packagePart: PackagePart)
     fun visitFunParam(funParam: FunParam)
     fun visitCallSignature(signature: CallSignature)
     fun visitEnumEntry(enumEntry: EnumEntry)

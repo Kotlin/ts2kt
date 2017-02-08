@@ -52,13 +52,15 @@ class TypeScriptToKotlin(
         override val isInterface: Boolean = false,
         val isOwnDeclaration: (TS.Node) -> Boolean = { true },
         val isOverride: (TS.MethodDeclaration) -> Boolean,
-        val isOverrideProperty: (TS.PropertyDeclaration) -> Boolean
+        val isOverrideProperty: (TS.PropertyDeclaration) -> Boolean,
+        private val qualifier: List<String> = listOf()
 ) : TypeScriptToKotlinBase() {
 
+    private val _packageParts = mutableListOf(PackagePart(qualifier, declarations, defaultAnnotations))
     val packageParts: List<PackagePart>
         get() {
             assert(exportedByAssignment.isEmpty(), "exportedByAssignment should be empty, but it contains: ${exportedByAssignment.keys.toString()}")
-            return listOf(PackagePart(null, declarations))
+            return _packageParts
         }
 
     override val hasMembersOpenModifier = false
@@ -68,20 +70,6 @@ class TypeScriptToKotlin(
     private val typeAliases = mutableListOf<TypeAlias>()
 
     val typeMapper = typeMapper ?: ObjectTypeToKotlinTypeMapperImpl(defaultAnnotations, declarations, typeAliases)
-
-    fun addModule(qualifier: List<String>, name: String, members: List<Member>, additionalAnnotations: List<Annotation> = listOf()) {
-        val annotations = DEFAULT_MODULE_ANNOTATION + additionalAnnotations
-        val module = Classifier(ClassKind.OBJECT, name, listOf(), listOf(), listOf(), members, annotations, hasOpenModifier = false)
-
-        var nestedModules = module
-
-        var i = qualifier.size
-        while (i --> 0) {
-            nestedModules = Classifier(ClassKind.OBJECT, qualifier[i], listOf(), listOf(), listOf(), listOf(nestedModules), annotations, hasOpenModifier = false)
-        }
-
-        declarations.add(nestedModules)
-    }
 
     fun getAdditionalAnnotations(node: TS.Node): List<Annotation> {
         val isShouldSkip = requiredModifier === TS.SyntaxKind.DeclareKeyword && !(node.modifiers?.arr?.any { it.kind === requiredModifier } ?: false )
@@ -178,26 +166,27 @@ class TypeScriptToKotlin(
 
         var rightNode = node
         var body = node.body
-        val qualifier = arrayListOf<String>()
+        val qualifiedName = arrayListOf<String>()
         while (body.kind !== TS.SyntaxKind.ModuleBlock) {
             assert(body.kind === TS.SyntaxKind.ModuleDeclaration, "Expected that it is ModuleDeclaration, but ${body.kind.str}")
 
-            qualifier.add(getName(rightNode))
+            qualifiedName += getName(rightNode)
 
             rightNode = body
             body = body.body
         }
 
         val name = getName(rightNode)
+        qualifiedName += name
 
-        val tr =
-                TypeScriptToKotlin(
+        val tr = TypeScriptToKotlin(
                         moduleName = name,
-                        defaultAnnotations = listOf(),
+                        defaultAnnotations = additionalAnnotations,
                         requiredModifier = TS.SyntaxKind.ExportKeyword,
                         isOwnDeclaration = isOwnDeclaration,
                         isOverride = isOverride,
-                        isOverrideProperty = isOverrideProperty)
+                        isOverrideProperty = isOverrideProperty,
+                        qualifier = this.qualifier + qualifiedName)
 
         tr.visitList(body)
 
@@ -238,7 +227,7 @@ class TypeScriptToKotlin(
             }
         }
 
-        addModule(qualifier, name, tr.declarations, additionalAnnotations = additionalAnnotations)
+        _packageParts += tr._packageParts
 
         exportedByAssignment.putAll(tr.exportedByAssignment)
     }
@@ -266,7 +255,6 @@ class TypeScriptToKotlin(
 
     fun finish() {
         fixExportAssignments()
-        declarations.mergeDeclarationsWithSameNameIfNeed()
     }
 
     fun fixExportAssignments() {

@@ -48,9 +48,13 @@ abstract class AbstractNode : Node {
     }
 }
 
-class PackagePart(val fqName: String?, val members: List<Member>) : AbstractNode() {
+class PackagePart(
+        val fqName: List<String>,
+        val members: List<Member>,
+        override var annotations: List<Annotation>
+) : AbstractNode(), Annotated {
     override fun accept(visitor: Visitor) {
-        visitor.visitPackage(this)
+        visitor.visitPackagePart(this)
     }
 }
 

@@ -4,6 +4,17 @@ import ts2kt.kotlin.ast.*
 import ts2kt.utils.assert
 import ts2kt.utils.merge
 
+fun List<PackagePart>.merge(): List<PackagePart> =
+        groupBy { it.fqName }
+                .map { (_, parts) ->
+                    val fqName = parts.first().fqName
+                    val members = parts.flatMap { it.members }
+                    val annotations = parts.flatMap { it.annotations }.distinct()
+
+                    PackagePart(fqName, members, annotations)
+                }
+
+
 fun MutableList<Member>.mergeDeclarationsWithSameNameIfNeed() {
     this.merge({ it !is Function }, COMPARE_BY_NAME) { a, b ->
         val result =
