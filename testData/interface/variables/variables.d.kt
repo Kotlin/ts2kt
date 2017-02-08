@@ -7,9 +7,10 @@ external interface Foo {
     var varAsBoolean: Boolean
     var varAsString: String
 }
-@module
-object foo {
-    interface Bar {
-        var name: String
-    }
+
+// ------------------------------------------------------------------------------------------
+package variables.foo
+
+interface Bar {
+    var name: String
 }

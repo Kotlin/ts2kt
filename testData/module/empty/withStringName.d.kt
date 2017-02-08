@@ -1,5 +1,6 @@
 package withStringName
 
-@module
-object jquery {
-}
+
+// ------------------------------------------------------------------------------------------
+package withStringName.jquery
+

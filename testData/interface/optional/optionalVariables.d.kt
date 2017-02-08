@@ -6,9 +6,10 @@ external interface Foo {
     var varAsBoolean: Boolean? get() = definedExternally; set(value) = definedExternally
     var varAsString: String? get() = definedExternally; set(value) = definedExternally
 }
-@module
-object foo {
-    interface Bar {
-        var name: String? get() = definedExternally; set(value) = definedExternally
-    }
+
+// ------------------------------------------------------------------------------------------
+package optionalVariables.foo
+
+interface Bar {
+    var name: String? get() = definedExternally; set(value) = definedExternally
 }

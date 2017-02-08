@@ -1,14 +1,6 @@
 package useJsonWhenPossible
 
 external var foo: Json = definedExternally
-@module
-object Module {
-    var bar: Json = definedExternally
-    fun withObjectTypeParam(bar: Json): Unit = definedExternally
-    open class Foo {
-        open var prop: Json = definedExternally
-    }
-}
 external interface `T$0` {
     @nativeGetter
     fun get(s: Number): Any?
@@ -18,4 +10,13 @@ external interface `T$0` {
 external interface Foo {
     var foo: Json
     var boo: `T$0`
+}
+
+// ------------------------------------------------------------------------------------------
+package useJsonWhenPossible.Module
+
+var bar: Json = definedExternally
+fun withObjectTypeParam(bar: Json): Unit = definedExternally
+open class Foo {
+    open var prop: Json = definedExternally
 }

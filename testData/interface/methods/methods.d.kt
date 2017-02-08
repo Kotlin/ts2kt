@@ -7,9 +7,10 @@ external interface Foo {
     fun methodWithString(s: String): String
     fun methodWithManyArgs(n: Number, settings: Bar): Boolean
 }
-@module
-object foo {
-    interface Bar {
-        fun methodWithString(s: String): String
-    }
+
+// ------------------------------------------------------------------------------------------
+package methods.foo
+
+interface Bar {
+    fun methodWithString(s: String): String
 }

@@ -1,14 +1,9 @@
 package simple
 
-@module
-object Foo {
-    @module
-    object Bar {
-        @module
-        object Baz {
-            var variable: Number = definedExternally
-            fun func(): Unit = definedExternally
-            open class A
-        }
-    }
-}
+
+// ------------------------------------------------------------------------------------------
+package simple.Foo.Bar.Baz
+
+var variable: Number = definedExternally
+fun func(): Unit = definedExternally
+open class A

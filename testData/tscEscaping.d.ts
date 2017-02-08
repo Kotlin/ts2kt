@@ -1,10 +1,11 @@
+//TODO: external module
 declare module "atpl" {
     export var __foo;
     export function __express(filename: string, options: any, callback: Function): any;
 }
 
-export var __foo;
-export function __express(filename: string, options: any, callback: Function): any;
+declare var __foo;
+declare function __express(filename: string, options: any, callback: Function): any;
 
 declare class __A {
     __foo: number;
