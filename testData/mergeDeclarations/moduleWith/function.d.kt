@@ -7,8 +7,3 @@ external interface Fiber_ {
 }
 @module("fibers")
 fun Fiber(fn: Function): Fiber_ = definedExternally
-@module("fibers")
-object Fiber {
-    var current: Fiber = definedExternally
-    fun yield(value: Any? = definedExternally /* null */): Any = definedExternally
-}

@@ -1,3 +1,5 @@
+// TODO: review
+
 // based on ws.d.ts
 declare module "ws" {
     class WebSocket extends events.EventEmitter {
