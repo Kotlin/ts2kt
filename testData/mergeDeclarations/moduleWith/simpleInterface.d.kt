@@ -5,6 +5,7 @@ external interface Foo {
 }
 
 // ------------------------------------------------------------------------------------------
+@file:JsQualifier("Foo")
 package simpleInterface.Foo
 
 fun baz(a: Any): Unit = definedExternally

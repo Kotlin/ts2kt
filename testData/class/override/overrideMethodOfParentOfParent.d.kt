@@ -1,3 +1,4 @@
+@file:JsQualifier("TypeScript.Syntax")
 package overrideMethodOfParentOfParent.TypeScript.Syntax
 
 open class EmptySyntaxList : ISyntaxList {
@@ -5,6 +6,7 @@ open class EmptySyntaxList : ISyntaxList {
 }
 
 // ------------------------------------------------------------------------------------------
+@file:JsQualifier("TypeScript")
 package overrideMethodOfParentOfParent.TypeScript
 
 interface ISyntaxElement {

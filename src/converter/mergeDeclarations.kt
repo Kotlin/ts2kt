@@ -12,7 +12,7 @@ fun List<PackagePart>.merge(): List<PackagePart> =
                     val annotations = parts.flatMap { it.annotations }.distinct()
 
                     val mergedMembers = members.mergeDeclarationsWithSameNameIfNeed()
-                    PackagePart(fqName, mergedMembers, annotations)
+                    PackagePart(fqName, mergedMembers, mergeAnnotations(annotations))
                 }
 
 
@@ -24,17 +24,17 @@ private fun List<Member>.mergeDeclarationsWithSameNameIfNeed() =
                             when (b) {
                                 is Classifier -> mergeClassifiers(a, b)
                                 is Variable -> mergeClassifierAndVariable(a, b)
-                                else -> throw IllegalStateException("Merging ${a.kind} and ??? unsupported yet, a: $a, b: $b")
+                                else -> throw IllegalStateException("Merging ${a.kind} and ??? unsupported yet, a: ${a.stringify()}, b: ${b.stringify()}")
                             }
 
                         is Variable ->
                             when (b) {
                                 is Classifier -> mergeClassifierAndVariable(b, a)
-                                else -> throw IllegalStateException("Merging Variable and ??? unsupported yet, a: $a, b: $b")
+                                else -> throw IllegalStateException("Merging Variable and ??? unsupported yet, a: ${a.stringify()}, b: ${b.stringify()}")
                             }
 
                         else ->
-                            throw IllegalStateException("Unsupported types for merging, a: $a, b: $b")
+                            throw IllegalStateException("Unsupported types for merging, a: ${a.stringify()}, b: ${b.stringify()}")
                     }
 
 
@@ -59,14 +59,14 @@ private fun mergeClassifiers(a: Classifier, b: Classifier): Classifier {
         else -> {} // TODO is it bug?
     }
 
-    throw IllegalStateException("Merging ${a.kind} and ${b.kind} unsupported yet, a: $a, b: $b")
+    throw IllegalStateException("Merging ${a.kind} and ${b.kind} unsupported yet, a: ${a.stringify()}, b: ${b.stringify()}")
 }
 
 private fun mergeClassifierAndVariable(a: Classifier, b: Variable): Member {
     if (a.members.isEmpty()) return b
 
     // TODO is it right?
-    assert(a.getClassObject() == null, "Unxpected `class object` when merge Classifier(kind=${a.kind}) and Variable($b)")
+    assert(a.getClassObject() == null, "Unxpected `class object` when merge Classifier(kind=${a.kind}) and Variable(${b.stringify()})")
 
     if (a.kind === ClassKind.INTERFACE || a.isModule()) {
         val newTrait = Classifier(ClassKind.INTERFACE, a.name, a.paramsOfConstructors, a.typeParams, a.parents, a.members, a.annotations, hasOpenModifier = false)
@@ -82,28 +82,25 @@ private fun mergeClassifierAndVariable(a: Classifier, b: Variable): Member {
         return newTrait
     }
 
-    throw IllegalStateException("Merging non-empty Classifier(kind=${a.kind}) and Variable unsupported yet, a: $a, b: $b")
+    throw IllegalStateException("Merging non-empty Classifier(kind=${a.kind}) and Variable unsupported yet, a: ${a.stringify()}, b: ${b.stringify()}")
 }
 
 private fun mergeAnnotations(a: List<Annotation>, b: List<Annotation>): List<Annotation> =
-        if (a.isEmpty()) {
-            b
+        when {
+            a.isEmpty() -> b
+            b.isEmpty() -> a
+            else -> mergeAnnotations(a + b)
         }
-        else if (b.isEmpty()) {
-            a
-        }
-        else {
-            val merged = (a + b).merge({ true }, COMPARE_BY_NAME) { a, b ->
-                when {
-                    a.parameters.isEmpty() -> b
-                    b.parameters.isEmpty() -> a
-                    a.parameters == b.parameters -> a
-                // TODO
-                    else -> throw IllegalStateException("Merging annotations with different arguments unsupported yet, a: $a, b: $b")
-                }
-            }
 
-            merged
+private fun mergeAnnotations(annotations: List<Annotation>): List<Annotation> =
+        annotations.merge({ true }, COMPARE_BY_NAME) { a, b ->
+            when {
+                a.parameters.isEmpty() -> b
+                b.parameters.isEmpty() -> a
+                a.parameters == b.parameters -> a
+            // TODO
+                else -> throw IllegalStateException("Merging annotations with different arguments unsupported yet, a: ${a.stringify()}, b: ${b.stringify()}")
+            }
         }
 
 private fun mergeClassAndObject(a: Classifier, b: Classifier): Classifier {

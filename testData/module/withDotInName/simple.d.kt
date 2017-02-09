@@ -1,3 +1,4 @@
+@file:JsQualifier("Foo.Bar.Baz")
 package simple.Foo.Bar.Baz
 
 var variable: Number = definedExternally

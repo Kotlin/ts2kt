@@ -4,6 +4,7 @@ package withInterface
 external var Lazy: LazyJS.LazyStatic = definedExternally
 
 // ------------------------------------------------------------------------------------------
+@file:JsQualifier("LazyJS")
 package withInterface.LazyJS
 
 interface LazyStatic {

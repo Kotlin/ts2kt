@@ -208,7 +208,12 @@ class Stringify(private val packagePartPrefix: String?) : Visitor {
                 }
                 else {
                     out.print("[")
-                    it.forEach(this::printAnnotation)
+                    it.forEachIndexed { i, annotation ->
+                        if (i > 0) {
+                            out.print(", ")
+                        }
+                        printAnnotation(annotation)
+                    }
                     out.print("]")
                 }
                 out.println()

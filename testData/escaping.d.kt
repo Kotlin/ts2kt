@@ -16,12 +16,14 @@ external open class `is`<`interface`> {
 }
 
 // ------------------------------------------------------------------------------------------
+@file:JsQualifier("This")
 package escaping.`This`
 
 var `$foo`: Boolean = definedExternally
 fun `bar$`(`ba$z`: Number): Unit = definedExternally
 
 // ------------------------------------------------------------------------------------------
+@file:JsQualifier("when")
 package escaping.`when`
 
 var `$`: Boolean = definedExternally

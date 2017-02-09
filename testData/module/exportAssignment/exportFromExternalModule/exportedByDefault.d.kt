@@ -1,3 +1,4 @@
+@file:JsQualifier("Boo")
 package exportedByDefault.Boo
 
 fun foo(): String = definedExternally

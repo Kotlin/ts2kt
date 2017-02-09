@@ -8,6 +8,7 @@ external interface Foo {
 }
 
 // ------------------------------------------------------------------------------------------
+@file:JsQualifier("foo")
 package optionalVariables.foo
 
 interface Bar {

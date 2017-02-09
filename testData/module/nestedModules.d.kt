@@ -1,3 +1,4 @@
+@file:JsQualifier("Foo.Bar")
 package nestedModules.Foo.Bar
 
 interface A {

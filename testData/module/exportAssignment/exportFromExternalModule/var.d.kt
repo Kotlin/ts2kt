@@ -4,6 +4,7 @@ package `var`
 var mixto: Mixto.IMixinStatic = definedExternally
 
 // ------------------------------------------------------------------------------------------
+@file:JsQualifier("Mixto")
 package `var`.Mixto
 
 interface IMixinStatic {

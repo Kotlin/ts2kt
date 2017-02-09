@@ -1,3 +1,4 @@
+@file:JsQualifier("Foo")
 package withMembers.Foo
 
 interface A {

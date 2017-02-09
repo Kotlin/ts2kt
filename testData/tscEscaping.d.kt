@@ -17,18 +17,21 @@ enum class __E {
 external fun <__T> foo(__a: __T, _b: __M.__N.__C): Unit = definedExternally
 
 // ------------------------------------------------------------------------------------------
+@file:JsQualifier("atpl")
 package tscEscaping.atpl
 
 var __foo: Any = definedExternally
 fun __express(filename: String, options: Any, callback: Function): Any = definedExternally
 
 // ------------------------------------------------------------------------------------------
+@file:JsQualifier("__M")
 package tscEscaping.__M
 
 var __foo: Number = definedExternally
 fun __express(filename: String, options: Any, callback: Function): Any = definedExternally
 
 // ------------------------------------------------------------------------------------------
+@file:JsQualifier("__M.__N")
 package tscEscaping.__M.__N
 
 var __foo: Number = definedExternally

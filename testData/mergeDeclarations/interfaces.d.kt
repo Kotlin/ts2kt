@@ -1,3 +1,4 @@
+@file:JsQualifier("_")
 package interfaces._
 
 interface LoDashStatic {

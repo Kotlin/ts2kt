@@ -13,6 +13,7 @@ external interface Foo {
 }
 
 // ------------------------------------------------------------------------------------------
+@file:JsQualifier("Module")
 package useJsonWhenPossible.Module
 
 var bar: Json = definedExternally

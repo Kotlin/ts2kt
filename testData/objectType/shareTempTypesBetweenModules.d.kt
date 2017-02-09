@@ -19,6 +19,7 @@ external interface `T$8` {
 external var foo: `T$8` = definedExternally
 
 // ------------------------------------------------------------------------------------------
+@file:JsQualifier("Foo")
 package shareTempTypesBetweenModules.Foo
 
 interface `T$0` {
@@ -40,6 +41,7 @@ interface `T$2` {
 var foo: `T$2` = definedExternally
 
 // ------------------------------------------------------------------------------------------
+@file:JsQualifier("Bar")
 package shareTempTypesBetweenModules.Bar
 
 interface `T$3` {

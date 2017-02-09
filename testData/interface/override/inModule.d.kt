@@ -1,3 +1,4 @@
+@file:JsQualifier("TypeScript")
 package inModule.TypeScript
 
 interface ISyntaxElement {

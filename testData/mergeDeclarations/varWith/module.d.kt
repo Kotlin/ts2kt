@@ -4,7 +4,7 @@ package module
 external var _: _.LoDashStatic = definedExternally
 
 // ------------------------------------------------------------------------------------------
-@file:JsModule("lodash")
+@file:[JsQualifier("_"), JsModule("lodash")]
 package module._
 
 interface LoDashStatic {

@@ -1,3 +1,4 @@
+@file:JsQualifier("AceAjax")
 package `interface`.AceAjax
 
 interface KeyBinding {

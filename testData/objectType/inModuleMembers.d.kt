@@ -1,3 +1,4 @@
+@file:JsQualifier("Foo")
 package inModuleMembers.Foo
 
 interface `T$0` {

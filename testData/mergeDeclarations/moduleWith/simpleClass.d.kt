@@ -5,6 +5,7 @@ external open class Foo {
 }
 
 // ------------------------------------------------------------------------------------------
+@file:JsQualifier("Foo")
 package simpleClass.Foo
 
 fun baz(a: Any): Unit = definedExternally

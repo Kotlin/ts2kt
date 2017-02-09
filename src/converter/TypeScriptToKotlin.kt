@@ -25,6 +25,7 @@ import typescript.identifierName
 import typescript.propertyName
 
 private val JS_MODULE = "JsModule"
+private val JS_QUALIFIER = "JsQualifier"
 private val NATIVE = "native"
 
 val NATIVE_ANNOTATION = Annotation(NATIVE)
@@ -53,7 +54,13 @@ class TypeScriptToKotlin(
         private val qualifier: List<String> = listOf()
 ) : TypeScriptToKotlinBase() {
 
-    private val _packageParts = mutableListOf(PackagePart(qualifier, declarations, defaultAnnotations))
+    fun packagePartAnnotations(): List<Annotation> {
+        if (qualifier.isEmpty()) return defaultAnnotations
+        return defaultAnnotations + Annotation(JS_QUALIFIER, listOf(Argument(qualifier.joinToString(".", "\"", "\""))))
+    }
+
+    private val _packageParts = mutableListOf(PackagePart(qualifier, declarations, packagePartAnnotations()))
+
     val packageParts: List<PackagePart>
         get() {
             assert(exportedByAssignment.isEmpty(), "exportedByAssignment should be empty, but it contains: ${exportedByAssignment.keys.toString()}")
@@ -233,7 +240,7 @@ class TypeScriptToKotlin(
                         }
 
         exportedByAssignment[exportName] =
-                Annotation(JS_MODULE, listOf(Argument(value = "\"${moduleName ?: exportName}\"")))
+                Annotation(JS_MODULE, listOf(Argument("\"${moduleName ?: exportName}\"")))
     }
 
     override fun visitList(node: TS.Node) {

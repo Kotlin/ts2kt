@@ -1,3 +1,4 @@
+@file:JsQualifier("TypeScript.Syntax")
 package inModule.TypeScript.Syntax
 
 interface IFactory {

@@ -72,7 +72,7 @@ interface Member : Node, Named, Annotated
 
 // TODO should be Named?
 // TODO should we escape name here?
-class Argument(val name: String? = null, val value: Any /* TODO ??? */) : AbstractNode() {
+data class Argument(val value: Any/* TODO Any ??? */, val name: String? = null) : AbstractNode() {
     override fun accept(visitor: Visitor) {
         visitor.visitArgument(this)
     }
