@@ -1,17 +1,17 @@
 package ts2kt
 
-import ts2kt.kotlin.ast.Annotation
-import ts2kt.kotlin.ast.ClassKind
-import ts2kt.kotlin.ast.FunParam
-import ts2kt.kotlin.ast.TypeParam
+import ts2kt.kotlin.ast.KtAnnotation
+import ts2kt.kotlin.ast.KtClassKind
+import ts2kt.kotlin.ast.KtFunParam
+import ts2kt.kotlin.ast.KtTypeParam
 import ts2kt.utils.assert
 import typescript.TS
 import typescript.identifierName
 
 class TsClassToKt(
         typeMapper: ObjectTypeToKotlinTypeMapper,
-        val kind: ClassKind = ClassKind.CLASS,
-        val annotations: List<Annotation> = DEFAULT_ANNOTATION,
+        val kind: KtClassKind = KtClassKind.CLASS,
+        val annotations: List<KtAnnotation> = DEFAULT_ANNOTATION,
         isOverride: (TS.MethodDeclaration) -> Boolean,
         isOverrideProperty: (TS.PropertyDeclaration) -> Boolean,
         override val hasMembersOpenModifier: Boolean = true
@@ -21,8 +21,8 @@ class TsClassToKt(
 
     override val isInterface = false
 
-    var typeParams: List<TypeParam>? = null
-    val paramsOfConstructors = arrayListOf<List<FunParam>>()
+    var typeParams: List<KtTypeParam>? = null
+    val paramsOfConstructors = arrayListOf<List<KtFunParam>>()
 
     override fun visitClassDeclaration(node: TS.ClassDeclaration) {
 //      todo visitList(node.modifiers)

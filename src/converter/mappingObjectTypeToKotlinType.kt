@@ -22,15 +22,15 @@ import typescript.TS
 import typescript.identifierName
 
 interface ObjectTypeToKotlinTypeMapper {
-    fun getKotlinTypeForObjectType(objectType: TS.TypeLiteralNode): Type
-    fun resolveUsingAliases(referencedType: Type): TypeUnion
+    fun getKotlinTypeForObjectType(objectType: TS.TypeLiteralNode): KtType
+    fun resolveUsingAliases(referencedType: KtType): KtTypeUnion
     fun withTypeParameters(typeParameters: TS.NodeArray<TS.TypeParameterDeclaration>?): ObjectTypeToKotlinTypeMapper
 }
 
 data class ObjectTypeToKotlinTypeMapperImpl(
-        val defaultAnnotations: List<Annotation>,
-        val declarations: MutableList<Member>,
-        val typeAliases: List<TypeAlias>,
+        val defaultAnnotations: List<KtAnnotation>,
+        val declarations: MutableList<KtMember>,
+        val typeAliases: List<KtTypeAlias>,
         val typeParameterDeclarations: List<TS.TypeParameterDeclaration> = listOf()
 ) : ObjectTypeToKotlinTypeMapper {
 
@@ -42,11 +42,11 @@ data class ObjectTypeToKotlinTypeMapperImpl(
         }
     }
 
-    val cache = HashMap<String, Type>()
+    val cache = HashMap<String, KtType>()
 
     init {
         // TODO better declaration for known classes
-        cache[""] = Type("Any")
+        cache[""] = KtType("Any")
 
         val jsonTypeKey = """
                 @nativeGetter
@@ -56,10 +56,10 @@ data class ObjectTypeToKotlinTypeMapperImpl(
 
                 """.trimIndent()
 
-        cache[jsonTypeKey] = Type("Json")
+        cache[jsonTypeKey] = KtType("Json")
     }
 
-    override fun getKotlinTypeForObjectType(objectType: TS.TypeLiteralNode): Type {
+    override fun getKotlinTypeForObjectType(objectType: TS.TypeLiteralNode): KtType {
         val translator = TsInterfaceToKt(annotations = defaultAnnotations, typeMapper = this, isOverride = NOT_OVERRIDE, isOverrideProperty = NOT_OVERRIDE)
 
         forEachChild(translator, objectType)
@@ -71,19 +71,19 @@ data class ObjectTypeToKotlinTypeMapperImpl(
 
         val usedTypeParams = translator.declarations.flatMap {
             when (it) {
-                is Variable ->
+                is KtVariable ->
                     listOf(it.type.type.name)
-                is Function ->
+                is KtFunction ->
                     it.callSignature.params.map { it.type.type.name } + it.callSignature.returnType.type.name
                 else ->
                     emptyList()
             }
         }.distinct()
         val typeParams = typeParameterDeclarations.filter { usedTypeParams.contains(it.identifierName.text) }
-                .map { TypeParam(it.identifierName.text) }
+                .map { KtTypeParam(it.identifierName.text) }
 
         val traitName = "T$${n++}"
-        val traitType = Type(traitName, typeParams.map { Type(it.name) })
+        val traitType = KtType(traitName, typeParams.map { KtType(it.name) })
         translator.name = traitName
         translator.typeParams = typeParams
 
@@ -93,29 +93,29 @@ data class ObjectTypeToKotlinTypeMapperImpl(
         return traitType
     }
 
-    override fun resolveUsingAliases(referencedType: Type): TypeUnion {
+    override fun resolveUsingAliases(referencedType: KtType): KtTypeUnion {
         val matchingTypeAlias = typeAliases.find { it.name == referencedType.name }
         if (matchingTypeAlias != null) {
             val resolvedTypeUnion = replaceTypeParamsWithTypeArgs(referencedType, matchingTypeAlias, typeAliases)
-            return resolvedTypeUnion.flatMap { if (referencedType.name != it.name) resolveUsingAliases(it) else TypeUnion(it) }
+            return resolvedTypeUnion.flatMap { if (referencedType.name != it.name) resolveUsingAliases(it) else KtTypeUnion(it) }
         } else if (referencedType.typeArgs.isNotEmpty()) {
-            return TypeUnion(referencedType.copy(typeArgs = referencedType.typeArgs.map { resolveUsingAliases(it).singleType }))
+            return KtTypeUnion(referencedType.copy(typeArgs = referencedType.typeArgs.map { resolveUsingAliases(it).singleType }))
         } else {
-            return TypeUnion(referencedType)
+            return KtTypeUnion(referencedType)
         }
     }
 
-    private fun replaceTypeParamsWithTypeArgs(fromType: Type, matchingTypeAlias: TypeAlias, replacements: List<TypeAlias>): TypeUnion {
+    private fun replaceTypeParamsWithTypeArgs(fromType: KtType, matchingTypeAlias: KtTypeAlias, replacements: List<KtTypeAlias>): KtTypeUnion {
         val toTypeWithUnresolvedArgs = matchingTypeAlias.actualTypeUnionUsingAliasParams
-        val boundTypeAliases: List<TypeAlias> = getReplacementsForTypeParams(fromType, matchingTypeAlias)
+        val boundTypeAliases: List<KtTypeAlias> = getReplacementsForTypeParams(fromType, matchingTypeAlias)
         return toTypeWithUnresolvedArgs.map { resolveTypeArgs(it, replacements + boundTypeAliases) }
     }
 
-    private fun TypeUnion.flatMap(function: (Type) -> TypeUnion): TypeUnion = TypeUnion(possibleTypes.flatMap { function(it).possibleTypes })
+    private fun KtTypeUnion.flatMap(function: (KtType) -> KtTypeUnion): KtTypeUnion = KtTypeUnion(possibleTypes.flatMap { function(it).possibleTypes })
 
-    private fun TypeUnion.map(function: (Type) -> Type): TypeUnion = TypeUnion(possibleTypes.map(function))
+    private fun KtTypeUnion.map(function: (KtType) -> KtType): KtTypeUnion = KtTypeUnion(possibleTypes.map(function))
 
-    private fun resolveTypeArgs(type: Type, replacements: List<TypeAlias>): Type {
+    private fun resolveTypeArgs(type: KtType, replacements: List<KtTypeAlias>): KtType {
         if (type.typeArgs.isNotEmpty()) {
             val aliasMapper = copy(typeAliases = replacements)
             return type.copy(typeArgs = type.typeArgs.map { aliasMapper.resolveUsingAliases(it).singleType })
@@ -124,9 +124,9 @@ data class ObjectTypeToKotlinTypeMapperImpl(
         }
     }
 
-    private fun getReplacementsForTypeParams(fromType: Type, matchingTypeAlias: TypeAlias): List<TypeAlias> {
+    private fun getReplacementsForTypeParams(fromType: KtType, matchingTypeAlias: KtTypeAlias): List<KtTypeAlias> {
         return matchingTypeAlias.typeParams?.zip(fromType.typeArgs)?.map {
-            TypeAlias(it.first.name, actualTypeUsingAliasParams = it.second)
+            KtTypeAlias(it.first.name, actualTypeUsingAliasParams = it.second)
         } ?: emptyList()
     }
 
@@ -134,6 +134,6 @@ data class ObjectTypeToKotlinTypeMapperImpl(
         return copy(typeParameterDeclarations = typeParameterDeclarations.toList() + (typeParameters?.arr ?: arrayOf()))
     }
 
-    fun List<Node>.toStringKey(): String =
+    fun List<KtNode>.toStringKey(): String =
             map { it.stringify().replaceAll("(\\(|,\\s*)\\w+: ", "$1") }.sorted().joinToString("")
 }

@@ -1,6 +1,6 @@
 package ts2kt
 
-import typescript.*
+import typescript.TS
 
 interface Visitor {
     fun visitModuleDeclaration(node: TS.ModuleDeclaration): Unit = TODO()

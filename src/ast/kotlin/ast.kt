@@ -22,10 +22,10 @@ import ts2kt.UNIT
 val MODULE = "module"
 private val FAKE = "fake"
 
-val FAKE_ANNOTATION = Annotation(FAKE)
+val FAKE_ANNOTATION = KtAnnotation(FAKE)
 val DEFAULT_FAKE_ANNOTATION = listOf(FAKE_ANNOTATION)
 
-internal val isNotAnnotatedAsFake = { node: Annotated ->
+internal val isNotAnnotatedAsFake = { node: KtAnnotated ->
     var result = true
     for (a in node.annotations) {
         if (a == FAKE_ANNOTATION) {
@@ -38,53 +38,53 @@ internal val isNotAnnotatedAsFake = { node: Annotated ->
 }
 
 
-interface Node {
-    fun accept(visitor: Visitor)
+interface KtNode {
+    fun accept(visitor: KtVisitor)
 }
 
-abstract class AbstractNode : Node {
-    override fun accept(visitor: Visitor) {
+abstract class AbstractKtNode : KtNode {
+    override fun accept(visitor: KtVisitor) {
         visitor.visitNode(this)
     }
 }
 
-class PackagePart(
+class KtPackagePart(
         val fqName: List<String>,
-        val members: List<Member>,
-        override var annotations: List<Annotation>
-) : AbstractNode(), Annotated {
-    override fun accept(visitor: Visitor) {
+        val members: List<KtMember>,
+        override var annotations: List<KtAnnotation>
+) : AbstractKtNode(), KtAnnotated {
+    override fun accept(visitor: KtVisitor) {
         visitor.visitPackagePart(this)
     }
 }
 
-interface Named {
+interface KtNamed {
     // TODO: make it immutable
     var name: String
 }
 
-interface Annotated {
+interface KtAnnotated {
     // TODO: make it immutable
-    var annotations: List<Annotation>
+    var annotations: List<KtAnnotation>
 }
 
-interface Member : Node, Named, Annotated
+interface KtMember : KtNode, KtNamed, KtAnnotated
 
 // TODO should be Named?
 // TODO should we escape name here?
-data class Argument(val value: Any/* TODO Any ??? */, val name: String? = null) : AbstractNode() {
-    override fun accept(visitor: Visitor) {
+data class KtArgument(val value: Any/* TODO Any ??? */, val name: String? = null) : AbstractKtNode() {
+    override fun accept(visitor: KtVisitor) {
         visitor.visitArgument(this)
     }
 }
 
-class Annotation(override var name: String, val parameters: List<Argument> = listOf()) : Named, AbstractNode() {
-    override fun accept(visitor: Visitor) {
+class KtAnnotation(override var name: String, val parameters: List<KtArgument> = listOf()) : KtNamed, AbstractKtNode() {
+    override fun accept(visitor: KtVisitor) {
         visitor.visitAnnotation(this)
     }
 }
 
-enum class ClassKind(val keyword: String, val bracesAlwaysRequired: Boolean = false) {
+enum class KtClassKind(val keyword: String, val bracesAlwaysRequired: Boolean = false) {
     CLASS("class"),
     INTERFACE("interface"),
     ENUM("enum class"),
@@ -92,97 +92,97 @@ enum class ClassKind(val keyword: String, val bracesAlwaysRequired: Boolean = fa
     COMPANION_OBJECT("companion object", bracesAlwaysRequired = true)
 }
 
-class Classifier(
-        val kind: ClassKind,
+class KtClassifier(
+        val kind: KtClassKind,
         override var name: String,
-        val paramsOfConstructors: List<List<FunParam>>,
-        val typeParams: List<TypeParam>?,
-        val parents: List<HeritageType>,
-        val members: List<Member>,
-        override var annotations: List<Annotation>,
+        val paramsOfConstructors: List<List<KtFunParam>>,
+        val typeParams: List<KtTypeParam>?,
+        val parents: List<KtHeritageType>,
+        val members: List<KtMember>,
+        override var annotations: List<KtAnnotation>,
         val hasOpenModifier: Boolean
-) : Member, AbstractNode() {
-    override fun accept(visitor: Visitor) {
+) : KtMember, AbstractKtNode() {
+    override fun accept(visitor: KtVisitor) {
         visitor.visitClassifier(this)
     }
 }
 
-class FunParam(
+class KtFunParam(
         override var name: String,
-        val type: TypeAnnotation,
+        val type: KtTypeAnnotation,
         val defaultValue: Any? = null,
         val isVar: Boolean = false
-) : Named, AbstractNode() {
-    override fun accept(visitor: Visitor) {
+) : KtNamed, AbstractKtNode() {
+    override fun accept(visitor: KtVisitor) {
         visitor.visitFunParam(this)
     }
 }
 
-class CallSignature(
-        val params: List<FunParam>,
-        val typeParams: List<TypeParam>?,
-        val returnType: TypeAnnotation
-) : AbstractNode() {
-    override fun accept(visitor: Visitor) {
+class KtCallSignature(
+        val params: List<KtFunParam>,
+        val typeParams: List<KtTypeParam>?,
+        val returnType: KtTypeAnnotation
+) : AbstractKtNode() {
+    override fun accept(visitor: KtVisitor) {
         visitor.visitCallSignature(this)
     }
 }
 
-class Function(
+class KtFunction(
         override var name: String,
-        val callSignature: CallSignature,
-        val extendsType: HeritageType? = null,
-        override var annotations: List<Annotation>,
+        val callSignature: KtCallSignature,
+        val extendsType: KtHeritageType? = null,
+        override var annotations: List<KtAnnotation>,
         val needsNoImpl: Boolean = true,
         val isOverride: Boolean = false,
         val hasOpenModifier: Boolean
-) : Member, AbstractNode() {
-    override fun accept(visitor: Visitor) {
+) : KtMember, AbstractKtNode() {
+    override fun accept(visitor: KtVisitor) {
         visitor.visitFunction(this)
     }
 }
 
-class Variable(
+class KtVariable(
         override var name: String,
-        var type: TypeAnnotation,
-        val extendsType: HeritageType? = null,
-        override var annotations: List<Annotation>,
-        val typeParams: List<TypeParam>?,
+        var type: KtTypeAnnotation,
+        val extendsType: KtHeritageType? = null,
+        override var annotations: List<KtAnnotation>,
+        val typeParams: List<KtTypeParam>?,
         val isVar: Boolean,
         val needsNoImpl: Boolean = true,
         val isInInterface: Boolean,
         val isOverride: Boolean = false,
         val hasOpenModifier: Boolean
-) : Member, AbstractNode() {
-    override fun accept(visitor: Visitor) {
+) : KtMember, AbstractKtNode() {
+    override fun accept(visitor: KtVisitor) {
         visitor.visitVariable(this)
     }
 }
 
-class EnumEntry(override var name: String, val value: String? = null) : Member, AbstractNode() {
-    override var annotations = listOf<Annotation>()
+class KtEnumEntry(override var name: String, val value: String? = null) : KtMember, AbstractKtNode() {
+    override var annotations = listOf<KtAnnotation>()
 
-    override fun accept(visitor: Visitor) {
+    override fun accept(visitor: KtVisitor) {
         visitor.visitEnumEntry(this)
     }
 }
 
-class HeritageType(override var name: String) : Named, AbstractNode() {
-    override fun accept(visitor: Visitor) {
+class KtHeritageType(override var name: String) : KtNamed, AbstractKtNode() {
+    override fun accept(visitor: KtVisitor) {
         visitor.visitHeritageType(this)
     }
 }
 
-fun TypeUnion(vararg possibleTypes: Type): TypeUnion = TypeUnion(possibleTypes.toList())
+fun KtTypeUnion(vararg possibleTypes: KtType): KtTypeUnion = KtTypeUnion(possibleTypes.toList())
 
-data class TypeUnion(val possibleTypes: List<Type>) : AbstractNode() {
-    override fun accept(visitor: Visitor) {
+data class KtTypeUnion(val possibleTypes: List<KtType>) : AbstractKtNode() {
+    override fun accept(visitor: KtVisitor) {
         visitor.visitTypeUnion(this)
     }
 
-    val singleType: Type = if (possibleTypes.size == 1) possibleTypes.single() else {
+    val singleType: KtType = if (possibleTypes.size == 1) possibleTypes.single() else {
         // TODO should it be `Any`?
-        Type(DYNAMIC, comment = stringify(), isNullable = possibleTypes.first().isNullable)
+        KtType(DYNAMIC, comment = stringify(), isNullable = possibleTypes.first().isNullable)
     }
 }
 
@@ -192,15 +192,15 @@ data class TypeUnion(val possibleTypes: List<Type>) : AbstractNode() {
  * @param typeArgs the type params such as [String, List<T>], defaulting to empty
  * @param comment a comment about the type, currently used to document intersection types, defaulting to null.
  */
-data class Type(
+data class KtType(
         override var name: String,
-        val typeArgs: List<Type> = emptyList(),
+        val typeArgs: List<KtType> = emptyList(),
         val comment: String? = null,
         val isNullable: Boolean = false,
         val isLambda: Boolean = false
-) : Named, AbstractNode() {
+) : KtNamed, AbstractKtNode() {
 
-    override fun accept(visitor: Visitor) {
+    override fun accept(visitor: KtVisitor) {
         visitor.visitType(this)
     }
 
@@ -208,21 +208,21 @@ data class Type(
     fun isUnit() = escapedName == UNIT && !isNullable && !isLambda
 }
 
-class TypeParam(override var name: String, val upperBound: Type? = null) : Named, AbstractNode() {
-    override fun accept(visitor: Visitor) {
+class KtTypeParam(override var name: String, val upperBound: KtType? = null) : KtNamed, AbstractKtNode() {
+    override fun accept(visitor: KtVisitor) {
         visitor.visitTypeParam(this)
     }
 }
 
 /** A Kotlin representation as in: typealias name<typeParams> = actualTypeUnionUsingAliasParams */
-data class TypeAlias(val name: String, val typeParams: List<TypeParam>? = null, val actualTypeUnionUsingAliasParams: TypeUnion)
+data class KtTypeAlias(val name: String, val typeParams: List<KtTypeParam>? = null, val actualTypeUnionUsingAliasParams: KtTypeUnion)
 
-fun TypeAlias(name: String, typeParams: List<TypeParam>? = null, actualTypeUsingAliasParams: Type): TypeAlias {
-    return TypeAlias(name, typeParams, TypeUnion(actualTypeUsingAliasParams))
+fun KtTypeAlias(name: String, typeParams: List<KtTypeParam>? = null, actualTypeUsingAliasParams: KtType): KtTypeAlias {
+    return KtTypeAlias(name, typeParams, KtTypeUnion(actualTypeUsingAliasParams))
 }
 
-class TypeAnnotation(var type: Type, val isVararg: Boolean = false) : AbstractNode() {
-    override fun accept(visitor: Visitor) {
+class KtTypeAnnotation(var type: KtType, val isVararg: Boolean = false) : AbstractKtNode() {
+    override fun accept(visitor: KtVisitor) {
         visitor.visitTypeAnnotation(this)
     }
 }

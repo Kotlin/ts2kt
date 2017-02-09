@@ -4,7 +4,7 @@ import ts2kt.kotlin.ast.*
 import ts2kt.utils.assert
 import ts2kt.utils.merge
 
-fun List<PackagePart>.merge(): List<PackagePart> =
+fun List<KtPackagePart>.merge(): List<KtPackagePart> =
         groupBy { it.fqName }
                 .map { (_, parts) ->
                     val fqName = parts.first().fqName
@@ -12,24 +12,24 @@ fun List<PackagePart>.merge(): List<PackagePart> =
                     val annotations = parts.flatMap { it.annotations }.distinct()
 
                     val mergedMembers = members.mergeDeclarationsWithSameNameIfNeed()
-                    PackagePart(fqName, mergedMembers, mergeAnnotations(annotations))
+                    KtPackagePart(fqName, mergedMembers, mergeAnnotations(annotations))
                 }
 
 
-private fun List<Member>.mergeDeclarationsWithSameNameIfNeed() =
-        merge({ it !is Function }, COMPARE_BY_NAME) { a, b ->
+private fun List<KtMember>.mergeDeclarationsWithSameNameIfNeed() =
+        merge({ it !is KtFunction }, COMPARE_BY_NAME) { a, b ->
             val result =
                     when (a) {
-                        is Classifier ->
+                        is KtClassifier ->
                             when (b) {
-                                is Classifier -> mergeClassifiers(a, b)
-                                is Variable -> mergeClassifierAndVariable(a, b)
+                                is KtClassifier -> mergeClassifiers(a, b)
+                                is KtVariable -> mergeClassifierAndVariable(a, b)
                                 else -> throw IllegalStateException("Merging ${a.kind} and ??? unsupported yet, a: ${a.stringify()}, b: ${b.stringify()}")
                             }
 
-                        is Variable ->
+                        is KtVariable ->
                             when (b) {
-                                is Classifier -> mergeClassifierAndVariable(b, a)
+                                is KtClassifier -> mergeClassifierAndVariable(b, a)
                                 else -> throw IllegalStateException("Merging Variable and ??? unsupported yet, a: ${a.stringify()}, b: ${b.stringify()}")
                             }
 
@@ -43,17 +43,17 @@ private fun List<Member>.mergeDeclarationsWithSameNameIfNeed() =
             result
         }
 
-private fun mergeClassifiers(a: Classifier, b: Classifier): Classifier {
+private fun mergeClassifiers(a: KtClassifier, b: KtClassifier): KtClassifier {
     when (a.kind) {
-        ClassKind.CLASS -> {
-            if (b.kind === ClassKind.OBJECT) return mergeClassAndObject(a, b)
+        KtClassKind.CLASS -> {
+            if (b.kind === KtClassKind.OBJECT) return mergeClassAndObject(a, b)
         }
-        ClassKind.INTERFACE -> {
-            if (b.kind === ClassKind.OBJECT) return mergeClassAndObject(a, b)
-            if (b.kind === ClassKind.INTERFACE) return mergeClassifierMembers(a, b)
+        KtClassKind.INTERFACE -> {
+            if (b.kind === KtClassKind.OBJECT) return mergeClassAndObject(a, b)
+            if (b.kind === KtClassKind.INTERFACE) return mergeClassifierMembers(a, b)
         }
-        ClassKind.OBJECT -> {
-            if (b.kind === ClassKind.CLASS || b.kind === ClassKind.INTERFACE) return mergeClassAndObject(b, a)
+        KtClassKind.OBJECT -> {
+            if (b.kind === KtClassKind.CLASS || b.kind === KtClassKind.INTERFACE) return mergeClassAndObject(b, a)
             if (a.hasModuleAnnotation() && b.isModule()) return mergeClassifierMembers(a, b)
         }
         else -> {} // TODO is it bug?
@@ -62,20 +62,20 @@ private fun mergeClassifiers(a: Classifier, b: Classifier): Classifier {
     throw IllegalStateException("Merging ${a.kind} and ${b.kind} unsupported yet, a: ${a.stringify()}, b: ${b.stringify()}")
 }
 
-private fun mergeClassifierAndVariable(a: Classifier, b: Variable): Member {
+private fun mergeClassifierAndVariable(a: KtClassifier, b: KtVariable): KtMember {
     if (a.members.isEmpty()) return b
 
     // TODO is it right?
     assert(a.getClassObject() == null, "Unxpected `class object` when merge Classifier(kind=${a.kind}) and Variable(${b.stringify()})")
 
-    if (a.kind === ClassKind.INTERFACE || a.isModule()) {
-        val newTrait = Classifier(ClassKind.INTERFACE, a.name, a.paramsOfConstructors, a.typeParams, a.parents, a.members, a.annotations, hasOpenModifier = false)
+    if (a.kind === KtClassKind.INTERFACE || a.isModule()) {
+        val newTrait = KtClassifier(KtClassKind.INTERFACE, a.name, a.paramsOfConstructors, a.typeParams, a.parents, a.members, a.annotations, hasOpenModifier = false)
 
         val varTypeName = b.type.type.stringify()
-        val delegation = listOf(HeritageType("${varTypeName} by ${NO_IMPL}: ${varTypeName}"))
+        val delegation = listOf(KtHeritageType("${varTypeName} by ${NO_IMPL}: ${varTypeName}"))
 
         // TODO drop hacks
-        val classObject = Classifier(ClassKind.COMPANION_OBJECT, "", listOf(), listOf(), delegation, listOf(), listOf(), hasOpenModifier = false)
+        val classObject = KtClassifier(KtClassKind.COMPANION_OBJECT, "", listOf(), listOf(), delegation, listOf(), listOf(), hasOpenModifier = false)
 
         newTrait.addMember(classObject)
 
@@ -85,14 +85,14 @@ private fun mergeClassifierAndVariable(a: Classifier, b: Variable): Member {
     throw IllegalStateException("Merging non-empty Classifier(kind=${a.kind}) and Variable unsupported yet, a: ${a.stringify()}, b: ${b.stringify()}")
 }
 
-private fun mergeAnnotations(a: List<Annotation>, b: List<Annotation>): List<Annotation> =
+private fun mergeAnnotations(a: List<KtAnnotation>, b: List<KtAnnotation>): List<KtAnnotation> =
         when {
             a.isEmpty() -> b
             b.isEmpty() -> a
             else -> mergeAnnotations(a + b)
         }
 
-private fun mergeAnnotations(annotations: List<Annotation>): List<Annotation> =
+private fun mergeAnnotations(annotations: List<KtAnnotation>): List<KtAnnotation> =
         annotations.merge({ true }, COMPARE_BY_NAME) { a, b ->
             when {
                 a.parameters.isEmpty() -> b
@@ -103,12 +103,12 @@ private fun mergeAnnotations(annotations: List<Annotation>): List<Annotation> =
             }
         }
 
-private fun mergeClassAndObject(a: Classifier, b: Classifier): Classifier {
+private fun mergeClassAndObject(a: KtClassifier, b: KtClassifier): KtClassifier {
     val classObject = a.getClassObject()
 
     if (classObject == null) {
         // TODO drop hack
-        a.addMember(Classifier(ClassKind.COMPANION_OBJECT, "", listOf(), listOf(), listOf(), b.members, NO_ANNOTATIONS, hasOpenModifier = false))
+        a.addMember(KtClassifier(KtClassKind.COMPANION_OBJECT, "", listOf(), listOf(), listOf(), b.members, NO_ANNOTATIONS, hasOpenModifier = false))
     }
     else {
         // TODO drop hack
@@ -118,18 +118,18 @@ private fun mergeClassAndObject(a: Classifier, b: Classifier): Classifier {
     return a
 }
 
-private fun mergeClassifierMembers(a: Classifier, b: Classifier): Classifier {
+private fun mergeClassifierMembers(a: KtClassifier, b: KtClassifier): KtClassifier {
     // TODO drop hack
     a.addMembersFrom(b)
     return a
 }
 
-private fun Classifier.addMembersFrom(another: Classifier) {
+private fun KtClassifier.addMembersFrom(another: KtClassifier) {
     val members = members as MutableList
     members.addAll(another.members)
     members.mergeDeclarationsWithSameNameIfNeed()
 }
 
-private fun Classifier.addMember(member: Member) {
+private fun KtClassifier.addMember(member: KtMember) {
     (members as MutableList).add(member)
 }

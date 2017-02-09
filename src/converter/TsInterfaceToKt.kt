@@ -7,7 +7,7 @@ import typescript.identifierName
 
 open class TsInterfaceToKt(
         typeMapper: ObjectTypeToKotlinTypeMapper,
-        val annotations: List<Annotation>,
+        val annotations: List<KtAnnotation>,
         isOverride: (TS.MethodDeclaration) -> Boolean,
         isOverrideProperty: (TS.PropertyDeclaration) -> Boolean
 ) : TsClassifierToKt(typeMapper, isOverride, isOverrideProperty) {
@@ -18,7 +18,7 @@ open class TsInterfaceToKt(
 
     override val isInterface: Boolean = true
 
-    var typeParams: List<TypeParam>? = null
+    var typeParams: List<KtTypeParam>? = null
 
     override fun needsNoImpl(node: TS.PropertyDeclaration) = node.questionToken != null
     override fun isNullable(node: TS.PropertyDeclaration) = node.questionToken != null
@@ -29,8 +29,8 @@ open class TsInterfaceToKt(
         val isOptional = node.questionToken != null
         if (isOptional) {
             val call = node.toKotlinCallSignature(typeMapper)
-            val typeAsString = "(${call.params.join(", ", stringify = FunParam::stringify)}) -> ${call.returnType.type.stringify()}"
-            addVariable(name, type = Type(typeAsString, isNullable = true, isLambda = true), typeParams = call.typeParams, isVar = false, needsNoImpl = true, isOverride = isOverride)
+            val typeAsString = "(${call.params.join(", ", stringify = KtFunParam::stringify)}) -> ${call.returnType.type.stringify()}"
+            addVariable(name, type = KtType(typeAsString, isNullable = true, isLambda = true), typeParams = call.typeParams, isVar = false, needsNoImpl = true, isOverride = isOverride)
         }
         else {
             node.toKotlinCallSignatureOverloads(typeMapper).forEach { call ->

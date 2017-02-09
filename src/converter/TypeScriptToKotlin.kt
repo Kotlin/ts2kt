@@ -28,22 +28,22 @@ private val JS_MODULE = "JsModule"
 private val JS_QUALIFIER = "JsQualifier"
 private val NATIVE = "native"
 
-val NATIVE_ANNOTATION = Annotation(NATIVE)
-internal val NATIVE_GETTER_ANNOTATION = Annotation("nativeGetter")
-internal val NATIVE_SETTER_ANNOTATION = Annotation("nativeSetter")
-internal val NATIVE_INVOKE_ANNOTATION = Annotation("nativeInvoke")
-internal val NATIVE_NEW_ANNOTATION = Annotation("native(\"new\")")
+val NATIVE_ANNOTATION = KtAnnotation(NATIVE)
+internal val NATIVE_GETTER_ANNOTATION = KtAnnotation("nativeGetter")
+internal val NATIVE_SETTER_ANNOTATION = KtAnnotation("nativeSetter")
+internal val NATIVE_INVOKE_ANNOTATION = KtAnnotation("nativeInvoke")
+internal val NATIVE_NEW_ANNOTATION = KtAnnotation("native(\"new\")")
 internal val DEFAULT_ANNOTATION = listOf(NATIVE_ANNOTATION)
-internal val NO_ANNOTATIONS = emptyList<Annotation>()
+internal val NO_ANNOTATIONS = emptyList<KtAnnotation>()
 internal val INVOKE = "invoke"
 internal val GET = "get"
 internal val SET = "set"
 
-internal val COMPARE_BY_NAME = { a: Named, b: Named -> a.name == b.name }
-internal val IS_NATIVE_ANNOTATION = { a: Annotation -> a.name == NATIVE }
+internal val COMPARE_BY_NAME = { a: KtNamed, b: KtNamed -> a.name == b.name }
+internal val IS_NATIVE_ANNOTATION = { a: KtAnnotation -> a.name == NATIVE }
 
 class TypeScriptToKotlin(
-        override val defaultAnnotations: List<Annotation> = DEFAULT_ANNOTATION,
+        override val defaultAnnotations: List<KtAnnotation> = DEFAULT_ANNOTATION,
         val requiredModifier: TS.SyntaxKind? = TS.SyntaxKind.DeclareKeyword,
         val moduleName: String? = null,
         typeMapper: ObjectTypeToKotlinTypeMapper? = null,
@@ -54,14 +54,14 @@ class TypeScriptToKotlin(
         private val qualifier: List<String> = listOf()
 ) : TypeScriptToKotlinBase() {
 
-    fun packagePartAnnotations(): List<Annotation> {
+    fun packagePartAnnotations(): List<KtAnnotation> {
         if (qualifier.isEmpty()) return defaultAnnotations
-        return defaultAnnotations + Annotation(JS_QUALIFIER, listOf(Argument(qualifier.joinToString(".", "\"", "\""))))
+        return defaultAnnotations + KtAnnotation(JS_QUALIFIER, listOf(KtArgument(qualifier.joinToString(".", "\"", "\""))))
     }
 
-    private val _packageParts = mutableListOf(PackagePart(qualifier, declarations, packagePartAnnotations()))
+    private val _packageParts = mutableListOf(KtPackagePart(qualifier, declarations, packagePartAnnotations()))
 
-    val packageParts: List<PackagePart>
+    val packageParts: List<KtPackagePart>
         get() {
             assert(exportedByAssignment.isEmpty(), "exportedByAssignment should be empty, but it contains: ${exportedByAssignment.keys.toString()}")
             return _packageParts
@@ -69,13 +69,13 @@ class TypeScriptToKotlin(
 
     override val hasMembersOpenModifier = false
 
-    val exportedByAssignment = hashMapOf<String, Annotation>()
+    val exportedByAssignment = hashMapOf<String, KtAnnotation>()
 
-    private val typeAliases = mutableListOf<TypeAlias>()
+    private val typeAliases = mutableListOf<KtTypeAlias>()
 
     val typeMapper = typeMapper ?: ObjectTypeToKotlinTypeMapperImpl(defaultAnnotations, declarations, typeAliases)
 
-    fun getAdditionalAnnotations(node: TS.Node): List<Annotation> {
+    fun getAdditionalAnnotations(node: TS.Node): List<KtAnnotation> {
         val isShouldSkip = requiredModifier === TS.SyntaxKind.DeclareKeyword && !(node.modifiers?.arr?.any { it.kind === requiredModifier } ?: false )
         if (isShouldSkip) return DEFAULT_FAKE_ANNOTATION
 
@@ -85,7 +85,7 @@ class TypeScriptToKotlin(
     override fun visitTypeAliasDeclaration(node: TS.TypeAliasDeclaration) {
         val newTypeMapper = typeMapper.withTypeParameters(node.typeParameters)
         val typeParams = node.typeParameters?.toKotlinTypeParams(newTypeMapper)
-        typeAliases.add(TypeAlias(node.identifierName.text, typeParams, node.type.toKotlinTypeUnion(newTypeMapper)))
+        typeAliases.add(KtTypeAlias(node.identifierName.text, typeParams, node.type.toKotlinTypeUnion(newTypeMapper)))
     }
 
     override fun visitVariableStatement(node: TS.VariableStatement) {
@@ -96,7 +96,7 @@ class TypeScriptToKotlin(
         val declarations = node.declarationList.declarations.arr
         for (d in declarations) {
             val name = d.declarationName!!.unescapedText
-            val varType = d.type?.toKotlinType(typeMapper) ?: Type(ANY)
+            val varType = d.type?.toKotlinType(typeMapper) ?: KtType(ANY)
             addVariable(name, varType, additionalAnnotations = additionalAnnotations)
         }
     }
@@ -141,7 +141,7 @@ class TypeScriptToKotlin(
 
     override fun visitEnumDeclaration(node: TS.EnumDeclaration) {
         val entries = node.members.arr.map { entry ->
-            EnumEntry(entry.declarationName.unescapedText, entry.initializer?.let{
+            KtEnumEntry(entry.declarationName.unescapedText, entry.initializer?.let{
                 when (it.kind) {
                     TS.SyntaxKind.FirstLiteralToken -> (it.cast<TS.LiteralExpression>()).text
                     else -> unsupportedNode(it)
@@ -150,7 +150,7 @@ class TypeScriptToKotlin(
         }
 
         val enumClass =
-                Classifier(ClassKind.ENUM, node.identifierName.unescapedText, listOf(), listOf(), listOf(),
+                KtClassifier(KtClassKind.ENUM, node.identifierName.unescapedText, listOf(), listOf(), listOf(),
                         entries, listOf(), hasOpenModifier = false)
 
         declarations.add(enumClass)
@@ -199,7 +199,7 @@ class TypeScriptToKotlin(
         if (isExternalModule && tr.exportedByAssignment.isEmpty()) {
             val areAllFakeOrInterface = tr.declarations.all {
                 it.annotations.any { it == FAKE_ANNOTATION } ||
-                (it is Classifier && it.kind === ClassKind.INTERFACE && it.annotations.all { it.name != JS_MODULE })
+                (it is KtClassifier && it.kind === KtClassKind.INTERFACE && it.annotations.all { it.name != JS_MODULE })
             }
             val areAllPartOfThisModule = { tr.declarations.all { it.annotations.any { it.name == JS_MODULE && it.getFirstParamAsString() == name } } }
 
@@ -211,7 +211,7 @@ class TypeScriptToKotlin(
             }
             else if (areAllPartOfThisModule()) {
                 // TODO: is it right?
-                if (tr.declarations.size == 1 && tr.declarations[0] is Variable) {
+                if (tr.declarations.size == 1 && tr.declarations[0] is KtVariable) {
                     val d = tr.declarations[0]
                     d.annotations.firstOrNull { it.name == JS_MODULE }?.getFirstParamAsString()?.let( {
                         d.name = it
@@ -240,7 +240,7 @@ class TypeScriptToKotlin(
                         }
 
         exportedByAssignment[exportName] =
-                Annotation(JS_MODULE, listOf(Argument("\"${moduleName ?: exportName}\"")))
+                KtAnnotation(JS_MODULE, listOf(KtArgument("\"${moduleName ?: exportName}\"")))
     }
 
     override fun visitList(node: TS.Node) {
@@ -256,12 +256,12 @@ class TypeScriptToKotlin(
     fun fixExportAssignments() {
         val found = hashSetOf<String>()
 
-        fun process(annotated: Annotated, declarationName: String) {
+        fun process(annotated: KtAnnotated, declarationName: String) {
             val annotation = exportedByAssignment[declarationName] ?: return
 
             val annotationParamString = annotation.getFirstParamAsString()
 
-            val t = arrayListOf<Annotation>()
+            val t = arrayListOf<KtAnnotation>()
             for (a in annotated.annotations) {
                 if (a == FAKE_ANNOTATION) continue
 

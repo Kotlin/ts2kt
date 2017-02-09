@@ -18,13 +18,13 @@ private val FUN = "fun"
 private val VARARG = "vararg"
 
 
-class Stringify(private val packagePartPrefix: String?) : Visitor {
+class Stringify(private val packagePartPrefix: String?) : KtVisitor {
     val result: String
         get() = out.toString()
 
     private val out = Output()
 
-    private fun List<Node>.acceptForEach(visitor: Visitor, delimiter: String? = null, startWithIfNotEmpty: String? = null, endWithIfNotEmpty: String? = null) {
+    private fun List<KtNode>.acceptForEach(visitor: KtVisitor, delimiter: String? = null, startWithIfNotEmpty: String? = null, endWithIfNotEmpty: String? = null) {
         if (isNotEmpty() && startWithIfNotEmpty != null) {
             out.print(startWithIfNotEmpty)
         }
@@ -41,11 +41,11 @@ class Stringify(private val packagePartPrefix: String?) : Visitor {
         }
     }
 
-    override fun visitNode(node: Node) {
+    override fun visitNode(node: KtNode) {
         TODO()
     }
 
-    override fun visitAnnotation(annotation: Annotation) {
+    override fun visitAnnotation(annotation: KtAnnotation) {
         // TODO remove hack
         if (annotation == NATIVE_ANNOTATION) return
 
@@ -54,12 +54,12 @@ class Stringify(private val packagePartPrefix: String?) : Visitor {
         out.println()
     }
 
-    private fun printAnnotation(annotation: Annotation) {
+    private fun printAnnotation(annotation: KtAnnotation) {
         out.print(annotation.escapedName)
         annotation.parameters.acceptForEach(this, delimiter = ", ", startWithIfNotEmpty = "(", endWithIfNotEmpty = ")")
     }
 
-    override fun visitClassifier(classifier: Classifier) {
+    override fun visitClassifier(classifier: KtClassifier) {
         with (classifier) {
             annotations.acceptForEach(this@Stringify)
 
@@ -106,8 +106,8 @@ class Stringify(private val packagePartPrefix: String?) : Visitor {
 
                 members.filter(isNotAnnotatedAsFake)
                         .acceptForEach(this@Stringify,
-                                delimiter = if (kind == ClassKind.ENUM) ",\n" else "",
-                                endWithIfNotEmpty = if (kind == ClassKind.ENUM) "\n" else "")
+                                delimiter = if (kind == KtClassKind.ENUM) ",\n" else "",
+                                endWithIfNotEmpty = if (kind == KtClassKind.ENUM) "\n" else "")
             }
 
             if (bracesRequired) {
@@ -117,7 +117,7 @@ class Stringify(private val packagePartPrefix: String?) : Visitor {
         out.println()
     }
 
-    override fun visitFunction(function: Function) {
+    override fun visitFunction(function: KtFunction) {
         with(function) {
             annotations.acceptForEach(this@Stringify)
 
@@ -154,7 +154,7 @@ class Stringify(private val packagePartPrefix: String?) : Visitor {
         out.println()
     }
 
-    override fun visitVariable(variable: Variable) {
+    override fun visitVariable(variable: KtVariable) {
         with(variable) {
             annotations.acceptForEach(this@Stringify)
 
@@ -199,7 +199,7 @@ class Stringify(private val packagePartPrefix: String?) : Visitor {
         out.println()
     }
 
-    override fun visitPackagePart(packagePart: PackagePart) {
+    override fun visitPackagePart(packagePart: KtPackagePart) {
         packagePart.annotations.filter { it != NATIVE_ANNOTATION }.let {
             if (it.isNotEmpty()) {
                 out.print("@file:")
@@ -230,7 +230,7 @@ class Stringify(private val packagePartPrefix: String?) : Visitor {
         packagePart.members.filter(isNotAnnotatedAsFake).acceptForEach(this)
     }
 
-    fun FunParam.printToOut(printDefaultValue: Boolean) {
+    fun KtFunParam.printToOut(printDefaultValue: Boolean) {
         if (isVar) {
             out.print("$OPEN $VAR ")
         }
@@ -247,15 +247,15 @@ class Stringify(private val packagePartPrefix: String?) : Visitor {
         }
     }
 
-    override fun visitFunParam(funParam: FunParam) {
+    override fun visitFunParam(funParam: KtFunParam) {
         funParam.printToOut(printDefaultValue = true)
     }
 
-    override fun visitCallSignature(signature: CallSignature) {
+    override fun visitCallSignature(signature: KtCallSignature) {
         signature.printToOut(withTypeParams = true, printUnitReturnType = true, printDefaultValues = true)
     }
 
-    fun CallSignature.printTypeParams(withSpaceAfter: Boolean) {
+    fun KtCallSignature.printTypeParams(withSpaceAfter: Boolean) {
         typeParams?.acceptForEach(
                 this@Stringify,
                 delimiter = ", ",
@@ -263,7 +263,7 @@ class Stringify(private val packagePartPrefix: String?) : Visitor {
                 endWithIfNotEmpty = ">" + if (withSpaceAfter) " " else "")
     }
 
-    fun CallSignature.printToOut(withTypeParams: Boolean, printUnitReturnType: Boolean, printDefaultValues: Boolean) {
+    fun KtCallSignature.printToOut(withTypeParams: Boolean, printUnitReturnType: Boolean, printDefaultValues: Boolean) {
         if (withTypeParams) {
             printTypeParams(withSpaceAfter = false)
         }
@@ -280,12 +280,12 @@ class Stringify(private val packagePartPrefix: String?) : Visitor {
 
 
 
-    override fun visitEnumEntry(enumEntry: EnumEntry) {
+    override fun visitEnumEntry(enumEntry: KtEnumEntry) {
         out.printWithIndent(enumEntry.escapedName)
         enumEntry.value?.let { out.print(" /* = $it */") }
     }
 
-    override fun visitTypeParam(typeParam: TypeParam) {
+    override fun visitTypeParam(typeParam: KtTypeParam) {
         out.print(typeParam.escapedName)
         typeParam.upperBound?.let {
             out.print(" : ")
@@ -293,7 +293,7 @@ class Stringify(private val packagePartPrefix: String?) : Visitor {
         }
     }
 
-    fun TypeAnnotation.printToOut(printUnitType: Boolean) {
+    fun KtTypeAnnotation.printToOut(printUnitType: Boolean) {
         val isUnit = type.isUnit() && !isVararg
         if (!printUnitType && isUnit) return
 
@@ -301,11 +301,11 @@ class Stringify(private val packagePartPrefix: String?) : Visitor {
         type.accept(this@Stringify)
     }
 
-    override fun visitTypeAnnotation(typeAnnotation: TypeAnnotation) {
+    override fun visitTypeAnnotation(typeAnnotation: KtTypeAnnotation) {
         typeAnnotation.printToOut(true)
     }
 
-    override fun visitType(type: Type) {
+    override fun visitType(type: KtType) {
         with(type) {
             if (isLambda && isNullable) {
                 out.print("(")
@@ -330,15 +330,15 @@ class Stringify(private val packagePartPrefix: String?) : Visitor {
         }
     }
 
-    override fun visitTypeUnion(typeUnion: TypeUnion) {
+    override fun visitTypeUnion(typeUnion: KtTypeUnion) {
         typeUnion.possibleTypes.acceptForEach(this, " | ")
     }
 
-    override fun visitHeritageType(heritageType: HeritageType) {
+    override fun visitHeritageType(heritageType: KtHeritageType) {
         out.print(heritageType.escapedName)
     }
 
-    override fun visitArgument(argument: Argument) {
+    override fun visitArgument(argument: KtArgument) {
         argument.name?.let {
             out.print("$it = ")
         }

@@ -12,10 +12,10 @@ abstract class TsClassifierToKt(
 ) : TypeScriptToKotlinBase() {
     abstract val needsNoImpl: Boolean
 
-    var parents = arrayListOf<HeritageType>()
+    var parents = arrayListOf<KtHeritageType>()
 
     override fun visitHeritageClause(node: TS.HeritageClause) {
-        val types = node.types?.arr?.map { id -> HeritageType(id.toKotlinType(typeMapper).stringify()) } ?: listOf()
+        val types = node.types?.arr?.map { id -> KtHeritageType(id.toKotlinType(typeMapper).stringify()) } ?: listOf()
         parents.addAll(types)
     }
 
@@ -28,22 +28,22 @@ abstract class TsClassifierToKt(
         // TODO type params?
         node.parameters.toKotlinParamsOverloads(typeMapper).forEach { params ->
             val propTypeUnion = if (isGetter) {
-                TypeUnion(node.type?.toKotlinType(typeMapper) ?: Type(ANY))
+                KtTypeUnion(node.type?.toKotlinType(typeMapper) ?: KtType(ANY))
             } else {
-                node.type?.toKotlinTypeUnion(typeMapper) ?: TypeUnion(Type(ANY))
+                node.type?.toKotlinTypeUnion(typeMapper) ?: KtTypeUnion(KtType(ANY))
             }
             propTypeUnion.possibleTypes.forEach { propType ->
-                val callSignature: CallSignature
+                val callSignature: KtCallSignature
                 val accessorName: String
-                val annotation: Annotation
+                val annotation: KtAnnotation
                 if (isGetter) {
                     // per Kotlin, all @nativeGetter's must be nullable
-                    callSignature = CallSignature(params, listOf(), TypeAnnotation(propType.copy(isNullable = true)))
+                    callSignature = KtCallSignature(params, listOf(), KtTypeAnnotation(propType.copy(isNullable = true)))
                     accessorName = GET
                     annotation = NATIVE_GETTER_ANNOTATION
                 }
                 else {
-                    callSignature = CallSignature(listOf(params[0], FunParam("value", TypeAnnotation(propType))), listOf(), TypeAnnotation(Type(UNIT)))
+                    callSignature = KtCallSignature(listOf(params[0], KtFunParam("value", KtTypeAnnotation(propType))), listOf(), KtTypeAnnotation(KtType(UNIT)))
                     accessorName = SET
                     annotation = NATIVE_SETTER_ANNOTATION
                 }
@@ -63,7 +63,7 @@ abstract class TsClassifierToKt(
         if (node.modifiers?.arr?.any { it.kind === TS.SyntaxKind.StaticKeyword } ?: false) {
             if (staticTranslator == null) {
                 // TODO support override for static members
-                staticTranslator = TsClassToKt(typeMapper, ClassKind.COMPANION_OBJECT, listOf(), NOT_OVERRIDE, NOT_OVERRIDE, hasMembersOpenModifier = false)
+                staticTranslator = TsClassToKt(typeMapper, KtClassKind.COMPANION_OBJECT, listOf(), NOT_OVERRIDE, NOT_OVERRIDE, hasMembersOpenModifier = false)
                 staticTranslator?.name = ""
             }
             return staticTranslator!!
@@ -82,7 +82,7 @@ abstract class TsClassifierToKt(
         val declarationName = node.propertyName!!
 
         val name = declarationName.unescapedText
-        val varType = node.type?.toKotlinType(typeMapper) ?: Type(ANY)
+        val varType = node.type?.toKotlinType(typeMapper) ?: KtType(ANY)
 
         val isOverride = isOverrideProperty(node)
 
