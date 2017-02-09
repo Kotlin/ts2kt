@@ -1,6 +1,6 @@
 package `interface`
 
-@module("Boo")
+@JsModule("Boo")
 interface IBaz {
     fun doSomething()
 }

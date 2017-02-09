@@ -1,9 +1,10 @@
 package module
 
-@module("lodash")
+@JsModule("lodash")
 external var _: _.LoDashStatic = definedExternally
 
 // ------------------------------------------------------------------------------------------
+@file:JsModule("lodash")
 package module._
 
 interface LoDashStatic {

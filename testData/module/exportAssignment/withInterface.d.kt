@@ -1,6 +1,6 @@
 package withInterface
 
-@module("lazy.js")
+@JsModule("lazy.js")
 external var Lazy: LazyJS.LazyStatic = definedExternally
 
 // ------------------------------------------------------------------------------------------

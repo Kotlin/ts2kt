@@ -6,5 +6,5 @@ external interface SinonStatic {
     var log: (message: String) -> Unit
     fun restore(`object`: Any)
 }
-@module("sinon")
+@JsModule("sinon")
 external var sinon: SinonStatic = definedExternally

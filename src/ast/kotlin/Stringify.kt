@@ -49,9 +49,14 @@ class Stringify(private val packagePartPrefix: String?) : Visitor {
         // TODO remove hack
         if (annotation == NATIVE_ANNOTATION) return
 
-        out.printWithIndent("@" + annotation.escapedName)
-        annotation.parameters.acceptForEach(this, delimiter = ", ", startWithIfNotEmpty = "(", endWithIfNotEmpty = ")")
+        out.printWithIndent("@")
+        printAnnotation(annotation)
         out.println()
+    }
+
+    private fun printAnnotation(annotation: Annotation) {
+        out.print(annotation.escapedName)
+        annotation.parameters.acceptForEach(this, delimiter = ", ", startWithIfNotEmpty = "(", endWithIfNotEmpty = ")")
     }
 
     override fun visitClassifier(classifier: Classifier) {
@@ -195,6 +200,21 @@ class Stringify(private val packagePartPrefix: String?) : Visitor {
     }
 
     override fun visitPackagePart(packagePart: PackagePart) {
+        packagePart.annotations.filter { it != NATIVE_ANNOTATION }.let {
+            if (it.isNotEmpty()) {
+                out.print("@file:")
+                if (it.size == 1) {
+                    printAnnotation(it.first())
+                }
+                else {
+                    out.print("[")
+                    it.forEach(this::printAnnotation)
+                    out.print("]")
+                }
+                out.println()
+            }
+        }
+
         val packageNameParts = (packagePartPrefix?.let(::listOf) ?: emptyList()) + packagePart.fqName
 
         if (packageNameParts.isNotEmpty()) {

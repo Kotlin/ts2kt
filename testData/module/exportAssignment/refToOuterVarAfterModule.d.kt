@@ -4,5 +4,5 @@ external interface JQueryStatic {
     fun ajax(settings: JQueryAjaxSettings): JQueryXHR
     fun ajax(url: String, settings: JQueryAjaxSettings? = definedExternally /* null */): JQueryXHR
 }
-@module("jquery")
+@JsModule("jquery")
 external var `$`: JQueryStatic = definedExternally

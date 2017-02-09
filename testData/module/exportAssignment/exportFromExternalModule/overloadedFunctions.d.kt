@@ -8,9 +8,9 @@ external interface Options {
     var entries: Array<String>? get() = definedExternally; set(value) = definedExternally
     var noParse: Array<String>? get() = definedExternally; set(value) = definedExternally
 }
-@module("browserify")
+@JsModule("browserify")
 fun browserify(): BrowserifyObject = definedExternally
-@module("browserify")
+@JsModule("browserify")
 fun browserify(files: Array<String>): BrowserifyObject = definedExternally
-@module("browserify")
+@JsModule("browserify")
 fun browserify(opts: Options): BrowserifyObject = definedExternally

@@ -1,3 +1,4 @@
+@file:JsModule("Boo")
 package module.Boo.MM
 
 fun method(s: Any): String = definedExternally

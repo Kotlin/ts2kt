@@ -1,6 +1,6 @@
 package `var`
 
-@module
+@JsModule("mixto")
 var mixto: Mixto.IMixinStatic = definedExternally
 
 // ------------------------------------------------------------------------------------------

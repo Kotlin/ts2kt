@@ -24,8 +24,7 @@ import typescript.declarationName
 import typescript.identifierName
 import typescript.propertyName
 
-// workaround for new compiler
-private val MODULE = "module"
+private val JS_MODULE = "JsModule"
 private val NATIVE = "native"
 
 val NATIVE_ANNOTATION = Annotation(NATIVE)
@@ -33,10 +32,8 @@ internal val NATIVE_GETTER_ANNOTATION = Annotation("nativeGetter")
 internal val NATIVE_SETTER_ANNOTATION = Annotation("nativeSetter")
 internal val NATIVE_INVOKE_ANNOTATION = Annotation("nativeInvoke")
 internal val NATIVE_NEW_ANNOTATION = Annotation("native(\"new\")")
-private val MODULE_ANNOTATION = Annotation(MODULE)
 internal val DEFAULT_ANNOTATION = listOf(NATIVE_ANNOTATION)
-private val DEFAULT_MODULE_ANNOTATION = listOf(MODULE_ANNOTATION)
-internal val NO_ANNOTATIONS = listOf<Annotation>()
+internal val NO_ANNOTATIONS = emptyList<Annotation>()
 internal val INVOKE = "invoke"
 internal val GET = "get"
 internal val SET = "set"
@@ -195,9 +192,9 @@ class TypeScriptToKotlin(
         if (isExternalModule && tr.exportedByAssignment.isEmpty()) {
             val areAllFakeOrInterface = tr.declarations.all {
                 it.annotations.any { it == FAKE_ANNOTATION } ||
-                (it is Classifier && it.kind === ClassKind.INTERFACE && it.annotations.all { it.name != MODULE })
+                (it is Classifier && it.kind === ClassKind.INTERFACE && it.annotations.all { it.name != JS_MODULE })
             }
-            val areAllPartOfThisModule = { tr.declarations.all { it.annotations.any { it.name == MODULE && it.getFirstParamAsString() == name } } }
+            val areAllPartOfThisModule = { tr.declarations.all { it.annotations.any { it.name == JS_MODULE && it.getFirstParamAsString() == name } } }
 
             if (areAllFakeOrInterface) {
                 // unfake all
@@ -209,17 +206,9 @@ class TypeScriptToKotlin(
                 // TODO: is it right?
                 if (tr.declarations.size == 1 && tr.declarations[0] is Variable) {
                     val d = tr.declarations[0]
-
-                    var s: String = d.name
-                    d.annotations = d.annotations.map {
-                        if (it.name == MODULE && !it.parameters.isEmpty()) {
-                            s = it.getFirstParamAsString()!!
-                            MODULE_ANNOTATION
-                        } else {
-                            it
-                        }
-                    }
-                    d.name = s
+                    d.annotations.firstOrNull { it.name == JS_MODULE }?.getFirstParamAsString()?.let( {
+                        d.name = it
+                    })
                 }
 
                 this.declarations.addAll(tr.declarations)
@@ -244,7 +233,7 @@ class TypeScriptToKotlin(
                         }
 
         exportedByAssignment[exportName] =
-                Annotation(MODULE, if (moduleName == null) listOf() else listOf(Argument(value = "\"$moduleName\"")))
+                Annotation(JS_MODULE, listOf(Argument(value = "\"${moduleName ?: exportName}\"")))
     }
 
     override fun visitList(node: TS.Node) {
@@ -269,7 +258,7 @@ class TypeScriptToKotlin(
             for (a in annotated.annotations) {
                 if (a == FAKE_ANNOTATION) continue
 
-                if (a.name == MODULE) {
+                if (a.name == JS_MODULE) {
                     if (declarationName == annotationParamString) return
 
                     continue
