@@ -17,6 +17,7 @@
 package ts2kt
 
 import node.require
+import ts2kt.kotlin.ast.isNotAnnotatedAsFake
 import ts2kt.kotlin.ast.stringify
 import ts2kt.utils.cast
 import ts2kt.utils.hasFlag
@@ -224,12 +225,16 @@ fun translate(srcPath: String): String {
     typeScriptToKotlin.visitList(fileNode)
 
     val packageParts = typeScriptToKotlin.packageParts
+    val packagePartsToPrint = packageParts.merge().filter { it.members.any(isNotAnnotatedAsFake) }
 
-    val out = packageParts
-            .merge()
-            .joinToString("\n// ${"-".repeat(90)}\n") {
-                it.stringify(packagePartPrefix = srcName)
+    val out =
+            if (packagePartsToPrint.isNotEmpty()) {
+                packagePartsToPrint
+                        .joinToString("\n// ${"-".repeat(90)}\n") {
+                            it.stringify(packagePartPrefix = srcName)
+                        }
             }
+            else "// NO DECLARATIONS"
 
     return out
 }

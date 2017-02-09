@@ -1,7 +1,3 @@
-package inModule
-
-
-// ------------------------------------------------------------------------------------------
 package inModule.TypeScript
 
 interface ISyntaxElement {

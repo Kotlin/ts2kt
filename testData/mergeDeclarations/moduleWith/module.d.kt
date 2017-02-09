@@ -1,7 +1,3 @@
-package module
-
-
-// ------------------------------------------------------------------------------------------
 package module.Ext
 
 interface IAbstractComponent : Ext.IBase, Ext.util.IPositionable, Ext.util.IObservable, Ext.util.IAnimate, Ext.util.IElementContainer, Ext.util.IRenderable, Ext.state.IStateful {

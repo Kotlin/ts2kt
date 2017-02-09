@@ -1,7 +1,3 @@
-package inModuleMembers
-
-
-// ------------------------------------------------------------------------------------------
 package inModuleMembers.Foo
 
 interface `T$0` {

@@ -25,7 +25,7 @@ private val FAKE = "fake"
 val FAKE_ANNOTATION = Annotation(FAKE)
 val DEFAULT_FAKE_ANNOTATION = listOf(FAKE_ANNOTATION)
 
-internal val takeIfNotAnnotatedAsFake = { node: Annotated ->
+internal val isNotAnnotatedAsFake = { node: Annotated ->
     var result = true
     for (a in node.annotations) {
         if (a == FAKE_ANNOTATION) {

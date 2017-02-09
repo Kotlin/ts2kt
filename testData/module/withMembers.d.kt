@@ -1,7 +1,3 @@
-package withMembers
-
-
-// ------------------------------------------------------------------------------------------
 package withMembers.Foo
 
 interface A {

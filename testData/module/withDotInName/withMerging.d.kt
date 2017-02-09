@@ -1,7 +1,3 @@
-package withMerging
-
-
-// ------------------------------------------------------------------------------------------
 package withMerging.Foo.Bar.Baz
 
 var variableFooBarBaz: Number = definedExternally

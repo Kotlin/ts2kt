@@ -10,7 +10,3 @@ interface LazyStatic {
     fun foo(a: Number)
 }
 var a: Any = definedExternally
-
-// ------------------------------------------------------------------------------------------
-package withInterface.lazy.js
-

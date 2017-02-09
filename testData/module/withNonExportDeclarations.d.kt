@@ -1,7 +1,3 @@
-package withNonExportDeclarations
-
-
-// ------------------------------------------------------------------------------------------
 package withNonExportDeclarations.Foo
 
 interface A {

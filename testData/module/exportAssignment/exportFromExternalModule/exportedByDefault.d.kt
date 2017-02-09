@@ -1,7 +1,3 @@
-package exportedByDefault
-
-
-// ------------------------------------------------------------------------------------------
 package exportedByDefault.Boo
 
 fun foo(): String = definedExternally

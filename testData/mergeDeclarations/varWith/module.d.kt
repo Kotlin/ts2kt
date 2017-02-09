@@ -20,7 +20,3 @@ interface LoDashArrayWrapper<T> {
     fun difference(vararg others: Array<T>): LoDashArrayWrapper<T>
     fun difference(vararg others: List<T>): LoDashArrayWrapper<T>
 }
-
-// ------------------------------------------------------------------------------------------
-package module.lodash
-

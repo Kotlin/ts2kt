@@ -1,7 +1,3 @@
-package overrideMethodOfParentOfParent
-
-
-// ------------------------------------------------------------------------------------------
 package overrideMethodOfParentOfParent.TypeScript.Syntax
 
 open class EmptySyntaxList : ISyntaxList {

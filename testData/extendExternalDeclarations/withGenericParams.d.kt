@@ -1,7 +1,3 @@
-package withGenericParams
-
-
-// ------------------------------------------------------------------------------------------
 package withGenericParams.Q
 
 external fun <T, B> Promise<T>.foo(b: B): T = definedExternally

@@ -1,10 +1,3 @@
-package exportModuleDeclaredBefore
-
-
-// ------------------------------------------------------------------------------------------
 package exportModuleDeclaredBefore.SemverModule
 
-
-// ------------------------------------------------------------------------------------------
-package exportModuleDeclaredBefore.semver
-
+fun dummy(): Unit = definedExternally

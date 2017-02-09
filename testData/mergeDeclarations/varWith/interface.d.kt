@@ -1,7 +1,3 @@
-package `interface`
-
-
-// ------------------------------------------------------------------------------------------
 package `interface`.AceAjax
 
 interface KeyBinding {

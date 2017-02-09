@@ -6,5 +6,5 @@ declare module "semver" {
 }
 
 declare module SemverModule {
-//...
+    export function dummy();
 }

@@ -1,7 +1,3 @@
-package interfaces
-
-
-// ------------------------------------------------------------------------------------------
 package interfaces._
 
 interface LoDashStatic {

@@ -6,7 +6,3 @@ external interface JQueryStatic {
 }
 @module("jquery")
 external var `$`: JQueryStatic = definedExternally
-
-// ------------------------------------------------------------------------------------------
-package refToOuterVarAfterModule.jquery
-

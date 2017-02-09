@@ -1,6 +1,1 @@
-package withStringName
-
-
-// ------------------------------------------------------------------------------------------
-package withStringName.jquery
-
+// NO DECLARATIONS

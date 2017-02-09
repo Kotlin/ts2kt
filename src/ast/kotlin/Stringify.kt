@@ -99,7 +99,7 @@ class Stringify(private val packagePartPrefix: String?) : Visitor {
                     }
                 }
 
-                members.filter(takeIfNotAnnotatedAsFake)
+                members.filter(isNotAnnotatedAsFake)
                         .acceptForEach(this@Stringify,
                                 delimiter = if (kind == ClassKind.ENUM) ",\n" else "",
                                 endWithIfNotEmpty = if (kind == ClassKind.ENUM) "\n" else "")
@@ -202,7 +202,7 @@ class Stringify(private val packagePartPrefix: String?) : Visitor {
             out.println()
         }
 
-        packagePart.members.filter(takeIfNotAnnotatedAsFake).acceptForEach(this)
+        packagePart.members.filter(isNotAnnotatedAsFake).acceptForEach(this)
     }
 
     fun FunParam.printToOut(printDefaultValue: Boolean) {

@@ -8,7 +8,3 @@ external interface SinonStatic {
 }
 @module("sinon")
 external var sinon: SinonStatic = definedExternally
-
-// ------------------------------------------------------------------------------------------
-package refToOuterVarBeforeModule.sinon
-
