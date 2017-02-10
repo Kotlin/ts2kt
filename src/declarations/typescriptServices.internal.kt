@@ -1,4 +1,4 @@
-@file:JsQualifier("ts")
+@file:JsModule("typescript")
 package typescriptServices.ts
 
 // Declarations that declared inside namespace marked as internal and not exist inside typescriptServices.d.ts and typescript.d.ts, but available at runtime

@@ -1,4 +1,5 @@
-@file:JsQualifier("ts.HighlightSpanKind")
+@file:JsModule("typescript")
+@file:JsQualifier("HighlightSpanKind")
 package typescriptServices.ts.HighlightSpanKind
 
 external var none: String = definedExternally

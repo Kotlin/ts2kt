@@ -1,4 +1,5 @@
-@file:JsQualifier("ts.ScriptSnapshot")
+@file:JsModule("typescript")
+@file:JsQualifier("ScriptSnapshot")
 package typescriptServices.ts.ScriptSnapshot
 
 import typescriptServices.ts.IScriptSnapshot

@@ -16,17 +16,18 @@
 
 package node
 
-external fun require(name: String): dynamic
-
-external interface path {
+@JsModule("path")
+external object path {
     fun basename(path: String, postfix: String): String
 }
 
-external interface process {
+@JsModule("process")
+external object process {
     val argv: Array<String?>
 }
 
-external interface fs {
+@JsModule("fs")
+external object fs {
     fun argv(index: Int): String
     fun writeFileSync(path: String, text: String): Unit
     fun readFileSync(path: String): String

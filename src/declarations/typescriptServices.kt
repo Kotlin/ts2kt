@@ -1,4 +1,4 @@
-@file:JsQualifier("ts")
+@file:JsModule("typescript")
 package typescriptServices.ts
 
 import typescript.*

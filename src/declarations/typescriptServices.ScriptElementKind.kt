@@ -1,4 +1,5 @@
-@file:JsQualifier("ts.ScriptElementKind")
+@file:JsModule("typescript")
+@file:JsQualifier("ScriptElementKind")
 package typescriptServices.ts.ScriptElementKind
 
 external var unknown: String = definedExternally

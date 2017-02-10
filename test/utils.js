@@ -15,7 +15,7 @@
  */
 
 var WORKING_DIR = "../out/production/ts2kt/";
-var ts2kt = require(WORKING_DIR + "ts2kt");
+var ts2kt = require(WORKING_DIR + "ts2kt").ts2kt;
 var fs = require('fs');
 var assert = require('assert');
 

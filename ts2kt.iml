@@ -6,22 +6,23 @@
         <option name="compilerInfo">
           <KotlinCompilerInfo>
             <option name="compilerSettings">
-              <CompilerSettings />
+              <CompilerSettings>
+                <option name="outputDirectoryForJsLibraryFiles" value="node_modules" />
+              </CompilerSettings>
             </option>
             <option name="k2jsCompilerArguments">
               <K2JSCompilerArguments>
-                <option name="moduleKind" value="plain" />
-                <option name="outputPrefix" value="$MODULE_DIR$/src/runner/prefix.js" />
-                <option name="outputPostfix" value="$MODULE_DIR$/src/runner/postfix.js" />
+                <option name="moduleKind" value="commonjs" />
               </K2JSCompilerArguments>
             </option>
             <option name="_commonCompilerArguments">
               <DummyImpl>
-                <option name="coroutinesWarn" value="true" />
+                <option name="coroutinesEnable" value="true" />
               </DummyImpl>
             </option>
           </KotlinCompilerInfo>
         </option>
+        <option name="useProjectSettings" value="false" />
         <option name="versionInfo">
           <KotlinVersionInfo>
             <option name="apiLevel" value="1.1" />

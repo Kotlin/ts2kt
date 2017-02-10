@@ -1,4 +1,5 @@
-@file:JsQualifier("ts.ScriptElementKindModifier")
+@file:JsModule("typescript")
+@file:JsQualifier("ScriptElementKindModifier")
 package typescriptServices.ts.ScriptElementKindModifier
 
 external var none: String = definedExternally
