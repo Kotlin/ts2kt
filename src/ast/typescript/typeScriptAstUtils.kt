@@ -45,6 +45,9 @@ val SHOULD_BE_ESCAPED =
 
 val NOT_OVERRIDE: (Node) -> Boolean = { false }
 
+private const val OVERLOAD_GEN_THRESHOLD_FOR_TYPE_COUNT_ON_ONE_PARAMETER = 10
+private const val OVERLOAD_GEN_THRESHOLD_FOR_TOTAL_COUNT = 10
+
 fun String.escapeIfNeed(): String {
     return if (this in SHOULD_BE_ESCAPED || this.contains("$")) {
         "`$this`"
@@ -63,7 +66,13 @@ fun ParameterDeclaration.toKotlinParam(typeMapper: ObjectTypeToKotlinTypeMapper)
 
 fun ParameterDeclaration.toKotlinParamOverloads(typeMapper: ObjectTypeToKotlinTypeMapper): List<KtFunParam> {
     val nodeType: TypeNode? = getNodeTypeConsideringVararg()
-    return (nodeType?.toKotlinTypeUnion(typeMapper) ?: KtTypeUnion(KtType(ANY))).possibleTypes.map { type ->
+    val unionType = nodeType?.toKotlinTypeUnion(typeMapper) ?: KtTypeUnion(KtType(ANY))
+
+    if (unionType.possibleTypes.size > OVERLOAD_GEN_THRESHOLD_FOR_TYPE_COUNT_ON_ONE_PARAMETER) {
+        return listOf(toKotlinParam(KtType(DYNAMIC, comment = unionType.stringify())))
+    }
+
+    return unionType.possibleTypes.map { type ->
         toKotlinParam(nodeType, type)
     }
 }
@@ -132,7 +141,14 @@ private fun NodeArray<ParameterDeclaration>.toKotlinParamsOverloads(typeMapper: 
     }
     else {
         val overloadsOfPriorParams = toKotlinParamsOverloads(typeMapper, arrIndex - 1)
-        val paramOverloads = arr[arrIndex].toKotlinParamOverloads(typeMapper)
+        val parameterDeclaration = arr[arrIndex]
+        var paramOverloads = parameterDeclaration.toKotlinParamOverloads(typeMapper)
+
+        if (overloadsOfPriorParams.size * paramOverloads.size > OVERLOAD_GEN_THRESHOLD_FOR_TOTAL_COUNT) {
+            val comment = KtTypeUnion(paramOverloads.map { it.type.type }).stringify()
+            paramOverloads = listOf(parameterDeclaration.toKotlinParam(KtType(DYNAMIC, comment = comment)))
+        }
+
         return overloadsOfPriorParams.flatMap { priorParams ->
             paramOverloads.map { priorParams.plus(it) }
         }
