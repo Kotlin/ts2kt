@@ -1696,7 +1696,7 @@ external interface ResolvedTypeReferenceDirectiveWithFailedLookupLocations {
 }
 external interface CompilerHost : ModuleResolutionHost {
     fun getSourceFile(fileName: String, languageVersion: ScriptTarget, onError: ((message: String) -> Unit)? = definedExternally /* null */): SourceFile
-    val getSourceFileByPath: ((fileName: String, path: String /* String & `T$0` */, languageVersion: ScriptTarget, onError: ((message: String) -> Unit)?/* = definedExternally*/ /* null */) -> SourceFile)? get() = definedExternally
+    val getSourceFileByPath: ((fileName: String, path: String /* String & `T$0` */, languageVersion: ScriptTarget, onError: ((message: String) -> Unit)? /*= null*/) -> SourceFile)? get() = definedExternally
     val getCancellationToken: (() -> CancellationToken)? get() = definedExternally
     fun getDefaultLibFileName(options: CompilerOptions): String
     val getDefaultLibLocation: (() -> String)? get() = definedExternally
@@ -1724,7 +1724,7 @@ external interface SyntaxList : Node {
 external var version: String = definedExternally
 external interface WatchedFile {
     var fileName: String
-    var callback: (fileName: String, removed: Boolean?/* = definedExternally*/ /* null */) -> Unit
+    var callback: (fileName: String, removed: Boolean? /*= null*/) -> Unit
     var mtime: Date? get() = definedExternally; set(value) = definedExternally
 }
 external interface System {
@@ -1735,8 +1735,8 @@ external interface System {
     fun readFile(path: String, encoding: String? = definedExternally /* null */): String
     val getFileSize: ((path: String) -> Number)? get() = definedExternally
     fun writeFile(path: String, data: String, writeByteOrderMark: Boolean? = definedExternally /* null */)
-    val watchFile: ((path: String, callback: (fileName: String, removed: Boolean?/* = definedExternally*/ /* null */) -> Unit, pollingInterval: Number?/* = definedExternally*/ /* null */) -> FileWatcher)? get() = definedExternally
-    val watchDirectory: ((path: String, callback: (fileName: String) -> Unit, recursive: Boolean?/* = definedExternally*/ /* null */) -> FileWatcher)? get() = definedExternally
+    val watchFile: ((path: String, callback: (fileName: String, removed: Boolean? /*= null*/) -> Unit, pollingInterval: Number? /*= null*/) -> FileWatcher)? get() = definedExternally
+    val watchDirectory: ((path: String, callback: (fileName: String) -> Unit, recursive: Boolean? /*= null*/) -> FileWatcher)? get() = definedExternally
     fun resolvePath(path: String): String
     fun fileExists(path: String): Boolean
     fun directoryExists(path: String): Boolean
@@ -1922,8 +1922,8 @@ external interface LanguageServiceHost {
     val trace: ((s: String) -> Unit)? get() = definedExternally
     val error: ((s: String) -> Unit)? get() = definedExternally
     val useCaseSensitiveFileNames: (() -> Boolean)? get() = definedExternally
-    val readDirectory: ((path: String, extensions: Array<String>?/* = definedExternally*/ /* null */, exclude: Array<String>?/* = definedExternally*/ /* null */, include: Array<String>?/* = definedExternally*/ /* null */) -> Array<String>)? get() = definedExternally
-    val readFile: ((path: String, encoding: String?/* = definedExternally*/ /* null */) -> String)? get() = definedExternally
+    val readDirectory: ((path: String, extensions: Array<String>? /*= null*/, exclude: Array<String>? /*= null*/, include: Array<String>? /*= null*/) -> Array<String>)? get() = definedExternally
+    val readFile: ((path: String, encoding: String? /*= null*/) -> String)? get() = definedExternally
     val fileExists: ((path: String) -> Boolean)? get() = definedExternally
     val getTypeRootsVersion: (() -> Number)? get() = definedExternally
     val resolveModuleNames: ((moduleNames: Array<String>, containingFile: String) -> Array<ResolvedModule>)? get() = definedExternally
