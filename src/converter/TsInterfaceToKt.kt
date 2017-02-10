@@ -2,14 +2,14 @@ package ts2kt
 
 import ts2kt.kotlin.ast.*
 import ts2kt.utils.join
-import typescript.TS
 import typescript.identifierName
+import typescriptServices.ts.*
 
 open class TsInterfaceToKt(
         typeMapper: ObjectTypeToKotlinTypeMapper,
         val annotations: List<KtAnnotation>,
-        isOverride: (TS.MethodDeclaration) -> Boolean,
-        isOverrideProperty: (TS.PropertyDeclaration) -> Boolean
+        isOverride: (MethodDeclaration) -> Boolean,
+        isOverrideProperty: (PropertyDeclaration) -> Boolean
 ) : TsClassifierToKt(typeMapper, isOverride, isOverrideProperty) {
 
     override val hasMembersOpenModifier = false
@@ -20,19 +20,18 @@ open class TsInterfaceToKt(
 
     var typeParams: List<KtTypeParam>? = null
 
-    override fun needsNoImpl(node: TS.PropertyDeclaration) = node.questionToken != null
-    override fun isNullable(node: TS.PropertyDeclaration) = node.questionToken != null
-    override fun isLambda(node: TS.PropertyDeclaration) = node.type?.kind === TS.SyntaxKind.FunctionType
+    override fun needsNoImpl(node: PropertyDeclaration) = node.questionToken != null
+    override fun isNullable(node: PropertyDeclaration) = node.questionToken != null
+    override fun isLambda(node: PropertyDeclaration) = node.type?.kind === SyntaxKind.FunctionType
 
-    override fun needsNoImpl(node: TS.MethodDeclaration) = false
-    override fun TsClassifierToKt.addFunction(name: String, isOverride: Boolean, needsNoImpl: Boolean, node: TS.MethodDeclaration) {
+    override fun needsNoImpl(node: MethodDeclaration) = false
+    override fun TsClassifierToKt.addFunction(name: String, isOverride: Boolean, needsNoImpl: Boolean, node: MethodDeclaration) {
         val isOptional = node.questionToken != null
         if (isOptional) {
             val call = node.toKotlinCallSignature(typeMapper)
             val typeAsString = "(${call.params.join(", ", stringify = KtFunParam::stringify)}) -> ${call.returnType.type.stringify()}"
             addVariable(name, type = KtType(typeAsString, isNullable = true, isLambda = true), typeParams = call.typeParams, isVar = false, needsNoImpl = true, isOverride = isOverride)
-        }
-        else {
+        } else {
             node.toKotlinCallSignatureOverloads(typeMapper).forEach { call ->
                 addFunction(name, call, needsNoImpl = false, isOverride = isOverride)
             }
@@ -40,7 +39,7 @@ open class TsInterfaceToKt(
 
     }
 
-    override fun visitInterfaceDeclaration(node: TS.InterfaceDeclaration) {
+    override fun visitInterfaceDeclaration(node: InterfaceDeclaration) {
 //      todo visitList(node.modifiers)
         name = node.identifierName.unescapedText
         typeParams = node.typeParameters?.toKotlinTypeParams(typeMapper)
@@ -50,13 +49,13 @@ open class TsInterfaceToKt(
         node.members.arr.forEach { visitNode(this, it) }
     }
 
-    override fun visitSignatureDeclaration(node: TS.SignatureDeclaration) {
+    override fun visitSignatureDeclaration(node: SignatureDeclaration) {
         node.toKotlinCallSignatureOverloads(typeMapper).forEach { callSignature ->
             addFunction(INVOKE, callSignature, needsNoImpl = false, additionalAnnotations = listOf(NATIVE_INVOKE_ANNOTATION))
         }
     }
 
-    override fun visitConstructSignatureDeclaration(node: TS.ConstructorDeclaration) {
+    override fun visitConstructSignatureDeclaration(node: ConstructorDeclaration) {
         node.toKotlinCallSignatureOverloads(typeMapper).forEach { callSignature ->
             addFunction(INVOKE, callSignature, needsNoImpl = false, additionalAnnotations = listOf(NATIVE_NEW_ANNOTATION))
         }

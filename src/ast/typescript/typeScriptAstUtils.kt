@@ -22,6 +22,7 @@ import ts2kt.utils.cast
 import ts2kt.utils.hasFlag
 import ts2kt.utils.join
 import typescript.*
+import typescriptServices.ts.*
 
 val ANY = "Any"
 val NOTHING = "Nothing"
@@ -39,7 +40,7 @@ val SHOULD_BE_ESCAPED =
               "in", "interface", "is", "null", "object", "package", "return", "super", "this", "This", "throw",
               "true", "try", "typealias", "typeof", "val", "var", "when", "while")
 
-val NOT_OVERRIDE: (TS.Node) -> Boolean = { false }
+val NOT_OVERRIDE: (Node) -> Boolean = { false }
 
 fun String.escapeIfNeed(): String {
     return if (this in SHOULD_BE_ESCAPED || this.contains("$")) {
@@ -50,38 +51,38 @@ fun String.escapeIfNeed(): String {
     }
 }
 
-val TS.ParameterDeclaration.isVararg: Boolean get() = dotDotDotToken != null
+val ParameterDeclaration.isVararg: Boolean get() = dotDotDotToken != null
 
-fun TS.ParameterDeclaration.toKotlinParam(typeMapper: ObjectTypeToKotlinTypeMapper): KtFunParam {
-    val nodeType: TS.TypeNode? = getNodeTypeConsideringVararg()
+fun ParameterDeclaration.toKotlinParam(typeMapper: ObjectTypeToKotlinTypeMapper): KtFunParam {
+    val nodeType: TypeNode? = getNodeTypeConsideringVararg()
     return toKotlinParam(nodeType, nodeType?.toKotlinType(typeMapper) ?: KtType(ANY))
 }
 
-fun TS.ParameterDeclaration.toKotlinParamOverloads(typeMapper: ObjectTypeToKotlinTypeMapper): List<KtFunParam> {
-    val nodeType: TS.TypeNode? = getNodeTypeConsideringVararg()
+fun ParameterDeclaration.toKotlinParamOverloads(typeMapper: ObjectTypeToKotlinTypeMapper): List<KtFunParam> {
+    val nodeType: TypeNode? = getNodeTypeConsideringVararg()
     return (nodeType?.toKotlinTypeUnion(typeMapper) ?: KtTypeUnion(KtType(ANY))).possibleTypes.map { type ->
         toKotlinParam(nodeType, type)
     }
 }
 
-private fun TS.ParameterDeclaration.toKotlinParam(nodeType: TS.TypeNode?, typeWithoutFlags: KtType): KtFunParam {
+private fun ParameterDeclaration.toKotlinParam(nodeType: TypeNode?, typeWithoutFlags: KtType): KtFunParam {
     val isNullable = questionToken != null || typeWithoutFlags.isNullable
-    val isLambda = nodeType?.kind === TS.SyntaxKind.FunctionType
+    val isLambda = nodeType?.kind === SyntaxKind.FunctionType
     return toKotlinParam(typeWithoutFlags.copy(isNullable = isNullable, isLambda = isLambda))
 }
 
-private fun TS.ParameterDeclaration.toKotlinParam(type: KtType): KtFunParam {
+private fun ParameterDeclaration.toKotlinParam(type: KtType): KtFunParam {
     val name = declarationName!!.unescapedText
     val defaultValue = initializer?.let {
         when (it.kind) {
         // TODO
-            TS.SyntaxKind.FirstLiteralToken -> (it.cast<TS.LiteralExpression>()).text
-            TS.SyntaxKind.StringLiteral -> "\"" + (it.cast<TS.LiteralExpression>()).text + "\""
+            SyntaxKind.FirstLiteralToken -> (it.cast<LiteralExpression>()).text
+            SyntaxKind.StringLiteral -> "\"" + (it.cast<LiteralExpression>()).text + "\""
 
             else -> unsupportedNode(it)
         }
     }
-    val isVar = hasFlag(flags, TS.NodeFlags.AccessibilityModifier)
+    val isVar = hasFlag(flags, NodeFlags.AccessibilityModifier)
 
     val isOptional = questionToken != null
     return KtFunParam(name,
@@ -90,21 +91,21 @@ private fun TS.ParameterDeclaration.toKotlinParam(type: KtType): KtFunParam {
             isVar)
 }
 
-private fun TS.ParameterDeclaration.getNodeTypeConsideringVararg(): TS.TypeNode? {
+private fun ParameterDeclaration.getNodeTypeConsideringVararg(): TypeNode? {
     val originalNodeType = type
 
-    val nodeType: TS.TypeNode?
+    val nodeType: TypeNode?
     if (isVararg && originalNodeType != null) {
         val originalNodeKind = originalNodeType.kind
 
         when {
-            originalNodeKind === TS.SyntaxKind.ArrayType -> {
-                nodeType = (originalNodeType.cast<TS.ArrayTypeNode>()).elementType
+            originalNodeKind === SyntaxKind.ArrayType -> {
+                nodeType = (originalNodeType.cast<ArrayTypeNode>()).elementType
             }
 
-            originalNodeKind === TS.SyntaxKind.TypeReference &&
-                ((originalNodeType.cast<TS.TypeReferenceNode>()).typeName as EntityName).text == "Array" -> {
-                val typeArguments = originalNodeType.cast<TS.TypeReferenceNode>().typeArguments!!.arr
+            originalNodeKind === SyntaxKind.TypeReference &&
+                ((originalNodeType.cast<TypeReferenceNode>()).typeName as EntityName).text == "Array" -> {
+                val typeArguments = originalNodeType.cast<TypeReferenceNode>().typeArguments!!.arr
                 assert(typeArguments.size == 1, "Array should have one generic paramater, but have ${typeArguments.size}.")
                 nodeType = typeArguments[0]
             }
@@ -119,10 +120,10 @@ private fun TS.ParameterDeclaration.getNodeTypeConsideringVararg(): TS.TypeNode?
     return nodeType
 }
 
-fun TS.NodeArray<TS.ParameterDeclaration>.toKotlinParamsOverloads(typeMapper: ObjectTypeToKotlinTypeMapper): List<List<KtFunParam>> =
+fun NodeArray<ParameterDeclaration>.toKotlinParamsOverloads(typeMapper: ObjectTypeToKotlinTypeMapper): List<List<KtFunParam>> =
         toKotlinParamsOverloads(typeMapper, arr.size - 1)
 
-private fun TS.NodeArray<TS.ParameterDeclaration>.toKotlinParamsOverloads(typeMapper: ObjectTypeToKotlinTypeMapper, arrIndex: Int): List<List<KtFunParam>> {
+private fun NodeArray<ParameterDeclaration>.toKotlinParamsOverloads(typeMapper: ObjectTypeToKotlinTypeMapper, arrIndex: Int): List<List<KtFunParam>> {
     if (arrIndex < 0) {
         return listOf(emptyList())
     }
@@ -135,31 +136,31 @@ private fun TS.NodeArray<TS.ParameterDeclaration>.toKotlinParamsOverloads(typeMa
     }
 }
 
-fun TS.NodeArray<TS.ParameterDeclaration>.toKotlinParams(typeMapper: ObjectTypeToKotlinTypeMapper): List<KtFunParam>  =
+fun NodeArray<ParameterDeclaration>.toKotlinParams(typeMapper: ObjectTypeToKotlinTypeMapper): List<KtFunParam>  =
         arr.map { param -> param.toKotlinParam(typeMapper) }
 
-fun TS.NodeArray<TS.TypeParameterDeclaration>.toKotlinTypeParams(typeMapper: ObjectTypeToKotlinTypeMapper): List<KtTypeParam> =
+fun NodeArray<TypeParameterDeclaration>.toKotlinTypeParams(typeMapper: ObjectTypeToKotlinTypeMapper): List<KtTypeParam> =
         arr.map { it.toKotlinTypeParam(typeMapper) }
 
-fun TS.TypeParameterDeclaration.toKotlinTypeParam(typeMapper: ObjectTypeToKotlinTypeMapper): KtTypeParam {
-    val type = identifierName.cast<TS.TypeNode>().toKotlinType(typeMapper)
+fun TypeParameterDeclaration.toKotlinTypeParam(typeMapper: ObjectTypeToKotlinTypeMapper): KtTypeParam {
+    val type = identifierName.cast<TypeNode>().toKotlinType(typeMapper)
     val upperBound = constraint?.toKotlinType(typeMapper)
     return KtTypeParam(type.name, upperBound)
 }
 
-fun TS.SignatureDeclaration.toKotlinCallSignatureOverloads(typeMapper: ObjectTypeToKotlinTypeMapper): List<KtCallSignature> {
+fun SignatureDeclaration.toKotlinCallSignatureOverloads(typeMapper: ObjectTypeToKotlinTypeMapper): List<KtCallSignature> {
     val newTypeMapper = typeMapper.withTypeParameters(typeParameters)
     val paramsOverloads = parameters.toKotlinParamsOverloads(newTypeMapper)
     return paramsOverloads.map { toKotlinCallSignature(newTypeMapper, it) }
 }
 
-fun TS.SignatureDeclaration.toKotlinCallSignature(typeMapper: ObjectTypeToKotlinTypeMapper): KtCallSignature {
+fun SignatureDeclaration.toKotlinCallSignature(typeMapper: ObjectTypeToKotlinTypeMapper): KtCallSignature {
     val newTypeMapper = typeMapper.withTypeParameters(typeParameters)
     val params = parameters.toKotlinParams(newTypeMapper)
     return toKotlinCallSignature(newTypeMapper, params)
 }
 
-fun TS.SignatureDeclaration.toKotlinCallSignature(typeMapper: ObjectTypeToKotlinTypeMapper, params: List<KtFunParam>): KtCallSignature {
+fun SignatureDeclaration.toKotlinCallSignature(typeMapper: ObjectTypeToKotlinTypeMapper, params: List<KtFunParam>): KtCallSignature {
     val typeParams = typeParameters?.toKotlinTypeParams(typeMapper)
     val returnType = type?.toKotlinType(typeMapper) ?: KtType(UNIT)
 
@@ -167,74 +168,74 @@ fun TS.SignatureDeclaration.toKotlinCallSignature(typeMapper: ObjectTypeToKotlin
 }
 
 
-fun TS.ArrayTypeNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
+fun ArrayTypeNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
     val typeArg = elementType.toKotlinType(typeMapper)
     return KtType(ARRAY, listOf(typeArg))
 }
 
 //TODO: do we need LambdaType???
-private fun TS.FunctionOrConstructorTypeNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
+private fun FunctionOrConstructorTypeNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
     val params = parameters.toKotlinParams(typeMapper)
     return KtType("${params.join(", ", start = "(", end = ")", stringify = KtFunParam::stringify)} -> ${(type?.toKotlinType(typeMapper) ?: KtType(ANY)).stringify() }")
 }
 
 //TODO: do we need LambdaType???
-private fun TS.FunctionOrConstructorTypeNode.toKotlinTypeUnion(typeMapper: ObjectTypeToKotlinTypeMapper): KtTypeUnion {
+private fun FunctionOrConstructorTypeNode.toKotlinTypeUnion(typeMapper: ObjectTypeToKotlinTypeMapper): KtTypeUnion {
     return KtTypeUnion(parameters.toKotlinParamsOverloads(typeMapper).map { params ->
         KtType("${params.join(", ", start = "(", end = ")", stringify = KtFunParam::stringify)} -> ${(type?.toKotlinType(typeMapper) ?: KtType(ANY)).stringify() }")
     })
 }
 
 // TODO implement
-private fun TS.TypeLiteralNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType =
+private fun TypeLiteralNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType =
         typeMapper.getKotlinTypeForObjectType(this)
 
-fun TS.TypeNode.toKotlinTypeUnion(typeMapper: ObjectTypeToKotlinTypeMapper): KtTypeUnion {
+fun TypeNode.toKotlinTypeUnion(typeMapper: ObjectTypeToKotlinTypeMapper): KtTypeUnion {
     return when (this.kind) {
-        TS.SyntaxKind.ConstructorType,
-        TS.SyntaxKind.FunctionType -> (this.cast<TS.FunctionOrConstructorTypeNode>()).toKotlinTypeUnion(typeMapper)
+        SyntaxKind.ConstructorType,
+        SyntaxKind.FunctionType -> (this.cast<FunctionOrConstructorTypeNode>()).toKotlinTypeUnion(typeMapper)
 
-        TS.SyntaxKind.TypeReference -> (this.cast<TS.TypeReferenceNode>()).toKotlinTypeUnion(typeMapper)
-        TS.SyntaxKind.UnionType -> (this.cast<TS.UnionTypeNode>()).toKotlinTypeUnion(typeMapper)
-        TS.SyntaxKind.IntersectionType -> (this.cast<TS.IntersectionTypeNode>()).toKotlinTypeUnion(typeMapper)
+        SyntaxKind.TypeReference -> (this.cast<TypeReferenceNode>()).toKotlinTypeUnion(typeMapper)
+        SyntaxKind.UnionType -> (this.cast<UnionTypeNode>()).toKotlinTypeUnion(typeMapper)
+        SyntaxKind.IntersectionType -> (this.cast<IntersectionTypeNode>()).toKotlinTypeUnion(typeMapper)
         else -> KtTypeUnion(toKotlinType(typeMapper))
     }
 }
 
 // TODO
-fun TS.TypeNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
+fun TypeNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
     return when (this.kind) {
-        TS.SyntaxKind.AnyKeyword -> KtType(ANY)
-        TS.SyntaxKind.NumberKeyword -> KtType(NUMBER)
-        TS.SyntaxKind.StringKeyword -> KtType(STRING)
-        TS.SyntaxKind.BooleanKeyword -> KtType(BOOLEAN)
-        TS.SyntaxKind.VoidKeyword -> KtType(UNIT)
-        TS.SyntaxKind.NullKeyword,
-        TS.SyntaxKind.UndefinedKeyword -> NOTHING_TYPE
+        SyntaxKind.AnyKeyword -> KtType(ANY)
+        SyntaxKind.NumberKeyword -> KtType(NUMBER)
+        SyntaxKind.StringKeyword -> KtType(STRING)
+        SyntaxKind.BooleanKeyword -> KtType(BOOLEAN)
+        SyntaxKind.VoidKeyword -> KtType(UNIT)
+        SyntaxKind.NullKeyword,
+        SyntaxKind.UndefinedKeyword -> NOTHING_TYPE
 
-        TS.SyntaxKind.ArrayType -> (this.cast<TS.ArrayTypeNode>()).toKotlinType(typeMapper)
-        TS.SyntaxKind.ConstructorType,
-        TS.SyntaxKind.FunctionType -> (this.cast<TS.FunctionOrConstructorTypeNode>()).toKotlinType(typeMapper)
+        SyntaxKind.ArrayType -> (this.cast<ArrayTypeNode>()).toKotlinType(typeMapper)
+        SyntaxKind.ConstructorType,
+        SyntaxKind.FunctionType -> (this.cast<FunctionOrConstructorTypeNode>()).toKotlinType(typeMapper)
 
-        TS.SyntaxKind.TypeReference -> (this.cast<TS.TypeReferenceNode>()).toKotlinTypeUnion(typeMapper).singleType
-        TS.SyntaxKind.ExpressionWithTypeArguments -> (this.cast<TS.ExpressionWithTypeArguments>()).toKotlinType(typeMapper)
+        SyntaxKind.TypeReference -> (this.cast<TypeReferenceNode>()).toKotlinTypeUnion(typeMapper).singleType
+        SyntaxKind.ExpressionWithTypeArguments -> (this.cast<ExpressionWithTypeArguments>()).toKotlinType(typeMapper)
 
-        TS.SyntaxKind.Identifier -> KtType((this.cast<TS.Identifier>()).unescapedText)
-        TS.SyntaxKind.TypeLiteral -> (this.cast<TS.TypeLiteralNode>()).toKotlinType(typeMapper)
+        SyntaxKind.Identifier -> KtType((this.cast<Identifier>()).unescapedText)
+        SyntaxKind.TypeLiteral -> (this.cast<TypeLiteralNode>()).toKotlinType(typeMapper)
 
-        TS.SyntaxKind.UnionType -> (this.cast<TS.UnionTypeNode>()).toKotlinTypeUnion(typeMapper).singleType
+        SyntaxKind.UnionType -> (this.cast<UnionTypeNode>()).toKotlinTypeUnion(typeMapper).singleType
 
-        TS.SyntaxKind.IntersectionType -> (this.cast<TS.IntersectionTypeNode>()).toKotlinTypeUnion(typeMapper).singleType
+        SyntaxKind.IntersectionType -> (this.cast<IntersectionTypeNode>()).toKotlinTypeUnion(typeMapper).singleType
 
-        TS.SyntaxKind.ParenthesizedType -> (this.cast<TS.ParenthesizedTypeNode>()).type.toKotlinType(typeMapper)
+        SyntaxKind.ParenthesizedType -> (this.cast<ParenthesizedTypeNode>()).type.toKotlinType(typeMapper)
 
         // TODO how to support?
         // TODO fix after regenerate declarations
-        TS.SyntaxKind.LiteralType -> KtType(ANY, comment = "\"" + this.asDynamic().literal.text + "\"")
+        SyntaxKind.LiteralType -> KtType(ANY, comment = "\"" + this.asDynamic().literal.text + "\"")
 
-        TS.SyntaxKind.ThisType -> (this.cast<TS.ThisTypeNode>()).toKotlinType(typeMapper)
+        SyntaxKind.ThisType -> (this.cast<ThisTypeNode>()).toKotlinType(typeMapper)
 
-        TS.SyntaxKind.TypePredicate -> (this.cast<TS.TypePredicateNode>()).toKotlinType(typeMapper)
+        SyntaxKind.TypePredicate -> (this.cast<TypePredicateNode>()).toKotlinType(typeMapper)
 
         else -> unsupportedNode(this)
     }
@@ -242,31 +243,31 @@ fun TS.TypeNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
 
 fun EntityName.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper): String {
     return when (kind) {
-        TS.SyntaxKind.Identifier ->
+        SyntaxKind.Identifier ->
             this.unescapedText
         else ->
             this.left.toKotlinTypeName(typeMapper) + "." + this.right.unescapedText
     }
 }
 
-fun TS.TypeReferenceNode.toKotlinTypeUnion(typeMapper: ObjectTypeToKotlinTypeMapper): KtTypeUnion {
+fun TypeReferenceNode.toKotlinTypeUnion(typeMapper: ObjectTypeToKotlinTypeMapper): KtTypeUnion {
     return typeMapper.resolveUsingAliases(toKotlinTypeIgnoringTypeAliases(typeMapper))
 }
 
-private fun TS.TypeReferenceNode.toKotlinTypeIgnoringTypeAliases(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
+private fun TypeReferenceNode.toKotlinTypeIgnoringTypeAliases(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
     // TODO improve
     val name = (typeName as EntityName).toKotlinTypeName(typeMapper)
 
     return KtType(name, typeArguments?.arr?.map { it.toKotlinType(typeMapper) } ?: emptyList())
 }
 
-fun TS.ExpressionWithTypeArguments.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
+fun ExpressionWithTypeArguments.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
     val name = expression.stringifyQualifiedName()
 
     return KtType(name, typeArguments?.arr?.map { it.toKotlinType(typeMapper) } ?: emptyList())
 }
 
-private fun TS.PropertyAccessExpression.stringify(): String {
+private fun PropertyAccessExpression.stringify(): String {
     val identifier = identifierName.unescapedText
 
     val qualifier = expression?.stringifyQualifiedName() ?: return identifier
@@ -274,17 +275,17 @@ private fun TS.PropertyAccessExpression.stringify(): String {
     return qualifier + "." + identifier
 }
 
-private fun TS.Node.stringifyQualifiedName() = when (kind) {
-    TS.SyntaxKind.Identifier ->
-        (this.cast<TS.Identifier>()).unescapedText
+private fun Node.stringifyQualifiedName() = when (kind) {
+    SyntaxKind.Identifier ->
+        (this.cast<Identifier>()).unescapedText
 
-    TS.SyntaxKind.PropertyAccessExpression ->
-        (this.cast<TS.PropertyAccessExpression>()).stringify()
+    SyntaxKind.PropertyAccessExpression ->
+        (this.cast<PropertyAccessExpression>()).stringify()
 
     else -> unsupportedNode(this)
 }
 
-fun TS.UnionTypeNode.toKotlinTypeUnion(typeMapper: ObjectTypeToKotlinTypeMapper): KtTypeUnion {
+fun UnionTypeNode.toKotlinTypeUnion(typeMapper: ObjectTypeToKotlinTypeMapper): KtTypeUnion {
     val possibleTypes = types.arr.flatMap { it.toKotlinTypeUnion(typeMapper).possibleTypes }.distinct()
 
     // TODO unify KtTypeUnion and KtType and implement it better
@@ -302,7 +303,7 @@ fun TS.UnionTypeNode.toKotlinTypeUnion(typeMapper: ObjectTypeToKotlinTypeMapper)
     return KtTypeUnion(possibleTypes)
 }
 
-fun TS.IntersectionTypeNode.toKotlinTypeUnion(typeMapper: ObjectTypeToKotlinTypeMapper): KtTypeUnion {
+fun IntersectionTypeNode.toKotlinTypeUnion(typeMapper: ObjectTypeToKotlinTypeMapper): KtTypeUnion {
     val kotlinTypeUnions = types.arr.map { it.toKotlinTypeUnion(typeMapper) }
     val commentWithExpectedType = kotlinTypeUnions.join(" & ", stringify = KtTypeUnion::stringify)
     // just take the first one for now since Kotlin doesn't support intersection types.
@@ -311,17 +312,17 @@ fun TS.IntersectionTypeNode.toKotlinTypeUnion(typeMapper: ObjectTypeToKotlinType
 
 private fun KtTypeUnion.mapLast(function: (KtType) -> KtType): KtTypeUnion = KtTypeUnion(possibleTypes.dropLast(1) + function(possibleTypes.last()))
 
-fun TS.ThisTypeNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
+fun ThisTypeNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
     var parent = parent
 
     while(parent != null) {
         @Suppress("NON_EXHAUSTIVE_WHEN")
         when (parent.kind) {
-            TS.SyntaxKind.ClassDeclaration,
-            TS.SyntaxKind.InterfaceDeclaration ->
+            SyntaxKind.ClassDeclaration,
+            SyntaxKind.InterfaceDeclaration ->
                 return parent.cast<ClassOrInterfaceDeclaration>().toKotlinType(typeMapper).copy(comment = "this")
             // TODO support
-            TS.SyntaxKind.TypeLiteral ->
+            SyntaxKind.TypeLiteral ->
                 return KtType(ANY, comment = "this")
         }
         parent = parent.parent
@@ -330,7 +331,7 @@ fun TS.ThisTypeNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtTy
     throw IllegalStateException("Illegal State")
 }
 
-fun TS.TypePredicateNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
+fun TypePredicateNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
     return KtType(BOOLEAN)
 }
 
@@ -340,47 +341,47 @@ fun ClassOrInterfaceDeclaration.toKotlinType(typeMapper: ObjectTypeToKotlinTypeM
     return KtType(name, typeParameters?.arr?.map { KtType(it.identifierName.unescapedText) } ?: emptyList())
 }
 
-fun forEachChild(visitor: Visitor, node: TS.Node) {
-    TS.forEachChild(node, { node ->
+fun forEachChild(visitor: Visitor, node: Node) {
+    forEachChild(node, { node ->
         visitNode(visitor, node)
     })
 }
 
-fun visitNode(visitor: Visitor, node: TS.Node?): Unit {
+fun visitNode(visitor: Visitor, node: Node?): Unit {
     if (node == null) return
 
     when (node.kind) {
-        TS.SyntaxKind.ModuleDeclaration -> visitor.visitModuleDeclaration(node.asDynamic())
+        SyntaxKind.ModuleDeclaration -> visitor.visitModuleDeclaration(node.asDynamic())
 
-        TS.SyntaxKind.FunctionDeclaration    -> visitor.visitFunctionDeclaration(node.cast<TS.FunctionDeclaration>())
-        TS.SyntaxKind.VariableStatement -> visitor.visitVariableStatement(node.cast<TS.VariableStatement>())
+        SyntaxKind.FunctionDeclaration    -> visitor.visitFunctionDeclaration(node.cast<FunctionDeclaration>())
+        SyntaxKind.VariableStatement -> visitor.visitVariableStatement(node.cast<VariableStatement>())
 
-        TS.SyntaxKind.EnumDeclaration -> visitor.visitEnumDeclaration(node.cast<TS.EnumDeclaration>())
+        SyntaxKind.EnumDeclaration -> visitor.visitEnumDeclaration(node.cast<EnumDeclaration>())
 
-        TS.SyntaxKind.ClassDeclaration -> visitor.visitClassDeclaration(node.cast<TS.ClassDeclaration>())
-        TS.SyntaxKind.InterfaceDeclaration -> visitor.visitInterfaceDeclaration(node.cast<TS.InterfaceDeclaration>())
-        TS.SyntaxKind.TypeAliasDeclaration -> visitor.visitTypeAliasDeclaration(node.cast<TS.TypeAliasDeclaration>())
+        SyntaxKind.ClassDeclaration -> visitor.visitClassDeclaration(node.cast<ClassDeclaration>())
+        SyntaxKind.InterfaceDeclaration -> visitor.visitInterfaceDeclaration(node.cast<InterfaceDeclaration>())
+        SyntaxKind.TypeAliasDeclaration -> visitor.visitTypeAliasDeclaration(node.cast<TypeAliasDeclaration>())
 
-        TS.SyntaxKind.HeritageClause -> visitor.visitHeritageClause(node.cast<TS.HeritageClause>())
+        SyntaxKind.HeritageClause -> visitor.visitHeritageClause(node.cast<HeritageClause>())
 
-        TS.SyntaxKind.Constructor -> visitor.visitConstructorDeclaration(node.cast<TS.ConstructorDeclaration>())
-        TS.SyntaxKind.ConstructSignature -> visitor.visitConstructSignatureDeclaration(node.cast<TS.ConstructorDeclaration>())
+        SyntaxKind.Constructor -> visitor.visitConstructorDeclaration(node.cast<ConstructorDeclaration>())
+        SyntaxKind.ConstructSignature -> visitor.visitConstructSignatureDeclaration(node.cast<ConstructorDeclaration>())
 
         // TODO what is difference between MethodSignature and MethodDeclaration
-        TS.SyntaxKind.MethodDeclaration,
-        TS.SyntaxKind.MethodSignature -> visitor.visitMethodDeclaration(node.cast<TS.MethodDeclaration>())
+        SyntaxKind.MethodDeclaration,
+        SyntaxKind.MethodSignature -> visitor.visitMethodDeclaration(node.cast<MethodDeclaration>())
 
         // TODO what is difference between PropertySignature and PropertyDeclaration
-        TS.SyntaxKind.PropertyDeclaration,
-        TS.SyntaxKind.PropertySignature -> visitor.visitPropertyDeclaration(node.cast<TS.PropertyDeclaration>())
+        SyntaxKind.PropertyDeclaration,
+        SyntaxKind.PropertySignature -> visitor.visitPropertyDeclaration(node.cast<PropertyDeclaration>())
 
-        TS.SyntaxKind.IndexSignature -> visitor.visitIndexSignature(node.cast<TS.IndexSignatureDeclaration>())
-        TS.SyntaxKind.CallSignature -> visitor.visitSignatureDeclaration(node.cast<TS.SignatureDeclaration>())
+        SyntaxKind.IndexSignature -> visitor.visitIndexSignature(node.cast<IndexSignatureDeclaration>())
+        SyntaxKind.CallSignature -> visitor.visitSignatureDeclaration(node.cast<SignatureDeclaration>())
 
-        TS.SyntaxKind.ExportAssignment -> visitor.visitExportAssignment(node.cast<TS.ExportAssignment>())
-        TS.SyntaxKind.ImportEqualsDeclaration ->  { /* TODO implement */ }
+        SyntaxKind.ExportAssignment -> visitor.visitExportAssignment(node.cast<ExportAssignment>())
+        SyntaxKind.ImportEqualsDeclaration ->  { /* TODO implement */ }
 
-        TS.SyntaxKind.EndOfFileToken -> { /* ignore */ }
+        SyntaxKind.EndOfFileToken -> { /* ignore */ }
         else -> {
             val message = "Unsupported node.kind: ${node.kind}, name: ${node.kind.str} (${node.location()})"
             if (reportedKinds.add(node.kind.id)) console.error(message)
@@ -389,28 +390,28 @@ fun visitNode(visitor: Visitor, node: TS.Node?): Unit {
     }
 }
 
-val <T> TS.NodeArray<T>.arr: Array<T>
+val <T> NodeArray<T>.arr: Array<T>
     get() = this.asDynamic()
 
-val TS.SyntaxKind.str: String
+val SyntaxKind.str: String
     get() = js("ts").SyntaxKind[this]
 
-val TS.SyntaxKind.id: Int
+val SyntaxKind.id: Int
     get() = this.asDynamic()
 
 // TODO review where we use raw text
-val TS.Identifier.unescapedText: String
-    get() = TS.unescapeIdentifier(text)
+val Identifier.unescapedText: String
+    get() = unescapeIdentifier(text)
 
-private fun TS.LineAndCharacter.format(): String = "${line.toInt() + 1}:${character.toInt() + 1}"
+private fun LineAndCharacter.format(): String = "${line.toInt() + 1}:${character.toInt() + 1}"
 
-private fun TS.Node.location(): String {
+private fun Node.location(): String {
     val start = getSourceFile().getLineAndCharacterOfPosition(pos)
     val end = getSourceFile().getLineAndCharacterOfPosition(end)
     return "${getSourceFile().fileName}:${start.format()} to ${end.format()}"
 }
 
-fun unsupportedNode(node: TS.Node): Nothing {
+fun unsupportedNode(node: Node): Nothing {
     val message = "${node.kind.str} kind (${node.location()}) unsupported yet here! See node in attachment."
     val exception = Exception(message)
     exception.asDynamic().attachment = node

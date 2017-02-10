@@ -1,28 +1,28 @@
 package ts2kt
 
-import typescript.TS
+import typescriptServices.ts.*
 
 interface Visitor {
-    fun visitModuleDeclaration(node: TS.ModuleDeclaration): Unit = TODO()
+    fun visitModuleDeclaration(node: ModuleDeclaration): Unit = TODO()
 
-    fun visitFunctionDeclaration(node: TS.FunctionDeclaration): Unit = TODO()
-    fun visitTypeAliasDeclaration(node: TS.TypeAliasDeclaration): Unit = TODO()
-    fun visitVariableStatement(node: TS.VariableStatement): Unit = TODO()
+    fun visitFunctionDeclaration(node: FunctionDeclaration): Unit = TODO()
+    fun visitTypeAliasDeclaration(node: TypeAliasDeclaration): Unit = TODO()
+    fun visitVariableStatement(node: VariableStatement): Unit = TODO()
 
-    fun visitEnumDeclaration(node: TS.EnumDeclaration): Unit = TODO()
+    fun visitEnumDeclaration(node: EnumDeclaration): Unit = TODO()
 
-    fun visitClassDeclaration(node: TS.ClassDeclaration): Unit = TODO()
-    fun visitInterfaceDeclaration(node: TS.InterfaceDeclaration): Unit = TODO()
+    fun visitClassDeclaration(node: ClassDeclaration): Unit = TODO()
+    fun visitInterfaceDeclaration(node: InterfaceDeclaration): Unit = TODO()
 
-    fun visitHeritageClause(node: TS.HeritageClause): Unit = TODO()
+    fun visitHeritageClause(node: HeritageClause): Unit = TODO()
 
-    fun visitConstructorDeclaration(node: TS.ConstructorDeclaration): Unit = TODO()
-    fun visitConstructSignatureDeclaration(node: TS.ConstructorDeclaration): Unit = TODO()
+    fun visitConstructorDeclaration(node: ConstructorDeclaration): Unit = TODO()
+    fun visitConstructSignatureDeclaration(node: ConstructorDeclaration): Unit = TODO()
 
-    fun visitMethodDeclaration(node: TS.MethodDeclaration): Unit = TODO()
-    fun visitPropertyDeclaration(node: TS.PropertyDeclaration): Unit = TODO()
-    fun visitIndexSignature(node: TS.IndexSignatureDeclaration): Unit = TODO()
-    fun visitSignatureDeclaration(node: TS.SignatureDeclaration): Unit = TODO()
+    fun visitMethodDeclaration(node: MethodDeclaration): Unit = TODO()
+    fun visitPropertyDeclaration(node: PropertyDeclaration): Unit = TODO()
+    fun visitIndexSignature(node: IndexSignatureDeclaration): Unit = TODO()
+    fun visitSignatureDeclaration(node: SignatureDeclaration): Unit = TODO()
 
-    fun visitExportAssignment(node: TS.ExportAssignment): Unit = TODO()
+    fun visitExportAssignment(node: ExportAssignment): Unit = TODO()
 }

@@ -19,10 +19,10 @@ package ts2kt
 import ts2kt.kotlin.ast.*
 import ts2kt.utils.assert
 import ts2kt.utils.cast
-import typescript.TS
 import typescript.declarationName
 import typescript.identifierName
 import typescript.propertyName
+import typescriptServices.ts.*
 
 private val JS_MODULE = "JsModule"
 private val JS_QUALIFIER = "JsQualifier"
@@ -44,13 +44,13 @@ internal val IS_NATIVE_ANNOTATION = { a: KtAnnotation -> a.name == NATIVE }
 
 class TypeScriptToKotlin(
         override val defaultAnnotations: List<KtAnnotation> = DEFAULT_ANNOTATION,
-        val requiredModifier: TS.SyntaxKind? = TS.SyntaxKind.DeclareKeyword,
+        val requiredModifier: SyntaxKind? = SyntaxKind.DeclareKeyword,
         val moduleName: String? = null,
         typeMapper: ObjectTypeToKotlinTypeMapper? = null,
         override val isInterface: Boolean = false,
-        val isOwnDeclaration: (TS.Node) -> Boolean = { true },
-        val isOverride: (TS.MethodDeclaration) -> Boolean,
-        val isOverrideProperty: (TS.PropertyDeclaration) -> Boolean,
+        val isOwnDeclaration: (Node) -> Boolean = { true },
+        val isOverride: (MethodDeclaration) -> Boolean,
+        val isOverrideProperty: (PropertyDeclaration) -> Boolean,
         private val qualifier: List<String> = listOf()
 ) : TypeScriptToKotlinBase() {
 
@@ -75,20 +75,20 @@ class TypeScriptToKotlin(
 
     val typeMapper = typeMapper ?: ObjectTypeToKotlinTypeMapperImpl(defaultAnnotations, declarations, typeAliases)
 
-    fun getAdditionalAnnotations(node: TS.Node): List<KtAnnotation> {
-        val isShouldSkip = requiredModifier === TS.SyntaxKind.DeclareKeyword && !(node.modifiers?.arr?.any { it.kind === requiredModifier } ?: false )
+    fun getAdditionalAnnotations(node: Node): List<KtAnnotation> {
+        val isShouldSkip = requiredModifier === SyntaxKind.DeclareKeyword && !(node.modifiers?.arr?.any { it.kind === requiredModifier } ?: false )
         if (isShouldSkip) return DEFAULT_FAKE_ANNOTATION
 
         return NO_ANNOTATIONS
     }
 
-    override fun visitTypeAliasDeclaration(node: TS.TypeAliasDeclaration) {
+    override fun visitTypeAliasDeclaration(node: TypeAliasDeclaration) {
         val newTypeMapper = typeMapper.withTypeParameters(node.typeParameters)
         val typeParams = node.typeParameters?.toKotlinTypeParams(newTypeMapper)
         typeAliases.add(KtTypeAlias(node.identifierName.text, typeParams, node.type.toKotlinTypeUnion(newTypeMapper)))
     }
 
-    override fun visitVariableStatement(node: TS.VariableStatement) {
+    override fun visitVariableStatement(node: VariableStatement) {
         val additionalAnnotations = getAdditionalAnnotations(node)
 
 //      TODO  node.modifiers
@@ -101,7 +101,7 @@ class TypeScriptToKotlin(
         }
     }
 
-    override fun visitFunctionDeclaration(node: TS.FunctionDeclaration) {
+    override fun visitFunctionDeclaration(node: FunctionDeclaration) {
         val additionalAnnotations = getAdditionalAnnotations(node)
 
 //      TODO  visitList(node.modifiers)
@@ -111,7 +111,7 @@ class TypeScriptToKotlin(
         }
     }
 
-    override fun visitInterfaceDeclaration(node: TS.InterfaceDeclaration) {
+    override fun visitInterfaceDeclaration(node: InterfaceDeclaration) {
 //        // TODO: is it hack?
 //        if (requiredModifier != DeclareKeyword && isShouldSkip(node)) return
 
@@ -127,7 +127,7 @@ class TypeScriptToKotlin(
         }
     }
 
-    override fun visitClassDeclaration(node: TS.ClassDeclaration) {
+    override fun visitClassDeclaration(node: ClassDeclaration) {
         val additionalAnnotations = getAdditionalAnnotations(node)
 
         val translator = TsClassToKt(typeMapper, annotations = defaultAnnotations + additionalAnnotations, isOverride = isOverride, isOverrideProperty = isOverrideProperty)
@@ -139,11 +139,11 @@ class TypeScriptToKotlin(
         }
     }
 
-    override fun visitEnumDeclaration(node: TS.EnumDeclaration) {
+    override fun visitEnumDeclaration(node: EnumDeclaration) {
         val entries = node.members.arr.map { entry ->
             KtEnumEntry(entry.declarationName.unescapedText, entry.initializer?.let{
                 when (it.kind) {
-                    TS.SyntaxKind.FirstLiteralToken -> (it.cast<TS.LiteralExpression>()).text
+                    SyntaxKind.FirstLiteralToken -> (it.cast<LiteralExpression>()).text
                     else -> unsupportedNode(it)
                 }
             })
@@ -156,13 +156,13 @@ class TypeScriptToKotlin(
         declarations.add(enumClass)
     }
 
-    override fun visitModuleDeclaration(node: TS.ModuleDeclaration) {
+    override fun visitModuleDeclaration(node: ModuleDeclaration) {
         val additionalAnnotations = getAdditionalAnnotations(node)
 
-        fun getName(node: TS.ModuleDeclaration): String {
+        fun getName(node: ModuleDeclaration): String {
             return when(node.declarationName!!.kind) {
-                TS.SyntaxKind.Identifier,
-                TS.SyntaxKind.StringLiteral -> node.declarationName!!.unescapedText
+                SyntaxKind.Identifier,
+                SyntaxKind.StringLiteral -> node.declarationName!!.unescapedText
 
                 else -> unsupportedNode(node.declarationName!!)
             }
@@ -171,8 +171,8 @@ class TypeScriptToKotlin(
         var rightNode = node
         var body = node.body
         val qualifiedName = arrayListOf<String>()
-        while (body.kind !== TS.SyntaxKind.ModuleBlock) {
-            assert(body.kind === TS.SyntaxKind.ModuleDeclaration, "Expected that it is ModuleDeclaration, but ${body.kind.str}")
+        while (body.kind !== SyntaxKind.ModuleBlock) {
+            assert(body.kind === SyntaxKind.ModuleDeclaration, "Expected that it is ModuleDeclaration, but ${body.kind.str}")
 
             qualifiedName += getName(rightNode)
 
@@ -186,7 +186,7 @@ class TypeScriptToKotlin(
         val tr = TypeScriptToKotlin(
                         moduleName = name,
                         defaultAnnotations = additionalAnnotations,
-                        requiredModifier = TS.SyntaxKind.ExportKeyword,
+                        requiredModifier = SyntaxKind.ExportKeyword,
                         isOwnDeclaration = isOwnDeclaration,
                         isOverride = isOverride,
                         isOverrideProperty = isOverrideProperty,
@@ -194,7 +194,7 @@ class TypeScriptToKotlin(
 
         tr.visitList(body)
 
-        val isExternalModule = rightNode.declarationName!!.kind === TS.SyntaxKind.StringLiteral
+        val isExternalModule = rightNode.declarationName!!.kind === SyntaxKind.StringLiteral
 
         if (isExternalModule && tr.exportedByAssignment.isEmpty()) {
             val areAllFakeOrInterface = tr.declarations.all {
@@ -228,13 +228,13 @@ class TypeScriptToKotlin(
         exportedByAssignment.putAll(tr.exportedByAssignment)
     }
 
-    override fun visitExportAssignment(node: TS.ExportAssignment) {
+    override fun visitExportAssignment(node: ExportAssignment) {
         // TODO is it right?
         val exportName =
                 node.identifierName?.unescapedText ?:
                         run {
-                            if (node.expression.kind == TS.SyntaxKind.Identifier)
-                                (node.expression.cast<TS.Identifier>()).text
+                            if (node.expression.kind == SyntaxKind.Identifier)
+                                (node.expression.cast<Identifier>()).text
                             else
                                 unsupportedNode(node)
                         }
@@ -243,7 +243,7 @@ class TypeScriptToKotlin(
                 KtAnnotation(JS_MODULE, listOf(KtArgument("\"${moduleName ?: exportName}\"")))
     }
 
-    override fun visitList(node: TS.Node) {
+    override fun visitList(node: Node) {
         super<TypeScriptToKotlinBase>.visitList(node)
         // TODO: Is it good place for call finish?
         finish()

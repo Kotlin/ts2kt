@@ -1,7 +1,6 @@
 package ts2kt
 
 import ts2kt.kotlin.ast.*
-import typescript.TS
 
 abstract class TypeScriptToKotlinBase : Visitor {
     abstract val hasMembersOpenModifier: Boolean
@@ -22,7 +21,7 @@ abstract class TypeScriptToKotlinBase : Visitor {
     }
 
     // TODO
-    open fun visitList(node: TS.Node) {
+    open fun visitList(node: typescriptServices.ts.Node) {
         forEachChild(this, node)
     }
 }

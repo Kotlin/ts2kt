@@ -2,29 +2,29 @@ package ts2kt
 
 import ts2kt.kotlin.ast.*
 import ts2kt.utils.assert
-import typescript.TS
 import typescript.propertyName
+import typescriptServices.ts.*
 
 abstract class TsClassifierToKt(
         val typeMapper: ObjectTypeToKotlinTypeMapper,
-        val isOverride: (TS.MethodDeclaration) -> Boolean,
-        val isOverrideProperty: (TS.PropertyDeclaration) -> Boolean
+        val isOverride: (MethodDeclaration) -> Boolean,
+        val isOverrideProperty: (PropertyDeclaration) -> Boolean
 ) : TypeScriptToKotlinBase() {
     abstract val needsNoImpl: Boolean
 
     var parents = arrayListOf<KtHeritageType>()
 
-    override fun visitHeritageClause(node: TS.HeritageClause) {
+    override fun visitHeritageClause(node: HeritageClause) {
         val types = node.types?.arr?.map { id -> KtHeritageType(id.toKotlinType(typeMapper).stringify()) } ?: listOf()
         parents.addAll(types)
     }
 
-    override fun visitIndexSignature(node: TS.IndexSignatureDeclaration) {
+    override fun visitIndexSignature(node: IndexSignatureDeclaration) {
         translateAccessor(node, isGetter = true)
         translateAccessor(node, isGetter = false)
     }
 
-    private fun translateAccessor(node: TS.IndexSignatureDeclaration, isGetter: Boolean) {
+    private fun translateAccessor(node: IndexSignatureDeclaration, isGetter: Boolean) {
         // TODO type params?
         node.parameters.toKotlinParamsOverloads(typeMapper).forEach { params ->
             val propTypeUnion = if (isGetter) {
@@ -59,8 +59,8 @@ abstract class TsClassifierToKt(
 
     ///???
     // TODO should be abstract? is static declarations inside (TS) interfaces allowed?
-    fun getTranslator(node: TS.ClassElement): TsClassifierToKt {
-        if (node.modifiers?.arr?.any { it.kind === TS.SyntaxKind.StaticKeyword } ?: false) {
+    fun getTranslator(node: ClassElement): TsClassifierToKt {
+        if (node.modifiers?.arr?.any { it.kind === SyntaxKind.StaticKeyword } ?: false) {
             if (staticTranslator == null) {
                 // TODO support override for static members
                 staticTranslator = TsClassToKt(typeMapper, KtClassKind.COMPANION_OBJECT, listOf(), NOT_OVERRIDE, NOT_OVERRIDE, hasMembersOpenModifier = false)
@@ -72,13 +72,13 @@ abstract class TsClassifierToKt(
         return this
     }
 
-    open fun needsNoImpl(node: TS.PropertyDeclaration): Boolean = true
-    open fun isNullable(node: TS.PropertyDeclaration): Boolean = false
-    open fun isLambda(node: TS.PropertyDeclaration): Boolean = false
+    open fun needsNoImpl(node: PropertyDeclaration): Boolean = true
+    open fun isNullable(node: PropertyDeclaration): Boolean = false
+    open fun isLambda(node: PropertyDeclaration): Boolean = false
 
-    open fun needsNoImpl(node: TS.MethodDeclaration): Boolean = true
+    open fun needsNoImpl(node: MethodDeclaration): Boolean = true
 
-    override fun visitPropertyDeclaration(node: TS.PropertyDeclaration) {
+    override fun visitPropertyDeclaration(node: PropertyDeclaration) {
         val declarationName = node.propertyName!!
 
         val name = declarationName.unescapedText
@@ -94,7 +94,7 @@ abstract class TsClassifierToKt(
         )
     }
 
-    open fun TsClassifierToKt.addFunction(name: String, isOverride: Boolean, needsNoImpl: Boolean, node: TS.MethodDeclaration) {
+    open fun TsClassifierToKt.addFunction(name: String, isOverride: Boolean, needsNoImpl: Boolean, node: MethodDeclaration) {
         node.toKotlinCallSignatureOverloads(typeMapper).forEach { callSignature ->
             addFunction(name, callSignature, isOverride = isOverride, needsNoImpl = needsNoImpl(node))
         }
@@ -102,7 +102,7 @@ abstract class TsClassifierToKt(
         assert(node.body == null, "An function in declarations file should not have body, function '${this.name}.$name'")
     }
 
-    override fun visitMethodDeclaration(node: TS.MethodDeclaration) {
+    override fun visitMethodDeclaration(node: MethodDeclaration) {
         val declarationName = node.propertyName!!
         val name = declarationName.unescapedText
         val isOverride = isOverride(node)

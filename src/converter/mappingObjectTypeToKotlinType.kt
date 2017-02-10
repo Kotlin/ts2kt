@@ -18,20 +18,22 @@ package ts2kt
 
 import ts2kt.kotlin.ast.*
 import ts2kt.utils.replaceAll
-import typescript.TS
 import typescript.identifierName
+import typescriptServices.ts.NodeArray
+import typescriptServices.ts.TypeLiteralNode
+import typescriptServices.ts.TypeParameterDeclaration
 
 interface ObjectTypeToKotlinTypeMapper {
-    fun getKotlinTypeForObjectType(objectType: TS.TypeLiteralNode): KtType
+    fun getKotlinTypeForObjectType(objectType: TypeLiteralNode): KtType
     fun resolveUsingAliases(referencedType: KtType): KtTypeUnion
-    fun withTypeParameters(typeParameters: TS.NodeArray<TS.TypeParameterDeclaration>?): ObjectTypeToKotlinTypeMapper
+    fun withTypeParameters(typeParameters: NodeArray<TypeParameterDeclaration>?): ObjectTypeToKotlinTypeMapper
 }
 
 data class ObjectTypeToKotlinTypeMapperImpl(
         val defaultAnnotations: List<KtAnnotation>,
         val declarations: MutableList<KtMember>,
         val typeAliases: List<KtTypeAlias>,
-        val typeParameterDeclarations: List<TS.TypeParameterDeclaration> = listOf()
+        val typeParameterDeclarations: List<TypeParameterDeclaration> = listOf()
 ) : ObjectTypeToKotlinTypeMapper {
 
     companion object {
@@ -59,7 +61,7 @@ data class ObjectTypeToKotlinTypeMapperImpl(
         cache[jsonTypeKey] = KtType("Json")
     }
 
-    override fun getKotlinTypeForObjectType(objectType: TS.TypeLiteralNode): KtType {
+    override fun getKotlinTypeForObjectType(objectType: TypeLiteralNode): KtType {
         val translator = TsInterfaceToKt(annotations = defaultAnnotations, typeMapper = this, isOverride = NOT_OVERRIDE, isOverrideProperty = NOT_OVERRIDE)
 
         forEachChild(translator, objectType)
@@ -130,7 +132,7 @@ data class ObjectTypeToKotlinTypeMapperImpl(
         } ?: emptyList()
     }
 
-    override fun withTypeParameters(typeParameters: TS.NodeArray<TS.TypeParameterDeclaration>?): ObjectTypeToKotlinTypeMapper {
+    override fun withTypeParameters(typeParameters: NodeArray<TypeParameterDeclaration>?): ObjectTypeToKotlinTypeMapper {
         return copy(typeParameterDeclarations = typeParameterDeclarations.toList() + (typeParameters?.arr ?: arrayOf()))
     }
 

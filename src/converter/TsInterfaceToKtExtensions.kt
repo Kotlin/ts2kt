@@ -3,13 +3,14 @@ package ts2kt
 import ts2kt.kotlin.ast.*
 import ts2kt.utils.assert
 import ts2kt.utils.join
-import typescript.TS
+import typescriptServices.ts.MethodDeclaration
+import typescriptServices.ts.PropertyDeclaration
 
 class TsInterfaceToKtExtensions(
         typeMapper: ObjectTypeToKotlinTypeMapper,
         annotations: List<KtAnnotation>,
-        isOverride: (TS.MethodDeclaration) -> Boolean,
-        isOverrideProperty: (TS.PropertyDeclaration) -> Boolean
+        isOverride: (MethodDeclaration) -> Boolean,
+        isOverrideProperty: (PropertyDeclaration) -> Boolean
 ) : TsInterfaceToKt(typeMapper, annotations, isOverride, isOverrideProperty){
 
     val cachedExtendsType by lazy { getExtendsType(typeParams) }
