@@ -21,7 +21,10 @@ import ts2kt.utils.assert
 import ts2kt.utils.cast
 import ts2kt.utils.hasFlag
 import ts2kt.utils.join
-import typescript.*
+import typescript.ClassOrInterfaceDeclaration
+import typescript.EntityName
+import typescript.declarationName
+import typescript.identifierName
 import typescriptServices.ts.*
 
 val ANY = "Any"
@@ -390,17 +393,17 @@ fun visitNode(visitor: Visitor, node: Node?): Unit {
     }
 }
 
-val <T> NodeArray<T>.arr: Array<T>
-    get() = this.asDynamic()
+inline val <T> NodeArray<T>.arr: Array<T>
+    get() = this.unsafeCast<Array<T>>()
 
-val SyntaxKind.str: String
-    get() = js("ts").SyntaxKind[this]
+inline val SyntaxKind.str: String
+    get() = SyntaxKind::class.js.asDynamic()[this].unsafeCast<String>()
 
-val SyntaxKind.id: Int
-    get() = this.asDynamic()
+inline val SyntaxKind.id: Int
+    get() = this.unsafeCast<Int>()
 
 // TODO review where we use raw text
-val Identifier.unescapedText: String
+inline val Identifier.unescapedText: String
     get() = unescapeIdentifier(text)
 
 private fun LineAndCharacter.format(): String = "${line.toInt() + 1}:${character.toInt() + 1}"
