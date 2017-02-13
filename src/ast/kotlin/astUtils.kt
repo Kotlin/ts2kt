@@ -1,6 +1,7 @@
 package ts2kt.kotlin.ast
 
 import ts2kt.escapeIfNeed
+import ts2kt.utils.join
 
 
 // TODO: review usages
@@ -23,3 +24,9 @@ fun KtClassifier.getClassObject(): KtClassifier? =
 
 val KtNamed.escapedName: String
     get() = name.escapeIfNeed()
+
+fun createFunctionType(parameters: List<KtFunParam>, returnType: KtType, isNullable: Boolean = false): KtType {
+    val params = parameters.join(", ") { it.name + it.type.stringify() + (it.defaultValue?.let { " /*= $it*/" } ?: "") }
+    val typeAsString = "($params) -> ${returnType.stringify()}"
+    return KtType(typeAsString, isLambda = true, isNullable = isNullable)
+}

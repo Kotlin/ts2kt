@@ -2,7 +2,7 @@ package functionAndSecondaryWithTrait
 
 external interface Fiber {
     var reset: () -> Any
-    var run: (param: Any? = definedExternally /* null */) -> Any
+    var run: (param: Any? /*= null*/) -> Any
     var throwInto: (ex: Any) -> Any
 }
 @JsModule("fibers")

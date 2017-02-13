@@ -186,7 +186,6 @@ fun SignatureDeclaration.toKotlinCallSignature(typeMapper: ObjectTypeToKotlinTyp
     return KtCallSignature(params, typeParams, KtTypeAnnotation(returnType))
 }
 
-
 fun ArrayTypeNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
     val typeArg = elementType.toKotlinType(typeMapper)
     return KtType(ARRAY, listOf(typeArg))
@@ -195,13 +194,14 @@ fun ArrayTypeNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType
 //TODO: do we need LambdaType???
 private fun FunctionOrConstructorTypeNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
     val params = parameters.toKotlinParams(typeMapper)
-    return KtType("${params.join(", ", start = "(", end = ")", stringify = KtFunParam::stringify)} -> ${(type?.toKotlinType(typeMapper) ?: KtType(ANY)).stringify() }")
+    val returnType = type?.toKotlinType(typeMapper) ?: KtType(ANY)
+    return createFunctionType(params, returnType)
 }
 
 //TODO: do we need LambdaType???
 private fun FunctionOrConstructorTypeNode.toKotlinTypeUnion(typeMapper: ObjectTypeToKotlinTypeMapper): KtTypeUnion {
-    return KtTypeUnion(parameters.toKotlinParamsOverloads(typeMapper).map { params ->
-        KtType("${params.join(", ", start = "(", end = ")", stringify = KtFunParam::stringify)} -> ${(type?.toKotlinType(typeMapper) ?: KtType(ANY)).stringify() }")
+    return KtTypeUnion(parameters.toKotlinParamsOverloads(typeMapper).map {
+        createFunctionType(it, type?.toKotlinType(typeMapper) ?: KtType(ANY))
     })
 }
 

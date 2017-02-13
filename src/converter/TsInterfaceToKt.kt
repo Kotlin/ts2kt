@@ -1,10 +1,8 @@
 package ts2kt
 
 import ts2kt.kotlin.ast.KtAnnotation
-import ts2kt.kotlin.ast.KtType
 import ts2kt.kotlin.ast.KtTypeParam
-import ts2kt.kotlin.ast.stringify
-import ts2kt.utils.join
+import ts2kt.kotlin.ast.createFunctionType
 import typescript.identifierName
 import typescriptServices.ts.*
 
@@ -32,9 +30,7 @@ open class TsInterfaceToKt(
         val isOptional = node.questionToken != null
         if (isOptional) {
             val call = node.toKotlinCallSignature(typeMapper)
-            val params = call.params.join(", ") { it.name + it.type.stringify() + (it.defaultValue?.let { " /*= $it*/" } ?: "") }
-            val typeAsString = "($params) -> ${call.returnType.type.stringify()}"
-            addVariable(name, type = KtType(typeAsString, isNullable = true, isLambda = true), typeParams = call.typeParams, isVar = false, needsNoImpl = true, isOverride = isOverride)
+            addVariable(name, type = createFunctionType(call.params, call.returnType.type).copy(isNullable = true), typeParams = call.typeParams, isVar = false, needsNoImpl = true, isOverride = isOverride)
         } else {
             node.toKotlinCallSignatureOverloads(typeMapper).forEach { call ->
                 addFunction(name, call, needsNoImpl = false, isOverride = isOverride)
