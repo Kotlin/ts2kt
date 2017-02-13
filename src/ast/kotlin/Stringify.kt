@@ -18,11 +18,13 @@ private val FUN = "fun"
 private val VARARG = "vararg"
 
 
-class Stringify(private val packagePartPrefix: String?) : KtVisitor {
+class Stringify(
+        private val packagePartPrefix: String?,
+        private val topLevel: Boolean,
+        private val out: Output = Output()
+) : KtVisitor {
     val result: String
         get() = out.toString()
-
-    private val out = Output()
 
     private fun List<KtNode>.acceptForEach(visitor: KtVisitor, delimiter: String? = null, startWithIfNotEmpty: String? = null, endWithIfNotEmpty: String? = null) {
         if (isNotEmpty() && startWithIfNotEmpty != null) {
@@ -54,6 +56,13 @@ class Stringify(private val packagePartPrefix: String?) : KtVisitor {
         out.println()
     }
 
+    // TODO remove hack
+    private fun printExternalIfNeed() {
+        if (topLevel) {
+            out.print(EXTERNAL + " ")
+        }
+    }
+
     private fun printAnnotation(annotation: KtAnnotation) {
         out.print(annotation.escapedName)
         annotation.parameters.acceptForEach(this, delimiter = ", ", startWithIfNotEmpty = "(", endWithIfNotEmpty = ")")
@@ -65,10 +74,7 @@ class Stringify(private val packagePartPrefix: String?) : KtVisitor {
 
             out.printIndent()
 
-            // TODO remove hack
-            if (annotations.any { it == NATIVE_ANNOTATION }) {
-                out.print(EXTERNAL + " ")
-            }
+            printExternalIfNeed()
 
             if (hasOpenModifier) {
                 out.print(OPEN + " ")
@@ -105,7 +111,7 @@ class Stringify(private val packagePartPrefix: String?) : KtVisitor {
                 }
 
                 members.filter(isNotAnnotatedAsFake)
-                        .acceptForEach(this@Stringify,
+                        .acceptForEach(innerStringifier(),
                                 delimiter = if (kind == KtClassKind.ENUM) ",\n" else "",
                                 endWithIfNotEmpty = if (kind == KtClassKind.ENUM) "\n" else "")
             }
@@ -124,9 +130,7 @@ class Stringify(private val packagePartPrefix: String?) : KtVisitor {
             out.printIndent()
 
             // TODO remove hack
-            if (annotations.any { it == NATIVE_ANNOTATION }) {
-                out.print(EXTERNAL + " ")
-            }
+            printExternalIfNeed()
 
             if (isOverride) {
                 out.print(OVERRIDE + " ")
@@ -161,9 +165,7 @@ class Stringify(private val packagePartPrefix: String?) : KtVisitor {
             out.printIndent()
 
             // TODO remove hack
-            if (annotations.any { it == NATIVE_ANNOTATION }) {
-                out.print(EXTERNAL + " ")
-            }
+            printExternalIfNeed()
 
             // TODO extract common logic between Variable and Function
             if (isOverride) {
@@ -278,8 +280,6 @@ class Stringify(private val packagePartPrefix: String?) : KtVisitor {
         returnType.printToOut(printUnitType = printUnitReturnType)
     }
 
-
-
     override fun visitEnumEntry(enumEntry: KtEnumEntry) {
         out.printWithIndent(enumEntry.escapedName)
         enumEntry.value?.let { out.print(" /* = $it */") }
@@ -344,4 +344,6 @@ class Stringify(private val packagePartPrefix: String?) : KtVisitor {
         }
         out.print(argument.value.toString())
     }
+
+    private fun innerStringifier() = Stringify(packagePartPrefix, topLevel = false, out = out)
 }

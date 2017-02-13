@@ -1,6 +1,6 @@
 package simple
 
-enum class SomeEnum {
+external enum class SomeEnum {
     Foo,
     Bar,
     `$`,

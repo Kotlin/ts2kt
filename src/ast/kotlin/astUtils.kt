@@ -4,8 +4,8 @@ import ts2kt.escapeIfNeed
 
 
 // TODO: review usages
-fun KtNode.stringify() = stringify(null)
-fun KtNode.stringify(packagePartPrefix: String?) = Stringify(packagePartPrefix).also { this.accept(it) }.result
+fun KtNode.stringify() = stringify(null, false)
+fun KtNode.stringify(packagePartPrefix: String?, topLevel: Boolean = true) = Stringify(packagePartPrefix, topLevel).also { this.accept(it) }.result
 
 fun KtAnnotation.getFirstParamAsString(): String? {
     if (this.parameters.isEmpty()) return null

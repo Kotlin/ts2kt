@@ -8,5 +8,5 @@ external open class Foo {
 @file:JsQualifier("Foo")
 package simpleClass.Foo
 
-fun baz(a: Any): Unit = definedExternally
-fun bar(): Number = definedExternally
+external fun baz(a: Any): Unit = definedExternally
+external fun bar(): Number = definedExternally

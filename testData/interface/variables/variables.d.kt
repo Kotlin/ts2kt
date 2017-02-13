@@ -12,6 +12,6 @@ external interface Foo {
 @file:JsQualifier("foo")
 package variables.foo
 
-interface Bar {
+external interface Bar {
     var name: String
 }

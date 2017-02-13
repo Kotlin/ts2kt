@@ -1,11 +1,11 @@
 @file:JsQualifier("Foo.Bar")
 package nestedModules.Foo.Bar
 
-interface A {
+external interface A {
     fun baz()
 }
-open class B {
+external open class B {
     open fun boo(): Unit = definedExternally
 }
-var c: Number = definedExternally
-fun d(a: Boolean, b: Any, c: SomeType): Unit = definedExternally
+external var c: Number = definedExternally
+external fun d(a: Boolean, b: Any, c: SomeType): Unit = definedExternally

@@ -6,4 +6,4 @@ external interface Fiber_ {
     var throwInto: (ex: Any) -> Any
 }
 @JsModule("fibers")
-fun Fiber(fn: Function): Fiber_ = definedExternally
+external fun Fiber(fn: Function): Fiber_ = definedExternally

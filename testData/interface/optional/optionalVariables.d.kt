@@ -11,6 +11,6 @@ external interface Foo {
 @file:JsQualifier("foo")
 package optionalVariables.foo
 
-interface Bar {
+external interface Bar {
     var name: String? get() = definedExternally; set(value) = definedExternally
 }

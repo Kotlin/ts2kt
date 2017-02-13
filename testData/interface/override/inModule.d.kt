@@ -1,9 +1,9 @@
 @file:JsQualifier("TypeScript")
 package inModule.TypeScript
 
-interface ISyntaxElement {
+external interface ISyntaxElement {
     fun childAt(index: Number): ISyntaxElement
 }
-interface ISeparatedSyntaxList : ISyntaxElement {
+external interface ISeparatedSyntaxList : ISyntaxElement {
     override fun childAt(index: Number): ISeparatedSyntaxList
 }

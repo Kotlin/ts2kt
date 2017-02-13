@@ -16,8 +16,8 @@ external interface Foo {
 @file:JsQualifier("Module")
 package useJsonWhenPossible.Module
 
-var bar: Json = definedExternally
-fun withObjectTypeParam(bar: Json): Unit = definedExternally
-open class Foo {
+external var bar: Json = definedExternally
+external fun withObjectTypeParam(bar: Json): Unit = definedExternally
+external open class Foo {
     open var prop: Json = definedExternally
 }

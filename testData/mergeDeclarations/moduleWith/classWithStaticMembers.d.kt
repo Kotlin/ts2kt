@@ -12,4 +12,4 @@ external open class Foo {
 @file:JsQualifier("Foo")
 package classWithStaticMembers.Foo
 
-fun baz(a: Any): Unit = definedExternally
+external fun baz(a: Any): Unit = definedExternally

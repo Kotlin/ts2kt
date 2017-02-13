@@ -1,4 +1,4 @@
 @file:[JsQualifier("SemverModule"), JsModule("semver")]
 package exportModuleDeclaredBefore.SemverModule
 
-fun dummy(): Unit = definedExternally
+external fun dummy(): Unit = definedExternally

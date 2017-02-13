@@ -1,7 +1,7 @@
 @file:JsQualifier("AceAjax")
 package `interface`.AceAjax
 
-interface KeyBinding {
+external interface KeyBinding {
     fun setDefaultHandler(kb: Any)
     fun setKeyboardHandler(kb: Any)
     fun addKeyboardHandler(kb: Any, pos: Any)
@@ -12,6 +12,6 @@ interface KeyBinding {
     companion object : Foo by definedExternally: Foo {
     }
 }
-interface Foo {
+external interface Foo {
     fun foo(editor: Editor): Boolean
 }

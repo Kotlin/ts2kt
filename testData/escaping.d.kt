@@ -19,12 +19,12 @@ external open class `is`<`interface`> {
 @file:JsQualifier("This")
 package escaping.`This`
 
-var `$foo`: Boolean = definedExternally
-fun `bar$`(`ba$z`: Number): Unit = definedExternally
+external var `$foo`: Boolean = definedExternally
+external fun `bar$`(`ba$z`: Number): Unit = definedExternally
 
 // ------------------------------------------------------------------------------------------
 @file:JsQualifier("when")
 package escaping.`when`
 
-var `$`: Boolean = definedExternally
-fun `package`(`as`: Number): `$tring` = definedExternally
+external var `$`: Boolean = definedExternally
+external fun `package`(`as`: Number): `$tring` = definedExternally

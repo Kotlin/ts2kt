@@ -1,25 +1,25 @@
 @file:JsQualifier("Foo.Bar.Baz")
 package withMerging.Foo.Bar.Baz
 
-var variableFooBarBaz: Number = definedExternally
-fun funcFooBarBaz(): Unit = definedExternally
-open class AFooBarBaz
-var anotherVariableFooBarBaz: Number = definedExternally
-fun anotherFuncFooBarBaz(): Unit = definedExternally
-open class AnotherAFooBarBaz
+external var variableFooBarBaz: Number = definedExternally
+external fun funcFooBarBaz(): Unit = definedExternally
+external open class AFooBarBaz
+external var anotherVariableFooBarBaz: Number = definedExternally
+external fun anotherFuncFooBarBaz(): Unit = definedExternally
+external open class AnotherAFooBarBaz
 
 // ------------------------------------------------------------------------------------------
 @file:JsQualifier("Foo.Bar")
 package withMerging.Foo.Bar
 
-var variableFooBar: Number = definedExternally
-fun funcFooBar(): Unit = definedExternally
-open class AFooBar
+external var variableFooBar: Number = definedExternally
+external fun funcFooBar(): Unit = definedExternally
+external open class AFooBar
 
 // ------------------------------------------------------------------------------------------
 @file:JsQualifier("Foo")
 package withMerging.Foo
 
-var variableFoo: Number = definedExternally
-fun funcFoo(): Unit = definedExternally
-open class AFoo
+external var variableFoo: Number = definedExternally
+external fun funcFoo(): Unit = definedExternally
+external open class AFoo

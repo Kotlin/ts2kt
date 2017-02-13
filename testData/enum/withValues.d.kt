@@ -1,6 +1,6 @@
 package withValues
 
-enum class SomeEnum {
+external enum class SomeEnum {
     Foo /* = 1 */,
     Bar,
     `$` /* = 2 */,

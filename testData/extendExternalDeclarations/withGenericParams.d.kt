@@ -9,7 +9,7 @@ external var <T> Promise<T>.bar: Array<T> get() = definedExternally; set(value) 
 @file:JsQualifier("ref-array")
 package withGenericParams.ref-array
 
-interface ArrayType<T> {
+external interface ArrayType<T> {
     @nativeGetter
     fun get(prop: String): Number?
     @nativeSetter

@@ -7,17 +7,17 @@ external var _: _.LoDashStatic = definedExternally
 @file:[JsQualifier("_"), JsModule("lodash")]
 package module._
 
-interface LoDashStatic {
+external interface LoDashStatic {
     @nativeInvoke
     fun invoke(value: Number): LoDashWrapper<Number>
     var VERSION: String
     var support: Support
 }
-interface Support {
+external interface Support {
     var argsClass: Boolean
     var argsObject: Boolean
 }
-interface LoDashArrayWrapper<T> {
+external interface LoDashArrayWrapper<T> {
     fun difference(vararg others: Array<T>): LoDashArrayWrapper<T>
     fun difference(vararg others: List<T>): LoDashArrayWrapper<T>
 }

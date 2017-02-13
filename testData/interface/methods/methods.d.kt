@@ -12,6 +12,6 @@ external interface Foo {
 @file:JsQualifier("foo")
 package methods.foo
 
-interface Bar {
+external interface Bar {
     fun methodWithString(s: String): String
 }

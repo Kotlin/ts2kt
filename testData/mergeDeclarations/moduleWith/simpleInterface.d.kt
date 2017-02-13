@@ -8,5 +8,5 @@ external interface Foo {
 @file:JsQualifier("Foo")
 package simpleInterface.Foo
 
-fun baz(a: Any): Unit = definedExternally
-fun bar(): Number = definedExternally
+external fun baz(a: Any): Unit = definedExternally
+external fun bar(): Number = definedExternally

@@ -1,11 +1,11 @@
 @file:JsQualifier("Boo")
 package exportedByDefault.Boo
 
-fun foo(): String = definedExternally
-var bar: Number = definedExternally
-interface IBaz {
+external fun foo(): String = definedExternally
+external var bar: Number = definedExternally
+external interface IBaz {
     fun doSomething()
 }
-open class Klass {
+external open class Klass {
     open fun method(s: Any): String = definedExternally
 }

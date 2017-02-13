@@ -1,9 +1,9 @@
 @file:JsQualifier("TypeScript.Syntax")
 package inModule.TypeScript.Syntax
 
-interface IFactory {
+external interface IFactory {
     fun sourceUnit(moduleElements: ISyntaxList, endOfFileToken: ISyntaxToken): SourceUnitSyntax
 }
-open class NormalModeFactory : IFactory {
+external open class NormalModeFactory : IFactory {
     override fun sourceUnit(moduleElements: ISyntaxList, endOfFileToken: ISyntaxToken): SourceUnitSyntax = definedExternally
 }

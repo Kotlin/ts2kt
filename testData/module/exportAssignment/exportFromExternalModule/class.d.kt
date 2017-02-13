@@ -1,6 +1,6 @@
 package `class`
 
 @JsModule("Boo")
-open class Klass {
+external open class Klass {
     open fun method(s: Any): String = definedExternally
 }

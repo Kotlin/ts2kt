@@ -1,6 +1,6 @@
 package `interface`
 
 @JsModule("Boo")
-interface IBaz {
+external interface IBaz {
     fun doSomething()
 }
