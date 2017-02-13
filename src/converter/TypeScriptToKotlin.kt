@@ -230,21 +230,23 @@ class TypeScriptToKotlin(
 
     override fun visitExportAssignment(node: ExportAssignment) {
         // TODO is it right?
-        val exportName =
-                node.identifierName?.unescapedText ?:
+        val exportIdentifier =
+                node.identifierName ?:
                         run {
                             if (node.expression.kind == SyntaxKind.Identifier)
-                                (node.expression.cast<Identifier>()).text
+                                @Suppress("UNCHECKED_CAST_TO_NATIVE_INTERFACE")
+                                node.expression as Identifier
                             else
                                 unsupportedNode(node)
                         }
 
+        val exportName = exportIdentifier.unescapedText
         exportedByAssignment[exportName] =
                 KtAnnotation(JS_MODULE, listOf(KtArgument("\"${moduleName ?: exportName}\"")))
     }
 
     override fun visitList(node: Node) {
-        super<TypeScriptToKotlinBase>.visitList(node)
+        super.visitList(node)
         // TODO: Is it good place for call finish?
         finish()
     }
@@ -254,6 +256,8 @@ class TypeScriptToKotlin(
     }
 
     fun fixExportAssignments() {
+        if (exportedByAssignment.isEmpty()) return
+
         val found = hashSetOf<String>()
 
         fun process(annotated: KtAnnotated, declarationName: String) {
