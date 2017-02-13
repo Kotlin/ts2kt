@@ -15,6 +15,11 @@
                 <option name="moduleKind" value="commonjs" />
               </K2JSCompilerArguments>
             </option>
+            <option name="k2jvmCompilerArguments">
+              <K2JVMCompilerArguments>
+                <option name="jvmTarget" value="1.6" />
+              </K2JVMCompilerArguments>
+            </option>
             <option name="_commonCompilerArguments">
               <DummyImpl>
                 <option name="coroutinesEnable" value="true" />
