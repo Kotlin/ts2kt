@@ -32,7 +32,6 @@ val NATIVE_ANNOTATION = KtAnnotation(NATIVE)
 internal val NATIVE_GETTER_ANNOTATION = KtAnnotation("nativeGetter")
 internal val NATIVE_SETTER_ANNOTATION = KtAnnotation("nativeSetter")
 internal val NATIVE_INVOKE_ANNOTATION = KtAnnotation("nativeInvoke")
-internal val NATIVE_NEW_ANNOTATION = KtAnnotation("native(\"new\")")
 internal val DEFAULT_ANNOTATION = listOf(NATIVE_ANNOTATION)
 internal val NO_ANNOTATIONS = emptyList<KtAnnotation>()
 internal val INVOKE = "invoke"

@@ -56,8 +56,9 @@ open class TsInterfaceToKt(
     }
 
     override fun visitConstructSignatureDeclaration(node: ConstructorDeclaration) {
-        node.toKotlinCallSignatureOverloads(typeMapper).forEach { callSignature ->
-            addFunction(INVOKE, callSignature, needsNoImpl = false, additionalAnnotations = listOf(NATIVE_NEW_ANNOTATION))
-        }
+          // TODO: support ConstructorDeclaration
+//        node.toKotlinCallSignatureOverloads(typeMapper).forEach { callSignature ->
+//            addFunction(INVOKE, callSignature, needsNoImpl = false, additionalAnnotations = listOf(NATIVE_NEW_ANNOTATION))
+//        }
     }
 }
