@@ -19,6 +19,7 @@ package ts2kt
 import ts2kt.kotlin.ast.*
 import ts2kt.utils.assert
 import ts2kt.utils.cast
+import ts2kt.utils.reportUnsupportedNode
 import typescript.declarationName
 import typescript.identifierName
 import typescript.propertyName
@@ -140,10 +141,10 @@ class TypeScriptToKotlin(
 
     override fun visitEnumDeclaration(node: EnumDeclaration) {
         val entries = node.members.arr.map { entry ->
-            KtEnumEntry(entry.declarationName.unescapedText, entry.initializer?.let{
+            KtEnumEntry(entry.declarationName.unescapedText, entry.initializer?.let {
                 when (it.kind) {
                     SyntaxKind.FirstLiteralToken -> (it.cast<LiteralExpression>()).text
-                    else -> unsupportedNode(it)
+                    else -> reportUnsupportedNode(it)
                 }
             })
         }
@@ -163,7 +164,10 @@ class TypeScriptToKotlin(
                 SyntaxKind.Identifier,
                 SyntaxKind.StringLiteral -> node.declarationName!!.unescapedText
 
-                else -> unsupportedNode(node.declarationName!!)
+                else -> {
+                    reportUnsupportedNode(node.declarationName!!)
+                    "???"
+                }
             }
         }
 
@@ -236,8 +240,8 @@ class TypeScriptToKotlin(
                                 @Suppress("UNCHECKED_CAST_TO_NATIVE_INTERFACE")
                                 node.expression as Identifier
                             else
-                                unsupportedNode(node)
-                        }
+                                reportUnsupportedNode(node)
+                        } ?: return
 
         val exportName = exportIdentifier.unescapedText
         exportedByAssignment[exportName] =

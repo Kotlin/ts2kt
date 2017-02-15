@@ -51,10 +51,10 @@ fun <T> List<T>.join(
     return start + startWithIfNotEmpty + s + endWithIfNotEmpty + end
 }
 
-fun <T: Any> List<T>.merge(acceptor: (T) -> Boolean, comparator: (T, T) -> Boolean, merger: (T, T) -> T): List<T> =
+fun <T: Any> List<T>.merge(acceptor: (T) -> Boolean, comparator: (T, T) -> Boolean, merger: (T, T) -> T?): List<T> =
         toMutableList().apply { merge(acceptor, comparator, merger) }
 
-private fun <T: Any> MutableList<T>.merge(acceptor: (T) -> Boolean, comparator: (T, T) -> Boolean, merger: (T, T) -> T) {
+private fun <T: Any> MutableList<T>.merge(acceptor: (T) -> Boolean, comparator: (T, T) -> Boolean, merger: (T, T) -> T?) {
     var i = 0
     while (i < size) {
         val current = this[i]
@@ -90,45 +90,28 @@ private fun <T: Any> MutableList<T>.merge(acceptor: (T) -> Boolean, comparator: 
     }
 }
 
-private fun <T: Any> MutableList<T>.mergeAllTo(mergeTo: Int, candidateIndexes: List<Int>, merger: (T, T) -> T) {
-    val merged = candidateIndexes.fold(this[mergeTo]) { a, bi -> merger(a, this[bi]) }
-
-    this[mergeTo] = merged
-
-    var i = candidateIndexes.size - 1
-    while(i >= 0) {
-        this.removeAt(candidateIndexes[i])
-        i--
+private fun <T: Any> MutableList<T>.mergeAllTo(mergeTo: Int, candidateIndexes: List<Int>, merger: (T, T) -> T?) {
+    var acc = this[mergeTo]
+    val indexesToRemove = mutableSetOf<Int>()
+    for (i in candidateIndexes) {
+        val result = merger(acc, this[i])
+        if (result != null) {
+            acc = result
+            indexesToRemove += i
+        }
     }
 
+    indexesToRemove.sortedDescending().forEach { this.removeAt(it) }
 }
 
 // JS Array methods
 
 //inline fun <T> Array<T>.push(vararg elements: T): Unit = asDynamic().push.apply(this, elements)
-inline fun <T> Array<T>.push(element: T): Unit = asDynamic().push(element)
-
-inline fun <T> Array<T>.shift(): T = asDynamic().shift()
-
-//fun <T> Array<T>.splice(index: Int, removeCount: Int, vararg newItems: T): Array<T> = ...
-inline fun <T> Array<T>.splice(index: Int, removeCount: Int, newItem: T): Array<T> = asDynamic().splice(index, removeCount, newItem)
-
-//
-
-external class RegExp(s: String, flags: String = definedExternally)
-
-// JS String methods
-
-inline fun String.replace(r: RegExp, s: String): String = asDynamic().replace(r, s)
-
-fun String.replaceAll(r: String, s: String): String = replace(RegExp(r, "g"), s)
-
-
-// Assert
-
-fun assert(condition: Boolean, message: String) {
-    if (!condition) throw AssertionError(message)
+inline fun <T> Array<T>.push(element: T): Unit {
+    asDynamic().push(element)
 }
 
-// TS AST utils
-inline fun <E : Enum<E>> hasFlag(flags: Enum<E>, flag: E): Boolean = flags.unsafeCast<Int>() and flag.unsafeCast<Int>() != 0
+inline fun <T> Array<T>.shift(): T = asDynamic().shift().unsafeCast<T>()
+
+//fun <T> Array<T>.splice(index: Int, removeCount: Int, vararg newItems: T): Array<T> = ...
+inline fun <T> Array<T>.splice(index: Int, removeCount: Int, newItem: T): Array<T> = asDynamic().splice(index, removeCount, newItem).unsafeCast<Array<T>>()

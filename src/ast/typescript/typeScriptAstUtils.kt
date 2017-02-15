@@ -17,10 +17,7 @@
 package ts2kt
 
 import ts2kt.kotlin.ast.*
-import ts2kt.utils.assert
-import ts2kt.utils.cast
-import ts2kt.utils.hasFlag
-import ts2kt.utils.join
+import ts2kt.utils.*
 import typescript.ClassOrInterfaceDeclaration
 import typescript.EntityName
 import typescript.declarationName
@@ -91,7 +88,7 @@ private fun ParameterDeclaration.toKotlinParam(type: KtType): KtFunParam {
             SyntaxKind.FirstLiteralToken -> (it.cast<LiteralExpression>()).text
             SyntaxKind.StringLiteral -> "\"" + (it.cast<LiteralExpression>()).text + "\""
 
-            else -> unsupportedNode(it)
+            else -> reportUnsupportedNode(it)
         }
     }
     val isVar = hasFlag(flags, NodeFlags.AccessibilityModifier)
@@ -110,19 +107,21 @@ private fun ParameterDeclaration.getNodeTypeConsideringVararg(): TypeNode? {
     if (isVararg && originalNodeType != null) {
         val originalNodeKind = originalNodeType.kind
 
+        @Suppress("UNCHECKED_CAST_TO_NATIVE_INTERFACE")
         when {
             originalNodeKind === SyntaxKind.ArrayType -> {
                 nodeType = (originalNodeType.cast<ArrayTypeNode>()).elementType
             }
 
             originalNodeKind === SyntaxKind.TypeReference &&
-                ((originalNodeType.cast<TypeReferenceNode>()).typeName as EntityName).text == "Array" -> {
+                ((originalNodeType as TypeReferenceNode).typeName as EntityName).text == "Array" -> {
                 val typeArguments = originalNodeType.cast<TypeReferenceNode>().typeArguments!!.arr
                 assert(typeArguments.size == 1, "Array should have one generic paramater, but have ${typeArguments.size}.")
                 nodeType = typeArguments[0]
             }
             else -> {
-                throw IllegalStateException("Rest parameter must be array types, but ${originalNodeKind.str}")
+                report("Rest parameter must be array types, but ${originalNodeKind.str}")
+                return null
             }
         }
     }
@@ -256,7 +255,7 @@ fun TypeNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
 
         SyntaxKind.TypePredicate -> (this.cast<TypePredicateNode>()).toKotlinType(typeMapper)
 
-        else -> unsupportedNode(this)
+        else -> KtType(DYNAMIC, comment = reportUnsupportedNodeAndGetMessage(this))
     }
 }
 
@@ -283,7 +282,7 @@ private fun TypeReferenceNode.toKotlinTypeIgnoringTypeAliases(typeMapper: Object
 fun ExpressionWithTypeArguments.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
     val name = expression.stringifyQualifiedName()
 
-    return KtType(name, typeArguments?.arr?.map { it.toKotlinType(typeMapper) } ?: emptyList())
+    return KtType(name ?: "???", typeArguments?.arr?.map { it.toKotlinType(typeMapper) } ?: emptyList())
 }
 
 private fun PropertyAccessExpression.stringify(): String {
@@ -301,7 +300,7 @@ private fun Node.stringifyQualifiedName() = when (kind) {
     SyntaxKind.PropertyAccessExpression ->
         (this.cast<PropertyAccessExpression>()).stringify()
 
-    else -> unsupportedNode(this)
+    else -> reportUnsupportedNode(this)
 }
 
 fun UnionTypeNode.toKotlinTypeUnion(typeMapper: ObjectTypeToKotlinTypeMapper): KtTypeUnion {
@@ -347,7 +346,7 @@ fun ThisTypeNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType 
         parent = parent.parent
     }
 
-    throw IllegalStateException("Illegal State")
+    return KtType(DYNAMIC, comment = report("ThisTypeNode.toKotlinType in illegal state"))
 }
 
 fun TypePredicateNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
@@ -401,11 +400,7 @@ fun visitNode(visitor: Visitor, node: Node?): Unit {
         SyntaxKind.ImportEqualsDeclaration ->  { /* TODO implement */ }
 
         SyntaxKind.EndOfFileToken -> { /* ignore */ }
-        else -> {
-            val message = "Unsupported node.kind: ${node.kind}, name: ${node.kind.str} (${node.location()})"
-            if (reportedKinds.add(node.kind.id)) console.error(message)
-            unsupportedNode(node)
-        }
+        else -> reportUnsupportedNode(node)
     }
 }
 
@@ -424,15 +419,11 @@ inline val Identifier.unescapedText: String
 
 private fun LineAndCharacter.format(): String = "${line.toInt() + 1}:${character.toInt() + 1}"
 
-private fun Node.location(): String {
+fun Node.location(): String {
     val start = getSourceFile().getLineAndCharacterOfPosition(pos)
     val end = getSourceFile().getLineAndCharacterOfPosition(end)
     return "${getSourceFile().fileName}:${start.format()} to ${end.format()}"
 }
 
-fun unsupportedNode(node: Node): Nothing {
-    val message = "${node.kind.str} kind (${node.location()}) unsupported yet here! See node in attachment."
-    val exception = Exception(message)
-    exception.asDynamic().attachment = node
-    throw exception
-}
+@Suppress("NOTHING_TO_INLINE")
+inline fun <E : Enum<E>> hasFlag(flags: Enum<E>, flag: E): Boolean = flags.unsafeCast<Int>() and flag.unsafeCast<Int>() != 0

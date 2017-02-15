@@ -17,13 +17,14 @@
 package ts2kt
 
 import node.fs
+import node.module
 import node.path
 import node.process
 import ts2kt.kotlin.ast.isNotAnnotatedAsFake
 import ts2kt.kotlin.ast.stringify
 import ts2kt.utils.cast
-import ts2kt.utils.hasFlag
 import ts2kt.utils.push
+import ts2kt.utils.reportUnsupportedNode
 import ts2kt.utils.shift
 import typescript.declarationName
 import typescript.propertyName
@@ -34,8 +35,6 @@ val SRC_FILE_PATH_ARG_INDEX = 2
 val OUT_FILE_PATH_ARG_INDEX = 3
 val TYPESCRIPT_DEFINITION_FILE_EXT = ".d.ts"
 val PATH_TO_LIB_D_TS = "lib/lib.d.ts"
-
-internal val reportedKinds = HashSet<Int>()
 
 private val file2scriptSnapshotCache: MutableMap<String, IScriptSnapshot> = hashMapOf()
 
@@ -193,7 +192,10 @@ fun translate(srcPath: String): String {
                 val signature: Signature = when (it.kind) {
                     SyntaxKind.MethodSignature,
                     SyntaxKind.MethodDeclaration -> typechecker.getSignatureFromDeclaration(it.cast<SignatureDeclaration>())
-                    else -> unsupportedNode(it)
+                    else -> {
+                        reportUnsupportedNode(it)
+                        return@any false
+                    }
                 }
 
 
@@ -243,10 +245,6 @@ fun translate(srcPath: String): String {
 
 fun translateToFile(srcPath: String, outPath: String) {
     fs.writeFileSync(outPath, translate(srcPath))
-}
-
-external object module {
-    val parent: Any?
 }
 
 fun main(args: Array<String>) {

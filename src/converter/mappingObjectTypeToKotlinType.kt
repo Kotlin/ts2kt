@@ -17,7 +17,6 @@
 package ts2kt
 
 import ts2kt.kotlin.ast.*
-import ts2kt.utils.replaceAll
 import typescript.identifierName
 import typescriptServices.ts.NodeArray
 import typescriptServices.ts.TypeLiteralNode
@@ -137,5 +136,5 @@ data class ObjectTypeToKotlinTypeMapperImpl(
     }
 
     fun List<KtNode>.toStringKey(): String =
-            map { it.stringify().replaceAll("(\\(|,\\s*)\\w+: ", "$1") }.sorted().joinToString("")
+            map { it.stringify().replace("(\\(|,\\s*)\\w+: ".toRegex(), "$1") }.sorted().joinToString("")
 }

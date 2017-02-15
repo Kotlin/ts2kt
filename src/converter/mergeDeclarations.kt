@@ -3,6 +3,7 @@ package ts2kt
 import ts2kt.kotlin.ast.*
 import ts2kt.utils.assert
 import ts2kt.utils.merge
+import ts2kt.utils.report
 
 fun List<KtPackagePart>.merge(): List<KtPackagePart> =
         groupBy { it.fqName }
@@ -24,26 +25,34 @@ private fun List<KtMember>.mergeDeclarationsWithSameNameIfNeed() =
                             when (b) {
                                 is KtClassifier -> mergeClassifiers(a, b)
                                 is KtVariable -> mergeClassifierAndVariable(a, b)
-                                else -> throw IllegalStateException("Merging ${a.kind} and ??? unsupported yet, a: ${a.stringify()}, b: ${b.stringify()}")
+                                else -> {
+                                    report("Merging ${a.kind} and ??? unsupported yet, a: ${a.stringify()}, b: ${b.stringify()}")
+                                    null
+                                }
                             }
 
                         is KtVariable ->
                             when (b) {
                                 is KtClassifier -> mergeClassifierAndVariable(b, a)
-                                else -> throw IllegalStateException("Merging Variable and ??? unsupported yet, a: ${a.stringify()}, b: ${b.stringify()}")
+                                else -> {
+                                    report("Merging Variable and ??? unsupported yet, a: ${a.stringify()}, b: ${b.stringify()}")
+                                    null
+                                }
                             }
 
-                        else ->
-                            throw IllegalStateException("Unsupported types for merging, a: ${a.stringify()}, b: ${b.stringify()}")
+                        else -> {
+                            report("Unsupported types for merging, a: ${a.stringify()}, b: ${b.stringify()}")
+                            null
+                        }
                     }
 
 
-            result.annotations = mergeAnnotations(a.annotations, b.annotations)
-
-            result
+            result?.also {
+                it.annotations = mergeAnnotations(a.annotations, b.annotations)
+            }
         }
 
-private fun mergeClassifiers(a: KtClassifier, b: KtClassifier): KtClassifier {
+private fun mergeClassifiers(a: KtClassifier, b: KtClassifier): KtClassifier? {
     when (a.kind) {
         KtClassKind.CLASS -> {
             if (b.kind === KtClassKind.OBJECT) return mergeClassAndObject(a, b)
@@ -59,10 +68,12 @@ private fun mergeClassifiers(a: KtClassifier, b: KtClassifier): KtClassifier {
         else -> {} // TODO is it bug?
     }
 
-    throw IllegalStateException("Merging ${a.kind} and ${b.kind} unsupported yet, a: ${a.stringify()}, b: ${b.stringify()}")
+    report("Merging ${a.kind} and ${b.kind} unsupported yet, a: ${a.stringify()}, b: ${b.stringify()}")
+
+    return null
 }
 
-private fun mergeClassifierAndVariable(a: KtClassifier, b: KtVariable): KtMember {
+private fun mergeClassifierAndVariable(a: KtClassifier, b: KtVariable): KtMember? {
     if (a.members.isEmpty()) return b
 
     // TODO is it right?
@@ -82,7 +93,8 @@ private fun mergeClassifierAndVariable(a: KtClassifier, b: KtVariable): KtMember
         return newTrait
     }
 
-    throw IllegalStateException("Merging non-empty Classifier(kind=${a.kind}) and Variable unsupported yet, a: ${a.stringify()}, b: ${b.stringify()}")
+    report("Merging non-empty Classifier(kind=${a.kind}) and Variable unsupported yet, a: ${a.stringify()}, b: ${b.stringify()}")
+    return null
 }
 
 private fun mergeAnnotations(a: List<KtAnnotation>, b: List<KtAnnotation>): List<KtAnnotation> =
@@ -98,8 +110,10 @@ private fun mergeAnnotations(annotations: List<KtAnnotation>): List<KtAnnotation
                 a.parameters.isEmpty() -> b
                 b.parameters.isEmpty() -> a
                 a.parameters == b.parameters -> a
-            // TODO
-                else -> throw IllegalStateException("Merging annotations with different arguments unsupported yet, a: ${a.stringify()}, b: ${b.stringify()}")
+                else -> {
+                    report("Merging annotations with different arguments unsupported yet, a: ${a.stringify()}, b: ${b.stringify()}")
+                    null
+                }
             }
         }
 

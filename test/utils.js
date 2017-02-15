@@ -60,13 +60,22 @@ function collectTestFiles(dir, tests, testDataExpectedDir, testDataDir) {
     return collectTestFilesRec(dir, tests, testDataExpectedDir, testConfig, testDataDir)
 }
 
-function collectTestFilesRec(dir, tests, testDataExpectedDir, testConfig, testDataDir) {
+var count = 0;
+const MAX_TEST_COUNT = Number.MAX_VALUE;
+
+function collectTestFilesRec(dir, tests, testDataExpectedDir, testConfig, testDataDir, depth) {
     testDataExpectedDir = testDataExpectedDir || dir;
     testDataDir = testDataDir || dir;
+    depth = depth || 0;
+
+    if (count > MAX_TEST_COUNT) return;
+    count++;
 
     var list = fs.readdirSync(dir);
 
     for (var i = 0; i < list.length; i++) {
+        if (count > MAX_TEST_COUNT) break;
+
         var file = list[i];
 
         function process(dir, file) {
@@ -76,7 +85,7 @@ function collectTestFilesRec(dir, tests, testDataExpectedDir, testConfig, testDa
             var path = dir + '/' + file;
             var stat = fs.statSync(path);
             if (stat && stat.isDirectory()) {
-                collectTestFilesRec(path, tests[file] = {}, testDataExpectedDir, testConfig, testDataDir);
+                collectTestFilesRec(path, tests[file] = {}, testDataExpectedDir, testConfig, testDataDir, depth + 1);
             }
             else {
                 if (file.endsWith(".d.ts")) {
@@ -88,6 +97,13 @@ function collectTestFilesRec(dir, tests, testDataExpectedDir, testConfig, testDa
 
 
         process(dir, file);
+    }
+
+    if (depth === 0) {
+        tests["printReport"] = function (test) {
+            ts2kt.utils.reportUnsupportedKinds();
+            test.done();
+        }
     }
 }
 

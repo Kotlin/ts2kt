@@ -32,3 +32,7 @@ external object fs {
     fun writeFileSync(path: String, text: String): Unit
     fun readFileSync(path: String): String
 }
+
+external object module {
+    val parent: Any?
+}
