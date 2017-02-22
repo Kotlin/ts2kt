@@ -5,14 +5,18 @@ import ts2kt.str
 import typescriptServices.ts.Node
 import typescriptServices.ts.SyntaxKind
 
-private enum class DiagnosticLevel {
+internal enum class DiagnosticLevel {
     EXCEPTION,
     WARNING_WITH_STACKTRACE,
     WARNING,
-    QUIET
+    QUIET;
+
+    companion object {
+        val DEFAULT = WARNING
+    }
 }
 
-private val diagnosticLevel: DiagnosticLevel = DiagnosticLevel.WARNING
+internal var diagnosticLevel: DiagnosticLevel = DiagnosticLevel.DEFAULT
 
 fun report(message: String): String? = when (diagnosticLevel) {
     DiagnosticLevel.EXCEPTION ->
@@ -39,7 +43,7 @@ fun reportUnsupportedNode(node: Node): Nothing? {
     return null
 }
 
-private val trackUnsupportedKinds = false
+internal var trackUnsupportedKinds = false
 private val unsupportedKinds = HashMap<SyntaxKind, Int>()
 
 fun reportUnsupportedNodeAndGetMessage(node: Node): String? {
@@ -49,8 +53,6 @@ fun reportUnsupportedNodeAndGetMessage(node: Node): String? {
     return report("\"${node.kind.str}\" kind unsupported yet here! (${node.location()})")
 }
 
-// Used from tests
-@Suppress("unused")
 fun reportUnsupportedKinds() {
     if (!trackUnsupportedKinds) {
         console.warn("Tracking unsupported node kinds is disabled")
@@ -58,8 +60,8 @@ fun reportUnsupportedKinds() {
     }
 
     console.warn("Unsupported node kinds (${unsupportedKinds.size}):")
-    console.warn("count\tname(id)")
+    console.warn("count\t\tname(id)")
     unsupportedKinds.toList().sortedByDescending { it.second }.forEach {
-        console.warn("${it.second}\t${it.first.str} (${it.first})")
+        console.warn("${it.second}\t\t${it.first.str} (${it.first})")
     }
 }

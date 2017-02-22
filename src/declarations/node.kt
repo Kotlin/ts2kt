@@ -19,11 +19,13 @@ package node
 @JsModule("path")
 external object path {
     fun basename(path: String, postfix: String): String
+    fun basename(path: String): String
 }
 
 @JsModule("process")
 external object process {
-    val argv: Array<String?>
+    val argv: Array<String>
+    val argv0: String
 }
 
 @JsModule("fs")

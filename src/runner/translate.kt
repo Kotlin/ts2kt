@@ -17,11 +17,8 @@
 package ts2kt
 
 import node.fs
-import node.module
-import node.path
-import node.process
+import ts2kt.kotlin.ast.KtPackagePart
 import ts2kt.kotlin.ast.isNotAnnotatedAsFake
-import ts2kt.kotlin.ast.stringify
 import ts2kt.utils.cast
 import ts2kt.utils.push
 import ts2kt.utils.reportUnsupportedNode
@@ -31,10 +28,8 @@ import typescript.propertyName
 import typescriptServices.ts.*
 import typescriptServices.ts.ScriptSnapshot.fromString
 
-val SRC_FILE_PATH_ARG_INDEX = 2
-val OUT_FILE_PATH_ARG_INDEX = 3
-val TYPESCRIPT_DEFINITION_FILE_EXT = ".d.ts"
-val PATH_TO_LIB_D_TS = "lib/lib.d.ts"
+internal val TYPESCRIPT_DEFINITION_FILE_EXT = ".d.ts"
+private val PATH_TO_LIB_D_TS = "lib/lib.d.ts"
 
 private val file2scriptSnapshotCache: MutableMap<String, IScriptSnapshot> = hashMapOf()
 
@@ -50,13 +45,13 @@ private fun getScriptSnapshotFromFile(path: String): IScriptSnapshot {
     return scriptSnapshot
 }
 
-val LIB_D_TS_WITH_SNAPSHOT = "lib.d.ts" to getScriptSnapshotFromFile(PATH_TO_LIB_D_TS)
+private val LIB_D_TS_WITH_SNAPSHOT = "lib.d.ts" to getScriptSnapshotFromFile(PATH_TO_LIB_D_TS)
 
-val host = FileSystemBasedLSH(mapOf(), "")
-val documentRegistry = createDocumentRegistry()
-val languageService = createLanguageService(host, documentRegistry)
+private val host = FileSystemBasedLSH(mapOf(), "")
+private val documentRegistry = createDocumentRegistry()
+private val languageService = createLanguageService(host, documentRegistry)
 
-fun translate(srcPath: String): String {
+fun translate(srcPath: String): List<KtPackagePart> {
     val normalizeSrcPath = normalizePath(srcPath)
 
     val file2scriptSnapshot = hashMapOf(LIB_D_TS_WITH_SNAPSHOT, normalizeSrcPath to getScriptSnapshotFromFile(normalizeSrcPath))
@@ -87,8 +82,6 @@ fun translate(srcPath: String): String {
 
 //    val fileNode = languageService.getSourceFile(normalizeSrcPath)
     val fileNode = languageService.getProgram().getSourceFile(normalizeSrcPath)
-
-    val srcName = path.basename(normalizeSrcPath, TYPESCRIPT_DEFINITION_FILE_EXT)
 
     inline fun isAnyMember(node: MethodDeclaration): Boolean {
         val params = node.parameters.arr
@@ -229,34 +222,7 @@ fun translate(srcPath: String): String {
     typeScriptToKotlin.visitList(fileNode)
 
     val packageParts = typeScriptToKotlin.packageParts
-    val packagePartsToPrint = packageParts.merge().filter { it.members.any(isNotAnnotatedAsFake) }
+    val mergedPackageParts = packageParts.merge().filter { it.members.any(isNotAnnotatedAsFake) }
 
-    val out =
-            if (packagePartsToPrint.isNotEmpty()) {
-                packagePartsToPrint
-                        .joinToString("\n// ${"-".repeat(90)}\n") {
-                            it.stringify(packagePartPrefix = srcName)
-                        }
-            }
-            else "// NO DECLARATIONS"
-
-    return out
-}
-
-fun translateToFile(srcPath: String, outPath: String) {
-    fs.writeFileSync(outPath, translate(srcPath))
-}
-
-fun main(args: Array<String>) {
-    if (module.parent != null) return
-
-    val srcPath = process.argv[SRC_FILE_PATH_ARG_INDEX]
-    val outPath = process.argv[OUT_FILE_PATH_ARG_INDEX]
-
-    console.log(srcPath)
-    console.log(outPath)
-
-    if (srcPath == null || outPath == null) return
-
-    translateToFile(srcPath, outPath)
+    return mergedPackageParts
 }
