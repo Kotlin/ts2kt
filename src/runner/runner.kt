@@ -79,7 +79,7 @@ fun parseArguments(): CliArguments? {
         return v
     }
 
-    val program = path.basename(process.argv0)
+    val program = "ts2kt"
 
     val args = process.argv.drop(2)
 
@@ -95,9 +95,10 @@ fun parseArguments(): CliArguments? {
         when (arg) {
             "-h" -> {
                 console.log("""
-                            Usage: $program <options> <d.ts files>
+                            Usage: $program [<options>] <d.ts files>
                             where possible options include:
-                                -d <path>                   Destination directory for files with converted declarations
+                                -d <path>                   Destination directory for files with converted declarations,
+                                                            current directory is used by default
                                 -h                          Print a synopsis of standard options
                                 -X                          Print a synopsis of advanced options
                             """.trimIndent())
