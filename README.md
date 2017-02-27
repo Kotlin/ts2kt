@@ -1,9 +1,26 @@
 [![TeamCity (simple build status)](https://img.shields.io/teamcity/http/teamcity.jetbrains.com/s/Kotlin_ts2kt.svg)](https://teamcity.jetbrains.com/viewType.html?buildTypeId=Kotlin_ts2kt&branch_Kotlin=%3Cdefault%3E&tab=buildTypeStatusDiv)
 
 # Description
-Converter of TypeScript definition files to Kotlin declarations (stubs)
+Converter of TypeScript definition files to Kotlin declarations
 
-This requires Kotlin 1.1+ to run.  It generates Kotlin files that are compatible with Kotlin 1.0.4.
+This requires Kotlin 1.1.x to run.  It generates Kotlin files that are compatible with Kotlin 1.1+.
+
+# How to use
+
+The simplest way to use is install the latest version form [npm](https://www.npmjs.com/package/ts2kt):
+```shell
+npm install -g ts2kt
+```
+
+## Usage 
+```
+ts2kt [<options>] <d.ts files>
+```
+
+Where possible options include:<br/>
+`-d` `<path>` Destination directory for files with converted declarations, current directory is used by default<br/>
+`-h` Print a synopsis of standard options<br/>
+`-X` Print a synopsis of advanced options<br/>
 
 # How to setup project
 1. clone this project
