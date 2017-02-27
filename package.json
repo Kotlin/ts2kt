@@ -4,7 +4,7 @@
   "homepage": "https://github.com/bashor/ts2kt",
   "version": "0.0.1",
   "license": "Apache-2.0",
-  "description": "Converter of TypeScript definition files to Kotlin declarations (stubs)",
+  "description": "Converter of TypeScript definition files to Kotlin declarations",
   "keywords": [
     "Kotlin",
     "TypeScript",
@@ -14,11 +14,11 @@
     "javascript"
   ],
   "bugs": {
-    "url": "https://github.com/bashor/ts2kt/issues"
+    "url": "https://github.com/Kotlin/ts2kt/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/bashor/ts2kt.git"
+    "url": "git+https://git@github.com/Kotlin/ts2kt.git"
   },
   "engines": {
     "node": ">=4.0.0"
@@ -28,5 +28,6 @@
   },
   "devDependencies": {
     "nodeunit": "0.9.1"
-  }
+  },
+  "homepage": "https://github.com/Kotlin/ts2kt"
 }
