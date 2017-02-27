@@ -16,6 +16,7 @@
 
 package ts2kt
 
+import node.__dirname
 import node.fs
 import ts2kt.kotlin.ast.KtPackagePart
 import ts2kt.kotlin.ast.isNotAnnotatedAsFake
@@ -29,7 +30,7 @@ import typescriptServices.ts.*
 import typescriptServices.ts.ScriptSnapshot.fromString
 
 internal val TYPESCRIPT_DEFINITION_FILE_EXT = ".d.ts"
-private val PATH_TO_LIB_D_TS = "lib/lib.d.ts"
+private val PATH_TO_LIB_D_TS = listOf(".", __dirname).map { it + "/lib/lib.d.ts" }.first { fs.existsSync(it) }
 
 private val file2scriptSnapshotCache: MutableMap<String, IScriptSnapshot> = hashMapOf()
 

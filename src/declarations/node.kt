@@ -20,6 +20,7 @@ package node
 external object path {
     fun basename(path: String, postfix: String): String
     fun basename(path: String): String
+    fun dirname(path: String): String
 }
 
 @JsModule("process")
@@ -33,8 +34,12 @@ external object fs {
     fun argv(index: Int): String
     fun writeFileSync(path: String, text: String): Unit
     fun readFileSync(path: String): String
+    fun existsSync(path: String): Boolean
 }
 
 external object module {
     val parent: Any?
 }
+
+external val __dirname: String
+external val __filename: String
