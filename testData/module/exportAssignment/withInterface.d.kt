@@ -1,7 +1,7 @@
 package withInterface
 
 @JsModule("lazy.js")
-external var Lazy: LazyJS.LazyStatic = definedExternally
+external val Lazy: LazyJS.LazyStatic = definedExternally
 
 // ------------------------------------------------------------------------------------------
 @file:JsQualifier("LazyJS")

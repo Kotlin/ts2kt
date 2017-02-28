@@ -284,6 +284,10 @@ class TypeScriptToKotlin(
             t.add(annotation)
             annotated.annotations = t
 
+            if (annotated is KtVariable) {
+                annotated.isVar = false
+            }
+
             found.add(declarationName)
         }
 

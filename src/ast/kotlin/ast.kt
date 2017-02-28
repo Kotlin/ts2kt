@@ -148,7 +148,7 @@ class KtVariable(
         val extendsType: KtHeritageType? = null,
         override var annotations: List<KtAnnotation>,
         val typeParams: List<KtTypeParam>?,
-        val isVar: Boolean,
+        var isVar: Boolean,
         val needsNoImpl: Boolean = true,
         val isInInterface: Boolean,
         val isOverride: Boolean = false,

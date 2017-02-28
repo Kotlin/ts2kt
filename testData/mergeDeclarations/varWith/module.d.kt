@@ -1,7 +1,7 @@
 package module
 
 @JsModule("lodash")
-external var _: _.LoDashStatic = definedExternally
+external val _: _.LoDashStatic = definedExternally
 
 // ------------------------------------------------------------------------------------------
 @file:[JsQualifier("_"), JsModule("lodash")]
