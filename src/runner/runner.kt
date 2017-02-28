@@ -60,11 +60,11 @@ fun translateToDir(sources: List<String>, outDir: String, libraries: List<String
         console.log("Save declarations:")
 
         packageParts.forEach {
-            val outFileName = baseSrcName + "." + it.fqName.joinToString(".") + KOTLIN_FILE_EXT
+            val outFileName = baseSrcName + (if (it.fqName.isNotEmpty()) "." else "") + it.fqName.joinToString(".") + KOTLIN_FILE_EXT
             val outFilePath = outDir + "/" + outFileName
 
             console.log("\t$outFilePath")
-            fs.writeFileSync(outFilePath, it.stringify())
+            fs.writeFileSync(outFilePath, it.stringify(packagePartPrefix = null, topLevel = true))
         }
     }
 }
