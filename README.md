@@ -74,5 +74,6 @@ ant -f build.xml run.test.for.testData
   ```
 
 # Useful links
-[TypeScript type definitions](https://github.com/DefinitelyTyped/DefinitelyTyped)
-[About git submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules)
+
+- [TypeScript type definitions](https://github.com/DefinitelyTyped/DefinitelyTyped)
+- [About git submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules)
