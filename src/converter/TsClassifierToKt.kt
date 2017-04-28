@@ -2,6 +2,7 @@ package ts2kt
 
 import ts2kt.kotlin.ast.*
 import ts2kt.utils.assert
+import ts2kt.utils.reportUnsupportedNodeAndGetMessage
 import typescript.propertyName
 import typescriptServices.ts.*
 
@@ -104,6 +105,10 @@ abstract class TsClassifierToKt(
 
     override fun visitMethodDeclaration(node: MethodDeclaration) {
         val declarationName = node.propertyName!!
+        if(declarationName.kind == SyntaxKind.ComputedPropertyName){
+            reportUnsupportedNodeAndGetMessage(declarationName)
+            return
+        }
         val name = declarationName.unescapedText
         val isOverride = isOverride(node)
 

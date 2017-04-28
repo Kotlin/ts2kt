@@ -38,7 +38,7 @@ fun translateToFile(srcPath: String, outPath: String) {
     val out =
             if (packageParts.isNotEmpty()) {
                 packageParts.joinToString("\n// ${"-".repeat(90)}\n") {
-                            it.stringify(packagePartPrefix = srcName)
+                            it.stringify(packagePartPrefix = srcName, topLevel = false)
                         }
             }
             else "// NO DECLARATIONS"
@@ -64,7 +64,7 @@ fun translateToDir(sources: List<String>, outDir: String, libraries: List<String
             val outFilePath = outDir + "/" + outFileName
 
             console.log("\t$outFilePath")
-            fs.writeFileSync(outFilePath, it.stringify())
+            fs.writeFileSync(outFilePath, it.stringify(null, topLevel = true))
         }
     }
 }
