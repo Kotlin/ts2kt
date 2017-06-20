@@ -21,6 +21,7 @@ private val VARARG = "vararg"
 class Stringify(
         private val packagePartPrefix: String?,
         private val topLevel: Boolean,
+        private val additionalImports: List<String> = listOf(),
         private val out: Output = Output()
 ) : KtVisitor {
     val result: String
@@ -229,6 +230,13 @@ class Stringify(
             out.println()
         }
 
+        if (additionalImports.isNotEmpty()) {
+            additionalImports.forEach {
+                out.printlnWithIndent("import " + it)
+            }
+            out.println()
+        }
+
         packagePart.members.filter(isNotAnnotatedAsFake).acceptForEach(this)
     }
 
@@ -345,5 +353,5 @@ class Stringify(
         out.print(argument.value.toString())
     }
 
-    private fun innerStringifier() = Stringify(packagePartPrefix, topLevel = false, out = out)
+    private fun innerStringifier() = Stringify(packagePartPrefix, topLevel = false, additionalImports = additionalImports, out = out)
 }

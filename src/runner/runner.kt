@@ -64,7 +64,24 @@ fun translateToDir(sources: List<String>, outDir: String, libraries: List<String
             val outFilePath = outDir + "/" + outFileName
 
             console.log("\t$outFilePath")
-            fs.writeFileSync(outFilePath, it.stringify(packagePartPrefix = null, topLevel = true))
+
+            val imports = listOf(
+                "kotlin.js.*",
+                "kotlin.js.Json",
+                "org.khronos.webgl.*",
+                "org.w3c.dom.*",
+                "org.w3c.dom.events.*",
+                "org.w3c.dom.parsing.*",
+                "org.w3c.dom.svg.*",
+                "org.w3c.dom.url.*",
+                "org.w3c.fetch.*",
+                "org.w3c.files.*",
+                "org.w3c.notifications.*",
+                "org.w3c.performance.*",
+                "org.w3c.workers.*",
+                "org.w3c.xhr.*")
+
+            fs.writeFileSync(outFilePath, it.stringify(packagePartPrefix = null, topLevel = true, additionalImports = imports))
         }
     }
 }
