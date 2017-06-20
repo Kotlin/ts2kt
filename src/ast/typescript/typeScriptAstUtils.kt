@@ -276,7 +276,13 @@ private fun TypeReferenceNode.toKotlinTypeIgnoringTypeAliases(typeMapper: Object
     // TODO improve
     val name = (typeName as EntityName).toKotlinTypeName(typeMapper)
 
-    return KtType(name, typeArguments?.arr?.map { it.toKotlinType(typeMapper) } ?: emptyList())
+    return when (name) {
+        // TODO: HACKS
+        "Function" -> KtType(name, listOf(KtType("*")))
+        "Object" -> KtType(ANY)
+
+        else -> KtType(name, typeArguments?.arr?.map { it.toKotlinType(typeMapper) } ?: emptyList())
+    }
 }
 
 fun ExpressionWithTypeArguments.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
