@@ -2,39 +2,16 @@
 <module type="JAVA_MODULE" version="4">
   <component name="FacetManager">
     <facet type="kotlin-language" name="Kotlin">
-      <configuration version="1">
-        <option name="compilerInfo">
-          <KotlinCompilerInfo>
-            <option name="compilerSettings">
-              <CompilerSettings>
-                <option name="outputDirectoryForJsLibraryFiles" value="node_modules" />
-              </CompilerSettings>
-            </option>
-            <option name="k2jsCompilerArguments">
-              <K2JSCompilerArguments>
-                <option name="moduleKind" value="commonjs" />
-              </K2JSCompilerArguments>
-            </option>
-            <option name="k2jvmCompilerArguments">
-              <K2JVMCompilerArguments>
-                <option name="jvmTarget" value="1.6" />
-              </K2JVMCompilerArguments>
-            </option>
-            <option name="_commonCompilerArguments">
-              <DummyImpl>
-                <option name="coroutinesEnable" value="true" />
-              </DummyImpl>
-            </option>
-          </KotlinCompilerInfo>
-        </option>
-        <option name="useProjectSettings" value="false" />
-        <option name="versionInfo">
-          <KotlinVersionInfo>
-            <option name="apiLevel" value="1.1" />
-            <option name="languageLevel" value="1.1" />
-            <option name="targetPlatformName" value="JavaScript " />
-          </KotlinVersionInfo>
-        </option>
+      <configuration version="2" platform="JavaScript " useProjectSettings="false">
+        <compilerSettings>
+          <option name="outputDirectoryForJsLibraryFiles" value="node_modules" />
+        </compilerSettings>
+        <compilerArguments>
+          <option name="moduleKind" value="commonjs" />
+          <option name="languageVersion" value="1.1" />
+          <option name="apiVersion" value="1.1" />
+          <option name="coroutinesEnable" value="true" />
+        </compilerArguments>
       </configuration>
     </facet>
   </component>
