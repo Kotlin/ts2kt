@@ -51,9 +51,9 @@ data class ObjectTypeToKotlinTypeMapperImpl(
 
         val jsonTypeKey = """
                 @nativeGetter
-                fun get(String): Any?
+                operator fun get(String): Any?
                 @nativeSetter
-                fun set(String, Any)
+                operator fun set(String, Any)
 
                 """.trimIndent()
 

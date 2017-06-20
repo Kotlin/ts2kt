@@ -9,9 +9,9 @@ external fun barList(a: List<dynamic /* String | Foo | Number */>): Unit = defin
 external fun barArray(a: Array<dynamic /* String | Foo | Number */>): Unit = definedExternally
 external interface Parent {
     @nativeInvoke
-    fun invoke(vararg children: String): Foo
+    operator fun invoke(vararg children: String): Foo
     @nativeInvoke
-    fun invoke(vararg children: Foo): Foo
+    operator fun invoke(vararg children: Foo): Foo
     @nativeInvoke
-    fun invoke(vararg children: Number): Foo
+    operator fun invoke(vararg children: Number): Foo
 }

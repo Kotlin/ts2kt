@@ -2,9 +2,9 @@ package callSignature
 
 external interface Foo {
     @nativeInvoke
-    fun invoke()
+    operator fun invoke()
     @nativeInvoke
-    fun invoke(n: Number): Boolean
+    operator fun invoke(n: Number): Boolean
     @nativeInvoke
-    fun invoke(foo: Foo, s: String): Bar
+    operator fun invoke(foo: Foo, s: String): Bar
 }

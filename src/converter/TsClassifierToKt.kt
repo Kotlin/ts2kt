@@ -48,7 +48,7 @@ abstract class TsClassifierToKt(
                     annotation = NATIVE_SETTER_ANNOTATION
                 }
 
-                addFunction(accessorName, callSignature, needsNoImpl = needsNoImpl, additionalAnnotations = listOf(annotation))
+                addFunction(accessorName, callSignature, needsNoImpl = needsNoImpl, additionalAnnotations = listOf(annotation), isOperator = true)
             }
         }
     }

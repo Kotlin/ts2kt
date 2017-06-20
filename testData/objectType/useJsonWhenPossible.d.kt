@@ -3,9 +3,9 @@ package useJsonWhenPossible
 external var foo: Json = definedExternally
 external interface `T$0` {
     @nativeGetter
-    fun get(s: Number): Any?
+    operator fun get(s: Number): Any?
     @nativeSetter
-    fun set(s: Number, value: Any)
+    operator fun set(s: Number, value: Any)
 }
 external interface Foo {
     var foo: Json

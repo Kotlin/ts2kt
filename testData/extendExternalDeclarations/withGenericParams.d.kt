@@ -11,11 +11,11 @@ package withGenericParams.ref-array
 
 external interface ArrayType<T> {
     @nativeGetter
-    fun get(prop: String): Number?
+    operator fun get(prop: String): Number?
     @nativeSetter
-    fun set(prop: String, value: Number)
+    operator fun set(prop: String, value: Number)
     var someField: String
     var optionalField: T? get() = definedExternally; set(value) = definedExternally
     @nativeInvoke
-    fun invoke(resourceId: String, hash: Any? = definedExternally /* null */, callback: Function? = definedExternally /* null */)
+    operator fun invoke(resourceId: String, hash: Any? = definedExternally /* null */, callback: Function<*>? = definedExternally /* null */)
 }

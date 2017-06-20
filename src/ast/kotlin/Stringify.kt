@@ -12,6 +12,7 @@ private val NO_IMPL_PROPERTY_SETTER = " set(value)" + EQ_NO_IMPL
 private val EXTERNAL = "external"
 private val OPEN = "open"
 private val OVERRIDE = "override"
+private val OPERATOR = "operator"
 private val VAR = "var"
 private val VAL = "val"
 private val FUN = "fun"
@@ -139,6 +140,11 @@ class Stringify(
             else if (hasOpenModifier) {
                 out.print(OPEN + " ")
             }
+
+            if (isOperator) {
+                out.print(OPERATOR + " ")
+            }
+
             out.print(FUN + " ")
 
             callSignature.printTypeParams(withSpaceAfter = true)

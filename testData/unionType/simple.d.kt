@@ -12,11 +12,11 @@ external fun baz(a: Foo, b: Number): Unit = definedExternally
 external fun baz(a: Foo, b: Foo): Unit = definedExternally
 external interface `T$0` {
     @nativeGetter
-    fun get(key: String): dynamic /* String | Number */
+    operator fun get(key: String): dynamic /* String | Number */
     @nativeSetter
-    fun set(key: String, value: String)
+    operator fun set(key: String, value: String)
     @nativeSetter
-    fun set(key: String, value: Number)
+    operator fun set(key: String, value: Number)
 }
 external open class Foo {
     constructor(a: String)

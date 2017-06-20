@@ -135,7 +135,8 @@ class KtFunction(
         override var annotations: List<KtAnnotation>,
         val needsNoImpl: Boolean = true,
         val isOverride: Boolean = false,
-        val hasOpenModifier: Boolean
+        val hasOpenModifier: Boolean,
+        val isOperator: Boolean
 ) : KtMember, AbstractKtNode() {
     override fun accept(visitor: KtVisitor) {
         visitor.visitFunction(this)

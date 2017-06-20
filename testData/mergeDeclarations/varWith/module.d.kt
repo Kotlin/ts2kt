@@ -9,7 +9,7 @@ package module._
 
 external interface LoDashStatic {
     @nativeInvoke
-    fun invoke(value: Number): LoDashWrapper<Number>
+    operator fun invoke(value: Number): LoDashWrapper<Number>
     var VERSION: String
     var support: Support
 }

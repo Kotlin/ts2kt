@@ -61,12 +61,12 @@ class TsInterfaceToKtExtensions(
                 needsNoImpl = true, additionalAnnotations = annotations, isOverride = isOverride)
     }
 
-    override fun addFunction(name: String, callSignature: KtCallSignature, extendsType: String?, needsNoImpl: Boolean, additionalAnnotations: List<KtAnnotation>, isOverride: Boolean) {
+    override fun addFunction(name: String, callSignature: KtCallSignature, extendsType: String?, needsNoImpl: Boolean, additionalAnnotations: List<KtAnnotation>, isOverride: Boolean, isOperator: Boolean) {
         val typeParamsWithoutClashes = this.typeParams.fixIfClashWith(callSignature.typeParams)
         val actualExtendsType = if (typeParamsWithoutClashes === this.typeParams) cachedExtendsType else getExtendsType(typeParamsWithoutClashes)
         val annotations = additionalAnnotations.withNativeAnnotation()
 
-        super.addFunction(name, KtCallSignature(callSignature.params, typeParamsWithoutClashes merge callSignature.typeParams, callSignature.returnType), actualExtendsType, true, annotations, isOverride)
+        super.addFunction(name, KtCallSignature(callSignature.params, typeParamsWithoutClashes merge callSignature.typeParams, callSignature.returnType), actualExtendsType, true, annotations, isOverride, isOperator)
     }
 
 }

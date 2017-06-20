@@ -9,10 +9,10 @@ external interface `T$1` {
     var boo: String
     var show: (overrideChecks: Boolean) -> Unit
     @nativeInvoke
-    fun invoke(foo: `T$0`): Any
+    operator fun invoke(foo: `T$0`): Any
     @nativeGetter
-    fun get(s: String): Any?
+    operator fun get(s: String): Any?
     @nativeSetter
-    fun set(s: String, value: Any)
+    operator fun set(s: String, value: Any)
 }
 external var foo: `T$1` = definedExternally

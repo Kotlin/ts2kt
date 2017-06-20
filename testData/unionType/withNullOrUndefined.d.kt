@@ -6,9 +6,9 @@ external fun bar(a: String?): Foo? = definedExternally
 external fun baz(a: Foo?, b: Number? = definedExternally /* null */): Any? = definedExternally
 external interface `T$0` {
     @nativeGetter
-    fun get(key: String?): String?
+    operator fun get(key: String?): String?
     @nativeSetter
-    fun set(key: String?, value: String?)
+    operator fun set(key: String?, value: String?)
 }
 external open class Foo(a: String?) {
     open fun someMethod(): dynamic /* String | Number | Nothing? */ = definedExternally

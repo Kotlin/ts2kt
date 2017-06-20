@@ -6,9 +6,9 @@ external interface `T$0` {
     var boo: String
     var show: (overrideChecks: Boolean) -> Unit
     @nativeGetter
-    fun get(s: String): Any?
+    operator fun get(s: String): Any?
     @nativeSetter
-    fun set(s: String, value: Any)
+    operator fun set(s: String, value: Any)
 }
 external var foo: `T$0` = definedExternally
 external var bar: `T$0` = definedExternally
@@ -18,9 +18,9 @@ external interface `T$1` {
     var boo: String
     var show: (flag: Boolean) -> Unit
     @nativeGetter
-    fun get(s: String): Number?
+    operator fun get(s: String): Number?
     @nativeSetter
-    fun set(s: String, value: Number)
+    operator fun set(s: String, value: Number)
 }
 external var baz: `T$1` = definedExternally
 external interface Interface {

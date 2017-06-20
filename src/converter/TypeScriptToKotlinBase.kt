@@ -15,9 +15,9 @@ abstract class TypeScriptToKotlinBase : Visitor {
         declarations.add(KtVariable(name, KtTypeAnnotation(type), extendsType?.let { KtHeritageType(it) }, annotations, typeParams, isVar = isVar, needsNoImpl = needsNoImpl, isInInterface = isInterface, isOverride = isOverride, hasOpenModifier = hasMembersOpenModifier))
     }
 
-    open fun addFunction(name: String, callSignature: KtCallSignature, extendsType: String? = null, needsNoImpl: Boolean = true, additionalAnnotations: List<KtAnnotation> = listOf(), isOverride: Boolean = false) {
+    open fun addFunction(name: String, callSignature: KtCallSignature, extendsType: String? = null, needsNoImpl: Boolean = true, additionalAnnotations: List<KtAnnotation> = listOf(), isOverride: Boolean = false, isOperator: Boolean = false) {
         val annotations = defaultAnnotations + additionalAnnotations
-        declarations.add(KtFunction(name, callSignature, extendsType?.let { KtHeritageType(it) }, annotations, needsNoImpl = needsNoImpl, isOverride = isOverride, hasOpenModifier = hasMembersOpenModifier))
+        declarations.add(KtFunction(name, callSignature, extendsType?.let { KtHeritageType(it) }, annotations, needsNoImpl = needsNoImpl, isOverride = isOverride, hasOpenModifier = hasMembersOpenModifier, isOperator = isOperator))
     }
 
     // TODO
