@@ -81,7 +81,13 @@ fun translateToDir(sources: List<String>, outDir: String, libraries: List<String
                 "org.w3c.workers.*",
                 "org.w3c.xhr.*")
 
-            fs.writeFileSync(outFilePath, it.stringify(packagePartPrefix = null, topLevel = true, additionalImports = imports))
+            val suppressedDiagnostics = listOf(
+                    "INTERFACE_WITH_SUPERCLASS",
+                    "OVERRIDING_FINAL_MEMBER",
+                    "RETURN_TYPE_MISMATCH_ON_OVERRIDE",
+                    "CONFLICTING_OVERLOADS")
+
+            fs.writeFileSync(outFilePath, it.stringify(packagePartPrefix = null, topLevel = true, additionalImports = imports, suppressedDiagnostics = suppressedDiagnostics))
         }
     }
 }

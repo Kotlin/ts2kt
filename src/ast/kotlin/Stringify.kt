@@ -23,6 +23,7 @@ class Stringify(
         private val packagePartPrefix: String?,
         private val topLevel: Boolean,
         private val additionalImports: List<String> = listOf(),
+        private val suppressedDiagnostics: List<String> = listOf(),
         private val out: Output = Output()
 ) : KtVisitor {
     val result: String
@@ -209,7 +210,14 @@ class Stringify(
     }
 
     override fun visitPackagePart(packagePart: KtPackagePart) {
-        packagePart.annotations.filter { it != NATIVE_ANNOTATION }.let {
+        val annotations = packagePart.annotations.filter { it != NATIVE_ANNOTATION }
+
+        if (suppressedDiagnostics.isNotEmpty()) {
+            out.printlnWithIndent("@file:Suppress(${suppressedDiagnostics.joinToString { "\"$it\"" } })")
+            if (annotations.isEmpty()) out.println()
+        }
+
+        annotations.let {
             if (it.isNotEmpty()) {
                 out.print("@file:")
                 if (it.size == 1) {
@@ -359,5 +367,6 @@ class Stringify(
         out.print(argument.value.toString())
     }
 
-    private fun innerStringifier() = Stringify(packagePartPrefix, topLevel = false, additionalImports = additionalImports, out = out)
+    private fun innerStringifier() =
+            Stringify(packagePartPrefix, /*topLevel = */false, additionalImports, suppressedDiagnostics, out)
 }

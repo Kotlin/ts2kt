@@ -6,8 +6,8 @@ import ts2kt.utils.join
 
 // TODO: review usages
 fun KtNode.stringify() = stringify(null, false)
-fun KtNode.stringify(packagePartPrefix: String?, topLevel: Boolean = true, additionalImports: List<String> = listOf()) =
-        Stringify(packagePartPrefix, topLevel, additionalImports).also { this.accept(it) }.result
+fun KtNode.stringify(packagePartPrefix: String?, topLevel: Boolean = true, additionalImports: List<String> = listOf(), suppressedDiagnostics: List<String> = listOf()) =
+        Stringify(packagePartPrefix, topLevel, additionalImports, suppressedDiagnostics).also { this.accept(it) }.result
 
 fun KtAnnotation.getFirstParamAsString(): String? {
     if (this.parameters.isEmpty()) return null
