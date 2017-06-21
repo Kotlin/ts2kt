@@ -102,6 +102,7 @@ private fun printUsage(program: String) {
                     -d <path>                   Destination directory for files with converted declarations,
                                                 current directory is used by default
                     -h                          Print a synopsis of standard options
+                    -v, -version                Print version
                     -X                          Print a synopsis of advanced options
                 """.trimIndent())
 }
@@ -148,6 +149,10 @@ fun parseArguments(): CliArguments? {
             "-l" -> {
                 console.error("'-l' not supported yet")
                 return null
+            }
+            "-v", "-version" -> {
+                val version = js("require('./package.json').version")
+                console.log("$program version: $version")
             }
             "-X" -> {
                 console.log("""
