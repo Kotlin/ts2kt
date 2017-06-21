@@ -46,6 +46,7 @@ fun translateToFile(srcPath: String, outPath: String) {
     fs.writeFileSync(outPath, out)
 }
 
+// TODO share more code between [translateToDir] and [translateToFile]
 fun translateToDir(sources: List<String>, outDir: String, libraries: List<String> = emptyList()) {
     for (src in sources) {
         console.log("Converting $src")
@@ -94,6 +95,17 @@ fun translateToDir(sources: List<String>, outDir: String, libraries: List<String
 
 data class CliArguments(val sources: List<String>, val outDir: String, val libraries: List<String>)
 
+private fun printUsage(program: String) {
+    console.log("""
+                Usage: $program [<options>] <d.ts files>
+                where possible options include:
+                    -d <path>                   Destination directory for files with converted declarations,
+                                                current directory is used by default
+                    -h                          Print a synopsis of standard options
+                    -X                          Print a synopsis of advanced options
+                """.trimIndent())
+}
+
 fun parseArguments(): CliArguments? {
     fun Iterator<String>.readArg(): String? {
         if (!hasNext()) return null
@@ -106,6 +118,11 @@ fun parseArguments(): CliArguments? {
 
     val args = process.argv.drop(2)
 
+    if (args.isEmpty()) {
+        printUsage(program)
+        return null
+    }
+
     val it = args.iterator()
 
     val other = mutableListOf<String>()
@@ -117,14 +134,7 @@ fun parseArguments(): CliArguments? {
 
         when (arg) {
             "-h" -> {
-                console.log("""
-                            Usage: $program [<options>] <d.ts files>
-                            where possible options include:
-                                -d <path>                   Destination directory for files with converted declarations,
-                                                            current directory is used by default
-                                -h                          Print a synopsis of standard options
-                                -X                          Print a synopsis of advanced options
-                            """.trimIndent())
+                printUsage(program)
                 return null
             }
             "-d" -> {
