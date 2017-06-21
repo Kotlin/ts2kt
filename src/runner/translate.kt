@@ -30,7 +30,8 @@ import typescriptServices.ts.*
 import typescriptServices.ts.ScriptSnapshot.fromString
 
 internal val TYPESCRIPT_DEFINITION_FILE_EXT = ".d.ts"
-private val PATH_TO_LIB_D_TS = listOf(".", __dirname).map { it + "/lib/lib.d.ts" }.first { fs.existsSync(it) }
+private val PATH_TO_LIB_D_TS =
+        (listOf(getDefaultLibFilePath(getDefaultCompilerOptions())) + listOf(".", __dirname).map { it + "/lib/lib.d.ts" }).first { fs.existsSync(it) }
 
 private val file2scriptSnapshotCache: MutableMap<String, IScriptSnapshot> = hashMapOf()
 
