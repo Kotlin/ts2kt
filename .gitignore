@@ -4,6 +4,6 @@ out
 .DS_Store
 *.out
 tmp
-tools
+dependencies
 compiled
 node_modules/
