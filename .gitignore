@@ -1,9 +1,10 @@
-out
+out/
 .idea/workspace.xml
 .idea/shelf
 .DS_Store
 *.out
-tmp
-dependencies
-compiled
+tmp/
+dependencies/
+compiled/
+dist/
 node_modules/

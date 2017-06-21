@@ -81,7 +81,8 @@
 
     <macrodef name="publish-to-npm">
         <attribute name="template"/>
-        <attribute name="version"/>
+        <attribute name="templates-dir" default="js/npm.templates"/>
+        <attribute name="version" default=""/>
         <element name="actions" optional="true" implicit="true"/>
         <sequential>
             <property name="deploy_to_npm_dir" value="${output}/deploy_to_npm"/>
@@ -91,14 +92,17 @@
 
             <mkdir dir="${deploy_to_npm_dir}"/>
             <copy todir="${package_deploy_dir}">
-                <fileset dir="js/npm.templates/@{template}"/>
+                <fileset dir="@{templates-dir}/@{template}"/>
             </copy>
 
             <actions/>
 
-            <npm command="version" dir="${package_deploy_dir}">
-                <arg value="@{version}"/>
-            </npm>
+            <sequential unless:blank="@{version}">
+                <npm command="version" dir="${package_deploy_dir}">
+                    <arg value="@{version}"/>
+                </npm>
+            </sequential>
+
             <npm command="publish" dir="${package_deploy_dir}">
                 <arg value="--//registry.npmjs.org/:_authToken=${kotlin.npmjs.auth.token}"/>
             </npm>

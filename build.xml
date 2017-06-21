@@ -36,4 +36,13 @@
         </nodeunit>
     </target>
 
+    <target name="publish-ts2kt-to-npm">
+        <publish-to-npm template="npm.template" templates-dir=".">
+            <copy file="package.json" todir="${package_deploy_dir}" failonerror="true" />
+            <copy file="out/production/ts2kt/node_modules/kotlin.js" todir="${package_deploy_dir}" failonerror="true" />
+            <copy file="out/production/ts2kt/ts2kt.js" todir="${package_deploy_dir}" failonerror="true" />
+            <replace file="${package_deploy_dir}/ts2kt.js" token="require('kotlin')" value="require('./kotlin')"/>
+        </publish-to-npm>
+    </target>
+
 </project>

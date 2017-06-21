@@ -8,6 +8,7 @@
         </compilerSettings>
         <compilerArguments>
           <option name="moduleKind" value="commonjs" />
+          <option name="outputPrefix" value="$MODULE_DIR$/shebang.txt" />
           <option name="languageVersion" value="1.1" />
           <option name="apiVersion" value="1.1" />
           <option name="coroutinesEnable" value="true" />
@@ -21,6 +22,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/dependencies" />
+      <excludeFolder url="file://$MODULE_DIR$/dist" />
       <excludeFolder url="file://$MODULE_DIR$/tmp" />
       <excludeFolder url="file://$MODULE_DIR$/tools" />
     </content>
