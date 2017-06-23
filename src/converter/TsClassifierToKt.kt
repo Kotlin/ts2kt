@@ -2,6 +2,8 @@ package ts2kt
 
 import ts2kt.kotlin.ast.*
 import ts2kt.utils.assert
+import ts2kt.utils.reportUnsupportedNode
+import typescript.PropertyName
 import typescript.propertyName
 import typescriptServices.ts.*
 
@@ -81,7 +83,7 @@ abstract class TsClassifierToKt(
     override fun visitPropertyDeclaration(node: PropertyDeclaration) {
         val declarationName = node.propertyName!!
 
-        val name = declarationName.unescapedText
+        val name = declarationName.asString() ?: return
         val varType = node.type?.toKotlinType(typeMapper) ?: KtType(ANY)
 
         val isOverride = isOverrideProperty(node)
@@ -104,9 +106,19 @@ abstract class TsClassifierToKt(
 
     override fun visitMethodDeclaration(node: MethodDeclaration) {
         val declarationName = node.propertyName!!
-        val name = declarationName.unescapedText
+        val name = declarationName.asString() ?: return
         val isOverride = isOverride(node)
 
         getTranslator(node).addFunction(name, isOverride, needsNoImpl, node)
+    }
+
+    private fun PropertyName.asString() = when (kind) {
+        SyntaxKind.Identifier -> {
+            unescapedText
+        }
+        else -> {
+            reportUnsupportedNode(this)
+            null
+        }
     }
 }
