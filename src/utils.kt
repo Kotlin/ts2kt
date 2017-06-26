@@ -101,6 +101,8 @@ private fun <T: Any> MutableList<T>.mergeAllTo(mergeTo: Int, candidateIndexes: L
         }
     }
 
+    this[mergeTo] = acc
+
     indexesToRemove.sortedDescending().forEach { this.removeAt(it) }
 }
 

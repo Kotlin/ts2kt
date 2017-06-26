@@ -55,11 +55,17 @@ private fun List<KtMember>.mergeDeclarationsWithSameNameIfNeed() =
 private fun mergeClassifiers(a: KtClassifier, b: KtClassifier): KtClassifier? {
     when (a.kind) {
         KtClassKind.CLASS -> {
-            if (b.kind === KtClassKind.OBJECT) return mergeClassAndObject(a, b)
+            when(b.kind) {
+                KtClassKind.OBJECT -> return mergeClassAndObject(a, b)
+                KtClassKind.INTERFACE -> return mergeClassAndInterface(a, b)
+            }
         }
         KtClassKind.INTERFACE -> {
-            if (b.kind === KtClassKind.OBJECT) return mergeClassAndObject(a, b)
-            if (b.kind === KtClassKind.INTERFACE) return mergeClassifierMembers(a, b)
+            when (b.kind) {
+                KtClassKind.OBJECT -> return mergeClassAndObject(a, b)
+                KtClassKind.INTERFACE -> return mergeClassifierMembers(a, b)
+                KtClassKind.CLASS -> return mergeClassAndInterface(b, a)
+            }
         }
         KtClassKind.OBJECT -> {
             if (b.kind === KtClassKind.CLASS || b.kind === KtClassKind.INTERFACE) return mergeClassAndObject(b, a)
@@ -71,6 +77,27 @@ private fun mergeClassifiers(a: KtClassifier, b: KtClassifier): KtClassifier? {
     report("Merging ${a.kind} and ${b.kind} unsupported yet, a: ${a.stringify()}, b: ${b.stringify()}")
 
     return null
+}
+
+private fun mergeClassAndInterface(klass: KtClassifier, iface: KtClassifier): KtClassifier? {
+    if (klass.typeParams != iface.typeParams) {
+        report("Can't merge classifiers with different type parameters -- klass: ${klass.stringify()}, iface: ${iface.stringify()}")
+        return null
+    }
+
+    val result =
+            KtClassifier(
+                    KtClassKind.CLASS,
+                    klass.name,
+                    klass.paramsOfConstructors,
+                    klass.typeParams,
+                    (klass.parents + iface.parents).distinct(),
+                    mutableListOf(),
+                    mutableListOf() /*annotations will be merged later*/,
+                    klass.hasOpenModifier /* TODO: should it be open? */
+            )
+
+    return mergeClassifierMembers(result, klass, iface)
 }
 
 private fun mergeClassifierAndVariable(a: KtClassifier, b: KtVariable): KtMember? {
@@ -132,9 +159,11 @@ private fun mergeClassAndObject(a: KtClassifier, b: KtClassifier): KtClassifier 
     return a
 }
 
-private fun mergeClassifierMembers(a: KtClassifier, b: KtClassifier): KtClassifier {
-    // TODO drop hack
-    a.addMembersFrom(b)
+private fun mergeClassifierMembers(a: KtClassifier, vararg other: KtClassifier): KtClassifier {
+    for (b in other){
+        // TODO drop hack
+        a.addMembersFrom(b)
+    }
     return a
 }
 

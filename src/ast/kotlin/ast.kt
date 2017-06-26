@@ -172,6 +172,19 @@ class KtHeritageType(override var name: String) : KtNamed, AbstractKtNode() {
     override fun accept(visitor: KtVisitor) {
         visitor.visitHeritageType(this)
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || other !is KtHeritageType) return false
+
+        if (name != other.name) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return name.hashCode()
+    }
 }
 
 fun KtTypeUnion(vararg possibleTypes: KtType): KtTypeUnion = KtTypeUnion(possibleTypes.toList())
@@ -213,6 +226,24 @@ class KtTypeParam(override var name: String, val upperBound: KtType? = null) : K
     override fun accept(visitor: KtVisitor) {
         visitor.visitTypeParam(this)
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || other !is KtTypeParam) return false
+
+        if (name != other.name) return false
+        if (upperBound != other.upperBound) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = name.hashCode()
+        result = 31 * result + (upperBound?.hashCode() ?: 0)
+        return result
+    }
+
+
 }
 
 /** A Kotlin representation as in: typealias name<typeParams> = actualTypeUnionUsingAliasParams */
