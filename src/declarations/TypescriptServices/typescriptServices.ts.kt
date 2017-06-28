@@ -35,7 +35,7 @@ external interface Map<T> {
     fun values(): Iterator<T>
     fun entries(): Iterator<dynamic /* "TupleType" kind unsupported yet here! (node_modules/typescript/lib/typescriptServices.d.ts:36:29 to 36:40) */>
 }
-external interface `T$0` {
+external interface `T$0`<T> {
     var value: T
     var done: Any /* "null" */
 }
@@ -54,344 +54,344 @@ external interface FileMap<T> {
     fun set(fileName: String /* String & `T$2` */, value: T)
     fun contains(fileName: String /* String & `T$2` */): Boolean
     fun remove(fileName: String /* String & `T$2` */)
-    fun forEachValue(f: `(key: String /* String & `T$2` */, v: T) -> Unit`)
+    fun forEachValue(f: (key: String /* String & `T$2` */, v: T) -> Unit)
     fun getKeys(): Array<String /* String & `T$2` */>
     fun clear()
 }
 external interface TextRange {
-    var pos: Number
-    var end: Number
+    val pos: Int
+    val end: Int
 }
-external enum class SyntaxKind {
-    Unknown /* = 0 */,
-    EndOfFileToken /* = 1 */,
-    SingleLineCommentTrivia /* = 2 */,
-    MultiLineCommentTrivia /* = 3 */,
-    NewLineTrivia /* = 4 */,
-    WhitespaceTrivia /* = 5 */,
-    ShebangTrivia /* = 6 */,
-    ConflictMarkerTrivia /* = 7 */,
-    NumericLiteral /* = 8 */,
-    StringLiteral /* = 9 */,
-    JsxText /* = 10 */,
-    JsxTextAllWhiteSpaces /* = 11 */,
-    RegularExpressionLiteral /* = 12 */,
-    NoSubstitutionTemplateLiteral /* = 13 */,
-    TemplateHead /* = 14 */,
-    TemplateMiddle /* = 15 */,
-    TemplateTail /* = 16 */,
-    OpenBraceToken /* = 17 */,
-    CloseBraceToken /* = 18 */,
-    OpenParenToken /* = 19 */,
-    CloseParenToken /* = 20 */,
-    OpenBracketToken /* = 21 */,
-    CloseBracketToken /* = 22 */,
-    DotToken /* = 23 */,
-    DotDotDotToken /* = 24 */,
-    SemicolonToken /* = 25 */,
-    CommaToken /* = 26 */,
-    LessThanToken /* = 27 */,
-    LessThanSlashToken /* = 28 */,
-    GreaterThanToken /* = 29 */,
-    LessThanEqualsToken /* = 30 */,
-    GreaterThanEqualsToken /* = 31 */,
-    EqualsEqualsToken /* = 32 */,
-    ExclamationEqualsToken /* = 33 */,
-    EqualsEqualsEqualsToken /* = 34 */,
-    ExclamationEqualsEqualsToken /* = 35 */,
-    EqualsGreaterThanToken /* = 36 */,
-    PlusToken /* = 37 */,
-    MinusToken /* = 38 */,
-    AsteriskToken /* = 39 */,
-    AsteriskAsteriskToken /* = 40 */,
-    SlashToken /* = 41 */,
-    PercentToken /* = 42 */,
-    PlusPlusToken /* = 43 */,
-    MinusMinusToken /* = 44 */,
-    LessThanLessThanToken /* = 45 */,
-    GreaterThanGreaterThanToken /* = 46 */,
-    GreaterThanGreaterThanGreaterThanToken /* = 47 */,
-    AmpersandToken /* = 48 */,
-    BarToken /* = 49 */,
-    CaretToken /* = 50 */,
-    ExclamationToken /* = 51 */,
-    TildeToken /* = 52 */,
-    AmpersandAmpersandToken /* = 53 */,
-    BarBarToken /* = 54 */,
-    QuestionToken /* = 55 */,
-    ColonToken /* = 56 */,
-    AtToken /* = 57 */,
-    EqualsToken /* = 58 */,
-    PlusEqualsToken /* = 59 */,
-    MinusEqualsToken /* = 60 */,
-    AsteriskEqualsToken /* = 61 */,
-    AsteriskAsteriskEqualsToken /* = 62 */,
-    SlashEqualsToken /* = 63 */,
-    PercentEqualsToken /* = 64 */,
-    LessThanLessThanEqualsToken /* = 65 */,
-    GreaterThanGreaterThanEqualsToken /* = 66 */,
-    GreaterThanGreaterThanGreaterThanEqualsToken /* = 67 */,
-    AmpersandEqualsToken /* = 68 */,
-    BarEqualsToken /* = 69 */,
-    CaretEqualsToken /* = 70 */,
-    Identifier /* = 71 */,
-    BreakKeyword /* = 72 */,
-    CaseKeyword /* = 73 */,
-    CatchKeyword /* = 74 */,
-    ClassKeyword /* = 75 */,
-    ConstKeyword /* = 76 */,
-    ContinueKeyword /* = 77 */,
-    DebuggerKeyword /* = 78 */,
-    DefaultKeyword /* = 79 */,
-    DeleteKeyword /* = 80 */,
-    DoKeyword /* = 81 */,
-    ElseKeyword /* = 82 */,
-    EnumKeyword /* = 83 */,
-    ExportKeyword /* = 84 */,
-    ExtendsKeyword /* = 85 */,
-    FalseKeyword /* = 86 */,
-    FinallyKeyword /* = 87 */,
-    ForKeyword /* = 88 */,
-    FunctionKeyword /* = 89 */,
-    IfKeyword /* = 90 */,
-    ImportKeyword /* = 91 */,
-    InKeyword /* = 92 */,
-    InstanceOfKeyword /* = 93 */,
-    NewKeyword /* = 94 */,
-    NullKeyword /* = 95 */,
-    ReturnKeyword /* = 96 */,
-    SuperKeyword /* = 97 */,
-    SwitchKeyword /* = 98 */,
-    ThisKeyword /* = 99 */,
-    ThrowKeyword /* = 100 */,
-    TrueKeyword /* = 101 */,
-    TryKeyword /* = 102 */,
-    TypeOfKeyword /* = 103 */,
-    VarKeyword /* = 104 */,
-    VoidKeyword /* = 105 */,
-    WhileKeyword /* = 106 */,
-    WithKeyword /* = 107 */,
-    ImplementsKeyword /* = 108 */,
-    InterfaceKeyword /* = 109 */,
-    LetKeyword /* = 110 */,
-    PackageKeyword /* = 111 */,
-    PrivateKeyword /* = 112 */,
-    ProtectedKeyword /* = 113 */,
-    PublicKeyword /* = 114 */,
-    StaticKeyword /* = 115 */,
-    YieldKeyword /* = 116 */,
-    AbstractKeyword /* = 117 */,
-    AsKeyword /* = 118 */,
-    AnyKeyword /* = 119 */,
-    AsyncKeyword /* = 120 */,
-    AwaitKeyword /* = 121 */,
-    BooleanKeyword /* = 122 */,
-    ConstructorKeyword /* = 123 */,
-    DeclareKeyword /* = 124 */,
-    GetKeyword /* = 125 */,
-    IsKeyword /* = 126 */,
-    KeyOfKeyword /* = 127 */,
-    ModuleKeyword /* = 128 */,
-    NamespaceKeyword /* = 129 */,
-    NeverKeyword /* = 130 */,
-    ReadonlyKeyword /* = 131 */,
-    RequireKeyword /* = 132 */,
-    NumberKeyword /* = 133 */,
-    ObjectKeyword /* = 134 */,
-    SetKeyword /* = 135 */,
-    StringKeyword /* = 136 */,
-    SymbolKeyword /* = 137 */,
-    TypeKeyword /* = 138 */,
-    UndefinedKeyword /* = 139 */,
-    FromKeyword /* = 140 */,
-    GlobalKeyword /* = 141 */,
-    OfKeyword /* = 142 */,
-    QualifiedName /* = 143 */,
-    ComputedPropertyName /* = 144 */,
-    TypeParameter /* = 145 */,
-    Parameter /* = 146 */,
-    Decorator /* = 147 */,
-    PropertySignature /* = 148 */,
-    PropertyDeclaration /* = 149 */,
-    MethodSignature /* = 150 */,
-    MethodDeclaration /* = 151 */,
-    Constructor /* = 152 */,
-    GetAccessor /* = 153 */,
-    SetAccessor /* = 154 */,
-    CallSignature /* = 155 */,
-    ConstructSignature /* = 156 */,
-    IndexSignature /* = 157 */,
-    TypePredicate /* = 158 */,
-    TypeReference /* = 159 */,
-    FunctionType /* = 160 */,
-    ConstructorType /* = 161 */,
-    TypeQuery /* = 162 */,
-    TypeLiteral /* = 163 */,
-    ArrayType /* = 164 */,
-    TupleType /* = 165 */,
-    UnionType /* = 166 */,
-    IntersectionType /* = 167 */,
-    ParenthesizedType /* = 168 */,
-    ThisType /* = 169 */,
-    TypeOperator /* = 170 */,
-    IndexedAccessType /* = 171 */,
-    MappedType /* = 172 */,
-    LiteralType /* = 173 */,
-    ObjectBindingPattern /* = 174 */,
-    ArrayBindingPattern /* = 175 */,
-    BindingElement /* = 176 */,
-    ArrayLiteralExpression /* = 177 */,
-    ObjectLiteralExpression /* = 178 */,
-    PropertyAccessExpression /* = 179 */,
-    ElementAccessExpression /* = 180 */,
-    CallExpression /* = 181 */,
-    NewExpression /* = 182 */,
-    TaggedTemplateExpression /* = 183 */,
-    TypeAssertionExpression /* = 184 */,
-    ParenthesizedExpression /* = 185 */,
-    FunctionExpression /* = 186 */,
-    ArrowFunction /* = 187 */,
-    DeleteExpression /* = 188 */,
-    TypeOfExpression /* = 189 */,
-    VoidExpression /* = 190 */,
-    AwaitExpression /* = 191 */,
-    PrefixUnaryExpression /* = 192 */,
-    PostfixUnaryExpression /* = 193 */,
-    BinaryExpression /* = 194 */,
-    ConditionalExpression /* = 195 */,
-    TemplateExpression /* = 196 */,
-    YieldExpression /* = 197 */,
-    SpreadElement /* = 198 */,
-    ClassExpression /* = 199 */,
-    OmittedExpression /* = 200 */,
-    ExpressionWithTypeArguments /* = 201 */,
-    AsExpression /* = 202 */,
-    NonNullExpression /* = 203 */,
-    MetaProperty /* = 204 */,
-    TemplateSpan /* = 205 */,
-    SemicolonClassElement /* = 206 */,
-    Block /* = 207 */,
-    VariableStatement /* = 208 */,
-    EmptyStatement /* = 209 */,
-    ExpressionStatement /* = 210 */,
-    IfStatement /* = 211 */,
-    DoStatement /* = 212 */,
-    WhileStatement /* = 213 */,
-    ForStatement /* = 214 */,
-    ForInStatement /* = 215 */,
-    ForOfStatement /* = 216 */,
-    ContinueStatement /* = 217 */,
-    BreakStatement /* = 218 */,
-    ReturnStatement /* = 219 */,
-    WithStatement /* = 220 */,
-    SwitchStatement /* = 221 */,
-    LabeledStatement /* = 222 */,
-    ThrowStatement /* = 223 */,
-    TryStatement /* = 224 */,
-    DebuggerStatement /* = 225 */,
-    VariableDeclaration /* = 226 */,
-    VariableDeclarationList /* = 227 */,
-    FunctionDeclaration /* = 228 */,
-    ClassDeclaration /* = 229 */,
-    InterfaceDeclaration /* = 230 */,
-    TypeAliasDeclaration /* = 231 */,
-    EnumDeclaration /* = 232 */,
-    ModuleDeclaration /* = 233 */,
-    ModuleBlock /* = 234 */,
-    CaseBlock /* = 235 */,
-    NamespaceExportDeclaration /* = 236 */,
-    ImportEqualsDeclaration /* = 237 */,
-    ImportDeclaration /* = 238 */,
-    ImportClause /* = 239 */,
-    NamespaceImport /* = 240 */,
-    NamedImports /* = 241 */,
-    ImportSpecifier /* = 242 */,
-    ExportAssignment /* = 243 */,
-    ExportDeclaration /* = 244 */,
-    NamedExports /* = 245 */,
-    ExportSpecifier /* = 246 */,
-    MissingDeclaration /* = 247 */,
-    ExternalModuleReference /* = 248 */,
-    JsxElement /* = 249 */,
-    JsxSelfClosingElement /* = 250 */,
-    JsxOpeningElement /* = 251 */,
-    JsxClosingElement /* = 252 */,
-    JsxAttribute /* = 253 */,
-    JsxAttributes /* = 254 */,
-    JsxSpreadAttribute /* = 255 */,
-    JsxExpression /* = 256 */,
-    CaseClause /* = 257 */,
-    DefaultClause /* = 258 */,
-    HeritageClause /* = 259 */,
-    CatchClause /* = 260 */,
-    PropertyAssignment /* = 261 */,
-    ShorthandPropertyAssignment /* = 262 */,
-    SpreadAssignment /* = 263 */,
-    EnumMember /* = 264 */,
-    SourceFile /* = 265 */,
-    Bundle /* = 266 */,
-    JSDocTypeExpression /* = 267 */,
-    JSDocAllType /* = 268 */,
-    JSDocUnknownType /* = 269 */,
-    JSDocArrayType /* = 270 */,
-    JSDocUnionType /* = 271 */,
-    JSDocTupleType /* = 272 */,
-    JSDocNullableType /* = 273 */,
-    JSDocNonNullableType /* = 274 */,
-    JSDocRecordType /* = 275 */,
-    JSDocRecordMember /* = 276 */,
-    JSDocTypeReference /* = 277 */,
-    JSDocOptionalType /* = 278 */,
-    JSDocFunctionType /* = 279 */,
-    JSDocVariadicType /* = 280 */,
-    JSDocConstructorType /* = 281 */,
-    JSDocThisType /* = 282 */,
-    JSDocComment /* = 283 */,
-    JSDocTag /* = 284 */,
-    JSDocAugmentsTag /* = 285 */,
-    JSDocParameterTag /* = 286 */,
-    JSDocReturnTag /* = 287 */,
-    JSDocTypeTag /* = 288 */,
-    JSDocTemplateTag /* = 289 */,
-    JSDocTypedefTag /* = 290 */,
-    JSDocPropertyTag /* = 291 */,
-    JSDocTypeLiteral /* = 292 */,
-    JSDocLiteralType /* = 293 */,
-    SyntaxList /* = 294 */,
-    NotEmittedStatement /* = 295 */,
-    PartiallyEmittedExpression /* = 296 */,
-    MergeDeclarationMarker /* = 297 */,
-    EndOfDeclarationMarker /* = 298 */,
-    Count /* = 299 */,
-    FirstAssignment /* = 58 */,
-    LastAssignment /* = 70 */,
-    FirstCompoundAssignment /* = 59 */,
-    LastCompoundAssignment /* = 70 */,
-    FirstReservedWord /* = 72 */,
-    LastReservedWord /* = 107 */,
-    FirstKeyword /* = 72 */,
-    LastKeyword /* = 142 */,
-    FirstFutureReservedWord /* = 108 */,
-    LastFutureReservedWord /* = 116 */,
-    FirstTypeNode /* = 158 */,
-    LastTypeNode /* = 173 */,
-    FirstPunctuation /* = 17 */,
-    LastPunctuation /* = 70 */,
-    FirstToken /* = 0 */,
-    LastToken /* = 142 */,
-    FirstTriviaToken /* = 2 */,
-    LastTriviaToken /* = 7 */,
-    FirstLiteralToken /* = 8 */,
-    LastLiteralToken /* = 13 */,
-    FirstTemplateToken /* = 13 */,
-    LastTemplateToken /* = 16 */,
-    FirstBinaryOperator /* = 27 */,
-    LastBinaryOperator /* = 70 */,
-    FirstNode /* = 143 */,
-    FirstJSDocNode /* = 267 */,
-    LastJSDocNode /* = 293 */,
-    FirstJSDocTagNode /* = 283 */,
-    LastJSDocTagNode /* = 293 */
+external sealed class SyntaxKind {
+    object Unknown : SyntaxKind /* = 0 */
+    object EndOfFileToken : SyntaxKind /* = 1 */
+    object SingleLineCommentTrivia : SyntaxKind, CommentKind /* = 2 */
+    object MultiLineCommentTrivia : SyntaxKind, CommentKind /* = 3 */
+    object NewLineTrivia : SyntaxKind /* = 4 */
+    object WhitespaceTrivia : SyntaxKind /* = 5 */
+    object ShebangTrivia : SyntaxKind /* = 6 */
+    object ConflictMarkerTrivia : SyntaxKind /* = 7 */
+    object NumericLiteral : SyntaxKind /* = 8 */
+    object StringLiteral : SyntaxKind /* = 9 */
+    object JsxText : SyntaxKind /* = 10 */
+    object JsxTextAllWhiteSpaces : SyntaxKind /* = 11 */
+    object RegularExpressionLiteral : SyntaxKind /* = 12 */
+    object NoSubstitutionTemplateLiteral : SyntaxKind /* = 13 */
+    object TemplateHead : SyntaxKind /* = 14 */
+    object TemplateMiddle : SyntaxKind /* = 15 */
+    object TemplateTail : SyntaxKind /* = 16 */
+    object OpenBraceToken : SyntaxKind /* = 17 */
+    object CloseBraceToken : SyntaxKind /* = 18 */
+    object OpenParenToken : SyntaxKind /* = 19 */
+    object CloseParenToken : SyntaxKind /* = 20 */
+    object OpenBracketToken : SyntaxKind /* = 21 */
+    object CloseBracketToken : SyntaxKind /* = 22 */
+    object DotToken : SyntaxKind /* = 23 */
+    object DotDotDotToken : SyntaxKind /* = 24 */
+    object SemicolonToken : SyntaxKind /* = 25 */
+    object CommaToken : SyntaxKind /* = 26 */
+    object LessThanToken : SyntaxKind /* = 27 */
+    object LessThanSlashToken : SyntaxKind /* = 28 */
+    object GreaterThanToken : SyntaxKind /* = 29 */
+    object LessThanEqualsToken : SyntaxKind /* = 30 */
+    object GreaterThanEqualsToken : SyntaxKind /* = 31 */
+    object EqualsEqualsToken : SyntaxKind /* = 32 */
+    object ExclamationEqualsToken : SyntaxKind /* = 33 */
+    object EqualsEqualsEqualsToken : SyntaxKind /* = 34 */
+    object ExclamationEqualsEqualsToken : SyntaxKind /* = 35 */
+    object EqualsGreaterThanToken : SyntaxKind /* = 36 */
+    object PlusToken : SyntaxKind /* = 37 */
+    object MinusToken : SyntaxKind /* = 38 */
+    object AsteriskToken : SyntaxKind /* = 39 */
+    object AsteriskAsteriskToken : SyntaxKind /* = 40 */
+    object SlashToken : SyntaxKind /* = 41 */
+    object PercentToken : SyntaxKind /* = 42 */
+    object PlusPlusToken : SyntaxKind /* = 43 */
+    object MinusMinusToken : SyntaxKind /* = 44 */
+    object LessThanLessThanToken : SyntaxKind /* = 45 */
+    object GreaterThanGreaterThanToken : SyntaxKind /* = 46 */
+    object GreaterThanGreaterThanGreaterThanToken : SyntaxKind /* = 47 */
+    object AmpersandToken : SyntaxKind /* = 48 */
+    object BarToken : SyntaxKind /* = 49 */
+    object CaretToken : SyntaxKind /* = 50 */
+    object ExclamationToken : SyntaxKind /* = 51 */
+    object TildeToken : SyntaxKind /* = 52 */
+    object AmpersandAmpersandToken : SyntaxKind /* = 53 */
+    object BarBarToken : SyntaxKind /* = 54 */
+    object QuestionToken : SyntaxKind /* = 55 */
+    object ColonToken : SyntaxKind /* = 56 */
+    object AtToken : SyntaxKind /* = 57 */
+    object EqualsToken : SyntaxKind /* = 58 */
+    object PlusEqualsToken : SyntaxKind /* = 59 */
+    object MinusEqualsToken : SyntaxKind /* = 60 */
+    object AsteriskEqualsToken : SyntaxKind /* = 61 */
+    object AsteriskAsteriskEqualsToken : SyntaxKind /* = 62 */
+    object SlashEqualsToken : SyntaxKind /* = 63 */
+    object PercentEqualsToken : SyntaxKind /* = 64 */
+    object LessThanLessThanEqualsToken : SyntaxKind /* = 65 */
+    object GreaterThanGreaterThanEqualsToken : SyntaxKind /* = 66 */
+    object GreaterThanGreaterThanGreaterThanEqualsToken : SyntaxKind /* = 67 */
+    object AmpersandEqualsToken : SyntaxKind /* = 68 */
+    object BarEqualsToken : SyntaxKind /* = 69 */
+    object CaretEqualsToken : SyntaxKind /* = 70 */
+    object Identifier : SyntaxKind /* = 71 */
+    object BreakKeyword : SyntaxKind /* = 72 */
+    object CaseKeyword : SyntaxKind /* = 73 */
+    object CatchKeyword : SyntaxKind /* = 74 */
+    object ClassKeyword : SyntaxKind /* = 75 */
+    object ConstKeyword : SyntaxKind /* = 76 */
+    object ContinueKeyword : SyntaxKind /* = 77 */
+    object DebuggerKeyword : SyntaxKind /* = 78 */
+    object DefaultKeyword : SyntaxKind /* = 79 */
+    object DeleteKeyword : SyntaxKind /* = 80 */
+    object DoKeyword : SyntaxKind /* = 81 */
+    object ElseKeyword : SyntaxKind /* = 82 */
+    object EnumKeyword : SyntaxKind /* = 83 */
+    object ExportKeyword : SyntaxKind /* = 84 */
+    object ExtendsKeyword : SyntaxKind /* = 85 */
+    object FalseKeyword : SyntaxKind /* = 86 */
+    object FinallyKeyword : SyntaxKind /* = 87 */
+    object ForKeyword : SyntaxKind /* = 88 */
+    object FunctionKeyword : SyntaxKind /* = 89 */
+    object IfKeyword : SyntaxKind /* = 90 */
+    object ImportKeyword : SyntaxKind /* = 91 */
+    object InKeyword : SyntaxKind /* = 92 */
+    object InstanceOfKeyword : SyntaxKind /* = 93 */
+    object NewKeyword : SyntaxKind /* = 94 */
+    object NullKeyword : SyntaxKind /* = 95 */
+    object ReturnKeyword : SyntaxKind /* = 96 */
+    object SuperKeyword : SyntaxKind /* = 97 */
+    object SwitchKeyword : SyntaxKind /* = 98 */
+    object ThisKeyword : SyntaxKind /* = 99 */
+    object ThrowKeyword : SyntaxKind /* = 100 */
+    object TrueKeyword : SyntaxKind /* = 101 */
+    object TryKeyword : SyntaxKind /* = 102 */
+    object TypeOfKeyword : SyntaxKind /* = 103 */
+    object VarKeyword : SyntaxKind /* = 104 */
+    object VoidKeyword : SyntaxKind /* = 105 */
+    object WhileKeyword : SyntaxKind /* = 106 */
+    object WithKeyword : SyntaxKind /* = 107 */
+    object ImplementsKeyword : SyntaxKind /* = 108 */
+    object InterfaceKeyword : SyntaxKind /* = 109 */
+    object LetKeyword : SyntaxKind /* = 110 */
+    object PackageKeyword : SyntaxKind /* = 111 */
+    object PrivateKeyword : SyntaxKind /* = 112 */
+    object ProtectedKeyword : SyntaxKind /* = 113 */
+    object PublicKeyword : SyntaxKind /* = 114 */
+    object StaticKeyword : SyntaxKind /* = 115 */
+    object YieldKeyword : SyntaxKind /* = 116 */
+    object AbstractKeyword : SyntaxKind /* = 117 */
+    object AsKeyword : SyntaxKind /* = 118 */
+    object AnyKeyword : SyntaxKind /* = 119 */
+    object AsyncKeyword : SyntaxKind /* = 120 */
+    object AwaitKeyword : SyntaxKind /* = 121 */
+    object BooleanKeyword : SyntaxKind /* = 122 */
+    object ConstructorKeyword : SyntaxKind /* = 123 */
+    object DeclareKeyword : SyntaxKind /* = 124 */
+    object GetKeyword : SyntaxKind /* = 125 */
+    object IsKeyword : SyntaxKind /* = 126 */
+    object KeyOfKeyword : SyntaxKind /* = 127 */
+    object ModuleKeyword : SyntaxKind /* = 128 */
+    object NamespaceKeyword : SyntaxKind /* = 129 */
+    object NeverKeyword : SyntaxKind /* = 130 */
+    object ReadonlyKeyword : SyntaxKind /* = 131 */
+    object RequireKeyword : SyntaxKind /* = 132 */
+    object NumberKeyword : SyntaxKind /* = 133 */
+    object ObjectKeyword : SyntaxKind /* = 134 */
+    object SetKeyword : SyntaxKind /* = 135 */
+    object StringKeyword : SyntaxKind /* = 136 */
+    object SymbolKeyword : SyntaxKind /* = 137 */
+    object TypeKeyword : SyntaxKind /* = 138 */
+    object UndefinedKeyword : SyntaxKind /* = 139 */
+    object FromKeyword : SyntaxKind /* = 140 */
+    object GlobalKeyword : SyntaxKind /* = 141 */
+    object OfKeyword : SyntaxKind /* = 142 */
+    object QualifiedName : SyntaxKind /* = 143 */
+    object ComputedPropertyName : SyntaxKind /* = 144 */
+    object TypeParameter : SyntaxKind /* = 145 */
+    object Parameter : SyntaxKind /* = 146 */
+    object Decorator : SyntaxKind /* = 147 */
+    object PropertySignature : SyntaxKind /* = 148 */
+    object PropertyDeclaration : SyntaxKind /* = 149 */
+    object MethodSignature : SyntaxKind /* = 150 */
+    object MethodDeclaration : SyntaxKind /* = 151 */
+    object Constructor : SyntaxKind /* = 152 */
+    object GetAccessor : SyntaxKind /* = 153 */
+    object SetAccessor : SyntaxKind /* = 154 */
+    object CallSignature : SyntaxKind /* = 155 */
+    object ConstructSignature : SyntaxKind /* = 156 */
+    object IndexSignature : SyntaxKind /* = 157 */
+    object TypePredicate : SyntaxKind /* = 158 */
+    object TypeReference : SyntaxKind /* = 159 */
+    object FunctionType : SyntaxKind /* = 160 */
+    object ConstructorType : SyntaxKind /* = 161 */
+    object TypeQuery : SyntaxKind /* = 162 */
+    object TypeLiteral : SyntaxKind /* = 163 */
+    object ArrayType : SyntaxKind /* = 164 */
+    object TupleType : SyntaxKind /* = 165 */
+    object UnionType : SyntaxKind /* = 166 */
+    object IntersectionType : SyntaxKind /* = 167 */
+    object ParenthesizedType : SyntaxKind /* = 168 */
+    object ThisType : SyntaxKind /* = 169 */
+    object TypeOperator : SyntaxKind /* = 170 */
+    object IndexedAccessType : SyntaxKind /* = 171 */
+    object MappedType : SyntaxKind /* = 172 */
+    object LiteralType : SyntaxKind /* = 173 */
+    object ObjectBindingPattern : SyntaxKind /* = 174 */
+    object ArrayBindingPattern : SyntaxKind /* = 175 */
+    object BindingElement : SyntaxKind /* = 176 */
+    object ArrayLiteralExpression : SyntaxKind /* = 177 */
+    object ObjectLiteralExpression : SyntaxKind /* = 178 */
+    object PropertyAccessExpression : SyntaxKind /* = 179 */
+    object ElementAccessExpression : SyntaxKind /* = 180 */
+    object CallExpression : SyntaxKind /* = 181 */
+    object NewExpression : SyntaxKind /* = 182 */
+    object TaggedTemplateExpression : SyntaxKind /* = 183 */
+    object TypeAssertionExpression : SyntaxKind /* = 184 */
+    object ParenthesizedExpression : SyntaxKind /* = 185 */
+    object FunctionExpression : SyntaxKind /* = 186 */
+    object ArrowFunction : SyntaxKind /* = 187 */
+    object DeleteExpression : SyntaxKind /* = 188 */
+    object TypeOfExpression : SyntaxKind /* = 189 */
+    object VoidExpression : SyntaxKind /* = 190 */
+    object AwaitExpression : SyntaxKind /* = 191 */
+    object PrefixUnaryExpression : SyntaxKind /* = 192 */
+    object PostfixUnaryExpression : SyntaxKind /* = 193 */
+    object BinaryExpression : SyntaxKind /* = 194 */
+    object ConditionalExpression : SyntaxKind /* = 195 */
+    object TemplateExpression : SyntaxKind /* = 196 */
+    object YieldExpression : SyntaxKind /* = 197 */
+    object SpreadElement : SyntaxKind /* = 198 */
+    object ClassExpression : SyntaxKind /* = 199 */
+    object OmittedExpression : SyntaxKind /* = 200 */
+    object ExpressionWithTypeArguments : SyntaxKind /* = 201 */
+    object AsExpression : SyntaxKind /* = 202 */
+    object NonNullExpression : SyntaxKind /* = 203 */
+    object MetaProperty : SyntaxKind /* = 204 */
+    object TemplateSpan : SyntaxKind /* = 205 */
+    object SemicolonClassElement : SyntaxKind /* = 206 */
+    object Block : SyntaxKind /* = 207 */
+    object VariableStatement : SyntaxKind /* = 208 */
+    object EmptyStatement : SyntaxKind /* = 209 */
+    object ExpressionStatement : SyntaxKind /* = 210 */
+    object IfStatement : SyntaxKind /* = 211 */
+    object DoStatement : SyntaxKind /* = 212 */
+    object WhileStatement : SyntaxKind /* = 213 */
+    object ForStatement : SyntaxKind /* = 214 */
+    object ForInStatement : SyntaxKind /* = 215 */
+    object ForOfStatement : SyntaxKind /* = 216 */
+    object ContinueStatement : SyntaxKind /* = 217 */
+    object BreakStatement : SyntaxKind /* = 218 */
+    object ReturnStatement : SyntaxKind /* = 219 */
+    object WithStatement : SyntaxKind /* = 220 */
+    object SwitchStatement : SyntaxKind /* = 221 */
+    object LabeledStatement : SyntaxKind /* = 222 */
+    object ThrowStatement : SyntaxKind /* = 223 */
+    object TryStatement : SyntaxKind /* = 224 */
+    object DebuggerStatement : SyntaxKind /* = 225 */
+    object VariableDeclaration : SyntaxKind /* = 226 */
+    object VariableDeclarationList : SyntaxKind /* = 227 */
+    object FunctionDeclaration : SyntaxKind /* = 228 */
+    object ClassDeclaration : SyntaxKind /* = 229 */
+    object InterfaceDeclaration : SyntaxKind /* = 230 */
+    object TypeAliasDeclaration : SyntaxKind /* = 231 */
+    object EnumDeclaration : SyntaxKind /* = 232 */
+    object ModuleDeclaration : SyntaxKind /* = 233 */
+    object ModuleBlock : SyntaxKind /* = 234 */
+    object CaseBlock : SyntaxKind /* = 235 */
+    object NamespaceExportDeclaration : SyntaxKind /* = 236 */
+    object ImportEqualsDeclaration : SyntaxKind /* = 237 */
+    object ImportDeclaration : SyntaxKind /* = 238 */
+    object ImportClause : SyntaxKind /* = 239 */
+    object NamespaceImport : SyntaxKind /* = 240 */
+    object NamedImports : SyntaxKind /* = 241 */
+    object ImportSpecifier : SyntaxKind /* = 242 */
+    object ExportAssignment : SyntaxKind /* = 243 */
+    object ExportDeclaration : SyntaxKind /* = 244 */
+    object NamedExports : SyntaxKind /* = 245 */
+    object ExportSpecifier : SyntaxKind /* = 246 */
+    object MissingDeclaration : SyntaxKind /* = 247 */
+    object ExternalModuleReference : SyntaxKind /* = 248 */
+    object JsxElement : SyntaxKind /* = 249 */
+    object JsxSelfClosingElement : SyntaxKind /* = 250 */
+    object JsxOpeningElement : SyntaxKind /* = 251 */
+    object JsxClosingElement : SyntaxKind /* = 252 */
+    object JsxAttribute : SyntaxKind /* = 253 */
+    object JsxAttributes : SyntaxKind /* = 254 */
+    object JsxSpreadAttribute : SyntaxKind /* = 255 */
+    object JsxExpression : SyntaxKind /* = 256 */
+    object CaseClause : SyntaxKind /* = 257 */
+    object DefaultClause : SyntaxKind /* = 258 */
+    object HeritageClause : SyntaxKind /* = 259 */
+    object CatchClause : SyntaxKind /* = 260 */
+    object PropertyAssignment : SyntaxKind /* = 261 */
+    object ShorthandPropertyAssignment : SyntaxKind /* = 262 */
+    object SpreadAssignment : SyntaxKind /* = 263 */
+    object EnumMember : SyntaxKind /* = 264 */
+    object SourceFile : SyntaxKind /* = 265 */
+    object Bundle : SyntaxKind /* = 266 */
+    object JSDocTypeExpression : SyntaxKind /* = 267 */
+    object JSDocAllType : SyntaxKind /* = 268 */
+    object JSDocUnknownType : SyntaxKind /* = 269 */
+    object JSDocArrayType : SyntaxKind /* = 270 */
+    object JSDocUnionType : SyntaxKind /* = 271 */
+    object JSDocTupleType : SyntaxKind /* = 272 */
+    object JSDocNullableType : SyntaxKind /* = 273 */
+    object JSDocNonNullableType : SyntaxKind /* = 274 */
+    object JSDocRecordType : SyntaxKind /* = 275 */
+    object JSDocRecordMember : SyntaxKind /* = 276 */
+    object JSDocTypeReference : SyntaxKind /* = 277 */
+    object JSDocOptionalType : SyntaxKind /* = 278 */
+    object JSDocFunctionType : SyntaxKind /* = 279 */
+    object JSDocVariadicType : SyntaxKind /* = 280 */
+    object JSDocConstructorType : SyntaxKind /* = 281 */
+    object JSDocThisType : SyntaxKind /* = 282 */
+    object JSDocComment : SyntaxKind /* = 283 */
+    object JSDocTag : SyntaxKind /* = 284 */
+    object JSDocAugmentsTag : SyntaxKind /* = 285 */
+    object JSDocParameterTag : SyntaxKind /* = 286 */
+    object JSDocReturnTag : SyntaxKind /* = 287 */
+    object JSDocTypeTag : SyntaxKind /* = 288 */
+    object JSDocTemplateTag : SyntaxKind /* = 289 */
+    object JSDocTypedefTag : SyntaxKind /* = 290 */
+    object JSDocPropertyTag : SyntaxKind /* = 291 */
+    object JSDocTypeLiteral : SyntaxKind /* = 292 */
+    object JSDocLiteralType : SyntaxKind /* = 293 */
+    object SyntaxList : SyntaxKind /* = 294 */
+    object NotEmittedStatement : SyntaxKind /* = 295 */
+    object PartiallyEmittedExpression : SyntaxKind /* = 296 */
+    object MergeDeclarationMarker : SyntaxKind /* = 297 */
+    object EndOfDeclarationMarker : SyntaxKind /* = 298 */
+    object Count : SyntaxKind /* = 299 */
+    object FirstAssignment : SyntaxKind /* = 58 */
+    object LastAssignment : SyntaxKind /* = 70 */
+    object FirstCompoundAssignment : SyntaxKind /* = 59 */
+    object LastCompoundAssignment : SyntaxKind /* = 70 */
+    object FirstReservedWord : SyntaxKind /* = 72 */
+    object LastReservedWord : SyntaxKind /* = 107 */
+    object FirstKeyword : SyntaxKind /* = 72 */
+    object LastKeyword : SyntaxKind /* = 142 */
+    object FirstFutureReservedWord : SyntaxKind /* = 108 */
+    object LastFutureReservedWord : SyntaxKind /* = 116 */
+    object FirstTypeNode : SyntaxKind /* = 158 */
+    object LastTypeNode : SyntaxKind /* = 173 */
+    object FirstPunctuation : SyntaxKind /* = 17 */
+    object LastPunctuation : SyntaxKind /* = 70 */
+    object FirstToken : SyntaxKind /* = 0 */
+    object LastToken : SyntaxKind /* = 142 */
+    object FirstTriviaToken : SyntaxKind /* = 2 */
+    object LastTriviaToken : SyntaxKind /* = 7 */
+    object FirstLiteralToken : SyntaxKind /* = 8 */
+    object LastLiteralToken : SyntaxKind /* = 13 */
+    object FirstTemplateToken : SyntaxKind /* = 13 */
+    object LastTemplateToken : SyntaxKind /* = 16 */
+    object FirstBinaryOperator : SyntaxKind /* = 27 */
+    object LastBinaryOperator : SyntaxKind /* = 70 */
+    object FirstNode : SyntaxKind /* = 143 */
+    object FirstJSDocNode : SyntaxKind /* = 267 */
+    object LastJSDocNode : SyntaxKind /* = 293 */
+    object FirstJSDocTagNode : SyntaxKind /* = 283 */
+    object LastJSDocTagNode : SyntaxKind /* = 293 */
 }
 external enum class NodeFlags {
     None /* = 0 */,
@@ -446,12 +446,13 @@ external enum class JsxFlags {
     IntrinsicIndexedElement /* = 2 */,
     IntrinsicElement /* = 3 */
 }
+
 external interface Node : TextRange {
-    var kind: SyntaxKind
+    val kind: SyntaxKind
     var flags: NodeFlags
     var decorators: NodeArray<Decorator>? get() = definedExternally; set(value) = definedExternally
     var modifiers: ModifiersArray? get() = definedExternally; set(value) = definedExternally
-    var parent: Node? get() = definedExternally; set(value) = definedExternally
+    val parent: Node? get() = definedExternally
     fun getSourceFile(): SourceFile
     fun getChildCount(sourceFile: SourceFile? = definedExternally /* null */): Number
     fun getChildAt(index: Number, sourceFile: SourceFile? = definedExternally /* null */): Node
@@ -468,22 +469,22 @@ external interface Node : TextRange {
     fun getLastToken(sourceFile: SourceFile? = definedExternally /* null */): Node
     fun <T> forEachChild(cbNode: (node: Node) -> T, cbNodeArray: ((nodes: Array<Node>) -> T)? = definedExternally /* null */): T
 }
-external interface NodeArray<T : Node> : Array<T>, TextRange {
+external interface NodeArray<T : Node> : JsArray<T>, TextRange {
     var hasTrailingComma: Boolean? get() = definedExternally; set(value) = definedExternally
 }
 external interface Token<TKind : SyntaxKind> : Node {
-    override var kind: TKind
+    override val kind: TKind
 }
-external interface Identifier : PrimaryExpression {
+external interface Identifier : PrimaryExpression, EntityName, PropertyName, DeclarationName, BindingName {
     override var kind: SyntaxKind.Identifier
-    var text: String
+    override var text: String
     var originalKeywordKind: SyntaxKind? get() = definedExternally; set(value) = definedExternally
     var isInJSDocNamespace: Boolean? get() = definedExternally; set(value) = definedExternally
 }
 external interface TransientIdentifier : Identifier {
     var resolvedSymbol: Symbol
 }
-external interface QualifiedName : Node {
+external interface QualifiedName : Node, EntityName {
     override var kind: SyntaxKind.QualifiedName
     var left: EntityName
     var right: Identifier
@@ -498,7 +499,7 @@ external interface NamedDeclaration : Declaration {
 external interface DeclarationStatement : NamedDeclaration, Statement {
     override var name: dynamic /* Identifier | StringLiteral | NumericLiteral */ get() = definedExternally; set(value) = definedExternally
 }
-external interface ComputedPropertyName : Node {
+external interface ComputedPropertyName : Node, PropertyName, DeclarationName {
     override var kind: SyntaxKind.ComputedPropertyName
     var expression: Expression
 }
@@ -514,16 +515,18 @@ external interface TypeParameterDeclaration : NamedDeclaration {
     var default: TypeNode? get() = definedExternally; set(value) = definedExternally
     var expression: Expression? get() = definedExternally; set(value) = definedExternally
 }
-external interface SignatureDeclaration : NamedDeclaration {
+external interface SignatureDeclaration : NamedDeclaration, DeclarationWithTypeParameters {
     override var name: dynamic /* Identifier | StringLiteral | NumericLiteral | ComputedPropertyName */ get() = definedExternally; set(value) = definedExternally
     var typeParameters: NodeArray<TypeParameterDeclaration>? get() = definedExternally; set(value) = definedExternally
     var parameters: NodeArray<ParameterDeclaration>
     var type: TypeNode? get() = definedExternally; set(value) = definedExternally
 }
 external interface CallSignatureDeclaration : SignatureDeclaration, TypeElement {
+    override var name: dynamic /* Identifier | StringLiteral | NumericLiteral | ComputedPropertyName */ get() = definedExternally; set(value) = definedExternally
     override var kind: SyntaxKind.CallSignature
 }
 external interface ConstructSignatureDeclaration : SignatureDeclaration, TypeElement {
+    override var name: dynamic /* Identifier | StringLiteral | NumericLiteral | ComputedPropertyName */ get() = definedExternally; set(value) = definedExternally
     override var kind: SyntaxKind.ConstructSignature
 }
 external interface VariableDeclaration : NamedDeclaration {
@@ -547,9 +550,10 @@ external interface ParameterDeclaration : NamedDeclaration {
     var type: TypeNode? get() = definedExternally; set(value) = definedExternally
     var initializer: Expression? get() = definedExternally; set(value) = definedExternally
 }
-external interface BindingElement : NamedDeclaration {
-    override var kind: SyntaxKind.BindingElement
-    override var parent: BindingPattern? get() = definedExternally; set(value) = definedExternally
+external interface BindingElement : NamedDeclaration, ArrayBindingElement, OmittedExpression {
+    @Suppress("PROPERTY_TYPE_MISMATCH_ON_OVERRIDE")
+    override val kind: SyntaxKind.BindingElement
+    override val parent: BindingPattern? get() = definedExternally;
     var propertyName: dynamic /* Identifier | StringLiteral | NumericLiteral | ComputedPropertyName */ get() = definedExternally; set(value) = definedExternally
     var dotDotDotToken: Token<SyntaxKind.DotDotDotToken>? get() = definedExternally; set(value) = definedExternally
     override var name: dynamic /* Identifier | BindingPattern */
@@ -573,20 +577,20 @@ external interface ObjectLiteralElement : NamedDeclaration {
     var _objectLiteralBrandBrand: Any
     override var name: dynamic /* Identifier | StringLiteral | NumericLiteral | ComputedPropertyName */ get() = definedExternally; set(value) = definedExternally
 }
-external interface PropertyAssignment : ObjectLiteralElement {
+external interface PropertyAssignment : ObjectLiteralElement, ObjectLiteralElementLike {
     override var kind: SyntaxKind.PropertyAssignment
     override var name: dynamic /* Identifier | StringLiteral | NumericLiteral | ComputedPropertyName */
     var questionToken: Token<SyntaxKind.QuestionToken>? get() = definedExternally; set(value) = definedExternally
     var initializer: Expression
 }
-external interface ShorthandPropertyAssignment : ObjectLiteralElement {
+external interface ShorthandPropertyAssignment : ObjectLiteralElement, ObjectLiteralElementLike {
     override var kind: SyntaxKind.ShorthandPropertyAssignment
     override var name: Identifier
     var questionToken: Token<SyntaxKind.QuestionToken>? get() = definedExternally; set(value) = definedExternally
     var equalsToken: Token<SyntaxKind.EqualsToken>? get() = definedExternally; set(value) = definedExternally
     var objectAssignmentInitializer: Expression? get() = definedExternally; set(value) = definedExternally
 }
-external interface SpreadAssignment : ObjectLiteralElement {
+external interface SpreadAssignment : ObjectLiteralElement, ObjectLiteralElementLike {
     override var kind: SyntaxKind.SpreadAssignment
     var expression: Expression
 }
@@ -601,12 +605,12 @@ external interface VariableLikeDeclaration : NamedDeclaration {
 external interface PropertyLikeDeclaration : NamedDeclaration {
     override var name: dynamic /* Identifier | StringLiteral | NumericLiteral | ComputedPropertyName */
 }
-external interface ObjectBindingPattern : Node {
+external interface ObjectBindingPattern : Node, BindingPattern {
     override var kind: SyntaxKind.ObjectBindingPattern
     override var parent: dynamic /* VariableDeclaration | ParameterDeclaration | BindingElement */ get() = definedExternally; set(value) = definedExternally
     var elements: NodeArray<BindingElement>
 }
-external interface ArrayBindingPattern : Node {
+external interface ArrayBindingPattern : Node, BindingPattern {
     override var kind: SyntaxKind.ArrayBindingPattern
     override var parent: dynamic /* VariableDeclaration | ParameterDeclaration | BindingElement */ get() = definedExternally; set(value) = definedExternally
     var elements: NodeArray<ArrayBindingElement>
@@ -626,7 +630,7 @@ external interface MethodSignature : SignatureDeclaration, TypeElement {
     override var kind: SyntaxKind.MethodSignature
     override var name: dynamic /* Identifier | StringLiteral | NumericLiteral | ComputedPropertyName */
 }
-external interface MethodDeclaration : FunctionLikeDeclaration, ClassElement, ObjectLiteralElement {
+external interface MethodDeclaration : FunctionLikeDeclaration, ClassElement, ObjectLiteralElement, ObjectLiteralElementLike {
     override var kind: SyntaxKind.MethodDeclaration
     override var name: dynamic /* Identifier | StringLiteral | NumericLiteral | ComputedPropertyName */
     override var body: FunctionBody? get() = definedExternally; set(value) = definedExternally
@@ -635,18 +639,19 @@ external interface ConstructorDeclaration : FunctionLikeDeclaration, ClassElemen
     override var kind: SyntaxKind.Constructor
     override var parent: dynamic /* ClassDeclaration | ClassExpression */ get() = definedExternally; set(value) = definedExternally
     override var body: FunctionBody? get() = definedExternally; set(value) = definedExternally
+    override var name: dynamic /* Identifier | StringLiteral | NumericLiteral | ComputedPropertyName */ get() = definedExternally; set(value) = definedExternally
 }
 external interface SemicolonClassElement : ClassElement {
     override var kind: SyntaxKind.SemicolonClassElement
     override var parent: dynamic /* ClassDeclaration | ClassExpression */ get() = definedExternally; set(value) = definedExternally
 }
-external interface GetAccessorDeclaration : FunctionLikeDeclaration, ClassElement, ObjectLiteralElement {
+external interface GetAccessorDeclaration : FunctionLikeDeclaration, ClassElement, ObjectLiteralElement, AccessorDeclaration {
     override var kind: SyntaxKind.GetAccessor
     override var parent: dynamic /* ClassDeclaration | ClassExpression | ObjectLiteralExpression */ get() = definedExternally; set(value) = definedExternally
     override var name: dynamic /* Identifier | StringLiteral | NumericLiteral | ComputedPropertyName */
     override var body: FunctionBody
 }
-external interface SetAccessorDeclaration : FunctionLikeDeclaration, ClassElement, ObjectLiteralElement {
+external interface SetAccessorDeclaration : FunctionLikeDeclaration, ClassElement, ObjectLiteralElement, AccessorDeclaration {
     override var kind: SyntaxKind.SetAccessor
     override var parent: dynamic /* ClassDeclaration | ClassExpression | ObjectLiteralExpression */ get() = definedExternally; set(value) = definedExternally
     override var name: dynamic /* Identifier | StringLiteral | NumericLiteral | ComputedPropertyName */
@@ -655,6 +660,7 @@ external interface SetAccessorDeclaration : FunctionLikeDeclaration, ClassElemen
 external interface IndexSignatureDeclaration : SignatureDeclaration, ClassElement, TypeElement {
     override var kind: SyntaxKind.IndexSignature
     override var parent: dynamic /* ClassDeclaration | ClassExpression | InterfaceDeclaration | TypeLiteralNode */ get() = definedExternally; set(value) = definedExternally
+    override var name: dynamic /* Identifier | StringLiteral | NumericLiteral | ComputedPropertyName */ get() = definedExternally; set(value) = definedExternally
 }
 external interface TypeNode : Node {
     var _typeNodeBrand: Any
@@ -665,10 +671,10 @@ external interface KeywordTypeNode : TypeNode {
 external interface ThisTypeNode : TypeNode {
     override var kind: SyntaxKind.ThisType
 }
-external interface FunctionTypeNode : TypeNode, SignatureDeclaration {
+external interface FunctionTypeNode : TypeNode, SignatureDeclaration, FunctionOrConstructorTypeNode {
     override var kind: SyntaxKind.FunctionType
 }
-external interface ConstructorTypeNode : TypeNode, SignatureDeclaration {
+external interface ConstructorTypeNode : TypeNode, SignatureDeclaration, FunctionOrConstructorTypeNode {
     override var kind: SyntaxKind.ConstructorType
 }
 external interface TypeReferenceNode : TypeNode {
@@ -738,7 +744,7 @@ external interface Expression : Node {
     var _expressionBrand: Any
 }
 external interface OmittedExpression : Expression {
-    override var kind: SyntaxKind.OmittedExpression
+    override val kind: SyntaxKind.OmittedExpression
 }
 external interface PartiallyEmittedExpression : LeftHandSideExpression {
     override var kind: SyntaxKind.PartiallyEmittedExpression
@@ -804,18 +810,18 @@ external interface YieldExpression : Expression {
 }
 external interface BinaryExpression : Expression, Declaration {
     override var kind: SyntaxKind.BinaryExpression
-    var left: Expression
-    var operatorToken: Token<dynamic /* SyntaxKind.AsteriskAsteriskToken | SyntaxKind.AsteriskToken | SyntaxKind.SlashToken | SyntaxKind.PercentToken | SyntaxKind.PlusToken | SyntaxKind.MinusToken | SyntaxKind.LessThanLessThanToken | SyntaxKind.GreaterThanGreaterThanToken | SyntaxKind.GreaterThanGreaterThanGreaterThanToken | SyntaxKind.LessThanToken | SyntaxKind.LessThanEqualsToken | SyntaxKind.GreaterThanToken | SyntaxKind.GreaterThanEqualsToken | SyntaxKind.InstanceOfKeyword | SyntaxKind.InKeyword | SyntaxKind.EqualsEqualsToken | SyntaxKind.EqualsEqualsEqualsToken | SyntaxKind.ExclamationEqualsEqualsToken | SyntaxKind.ExclamationEqualsToken | SyntaxKind.AmpersandToken | SyntaxKind.BarToken | SyntaxKind.CaretToken | SyntaxKind.AmpersandAmpersandToken | SyntaxKind.BarBarToken | SyntaxKind.EqualsToken | SyntaxKind.PlusEqualsToken | SyntaxKind.MinusEqualsToken | SyntaxKind.AsteriskAsteriskEqualsToken | SyntaxKind.AsteriskEqualsToken | SyntaxKind.SlashEqualsToken | SyntaxKind.PercentEqualsToken | SyntaxKind.AmpersandEqualsToken | SyntaxKind.BarEqualsToken | SyntaxKind.CaretEqualsToken | SyntaxKind.LessThanLessThanEqualsToken | SyntaxKind.GreaterThanGreaterThanGreaterThanEqualsToken | SyntaxKind.GreaterThanGreaterThanEqualsToken | SyntaxKind.CommaToken */>
-    var right: Expression
+    val left: Expression
+    val operatorToken: Token<dynamic /* SyntaxKind.AsteriskAsteriskToken | SyntaxKind.AsteriskToken | SyntaxKind.SlashToken | SyntaxKind.PercentToken | SyntaxKind.PlusToken | SyntaxKind.MinusToken | SyntaxKind.LessThanLessThanToken | SyntaxKind.GreaterThanGreaterThanToken | SyntaxKind.GreaterThanGreaterThanGreaterThanToken | SyntaxKind.LessThanToken | SyntaxKind.LessThanEqualsToken | SyntaxKind.GreaterThanToken | SyntaxKind.GreaterThanEqualsToken | SyntaxKind.InstanceOfKeyword | SyntaxKind.InKeyword | SyntaxKind.EqualsEqualsToken | SyntaxKind.EqualsEqualsEqualsToken | SyntaxKind.ExclamationEqualsEqualsToken | SyntaxKind.ExclamationEqualsToken | SyntaxKind.AmpersandToken | SyntaxKind.BarToken | SyntaxKind.CaretToken | SyntaxKind.AmpersandAmpersandToken | SyntaxKind.BarBarToken | SyntaxKind.EqualsToken | SyntaxKind.PlusEqualsToken | SyntaxKind.MinusEqualsToken | SyntaxKind.AsteriskAsteriskEqualsToken | SyntaxKind.AsteriskEqualsToken | SyntaxKind.SlashEqualsToken | SyntaxKind.PercentEqualsToken | SyntaxKind.AmpersandEqualsToken | SyntaxKind.BarEqualsToken | SyntaxKind.CaretEqualsToken | SyntaxKind.LessThanLessThanEqualsToken | SyntaxKind.GreaterThanGreaterThanGreaterThanEqualsToken | SyntaxKind.GreaterThanGreaterThanEqualsToken | SyntaxKind.CommaToken */>
+    val right: Expression
 }
 external interface AssignmentExpression<TOperator : Token<dynamic /* SyntaxKind.EqualsToken | SyntaxKind.PlusEqualsToken | SyntaxKind.MinusEqualsToken | SyntaxKind.AsteriskAsteriskEqualsToken | SyntaxKind.AsteriskEqualsToken | SyntaxKind.SlashEqualsToken | SyntaxKind.PercentEqualsToken | SyntaxKind.AmpersandEqualsToken | SyntaxKind.BarEqualsToken | SyntaxKind.CaretEqualsToken | SyntaxKind.LessThanLessThanEqualsToken | SyntaxKind.GreaterThanGreaterThanGreaterThanEqualsToken | SyntaxKind.GreaterThanGreaterThanEqualsToken */>> : BinaryExpression {
-    override var left: LeftHandSideExpression
-    override var operatorToken: TOperator
+    override val left: LeftHandSideExpression
+    override val operatorToken: TOperator
 }
-external interface ObjectDestructuringAssignment : AssignmentExpression<Token<SyntaxKind.EqualsToken>> {
+external interface ObjectDestructuringAssignment : AssignmentExpression<Token<SyntaxKind.EqualsToken>>, DestructuringAssignment {
     override var left: ObjectLiteralExpression
 }
-external interface ArrayDestructuringAssignment : AssignmentExpression<Token<SyntaxKind.EqualsToken>> {
+external interface ArrayDestructuringAssignment : AssignmentExpression<Token<SyntaxKind.EqualsToken>>, DestructuringAssignment {
     override var left: ArrayLiteralExpression
 }
 external interface ConditionalExpression : Expression {
@@ -841,13 +847,13 @@ external interface LiteralLikeNode : Node {
     var isUnterminated: Boolean? get() = definedExternally; set(value) = definedExternally
     var hasExtendedUnicodeEscape: Boolean? get() = definedExternally; set(value) = definedExternally
 }
-external interface LiteralExpression : LiteralLikeNode, PrimaryExpression {
+external interface LiteralExpression : LiteralLikeNode, PrimaryExpression, PropertyName, DeclarationName {
     var _literalExpressionBrand: Any
 }
 external interface RegularExpressionLiteral : LiteralExpression {
     override var kind: SyntaxKind.RegularExpressionLiteral
 }
-external interface NoSubstitutionTemplateLiteral : LiteralExpression {
+external interface NoSubstitutionTemplateLiteral : LiteralExpression, TemplateLiteral {
     override var kind: SyntaxKind.NoSubstitutionTemplateLiteral
 }
 external interface NumericLiteral : LiteralExpression {
@@ -865,7 +871,7 @@ external interface TemplateTail : LiteralLikeNode {
     override var kind: SyntaxKind.TemplateTail
     override var parent: TemplateSpan? get() = definedExternally; set(value) = definedExternally
 }
-external interface TemplateExpression : PrimaryExpression {
+external interface TemplateExpression : PrimaryExpression, TemplateLiteral {
     override var kind: SyntaxKind.TemplateExpression
     var head: TemplateHead
     var templateSpans: NodeArray<TemplateSpan>
@@ -896,7 +902,7 @@ external interface ObjectLiteralExpression : ObjectLiteralExpressionBase<dynamic
 }
 external interface PropertyAccessExpression : MemberExpression, NamedDeclaration {
     override var kind: SyntaxKind.PropertyAccessExpression
-    var expression: LeftHandSideExpression
+    val expression: LeftHandSideExpression
     override var name: Identifier
 }
 external interface SuperPropertyAccessExpression : PropertyAccessExpression {
@@ -908,7 +914,7 @@ external interface PropertyAccessEntityNameExpression : PropertyAccessExpression
 }
 external interface ElementAccessExpression : MemberExpression {
     override var kind: SyntaxKind.ElementAccessExpression
-    var expression: LeftHandSideExpression
+    val expression: LeftHandSideExpression
     var argumentExpression: Expression? get() = definedExternally; set(value) = definedExternally
 }
 external interface SuperElementAccessExpression : ElementAccessExpression {
@@ -916,7 +922,7 @@ external interface SuperElementAccessExpression : ElementAccessExpression {
 }
 external interface CallExpression : LeftHandSideExpression, Declaration {
     override var kind: SyntaxKind.CallExpression
-    var expression: LeftHandSideExpression
+    val expression: LeftHandSideExpression
     var typeArguments: NodeArray<TypeNode>? get() = definedExternally; set(value) = definedExternally
     var arguments: NodeArray<Expression>
 }
@@ -962,7 +968,7 @@ external interface MetaProperty : PrimaryExpression {
 external interface JsxElement : PrimaryExpression {
     override var kind: SyntaxKind.JsxElement
     var openingElement: JsxOpeningElement
-    var children: NodeArray<JsxChild>
+//    var children: NodeArray<JsxChild>
     var closingElement: JsxClosingElement
 }
 external interface JsxAttributes : ObjectLiteralExpressionBase<dynamic /* JsxAttribute | JsxSpreadAttribute */> {
@@ -1096,13 +1102,13 @@ external interface CaseBlock : Node {
     override var parent: SwitchStatement? get() = definedExternally; set(value) = definedExternally
     var clauses: NodeArray<CaseOrDefaultClause>
 }
-external interface CaseClause : Node {
+external interface CaseClause : Node, CaseOrDefaultClause {
     override var kind: SyntaxKind.CaseClause
     override var parent: CaseBlock? get() = definedExternally; set(value) = definedExternally
     var expression: Expression
     var statements: NodeArray<Statement>
 }
-external interface DefaultClause : Node {
+external interface DefaultClause : Node, CaseOrDefaultClause {
     override var kind: SyntaxKind.DefaultClause
     override var parent: CaseBlock? get() = definedExternally; set(value) = definedExternally
     var statements: NodeArray<Statement>
@@ -1128,7 +1134,7 @@ external interface CatchClause : Node {
     var variableDeclaration: VariableDeclaration
     var block: Block
 }
-external interface ClassLikeDeclaration : NamedDeclaration {
+external interface ClassLikeDeclaration : NamedDeclaration, DeclarationWithTypeParameters {
     override var name: Identifier? get() = definedExternally; set(value) = definedExternally
     var typeParameters: NodeArray<TypeParameterDeclaration>? get() = definedExternally; set(value) = definedExternally
     var heritageClauses: NodeArray<HeritageClause>? get() = definedExternally; set(value) = definedExternally
@@ -1150,9 +1156,9 @@ external interface TypeElement : NamedDeclaration {
     override var name: dynamic /* Identifier | StringLiteral | NumericLiteral | ComputedPropertyName */ get() = definedExternally; set(value) = definedExternally
     var questionToken: Token<SyntaxKind.QuestionToken>? get() = definedExternally; set(value) = definedExternally
 }
-external interface InterfaceDeclaration : DeclarationStatement {
+external interface InterfaceDeclaration : DeclarationStatement, DeclarationWithTypeParameters {
     override var kind: SyntaxKind.InterfaceDeclaration
-    override var name: Identifier
+    override var name: Identifier?
     var typeParameters: NodeArray<TypeParameterDeclaration>? get() = definedExternally; set(value) = definedExternally
     var heritageClauses: NodeArray<HeritageClause>? get() = definedExternally; set(value) = definedExternally
     var members: NodeArray<TypeElement>
@@ -1163,9 +1169,9 @@ external interface HeritageClause : Node {
     var token: dynamic /* SyntaxKind.ExtendsKeyword | SyntaxKind.ImplementsKeyword */
     var types: NodeArray<ExpressionWithTypeArguments>
 }
-external interface TypeAliasDeclaration : DeclarationStatement {
+external interface TypeAliasDeclaration : DeclarationStatement, DeclarationWithTypeParameters {
     override var kind: SyntaxKind.TypeAliasDeclaration
-    override var name: Identifier
+    override var name: Identifier?
     var typeParameters: NodeArray<TypeParameterDeclaration>? get() = definedExternally; set(value) = definedExternally
     var type: TypeNode
 }
@@ -1177,7 +1183,7 @@ external interface EnumMember : NamedDeclaration {
 }
 external interface EnumDeclaration : DeclarationStatement {
     override var kind: SyntaxKind.EnumDeclaration
-    override var name: Identifier
+    override var name: Identifier?
     var members: NodeArray<EnumMember>
 }
 external interface ModuleDeclaration : DeclarationStatement {
@@ -1202,7 +1208,7 @@ external interface ModuleBlock : Node, Statement {
 external interface ImportEqualsDeclaration : DeclarationStatement {
     override var kind: SyntaxKind.ImportEqualsDeclaration
     override var parent: dynamic /* SourceFile | ModuleBlock */ get() = definedExternally; set(value) = definedExternally
-    override var name: Identifier
+    override var name: Identifier?
     var moduleReference: dynamic /* Identifier | QualifiedName | ExternalModuleReference */
 }
 external interface ExternalModuleReference : Node {
@@ -1229,7 +1235,7 @@ external interface NamespaceImport : NamedDeclaration {
 }
 external interface NamespaceExportDeclaration : DeclarationStatement {
     override var kind: SyntaxKind.NamespaceExportDeclaration
-    override var name: Identifier
+    override var name: Identifier?
 }
 external interface ExportDeclaration : DeclarationStatement {
     override var kind: SyntaxKind.ExportDeclaration
@@ -1277,8 +1283,8 @@ external interface CommentRange : TextRange {
 }
 external interface SynthesizedComment : CommentRange {
     var text: String
-    override var pos: Any /* "null" */
-    override var end: Any /* "null" */
+    override val pos: Int /* "-1" */
+    override val end: Int /* "-1" */
 }
 external interface JSDocTypeExpression : Node {
     override var kind: SyntaxKind.JSDocTypeExpression
@@ -1329,7 +1335,7 @@ external interface JSDocOptionalType : JSDocType {
 external interface JSDocFunctionType : JSDocType, SignatureDeclaration {
     override var kind: SyntaxKind.JSDocFunctionType
     override var parameters: NodeArray<ParameterDeclaration>
-    override var type: JSDocType
+//    override var type: JSDocType
 }
 external interface JSDocVariadicType : JSDocType {
     override var kind: SyntaxKind.JSDocVariadicType
@@ -1350,7 +1356,7 @@ external interface JSDocLiteralType : JSDocType {
 external interface JSDocRecordMember : PropertySignature {
     override var kind: SyntaxKind.JSDocRecordMember
     override var name: dynamic /* Identifier | StringLiteral | NumericLiteral */
-    override var type: JSDocType? get() = definedExternally; set(value) = definedExternally
+//    override var type: JSDocType? get() = definedExternally; set(value) = definedExternally
 }
 external interface JSDoc : Node {
     override var kind: SyntaxKind.JSDocComment
@@ -1633,7 +1639,7 @@ external interface SymbolDisplayBuilder {
     fun buildIndexSignatureDisplay(info: IndexInfo, writer: SymbolWriter, kind: IndexKind, enclosingDeclaration: Node? = definedExternally /* null */, globalFlags: TypeFormatFlags? = definedExternally /* null */, symbolStack: Array<Symbol>? = definedExternally /* null */)
     fun buildParameterDisplay(parameter: Symbol, writer: SymbolWriter, enclosingDeclaration: Node? = definedExternally /* null */, flags: TypeFormatFlags? = definedExternally /* null */)
     fun buildTypeParameterDisplay(tp: TypeParameter, writer: SymbolWriter, enclosingDeclaration: Node? = definedExternally /* null */, flags: TypeFormatFlags? = definedExternally /* null */)
-    fun buildTypePredicateDisplay(predicate: TypePredicate, writer: SymbolWriter, enclosingDeclaration: Node? = definedExternally /* null */, flags: TypeFormatFlags? = definedExternally /* null */)
+    fun buildTypePredicateDisplay(predicate: dynamic /*TODO: TypePredicate*/, writer: SymbolWriter, enclosingDeclaration: Node? = definedExternally /* null */, flags: TypeFormatFlags? = definedExternally /* null */)
     fun buildTypeParameterDisplayFromSymbol(symbol: Symbol, writer: SymbolWriter, enclosingDeclaration: Node? = definedExternally /* null */, flags: TypeFormatFlags? = definedExternally /* null */)
     fun buildDisplayForParametersAndDelimiters(thisParameter: Symbol, parameters: Array<Symbol>, writer: SymbolWriter, enclosingDeclaration: Node? = definedExternally /* null */, flags: TypeFormatFlags? = definedExternally /* null */)
     fun buildDisplayForTypeParametersAndDelimiters(typeParameters: Array<TypeParameter>, writer: SymbolWriter, enclosingDeclaration: Node? = definedExternally /* null */, flags: TypeFormatFlags? = definedExternally /* null */)
@@ -1677,19 +1683,19 @@ external enum class SymbolFormatFlags {
     WriteTypeParametersOrArguments /* = 1 */,
     UseOnlyExternalAliasing /* = 2 */
 }
-external enum class TypePredicateKind {
-    `This` /* = 0 */,
-    Identifier /* = 1 */
+external sealed class TypePredicateKind {
+    object This : TypePredicateKind /* = 0 */
+    object Identifier : TypePredicateKind /* = 1 */
 }
 external interface TypePredicateBase {
-    var kind: TypePredicateKind
+    val kind: TypePredicateKind
     var type: Type
 }
 external interface ThisTypePredicate : TypePredicateBase {
-    override var kind: TypePredicateKind.This
+    override val kind: TypePredicateKind.This
 }
 external interface IdentifierTypePredicate : TypePredicateBase {
-    override var kind: TypePredicateKind.Identifier
+    override val kind: TypePredicateKind.Identifier
     var parameterName: String
     var parameterIndex: Number
 }
@@ -1767,7 +1773,7 @@ external interface Symbol {
     var globalExports: SymbolTable? get() = definedExternally; set(value) = definedExternally
     fun getFlags(): SymbolFlags
     fun getName(): String
-    fun getDeclarations(): Array<Declaration>
+    fun getDeclarations(): Array<Declaration>?
     fun getDocumentationComment(): Array<SymbolDisplayPart>
     fun getJsDocTags(): Array<JSDocTagInfo>
 }
@@ -1814,7 +1820,7 @@ external interface Type {
     var aliasSymbol: Symbol? get() = definedExternally; set(value) = definedExternally
     var aliasTypeArguments: Array<Type>? get() = definedExternally; set(value) = definedExternally
     fun getFlags(): TypeFlags
-    fun getSymbol(): Symbol
+    fun getSymbol(): Symbol?
     fun getProperties(): Array<Symbol>
     fun getProperty(propertyName: String): Symbol
     fun getApparentProperties(): Array<Symbol>
@@ -1826,7 +1832,7 @@ external interface Type {
     fun getNonNullableType(): Type
 }
 external interface LiteralType : Type {
-    var text: String
+    var value: dynamic /* String | Number */
     var freshType: LiteralType? get() = definedExternally; set(value) = definedExternally
     var regularType: LiteralType? get() = definedExternally; set(value) = definedExternally
 }
@@ -1849,13 +1855,13 @@ external enum class ObjectFlags {
     ObjectLiteralPatternWithComputedProperties /* = 512 */,
     ClassOrInterface /* = 3 */
 }
-external interface ObjectType : Type {
+external interface ObjectType : Type, BaseType {
     var objectFlags: ObjectFlags
 }
 external interface InterfaceType : ObjectType {
-    var typeParameters: Array<TypeParameter>
-    var outerTypeParameters: Array<TypeParameter>
-    var localTypeParameters: Array<TypeParameter>
+    var typeParameters: Array<TypeParameter>?
+    var outerTypeParameters: Array<TypeParameter>?
+    var localTypeParameters: Array<TypeParameter>?
     var thisType: TypeParameter
 }
 external interface InterfaceTypeWithDeclaredMembers : InterfaceType {
@@ -1874,15 +1880,17 @@ external interface UnionOrIntersectionType : Type {
     var types: Array<Type>
 }
 external interface UnionType : UnionOrIntersectionType
-external interface IntersectionType : UnionOrIntersectionType
+external interface IntersectionType : UnionOrIntersectionType, BaseType
 external interface EvolvingArrayType : ObjectType {
     var elementType: Type
     var finalArrayType: Type? get() = definedExternally; set(value) = definedExternally
 }
 external interface TypeVariable : Type
 external interface TypeParameter : TypeVariable {
-    var constraint: Type
+    var constraint: Type?
     var default: Type? get() = definedExternally; set(value) = definedExternally
+    /* @internal */
+    var isThisType: Boolean? get() = definedExternally; set(value) = definedExternally
 }
 external interface IndexedAccessType : TypeVariable {
     var objectType: Type
@@ -2026,12 +2034,14 @@ external interface CompilerOptions {
     operator fun set(option: String, value: Number)
     @nativeSetter
     operator fun set(option: String, value: Boolean)
+    // TODO bug?
     @nativeSetter
     operator fun set(option: String, value: Array<dynamic /* String | Number */>)
     @nativeSetter
     operator fun set(option: String, value: Array<String>)
     @nativeSetter
     operator fun set(option: String, value: MapLike<Array<String>>)
+    // TODO
     @nativeSetter
     operator fun set(option: String, value: Array<PluginImport>)
     @nativeSetter
@@ -2048,6 +2058,7 @@ external interface TypeAcquisition {
     operator fun set(option: String, value: Array<String>)
     @nativeSetter
     operator fun set(option: String, value: Boolean)
+// TODO
     @nativeSetter
     operator fun set(option: String, value: Nothing?)
 }
@@ -2157,13 +2168,15 @@ external interface ResolvedTypeReferenceDirectiveWithFailedLookupLocations {
 }
 external interface CompilerHost : ModuleResolutionHost {
     fun getSourceFile(fileName: String, languageVersion: ScriptTarget, onError: ((message: String) -> Unit)? = definedExternally /* null */): SourceFile
-    val getSourceFileByPath: (`(fileName: String, path: String /* String & `T$2` */, languageVersion: ScriptTarget, onError: ((message: String) -> Unit)? /*= null*/) -> SourceFile`)? get() = definedExternally
+    val getSourceFileByPath: ((fileName: String, path: String /* String & `T$2` */, languageVersion: ScriptTarget, onError: ((message: String) -> Unit)? /*= null*/) -> SourceFile)? get() = definedExternally
+    // TODO bug
     val getCancellationToken: (() -> CancellationToken)? get() = definedExternally
     fun getDefaultLibFileName(options: CompilerOptions): String
     val getDefaultLibLocation: (() -> String)? get() = definedExternally
     var writeFile: WriteFileCallback
-    override fun getCurrentDirectory(): String
-    override fun getDirectories(path: String): Array<String>
+    // TODO bug
+    fun getCurrentDirectory(): String
+    fun getDirectories(path: String): Array<String>
     fun getCanonicalFileName(fileName: String): String
     fun useCaseSensitiveFileNames(): Boolean
     fun getNewLine(): String
@@ -2654,24 +2667,24 @@ external fun createExportSpecifier(propertyName: Nothing?, name: Identifier): Ex
 external fun updateExportSpecifier(node: ExportSpecifier, propertyName: Identifier?, name: Identifier): ExportSpecifier = definedExternally
 external fun createExternalModuleReference(expression: Expression): ExternalModuleReference = definedExternally
 external fun updateExternalModuleReference(node: ExternalModuleReference, expression: Expression): ExternalModuleReference = definedExternally
-external fun createJsxElement(openingElement: JsxOpeningElement, children: Array<JsxChild>, closingElement: JsxClosingElement): JsxElement = definedExternally
-external fun updateJsxElement(node: JsxElement, openingElement: JsxOpeningElement, children: Array<JsxChild>, closingElement: JsxClosingElement): JsxElement = definedExternally
-external fun createJsxSelfClosingElement(tagName: JsxTagNameExpression, attributes: JsxAttributes): JsxSelfClosingElement = definedExternally
-external fun updateJsxSelfClosingElement(node: JsxSelfClosingElement, tagName: JsxTagNameExpression, attributes: JsxAttributes): JsxSelfClosingElement = definedExternally
-external fun createJsxOpeningElement(tagName: JsxTagNameExpression, attributes: JsxAttributes): JsxOpeningElement = definedExternally
-external fun updateJsxOpeningElement(node: JsxOpeningElement, tagName: JsxTagNameExpression, attributes: JsxAttributes): JsxOpeningElement = definedExternally
-external fun createJsxClosingElement(tagName: JsxTagNameExpression): JsxClosingElement = definedExternally
-external fun updateJsxClosingElement(node: JsxClosingElement, tagName: JsxTagNameExpression): JsxClosingElement = definedExternally
-external fun createJsxAttributes(properties: Array<JsxAttributeLike>): JsxAttributes = definedExternally
-external fun updateJsxAttributes(jsxAttributes: JsxAttributes, properties: Array<JsxAttributeLike>): JsxAttributes = definedExternally
-external fun createJsxAttribute(name: Identifier, initializer: StringLiteral): JsxAttribute = definedExternally
-external fun createJsxAttribute(name: Identifier, initializer: JsxExpression): JsxAttribute = definedExternally
-external fun updateJsxAttribute(node: JsxAttribute, name: Identifier, initializer: StringLiteral): JsxAttribute = definedExternally
-external fun updateJsxAttribute(node: JsxAttribute, name: Identifier, initializer: JsxExpression): JsxAttribute = definedExternally
-external fun createJsxSpreadAttribute(expression: Expression): JsxSpreadAttribute = definedExternally
-external fun updateJsxSpreadAttribute(node: JsxSpreadAttribute, expression: Expression): JsxSpreadAttribute = definedExternally
-external fun createJsxExpression(dotDotDotToken: DotDotDotToken?, expression: Expression?): JsxExpression = definedExternally
-external fun updateJsxExpression(node: JsxExpression, expression: Expression?): JsxExpression = definedExternally
+//external fun createJsxElement(openingElement: JsxOpeningElement, children: Array<JsxChild>, closingElement: JsxClosingElement): JsxElement = definedExternally
+//external fun updateJsxElement(node: JsxElement, openingElement: JsxOpeningElement, children: Array<JsxChild>, closingElement: JsxClosingElement): JsxElement = definedExternally
+//external fun createJsxSelfClosingElement(tagName: JsxTagNameExpression, attributes: JsxAttributes): JsxSelfClosingElement = definedExternally
+//external fun updateJsxSelfClosingElement(node: JsxSelfClosingElement, tagName: JsxTagNameExpression, attributes: JsxAttributes): JsxSelfClosingElement = definedExternally
+//external fun createJsxOpeningElement(tagName: JsxTagNameExpression, attributes: JsxAttributes): JsxOpeningElement = definedExternally
+//external fun updateJsxOpeningElement(node: JsxOpeningElement, tagName: JsxTagNameExpression, attributes: JsxAttributes): JsxOpeningElement = definedExternally
+//external fun createJsxClosingElement(tagName: JsxTagNameExpression): JsxClosingElement = definedExternally
+//external fun updateJsxClosingElement(node: JsxClosingElement, tagName: JsxTagNameExpression): JsxClosingElement = definedExternally
+//external fun createJsxAttributes(properties: Array<JsxAttributeLike>): JsxAttributes = definedExternally
+//external fun updateJsxAttributes(jsxAttributes: JsxAttributes, properties: Array<JsxAttributeLike>): JsxAttributes = definedExternally
+//external fun createJsxAttribute(name: Identifier, initializer: StringLiteral): JsxAttribute = definedExternally
+//external fun createJsxAttribute(name: Identifier, initializer: JsxExpression): JsxAttribute = definedExternally
+//external fun updateJsxAttribute(node: JsxAttribute, name: Identifier, initializer: StringLiteral): JsxAttribute = definedExternally
+//external fun updateJsxAttribute(node: JsxAttribute, name: Identifier, initializer: JsxExpression): JsxAttribute = definedExternally
+//external fun createJsxSpreadAttribute(expression: Expression): JsxSpreadAttribute = definedExternally
+//external fun updateJsxSpreadAttribute(node: JsxSpreadAttribute, expression: Expression): JsxSpreadAttribute = definedExternally
+//external fun createJsxExpression(dotDotDotToken: DotDotDotToken?, expression: Expression?): JsxExpression = definedExternally
+//external fun updateJsxExpression(node: JsxExpression, expression: Expression?): JsxExpression = definedExternally
 external fun createHeritageClause(token: dynamic /* "IndexedAccessType" kind unsupported yet here! (node_modules/typescript/lib/typescriptServices.d.ts:2942:41 to 2942:65) */, types: Array<ExpressionWithTypeArguments>): HeritageClause = definedExternally
 external fun updateHeritageClause(node: HeritageClause, types: Array<ExpressionWithTypeArguments>): HeritageClause = definedExternally
 external fun createCaseClause(expression: Expression, statements: Array<Statement>): CaseClause = definedExternally
@@ -2826,7 +2839,8 @@ external interface SourceFileLike {
     fun getLineAndCharacterOfPosition(pos: Number): LineAndCharacter
 }
 external interface IScriptSnapshot {
-    fun getText(start: Number, end: Number): String
+    // TODO bug?
+    fun getText(start: Number = definedExternally, end: Number = definedExternally): String
     fun getLength(): Number
     fun getChangeRange(oldSnapshot: IScriptSnapshot): TextChangeRange?
     val dispose: (() -> Unit)? get() = definedExternally
