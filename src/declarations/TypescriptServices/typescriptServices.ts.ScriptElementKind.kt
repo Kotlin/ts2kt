@@ -1,36 +1,52 @@
-@file:JsModule("typescript")
-@file:JsQualifier("ScriptElementKind")
-package typescriptServices.ts.ScriptElementKind
+@file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
+@file:JsQualifier("ts.ScriptElementKind")
+package ts.ScriptElementKind
 
-external var unknown: String = definedExternally
-external var warning: String = definedExternally
-external var keyword: String = definedExternally
-external var scriptElement: String = definedExternally
-external var moduleElement: String = definedExternally
-external var classElement: String = definedExternally
-external var localClassElement: String = definedExternally
-external var interfaceElement: String = definedExternally
-external var typeElement: String = definedExternally
-external var enumElement: String = definedExternally
-external var enumMemberElement: String = definedExternally
-external var variableElement: String = definedExternally
-external var localVariableElement: String = definedExternally
-external var functionElement: String = definedExternally
-external var localFunctionElement: String = definedExternally
-external var memberFunctionElement: String = definedExternally
-external var memberGetAccessorElement: String = definedExternally
-external var memberSetAccessorElement: String = definedExternally
-external var memberVariableElement: String = definedExternally
-external var constructorImplementationElement: String = definedExternally
-external var callSignatureElement: String = definedExternally
-external var indexSignatureElement: String = definedExternally
-external var constructSignatureElement: String = definedExternally
-external var parameterElement: String = definedExternally
-external var typeParameterElement: String = definedExternally
-external var primitiveType: String = definedExternally
-external var label: String = definedExternally
-external var alias: String = definedExternally
-external var constElement: String = definedExternally
-external var letElement: String = definedExternally
-external var directory: String = definedExternally
-external var externalModuleName: String = definedExternally
+import kotlin.js.*
+import kotlin.js.Json
+import org.khronos.webgl.*
+import org.w3c.dom.*
+import org.w3c.dom.events.*
+import org.w3c.dom.parsing.*
+import org.w3c.dom.svg.*
+import org.w3c.dom.url.*
+import org.w3c.fetch.*
+import org.w3c.files.*
+import org.w3c.notifications.*
+import org.w3c.performance.*
+import org.w3c.workers.*
+import org.w3c.xhr.*
+
+external var unknown: Any = definedExternally
+external var warning: Any = definedExternally
+external var keyword: Any = definedExternally
+external var scriptElement: Any = definedExternally
+external var moduleElement: Any = definedExternally
+external var classElement: Any = definedExternally
+external var localClassElement: Any = definedExternally
+external var interfaceElement: Any = definedExternally
+external var typeElement: Any = definedExternally
+external var enumElement: Any = definedExternally
+external var enumMemberElement: Any = definedExternally
+external var variableElement: Any = definedExternally
+external var localVariableElement: Any = definedExternally
+external var functionElement: Any = definedExternally
+external var localFunctionElement: Any = definedExternally
+external var memberFunctionElement: Any = definedExternally
+external var memberGetAccessorElement: Any = definedExternally
+external var memberSetAccessorElement: Any = definedExternally
+external var memberVariableElement: Any = definedExternally
+external var constructorImplementationElement: Any = definedExternally
+external var callSignatureElement: Any = definedExternally
+external var indexSignatureElement: Any = definedExternally
+external var constructSignatureElement: Any = definedExternally
+external var parameterElement: Any = definedExternally
+external var typeParameterElement: Any = definedExternally
+external var primitiveType: Any = definedExternally
+external var label: Any = definedExternally
+external var alias: Any = definedExternally
+external var constElement: Any = definedExternally
+external var letElement: Any = definedExternally
+external var directory: Any = definedExternally
+external var externalModuleName: Any = definedExternally
+external var jsxAttribute: Any = definedExternally
