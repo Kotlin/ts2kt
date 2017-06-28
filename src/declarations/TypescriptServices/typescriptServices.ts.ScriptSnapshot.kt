@@ -1,6 +1,6 @@
 @file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 @file:JsQualifier("ts.ScriptSnapshot")
-package ts.ScriptSnapshot
+package typescriptServices.ts.ScriptSnapshot
 
 import kotlin.js.*
 import kotlin.js.Json

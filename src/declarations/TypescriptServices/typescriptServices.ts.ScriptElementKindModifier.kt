@@ -1,6 +1,6 @@
 @file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 @file:JsQualifier("ts.ScriptElementKindModifier")
-package ts.ScriptElementKindModifier
+package typescriptServices.ts.ScriptElementKindModifier
 
 import kotlin.js.*
 import kotlin.js.Json

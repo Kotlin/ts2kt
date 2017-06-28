@@ -1,6 +1,6 @@
 @file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 @file:JsQualifier("ts.HighlightSpanKind")
-package ts.HighlightSpanKind
+package typescriptServices.ts.HighlightSpanKind
 
 import kotlin.js.*
 import kotlin.js.Json
