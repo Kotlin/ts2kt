@@ -1,5 +1,6 @@
 @file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
-@file:JsQualifier("ts.ScriptElementKind")
+@file:JsModule("typescript")
+@file:JsQualifier("ScriptElementKind")
 package typescriptServices.ts.ScriptElementKind
 
 import kotlin.js.*
