@@ -1,6 +1,4 @@
-package typescript
-
-import typescriptServices.ts.*
+package typescriptServices.ts
 
 external interface JsArray<T>
 

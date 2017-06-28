@@ -17,7 +17,7 @@
 package ts2kt
 
 import ts2kt.kotlin.ast.*
-import typescript.identifierName
+import typescriptServices.ts.identifierName
 import typescriptServices.ts.*
 
 interface ObjectTypeToKotlinTypeMapper {

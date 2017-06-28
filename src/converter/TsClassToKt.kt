@@ -5,7 +5,7 @@ import ts2kt.kotlin.ast.KtClassKind
 import ts2kt.kotlin.ast.KtFunParam
 import ts2kt.kotlin.ast.KtTypeParam
 import ts2kt.utils.assert
-import typescript.identifierName
+import typescriptServices.ts.identifierName
 import typescriptServices.ts.*
 
 class TsClassToKt(

@@ -20,10 +20,6 @@ import converter.mapType
 import converter.mapTypeToUnion
 import ts2kt.kotlin.ast.*
 import ts2kt.utils.*
-import typescript.ClassOrInterfaceDeclaration
-import typescript.EntityName
-import typescript.declarationName
-import typescript.identifierName
 import typescriptServices.ts.*
 
 val ANY = "Any"

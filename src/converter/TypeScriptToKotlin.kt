@@ -22,9 +22,6 @@ import converter.mapType
 import ts2kt.kotlin.ast.*
 import ts2kt.utils.cast
 import ts2kt.utils.reportUnsupportedNode
-import typescript.declarationName
-import typescript.identifierName
-import typescript.propertyName
 import typescriptServices.ts.*
 
 private val NATIVE = "native"

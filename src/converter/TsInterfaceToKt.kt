@@ -3,7 +3,6 @@ package ts2kt
 import ts2kt.kotlin.ast.KtAnnotation
 import ts2kt.kotlin.ast.KtTypeParam
 import ts2kt.kotlin.ast.createFunctionType
-import typescript.identifierName
 import typescriptServices.ts.*
 
 open class TsInterfaceToKt(

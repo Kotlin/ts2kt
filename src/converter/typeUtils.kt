@@ -4,7 +4,6 @@ import ts2kt.*
 import ts2kt.kotlin.ast.*
 import ts2kt.utils.DiagnosticLevel
 import ts2kt.utils.report
-import typescript.ClassOrInterfaceDeclaration
 import typescriptServices.ts.*
 import kotlin.collections.Map
 

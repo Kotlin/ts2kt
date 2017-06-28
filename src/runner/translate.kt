@@ -27,8 +27,6 @@ import ts2kt.utils.cast
 import ts2kt.utils.push
 import ts2kt.utils.reportUnsupportedNode
 import ts2kt.utils.shift
-import typescript.declarationName
-import typescript.propertyName
 import typescriptServices.ts.*
 import typescriptServices.ts.ScriptSnapshot.fromString
 

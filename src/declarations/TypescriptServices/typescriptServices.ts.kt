@@ -1,7 +1,6 @@
 @file:JsModule("typescript")
 package typescriptServices.ts
 
-import typescript.*
 import kotlin.js.*
 
 external interface MapLike<T> {
