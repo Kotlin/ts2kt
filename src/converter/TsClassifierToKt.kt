@@ -125,7 +125,7 @@ abstract class TsClassifierToKt(
 
     private fun PropertyName.asString() = when (kind as Any) {
         SyntaxKind.Identifier -> {
-            unescapedText
+            (this as Identifier).unescapedText
         }
         SyntaxKind.NumericLiteral -> {
             (this.cast<LiteralExpression>()).text

@@ -104,7 +104,7 @@ private fun ParameterDeclaration.toKotlinParam(nodeType: TypeNode?, typeWithoutF
         toKotlinParam(typeWithoutFlags.copy(isNullable = questionToken != null || typeWithoutFlags.isNullable))
 
 private fun ParameterDeclaration.toKotlinParam(type: KtType): KtFunParam {
-    val name = declarationName!!.unescapedText
+    val name = (declarationName as Identifier).unescapedText
     val defaultValue = initializer?.let {
         when (it.kind as Any) {
         // TODO
@@ -114,7 +114,7 @@ private fun ParameterDeclaration.toKotlinParam(type: KtType): KtFunParam {
             else -> reportUnsupportedNode(it)
         }
     }
-    val isVar = NodeFlags.AccessibilityModifier in flags
+    val isVar = ModifierFlags.AccessibilityModifier in getCombinedModifierFlags(this)
 
     val isOptional = questionToken != null
     return KtFunParam(name,
@@ -137,7 +137,7 @@ private fun ParameterDeclaration.getNodeTypeConsideringVararg(): TypeNode? {
             }
 
             originalNodeKind === SyntaxKind.TypeReference &&
-                ((originalNodeType as TypeReferenceNode).typeName as EntityName).text == "Array" -> {
+                ((originalNodeType as TypeReferenceNode).typeName as Identifier).text == "Array" -> {
                 val typeArguments = originalNodeType.cast<TypeReferenceNode>().typeArguments!!.arr
                 assert(typeArguments.size == 1, "Array should have one generic paramater, but have ${typeArguments.size}.")
                 nodeType = typeArguments[0]
@@ -214,14 +214,14 @@ fun ArrayTypeNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType
 }
 
 //TODO: do we need LambdaType???
-fun FunctionOrConstructorTypeNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
+fun SignatureDeclaration.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
     val params = parameters.toKotlinParams(typeMapper)
     val returnType = type?.let { typeMapper.mapType(it) } ?: KtType(ANY)
     return createFunctionType(params, returnType)
 }
 
 //TODO: do we need LambdaType???
-private fun FunctionOrConstructorTypeNode.toKotlinTypeUnion(typeMapper: ObjectTypeToKotlinTypeMapper): KtTypeUnion {
+private fun SignatureDeclaration.toKotlinTypeUnion(typeMapper: ObjectTypeToKotlinTypeMapper): KtTypeUnion {
     return KtTypeUnion(parameters.toKotlinParamsOverloads(typeMapper).map {
         createFunctionType(it, type?.let { typeMapper.mapType(it) } ?: KtType(ANY))
     })
@@ -234,7 +234,7 @@ private fun TypeLiteralNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMappe
 fun TypeNode.toKotlinTypeUnion(typeMapper: ObjectTypeToKotlinTypeMapper): KtTypeUnion {
     return when (this.kind as Any) {
         SyntaxKind.ConstructorType,
-        SyntaxKind.FunctionType -> (this.cast<FunctionOrConstructorTypeNode>()).toKotlinTypeUnion(typeMapper)
+        SyntaxKind.FunctionType -> (this.cast<SignatureDeclaration>()).toKotlinTypeUnion(typeMapper)
 
         SyntaxKind.TypeReference -> (this.cast<TypeReferenceNode>()).toKotlinTypeUnion(typeMapper)
         SyntaxKind.UnionType -> (this.cast<UnionTypeNode>()).toKotlinTypeUnion(typeMapper)
@@ -256,7 +256,7 @@ fun TypeNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
 
         SyntaxKind.ArrayType -> (this.cast<ArrayTypeNode>()).toKotlinType(typeMapper)
         SyntaxKind.ConstructorType,
-        SyntaxKind.FunctionType -> (this.cast<FunctionOrConstructorTypeNode>()).toKotlinType(typeMapper)
+        SyntaxKind.FunctionType -> (this.cast<SignatureDeclaration>()).toKotlinType(typeMapper)
 
         SyntaxKind.TypeReference -> (this.cast<TypeReferenceNode>()).toKotlinTypeUnion(typeMapper).singleType
         SyntaxKind.ExpressionWithTypeArguments -> (this.cast<ExpressionWithTypeArguments>()).toKotlinType(typeMapper)
@@ -285,9 +285,9 @@ fun TypeNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
 fun EntityName.toKotlinTypeName(): String {
     return when (kind as Any) {
         SyntaxKind.Identifier ->
-            this.unescapedText
+            (this as Identifier).unescapedText
         else ->
-            this.left.toKotlinTypeName() + "." + this.right.unescapedText
+            (this as QualifiedName).left.toKotlinTypeName() + "." + this.right.unescapedText
     }
 }
 
@@ -434,7 +434,7 @@ fun visitNode(visitor: Visitor, node: Node?): Unit {
     }
 }
 
-inline val <T> NodeArray<T>.arr: Array<T>
+inline val <T : Node> NodeArray<T>.arr: Array<T>
     get() = this.unsafeCast<Array<T>>()
 
 inline val SyntaxKind.str: String

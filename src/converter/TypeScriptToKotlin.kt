@@ -84,7 +84,7 @@ class TypeScriptToKotlin(
 //      TODO  test many declarations
         val declarations = node.declarationList.declarations.arr
         for (d in declarations) {
-            val name = d.declarationName!!.unescapedText
+            val name = (d.declarationName as Identifier)!!.unescapedText
             val symbol = typeChecker.getSymbolResolvingAliases(d.name.unsafeCast<Node>())
 
             if (d.type?.kind == SyntaxKind.TypeLiteral) {
@@ -123,7 +123,7 @@ class TypeScriptToKotlin(
         val additionalAnnotations = getAdditionalAnnotations(node)
 
 //      TODO  visitList(node.modifiers)
-        val name = node.propertyName!!.unescapedText
+        val name = (node.propertyName as Identifier)!!.unescapedText
         val symbol = node.name?.let { typeChecker.getSymbolResolvingAliases(it) }
         node.toKotlinCallSignatureOverloads(typeMapper).forEach { callSignature ->
             addFunction(symbol, name, callSignature, additionalAnnotations = additionalAnnotations)
@@ -177,7 +177,7 @@ class TypeScriptToKotlin(
 
     override fun visitEnumDeclaration(node: EnumDeclaration) {
         val entries = node.members.arr.map { entry ->
-            KtEnumEntry(entry.declarationName.unescapedText, entry.initializer?.let {
+            KtEnumEntry((entry.declarationName as Identifier).unescapedText, entry.initializer?.let {
                 when (it.kind as Any) {
                     SyntaxKind.NumericLiteral -> (it.cast<LiteralExpression>()).text
                     else -> reportUnsupportedNode(it)
@@ -198,8 +198,8 @@ class TypeScriptToKotlin(
 
         fun getName(node: ModuleDeclaration): String {
             return when(node.declarationName!!.kind as Any) {
-                SyntaxKind.Identifier -> node.declarationName!!.unescapedText
-                SyntaxKind.StringLiteral -> node.declarationName!!.unescapedText.replace('/', '.')
+                SyntaxKind.Identifier -> (node.declarationName as Identifier)!!.unescapedText
+                SyntaxKind.StringLiteral -> (node.declarationName as Identifier)!!.unescapedText.replace('/', '.')
 
                 else -> {
                     reportUnsupportedNode(node.declarationName!!)
@@ -263,7 +263,7 @@ class TypeScriptToKotlin(
         if (node.isExportEquals == true) {
             currentPackagePartBuilder.exportedSymbol = symbol
         }
-        else if(symbol?.declarations?.none { it.modifiers?.flags?.contains(NodeFlags.Export) == true } == true) {
+        else if(symbol?.declarations?.none { ModifierFlags.Export in getCombinedModifierFlags(it) } == true) {
             addJsNameAnnotation(symbol, "default")
         }
     }

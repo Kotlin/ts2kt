@@ -1,6 +1,7 @@
 package converter
 
 import ts2kt.*
+import ts2kt.Visitor
 import typescriptServices.ts.*
 
 open class BaseVisitor : Visitor {
