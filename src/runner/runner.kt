@@ -117,6 +117,11 @@ fun parseArguments(): CliArguments? {
 
     val program = "ts2kt"
 
+    fun printVersion() {
+        val version = js("require('./package.json')").version
+        console.log("$program version: $version")
+    }
+
     val args = process.argv.drop(2)
 
     if (args.isEmpty()) {
@@ -151,8 +156,8 @@ fun parseArguments(): CliArguments? {
                 return null
             }
             "-v", "-version" -> {
-                val version = js("require('./package.json').version")
-                console.log("$program version: $version")
+                printVersion()
+                return null
             }
             "-X" -> {
                 console.log("""
@@ -185,6 +190,8 @@ fun parseArguments(): CliArguments? {
     val (_, allSources) = other.partition { it.startsWith("-") }
 
     val sources = allSources.filter { it.endsWith(TYPESCRIPT_DEFINITION_FILE_EXT) }
+
+    printVersion()
 
     if (sources.size != allSources.size) {
         console.error("$program supports to convert only TypeScript definition files (d.ts)")
