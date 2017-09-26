@@ -99,9 +99,9 @@ fun translate(srcPath: String): List<KtPackagePart> {
         }
     }
 
-    inline fun isOverrideHelper(
+    /*inline*/ fun isOverrideHelper(
             node: Declaration,
-            crossinline f: (TypeChecker, Type, String) -> Boolean
+            /*crossinline*/ f: (TypeChecker, Type, String) -> Boolean
     ): Boolean {
         val parentNode = node.parent!!.cast<ClassDeclaration>()
 
@@ -202,7 +202,7 @@ fun translate(srcPath: String): List<KtPackagePart> {
     fun isOverrideProperty(node: PropertyDeclaration): Boolean {
         return isOverrideHelper(node) { typechecker, type, nodeName ->
             // no need to check the property type.  If they are incompatible, It will be a Kotlin compilation error.
-            return@isOverrideHelper typechecker.getPropertyOfType(type, nodeName) != null
+            typechecker.getPropertyOfType(type, nodeName) != null
         }
     }
 

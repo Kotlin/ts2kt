@@ -368,6 +368,7 @@ fun ClassOrInterfaceDeclaration.toKotlinType(typeMapper: ObjectTypeToKotlinTypeM
 fun forEachChild(visitor: Visitor, node: Node) {
     forEachChild(node, { node ->
         visitNode(visitor, node)
+        undefined
     })
 }
 
