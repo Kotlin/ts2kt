@@ -1,10 +1,10 @@
 package functionTypedIntersectionParameter
 
-external interface FooPart<T>
 external interface `T$0`<T> {
     var foo: T
     var bar: Any
 }
+external interface FooPart<T>
 external interface `T$1`<T> {
     var foo: T
     var sup: Any

@@ -16,6 +16,7 @@
 
 package ts2kt
 
+import converter.TypeAliasPreprocessor
 import ts2kt.kotlin.ast.*
 import ts2kt.utils.assert
 import ts2kt.utils.cast
@@ -43,16 +44,17 @@ internal val COMPARE_BY_NAME = { a: KtNamed, b: KtNamed -> a.name == b.name }
 internal val IS_NATIVE_ANNOTATION = { a: KtAnnotation -> a.name == NATIVE }
 
 class TypeScriptToKotlin(
-        override val defaultAnnotations: List<KtAnnotation> = DEFAULT_ANNOTATION,
+        declarations: MutableList<KtMember>,
+        override val defaultAnnotations: List<KtAnnotation>,
         val requiredModifier: SyntaxKind? = SyntaxKind.DeclareKeyword,
         val moduleName: String? = null,
-        typeMapper: ObjectTypeToKotlinTypeMapper? = null,
+        val typeMapper: ObjectTypeToKotlinTypeMapper,
         override val isInterface: Boolean = false,
         val isOwnDeclaration: (Node) -> Boolean = { true },
         val isOverride: (MethodDeclaration) -> Boolean,
         val isOverrideProperty: (PropertyDeclaration) -> Boolean,
         private val qualifier: List<String> = listOf()
-) : TypeScriptToKotlinBase() {
+) : TypeScriptToKotlinBase(declarations) {
 
     fun packagePartAnnotations(): List<KtAnnotation> {
         if (qualifier.isEmpty()) return defaultAnnotations
@@ -71,10 +73,6 @@ class TypeScriptToKotlin(
 
     val exportedByAssignment = hashMapOf<String, KtAnnotation>()
 
-    private val typeAliases = mutableListOf<KtTypeAlias>()
-
-    val typeMapper = typeMapper ?: ObjectTypeToKotlinTypeMapperImpl(defaultAnnotations, declarations, typeAliases)
-
     fun getAdditionalAnnotations(node: Node): List<KtAnnotation> {
         val isShouldSkip = requiredModifier === SyntaxKind.DeclareKeyword && !(node.modifiers?.arr?.any { it.kind === requiredModifier } ?: false )
         if (isShouldSkip) return DEFAULT_FAKE_ANNOTATION
@@ -83,9 +81,6 @@ class TypeScriptToKotlin(
     }
 
     override fun visitTypeAliasDeclaration(node: TypeAliasDeclaration) {
-        val newTypeMapper = typeMapper.withTypeParameters(node.typeParameters)
-        val typeParams = node.typeParameters?.toKotlinTypeParams(newTypeMapper)
-        typeAliases.add(KtTypeAlias(node.identifierName.text, typeParams, node.type.toKotlinTypeUnion(newTypeMapper)))
     }
 
     override fun visitVariableStatement(node: VariableStatement) {
@@ -186,16 +181,21 @@ class TypeScriptToKotlin(
         val name = getName(rightNode)
         qualifiedName += name
 
-        val tr = TypeScriptToKotlin(
-                        moduleName = name,
-                        defaultAnnotations = additionalAnnotations,
-                        requiredModifier = SyntaxKind.ExportKeyword,
-                        isOwnDeclaration = isOwnDeclaration,
-                        isOverride = isOverride,
-                        isOverrideProperty = isOverrideProperty,
-                        qualifier = this.qualifier + qualifiedName)
+        val typeAliasPreprocessor = TypeAliasPreprocessor(additionalAnnotations, mutableListOf(), mutableListOf())
+        typeAliasPreprocessor.visitList(body.unsafeCast<Node>())
 
-        tr.visitList(body)
+        val tr = TypeScriptToKotlin(
+                declarations = typeAliasPreprocessor.declarations,
+                moduleName = name,
+                defaultAnnotations = additionalAnnotations,
+                requiredModifier = SyntaxKind.ExportKeyword,
+                isOwnDeclaration = isOwnDeclaration,
+                isOverride = isOverride,
+                isOverrideProperty = isOverrideProperty,
+                qualifier = this.qualifier + qualifiedName,
+                typeMapper = typeAliasPreprocessor.typeMapper)
+
+        tr.visitList(body.unsafeCast<Node>())
 
         val isExternalModule = rightNode.declarationName!!.kind === SyntaxKind.StringLiteral
 

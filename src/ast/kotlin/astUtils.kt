@@ -13,7 +13,7 @@ fun KtAnnotation.getFirstParamAsString(): String? {
     if (this.parameters.isEmpty()) return null
 
     val annotationParam = this.parameters[0].value as String
-    return annotationParam.substring(1, annotationParam.size - 1)
+    return annotationParam.substring(1, annotationParam.length - 1)
 }
 
 fun KtClassifier.isModule() = kind === KtClassKind.OBJECT && hasModuleAnnotation()
