@@ -16,6 +16,7 @@
 
 package ts2kt
 
+import converter.TypeAliasPreprocessor
 import node.__dirname
 import node.fs
 import ts2kt.kotlin.ast.KtPackagePart
@@ -210,13 +211,19 @@ fun translate(srcPath: String): List<KtPackagePart> {
     // TODO drop hack for reset temp class indexer for each file
     ObjectTypeToKotlinTypeMapperImpl.reset()
 
+    val typeAliasPreprocessor = TypeAliasPreprocessor(DEFAULT_ANNOTATION, mutableListOf(), mutableListOf())
+    typeAliasPreprocessor.visitList(fileNode)
+
     val typeScriptToKotlin = TypeScriptToKotlin(
+            declarations =  typeAliasPreprocessor.declarations,
+            defaultAnnotations = typeAliasPreprocessor.typeMapper.defaultAnnotations,
             isOwnDeclaration = {
                 val definitions = languageService.getDefinitionAtPosition(normalizeSrcPath, it.end)
                 definitions.all { it.fileName == normalizeSrcPath }
             },
             isOverride = ::isOverride,
-            isOverrideProperty = ::isOverrideProperty
+            isOverrideProperty = ::isOverrideProperty,
+            typeMapper = typeAliasPreprocessor.typeMapper
     )
 
     // TODO fix

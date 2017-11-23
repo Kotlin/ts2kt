@@ -11,7 +11,7 @@ abstract class TsClassifierToKt(
         val typeMapper: ObjectTypeToKotlinTypeMapper,
         val isOverride: (MethodDeclaration) -> Boolean,
         val isOverrideProperty: (PropertyDeclaration) -> Boolean
-) : TypeScriptToKotlinBase() {
+) : TypeScriptToKotlinBase(mutableListOf()) {
     abstract val needsNoImpl: Boolean
 
     var parents = arrayListOf<KtHeritageType>()
