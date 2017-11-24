@@ -4,7 +4,7 @@ package module
 external val _: _.LoDashStatic = definedExternally
 
 // ------------------------------------------------------------------------------------------
-@file:[JsQualifier("_"), JsModule("lodash")]
+@file:[JsQualifier("_") JsModule("lodash")]
 package module._
 
 external interface LoDashStatic {
