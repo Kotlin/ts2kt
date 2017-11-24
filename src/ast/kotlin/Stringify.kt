@@ -227,7 +227,7 @@ class Stringify(
                     out.print("[")
                     it.forEachIndexed { i, annotation ->
                         if (i > 0) {
-                            out.print(", ")
+                            out.print(" ")
                         }
                         printAnnotation(annotation)
                     }

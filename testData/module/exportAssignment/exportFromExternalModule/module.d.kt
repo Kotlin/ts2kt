@@ -1,4 +1,4 @@
-@file:[JsQualifier("Boo.MM"), JsModule("Boo")]
+@file:[JsQualifier("Boo.MM") JsModule("Boo")]
 package module.Boo.MM
 
 external fun method(s: Any): String = definedExternally
