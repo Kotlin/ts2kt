@@ -95,7 +95,13 @@ data class ObjectTypeToKotlinTypeMapperImpl(
     }
 
     override fun resolveUsingAliases(referencedType: KtType): KtTypeUnion {
-        val matchingTypeAlias = typeAliases.find { it.name == referencedType.name }
+        var matchingTypeAlias = typeAliases.find { it.name == referencedType.name }
+        if (matchingTypeAlias != null) {
+            val replacementName = matchingTypeAlias.actualTypeUnionUsingAliasParams.possibleTypes.singleOrNull()?.name
+            if (replacementName == referencedType.name) {
+                matchingTypeAlias = null
+            }
+        }
         if (matchingTypeAlias != null) {
             val resolvedTypeUnion = replaceTypeParamsWithTypeArgs(referencedType, matchingTypeAlias, typeAliases)
             return resolvedTypeUnion.flatMap { if (referencedType.name != it.name) resolveUsingAliases(it) else KtTypeUnion(it) }
@@ -109,20 +115,21 @@ data class ObjectTypeToKotlinTypeMapperImpl(
     private fun replaceTypeParamsWithTypeArgs(fromType: KtType, matchingTypeAlias: KtTypeAlias, replacements: List<KtTypeAlias>): KtTypeUnion {
         val toTypeWithUnresolvedArgs = matchingTypeAlias.actualTypeUnionUsingAliasParams
         val boundTypeAliases: List<KtTypeAlias> = getReplacementsForTypeParams(fromType, matchingTypeAlias)
-        return toTypeWithUnresolvedArgs.map { resolveTypeArgs(it, replacements + boundTypeAliases) }
+        return toTypeWithUnresolvedArgs.flatMap { resolveTypeArgs(it, replacements + boundTypeAliases) }
     }
 
     private fun KtTypeUnion.flatMap(function: (KtType) -> KtTypeUnion): KtTypeUnion = KtTypeUnion(possibleTypes.flatMap { function(it).possibleTypes })
 
-    private fun KtTypeUnion.map(function: (KtType) -> KtType): KtTypeUnion = KtTypeUnion(possibleTypes.map(function))
-
-    private fun resolveTypeArgs(type: KtType, replacements: List<KtTypeAlias>): KtType {
-        if (type.typeArgs.isNotEmpty()) {
-            val aliasMapper = copy(typeAliases = replacements)
-            return type.copy(typeArgs = type.typeArgs.map { aliasMapper.resolveUsingAliases(it).singleType })
-        } else {
-            return type
-        }
+    private fun resolveTypeArgs(type: KtType, replacements: List<KtTypeAlias>): KtTypeUnion {
+        val aliasMapper = copy(typeAliases = replacements)
+        val mappedTypes = aliasMapper.resolveUsingAliases(type).possibleTypes
+        return KtTypeUnion(mappedTypes.map { mappedType ->
+            if (mappedType.typeArgs.isNotEmpty()) {
+                mappedType.copy(typeArgs = mappedType.typeArgs.map { aliasMapper.resolveUsingAliases(it).singleType })
+            } else {
+                mappedType
+            }
+        })
     }
 
     private fun getReplacementsForTypeParams(fromType: KtType, matchingTypeAlias: KtTypeAlias): List<KtTypeAlias> {
