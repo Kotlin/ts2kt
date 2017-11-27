@@ -142,7 +142,7 @@ class TypeScriptToKotlin(
     override fun visitEnumDeclaration(node: EnumDeclaration) {
         val entries = node.members.arr.map { entry ->
             KtEnumEntry(entry.declarationName.unescapedText, entry.initializer?.let {
-                when (it.kind) {
+                when (it.kind as Any) {
                     SyntaxKind.FirstLiteralToken -> (it.cast<LiteralExpression>()).text
                     else -> reportUnsupportedNode(it)
                 }
@@ -160,7 +160,7 @@ class TypeScriptToKotlin(
         val additionalAnnotations = getAdditionalAnnotations(node)
 
         fun getName(node: ModuleDeclaration): String {
-            return when(node.declarationName!!.kind) {
+            return when(node.declarationName!!.kind as Any) {
                 SyntaxKind.Identifier,
                 SyntaxKind.StringLiteral -> node.declarationName!!.unescapedText
 

@@ -112,7 +112,7 @@ abstract class TsClassifierToKt(
         getTranslator(node).addFunction(name, isOverride, needsNoImpl, node)
     }
 
-    private fun PropertyName.asString() = when (kind) {
+    private fun PropertyName.asString() = when (kind as Any) {
         SyntaxKind.Identifier -> {
             unescapedText
         }

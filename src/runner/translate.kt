@@ -184,7 +184,7 @@ fun translate(srcPath: String): List<KtPackagePart> {
                 // TODO add test
                 if (it.kind === SyntaxKind.PropertyDeclaration || it.kind === SyntaxKind.PropertySignature) return@any false
 
-                val signature: Signature = when (it.kind) {
+                val signature: Signature = when (it.kind as Any) {
                     SyntaxKind.MethodSignature,
                     SyntaxKind.MethodDeclaration -> typechecker.getSignatureFromDeclaration(it.cast<SignatureDeclaration>())
                     else -> {

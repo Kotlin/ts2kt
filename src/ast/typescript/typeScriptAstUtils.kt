@@ -83,7 +83,7 @@ private fun ParameterDeclaration.toKotlinParam(nodeType: TypeNode?, typeWithoutF
 private fun ParameterDeclaration.toKotlinParam(type: KtType): KtFunParam {
     val name = declarationName!!.unescapedText
     val defaultValue = initializer?.let {
-        when (it.kind) {
+        when (it.kind as Any) {
         // TODO
             SyntaxKind.FirstLiteralToken -> (it.cast<LiteralExpression>()).text
             SyntaxKind.StringLiteral -> "\"" + (it.cast<LiteralExpression>()).text + "\""
@@ -209,7 +209,7 @@ private fun TypeLiteralNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMappe
         typeMapper.getKotlinTypeForObjectType(this)
 
 fun TypeNode.toKotlinTypeUnion(typeMapper: ObjectTypeToKotlinTypeMapper): KtTypeUnion {
-    return when (this.kind) {
+    return when (this.kind as Any) {
         SyntaxKind.ConstructorType,
         SyntaxKind.FunctionType -> (this.cast<FunctionOrConstructorTypeNode>()).toKotlinTypeUnion(typeMapper)
 
@@ -222,7 +222,7 @@ fun TypeNode.toKotlinTypeUnion(typeMapper: ObjectTypeToKotlinTypeMapper): KtType
 
 // TODO
 fun TypeNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
-    return when (this.kind) {
+    return when (this.kind as Any) {
         SyntaxKind.AnyKeyword -> KtType(ANY)
         SyntaxKind.NumberKeyword -> KtType(NUMBER)
         SyntaxKind.StringKeyword -> KtType(STRING)
@@ -260,7 +260,7 @@ fun TypeNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
 }
 
 fun EntityName.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper): String {
-    return when (kind) {
+    return when (kind as Any) {
         SyntaxKind.Identifier ->
             this.unescapedText
         else ->
@@ -299,7 +299,7 @@ private fun PropertyAccessExpression.stringify(): String {
     return qualifier + "." + identifier
 }
 
-private fun Node.stringifyQualifiedName() = when (kind) {
+private fun Node.stringifyQualifiedName() = when (kind as Any) {
     SyntaxKind.Identifier ->
         (this.cast<Identifier>()).unescapedText
 
@@ -341,7 +341,7 @@ fun ThisTypeNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType 
 
     while(parent != null) {
         @Suppress("NON_EXHAUSTIVE_WHEN")
-        when (parent.kind) {
+        when (parent.kind as Any) {
             SyntaxKind.ClassDeclaration,
             SyntaxKind.InterfaceDeclaration ->
                 return parent.cast<ClassOrInterfaceDeclaration>().toKotlinType(typeMapper).copy(comment = "this")
@@ -375,7 +375,7 @@ fun forEachChild(visitor: Visitor, node: Node) {
 fun visitNode(visitor: Visitor, node: Node?): Unit {
     if (node == null) return
 
-    when (node.kind) {
+    when (node.kind as Any) {
         SyntaxKind.ModuleDeclaration -> visitor.visitModuleDeclaration(node.asDynamic())
 
         SyntaxKind.FunctionDeclaration    -> visitor.visitFunctionDeclaration(node.cast<FunctionDeclaration>())
