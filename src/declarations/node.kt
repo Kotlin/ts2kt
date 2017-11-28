@@ -18,6 +18,7 @@ package node
 
 @JsModule("path")
 external object path {
+    val sep: String
     fun basename(path: String, postfix: String): String
     fun basename(path: String): String
     fun dirname(path: String): String
@@ -35,6 +36,7 @@ external object fs {
     fun writeFileSync(path: String, text: String): Unit
     fun readFileSync(path: String): String
     fun existsSync(path: String): Boolean
+    fun mkdirSync(path: String): Unit
 }
 
 external object module {

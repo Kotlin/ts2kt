@@ -45,9 +45,30 @@ fun translateToFile(srcPath: String, outPath: String) {
 
     fs.writeFileSync(outPath, out)
 }
+private fun mkDirs(dirs: String): Boolean {
+    val parts = dirs.split(path.sep)
+    if (parts.isEmpty()) return true
 
+    if (!fs.existsSync(parts[0])) {
+        fs.mkdirSync(parts[0])
+    }
+
+    parts.reduce { parent, name ->
+        val cur = parent + path.sep + name
+
+        if (!fs.existsSync(cur)) {
+            fs.mkdirSync(cur)
+        }
+
+        cur
+    }
+
+    return true
+}
 // TODO share more code between [translateToDir] and [translateToFile]
 fun translateToDir(sources: List<String>, outDir: String, libraries: List<String> = emptyList()) {
+    var isOutDirExists = false
+
     for (src in sources) {
         console.log("Converting $src")
         val packageParts = translate(src)
@@ -88,6 +109,9 @@ fun translateToDir(sources: List<String>, outDir: String, libraries: List<String
                     "RETURN_TYPE_MISMATCH_ON_OVERRIDE",
                     "CONFLICTING_OVERLOADS")
 
+            if (!isOutDirExists) {
+                isOutDirExists = fs.existsSync(outDir) || mkDirs(outDir)
+            }
             fs.writeFileSync(outFilePath, it.stringify(packagePartPrefix = null, topLevel = true, additionalImports = imports, suppressedDiagnostics = suppressedDiagnostics))
         }
     }
@@ -118,7 +142,12 @@ fun parseArguments(): CliArguments? {
     val program = "ts2kt"
 
     fun printVersion() {
-        val version = js("require('./package.json')").version
+        val version = try {
+            js("require('./package.json')").version
+        }
+        catch (e: Throwable) {
+            "<unknown>"
+        }
         console.log("$program version: $version")
     }
 
