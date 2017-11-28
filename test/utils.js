@@ -51,6 +51,10 @@ function collectSingleFile (testFile, tests, testDataDir, testDataExpectedDir) {
 
     var testConfig = getTestConfigBasedOnEnvironment();
 
+    if (testConfig.other < OPERATION_LEVEL.CONVERT) {
+        testConfig.other = OPERATION_LEVEL.CONVERT;
+    }
+
     var expectedFile = replaceExtension(testFile, TS_EXT, KT_EXT);
     addTestFor(tests, testFile, testDataDir + "/" + testFile, testDataExpectedDir + "/" + expectedFile, testConfig);
 }
