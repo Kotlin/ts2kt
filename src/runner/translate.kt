@@ -16,7 +16,6 @@
 
 package ts2kt
 
-import converter.TypeAliasPreprocessor
 import node.__dirname
 import node.fs
 import ts2kt.kotlin.ast.KtPackagePart
@@ -54,7 +53,7 @@ private val host = FileSystemBasedLSH(mapOf(), "")
 private val documentRegistry = createDocumentRegistry()
 private val languageService = createLanguageService(host, documentRegistry)
 
-fun translate(srcPath: String): List<KtPackagePart> {
+fun translate(srcPath: String, basePackageName: String): List<KtPackagePart> {
     val normalizeSrcPath = normalizePath(srcPath)
 
     val file2scriptSnapshot = hashMapOf(LIB_D_TS_WITH_SNAPSHOT, normalizeSrcPath to getScriptSnapshotFromFile(normalizeSrcPath))
@@ -211,19 +210,20 @@ fun translate(srcPath: String): List<KtPackagePart> {
     // TODO drop hack for reset temp class indexer for each file
     ObjectTypeToKotlinTypeMapperImpl.reset()
 
-    val typeAliasPreprocessor = TypeAliasPreprocessor(DEFAULT_ANNOTATION, mutableListOf(), mutableListOf())
-    typeAliasPreprocessor.visitList(fileNode)
-
-    val typeScriptToKotlin = TypeScriptToKotlin(
-            declarations =  typeAliasPreprocessor.declarations,
-            defaultAnnotations = typeAliasPreprocessor.typeMapper.defaultAnnotations,
+    val typeScriptToKotlin = createConverter(
+            packageName = basePackageName,
+            typeMapper = null,
+            additionalAnnotations = DEFAULT_ANNOTATION,
+            moduleName = null,
             isOwnDeclaration = {
                 val definitions = languageService.getDefinitionAtPosition(normalizeSrcPath, it.end)
                 definitions.all { it.fileName == normalizeSrcPath }
             },
             isOverride = ::isOverride,
             isOverrideProperty = ::isOverrideProperty,
-            typeMapper = typeAliasPreprocessor.typeMapper
+            qualifier = listOf(),
+            requiredModifier = SyntaxKind.DeclareKeyword,
+            body = fileNode
     )
 
     // TODO fix

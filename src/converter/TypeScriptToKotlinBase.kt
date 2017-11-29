@@ -1,6 +1,7 @@
 package ts2kt
 
 import ts2kt.kotlin.ast.*
+import typescriptServices.ts.ImportEqualsDeclaration
 
 abstract class TypeScriptToKotlinBase(val declarations: MutableList<KtMember>) : Visitor {
     abstract val hasMembersOpenModifier: Boolean
@@ -21,5 +22,8 @@ abstract class TypeScriptToKotlinBase(val declarations: MutableList<KtMember>) :
     // TODO
     open fun visitList(node: typescriptServices.ts.Node) {
         forEachChild(this, node)
+    }
+
+    override fun visitImportEqualsDeclaration(node: ImportEqualsDeclaration) {
     }
 }

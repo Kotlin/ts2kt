@@ -16,6 +16,7 @@
 
 package ts2kt
 
+import converter.NamespaceResolver
 import ts2kt.kotlin.ast.*
 import typescript.identifierName
 import typescriptServices.ts.NodeArray
@@ -26,9 +27,12 @@ interface ObjectTypeToKotlinTypeMapper {
     fun getKotlinTypeForObjectType(objectType: TypeLiteralNode): KtType
     fun resolveUsingAliases(referencedType: KtType): KtTypeUnion
     fun withTypeParameters(typeParameters: NodeArray<TypeParameterDeclaration>?): ObjectTypeToKotlinTypeMapper
+
+    val namespaceAliases: Map<String, String>
 }
 
 data class ObjectTypeToKotlinTypeMapperImpl(
+        val namespaceResolver: NamespaceResolver,
         val defaultAnnotations: List<KtAnnotation>,
         val declarations: MutableList<KtMember>,
         val typeAliases: List<KtTypeAlias>,
@@ -95,20 +99,22 @@ data class ObjectTypeToKotlinTypeMapperImpl(
     }
 
     override fun resolveUsingAliases(referencedType: KtType): KtTypeUnion {
-        var matchingTypeAlias = typeAliases.find { it.name == referencedType.name }
+        val partiallyResolvedType = referencedType.copy(name = namespaceResolver.resolveNamespace(referencedType.name))
+
+        var matchingTypeAlias = typeAliases.find { it.name == partiallyResolvedType.name }
         if (matchingTypeAlias != null) {
             val replacementName = matchingTypeAlias.actualTypeUnionUsingAliasParams.possibleTypes.singleOrNull()?.name
-            if (replacementName == referencedType.name) {
+            if (replacementName == partiallyResolvedType.name) {
                 matchingTypeAlias = null
             }
         }
         if (matchingTypeAlias != null) {
-            val resolvedTypeUnion = replaceTypeParamsWithTypeArgs(referencedType, matchingTypeAlias, typeAliases)
-            return resolvedTypeUnion.flatMap { if (referencedType.name != it.name) resolveUsingAliases(it) else KtTypeUnion(it) }
-        } else if (referencedType.typeArgs.isNotEmpty()) {
-            return KtTypeUnion(referencedType.copy(typeArgs = referencedType.typeArgs.map { resolveUsingAliases(it).singleType }))
+            val resolvedTypeUnion = replaceTypeParamsWithTypeArgs(partiallyResolvedType, matchingTypeAlias, typeAliases)
+            return resolvedTypeUnion.flatMap { if (partiallyResolvedType.name != it.name) resolveUsingAliases(it) else KtTypeUnion(it) }
+        } else if (partiallyResolvedType.typeArgs.isNotEmpty()) {
+            return KtTypeUnion(partiallyResolvedType.copy(typeArgs = partiallyResolvedType.typeArgs.map { resolveUsingAliases(it).singleType }))
         } else {
-            return KtTypeUnion(referencedType)
+            return KtTypeUnion(partiallyResolvedType)
         }
     }
 
@@ -117,6 +123,9 @@ data class ObjectTypeToKotlinTypeMapperImpl(
         val boundTypeAliases: List<KtTypeAlias> = getReplacementsForTypeParams(fromType, matchingTypeAlias)
         return toTypeWithUnresolvedArgs.flatMap { resolveTypeArgs(it, replacements + boundTypeAliases) }
     }
+
+    override val namespaceAliases: Map<String, String>
+        get() = namespaceResolver.aliases
 
     private fun KtTypeUnion.flatMap(function: (KtType) -> KtTypeUnion): KtTypeUnion = KtTypeUnion(possibleTypes.flatMap { function(it).possibleTypes })
 

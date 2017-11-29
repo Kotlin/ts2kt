@@ -25,4 +25,5 @@ interface Visitor {
     fun visitSignatureDeclaration(node: SignatureDeclaration): Unit = TODO()
 
     fun visitExportAssignment(node: ExportAssignment): Unit = TODO()
+    fun visitImportEqualsDeclaration(node: ImportEqualsDeclaration): Unit = TODO()
 }

@@ -16,7 +16,6 @@
 
 package ts2kt
 
-import converter.TypeAliasPreprocessor
 import ts2kt.kotlin.ast.*
 import ts2kt.utils.assert
 import ts2kt.utils.cast
@@ -181,21 +180,20 @@ class TypeScriptToKotlin(
         val name = getName(rightNode)
         qualifiedName += name
 
-        val typeAliasPreprocessor = TypeAliasPreprocessor(additionalAnnotations, mutableListOf(), mutableListOf())
-        typeAliasPreprocessor.visitList(body.unsafeCast<Node>())
-
-        val tr = TypeScriptToKotlin(
-                declarations = typeAliasPreprocessor.declarations,
+        val bodyNode = body.unsafeCast<Node>()
+        val tr = createConverter(
+                packageName = qualifiedName.joinToString("."),
+                typeMapper = typeMapper,
+                additionalAnnotations = additionalAnnotations,
                 moduleName = name,
-                defaultAnnotations = additionalAnnotations,
-                requiredModifier = SyntaxKind.ExportKeyword,
                 isOwnDeclaration = isOwnDeclaration,
                 isOverride = isOverride,
                 isOverrideProperty = isOverrideProperty,
                 qualifier = this.qualifier + qualifiedName,
-                typeMapper = typeAliasPreprocessor.typeMapper)
-
-        tr.visitList(body.unsafeCast<Node>())
+                requiredModifier = SyntaxKind.ExportKeyword,
+                body = bodyNode
+        )
+        tr.visitList(bodyNode)
 
         val isExternalModule = rightNode.declarationName!!.kind === SyntaxKind.StringLiteral
 
