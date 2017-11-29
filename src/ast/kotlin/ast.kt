@@ -48,11 +48,15 @@ abstract class AbstractKtNode : KtNode {
     }
 }
 
+interface KtWithMembers {
+    var members: List<KtMember>
+}
+
 class KtPackagePart(
         val fqName: List<String>,
-        val members: List<KtMember>,
+        override var members: List<KtMember>,
         override var annotations: List<KtAnnotation>
-) : AbstractKtNode(), KtAnnotated {
+) : AbstractKtNode(), KtAnnotated, KtWithMembers {
     override fun accept(visitor: KtVisitor) {
         visitor.visitPackagePart(this)
     }
@@ -78,7 +82,7 @@ data class KtArgument(val value: Any/* TODO Any ??? */, val name: String? = null
     }
 }
 
-class KtAnnotation(override var name: String, val parameters: List<KtArgument> = listOf()) : KtNamed, AbstractKtNode() {
+data class KtAnnotation(override var name: String, val parameters: List<KtArgument> = listOf()) : KtNamed, AbstractKtNode() {
     override fun accept(visitor: KtVisitor) {
         visitor.visitAnnotation(this)
     }
@@ -92,22 +96,22 @@ enum class KtClassKind(val keyword: String, val bracesAlwaysRequired: Boolean = 
     COMPANION_OBJECT("companion object", bracesAlwaysRequired = true)
 }
 
-class KtClassifier(
+data class KtClassifier(
         val kind: KtClassKind,
         override var name: String,
         val paramsOfConstructors: List<List<KtFunParam>>,
         val typeParams: List<KtTypeParam>?,
         val parents: List<KtHeritageType>,
-        val members: List<KtMember>,
+        override var members: List<KtMember>,
         override var annotations: List<KtAnnotation>,
         val hasOpenModifier: Boolean
-) : KtMember, AbstractKtNode() {
+) : KtMember, AbstractKtNode(), KtWithMembers {
     override fun accept(visitor: KtVisitor) {
         visitor.visitClassifier(this)
     }
 }
 
-class KtFunParam(
+data class KtFunParam(
         override var name: String,
         val type: KtTypeAnnotation,
         val defaultValue: Any? = null,
@@ -118,7 +122,7 @@ class KtFunParam(
     }
 }
 
-class KtCallSignature(
+data class KtCallSignature(
         val params: List<KtFunParam>,
         val typeParams: List<KtTypeParam>?,
         val returnType: KtTypeAnnotation
@@ -128,22 +132,22 @@ class KtCallSignature(
     }
 }
 
-class KtFunction(
+data class KtFunction(
         override var name: String,
         val callSignature: KtCallSignature,
         val extendsType: KtHeritageType? = null,
-        override var annotations: List<KtAnnotation>,
+        override var annotations: List<KtAnnotation> = emptyList(),
         val needsNoImpl: Boolean = true,
         val isOverride: Boolean = false,
-        val hasOpenModifier: Boolean,
-        val isOperator: Boolean
+        val hasOpenModifier: Boolean = false,
+        val isOperator: Boolean = false
 ) : KtMember, AbstractKtNode() {
     override fun accept(visitor: KtVisitor) {
         visitor.visitFunction(this)
     }
 }
 
-class KtVariable(
+data class KtVariable(
         override var name: String,
         var type: KtTypeAnnotation,
         val extendsType: KtHeritageType? = null,
@@ -160,7 +164,7 @@ class KtVariable(
     }
 }
 
-class KtEnumEntry(override var name: String, val value: String? = null) : KtMember, AbstractKtNode() {
+data class KtEnumEntry(override var name: String, val value: String? = null) : KtMember, AbstractKtNode() {
     override var annotations = listOf<KtAnnotation>()
 
     override fun accept(visitor: KtVisitor) {
@@ -168,22 +172,9 @@ class KtEnumEntry(override var name: String, val value: String? = null) : KtMemb
     }
 }
 
-class KtHeritageType(override var name: String) : KtNamed, AbstractKtNode() {
+data class KtHeritageType(override var name: String) : KtNamed, AbstractKtNode() {
     override fun accept(visitor: KtVisitor) {
         visitor.visitHeritageType(this)
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || other !is KtHeritageType) return false
-
-        if (name != other.name) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return name.hashCode()
     }
 }
 
@@ -222,27 +213,10 @@ data class KtType(
     fun isUnit() = escapedName == UNIT && !isNullable && !isLambda
 }
 
-class KtTypeParam(override var name: String, val upperBound: KtType? = null) : KtNamed, AbstractKtNode() {
+data class KtTypeParam(override var name: String, val upperBound: KtType? = null) : KtNamed, AbstractKtNode() {
     override fun accept(visitor: KtVisitor) {
         visitor.visitTypeParam(this)
     }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || other !is KtTypeParam) return false
-
-        if (name != other.name) return false
-        if (upperBound != other.upperBound) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = name.hashCode()
-        result = 31 * result + (upperBound?.hashCode() ?: 0)
-        return result
-    }
-
 
 }
 
@@ -253,7 +227,7 @@ fun KtTypeAlias(name: String, typeParams: List<KtTypeParam>? = null, actualTypeU
     return KtTypeAlias(name, typeParams, KtTypeUnion(actualTypeUsingAliasParams))
 }
 
-class KtTypeAnnotation(var type: KtType, val isVararg: Boolean = false) : AbstractKtNode() {
+data class KtTypeAnnotation(var type: KtType, val isVararg: Boolean = false) : AbstractKtNode() {
     override fun accept(visitor: KtVisitor) {
         visitor.visitTypeAnnotation(this)
     }

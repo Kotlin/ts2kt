@@ -20,5 +20,3 @@ fun TsClassToKt.createClassifier(): KtClassifier? {
 
     return KtClassifier(kind, name!!, paramsOfConstructors, typeParams, parents, members, annotations, hasOpenModifier = kind === ts2kt.kotlin.ast.KtClassKind.CLASS)
 }
-
-

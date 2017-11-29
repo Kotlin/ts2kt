@@ -231,7 +231,7 @@ fun translate(srcPath: String): List<KtPackagePart> {
     typeScriptToKotlin.visitList(fileNode)
 
     val packageParts = typeScriptToKotlin.packageParts
-    val mergedPackageParts = packageParts.merge().filter { it.members.any(isNotAnnotatedAsFake) }
+    val mergedPackageParts = packageParts.merge().withMissedOverloads().filter { it.members.any(isNotAnnotatedAsFake) }
 
     return mergedPackageParts
 }
