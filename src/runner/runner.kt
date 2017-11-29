@@ -31,9 +31,8 @@ private val KOTLIN_FILE_EXT = ".kt"
 // Used from tests
 @Suppress("unused")
 fun translateToFile(srcPath: String, outPath: String) {
-    val packageParts = translate(srcPath)
-
     val srcName = path.basename(srcPath, TYPESCRIPT_DEFINITION_FILE_EXT)
+    val packageParts = translate(srcPath, srcName)
 
     val out =
             if (packageParts.isNotEmpty()) {
@@ -71,8 +70,8 @@ fun translateToDir(sources: List<String>, outDir: String, libraries: List<String
 
     for (src in sources) {
         console.log("Converting $src")
-        val packageParts = translate(src)
         val baseSrcName = path.basename(src, TYPESCRIPT_DEFINITION_FILE_EXT)
+        val packageParts = translate(src, baseSrcName)
 
         if (packageParts.isEmpty()) {
             console.log("Nothing was converted")

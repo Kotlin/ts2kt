@@ -259,12 +259,12 @@ fun TypeNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
     }
 }
 
-fun EntityName.toKotlinTypeName(typeMapper: ObjectTypeToKotlinTypeMapper): String {
+fun EntityName.toKotlinTypeName(): String {
     return when (kind as Any) {
         SyntaxKind.Identifier ->
             this.unescapedText
         else ->
-            this.left.toKotlinTypeName(typeMapper) + "." + this.right.unescapedText
+            this.left.toKotlinTypeName() + "." + this.right.unescapedText
     }
 }
 
@@ -274,7 +274,7 @@ fun TypeReferenceNode.toKotlinTypeUnion(typeMapper: ObjectTypeToKotlinTypeMapper
 
 private fun TypeReferenceNode.toKotlinTypeIgnoringTypeAliases(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
     // TODO improve
-    val name = (typeName as EntityName).toKotlinTypeName(typeMapper)
+    val name = (typeName as EntityName).toKotlinTypeName()
 
     return when (name) {
         // TODO: HACKS
@@ -288,7 +288,8 @@ private fun TypeReferenceNode.toKotlinTypeIgnoringTypeAliases(typeMapper: Object
 fun ExpressionWithTypeArguments.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
     val name = expression.stringifyQualifiedName()
 
-    return KtType(name ?: "???", typeArguments?.arr?.map { it.toKotlinType(typeMapper) } ?: emptyList())
+    val type = KtType(name ?: "???", typeArguments?.arr?.map { it.toKotlinType(typeMapper) } ?: emptyList())
+    return typeMapper.resolveUsingAliases(type).singleType
 }
 
 private fun PropertyAccessExpression.stringify(): String {
@@ -404,7 +405,7 @@ fun visitNode(visitor: Visitor, node: Node?): Unit {
         SyntaxKind.CallSignature -> visitor.visitSignatureDeclaration(node.cast<SignatureDeclaration>())
 
         SyntaxKind.ExportAssignment -> visitor.visitExportAssignment(node.cast<ExportAssignment>())
-        SyntaxKind.ImportEqualsDeclaration ->  { /* TODO implement */ }
+        SyntaxKind.ImportEqualsDeclaration -> visitor.visitImportEqualsDeclaration(node.cast())
 
         SyntaxKind.EndOfFileToken -> { /* ignore */ }
         else -> reportUnsupportedNode(node)
