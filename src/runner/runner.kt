@@ -44,6 +44,7 @@ fun translateToFile(srcPath: String, outPath: String) {
 
     fs.writeFileSync(outPath, out)
 }
+
 private fun mkDirs(dirs: String): Boolean {
     val parts = dirs.split(path.sep)
     if (parts.isEmpty()) return true
@@ -64,14 +65,15 @@ private fun mkDirs(dirs: String): Boolean {
 
     return true
 }
+
 // TODO share more code between [translateToDir] and [translateToFile]
-fun translateToDir(sources: List<String>, outDir: String, libraries: List<String> = emptyList()) {
+fun translateToDir(sources: List<String>, outDir: String, basePackage: String? = null, libraries: List<String> = emptyList()) {
     var isOutDirExists = false
 
     for (src in sources) {
         console.log("Converting $src")
         val baseSrcName = path.basename(src, TYPESCRIPT_DEFINITION_FILE_EXT)
-        val packageParts = translate(src, baseSrcName)
+        val packageParts = translate(src, basePackage ?: "")
 
         if (packageParts.isEmpty()) {
             console.log("Nothing was converted")
@@ -111,12 +113,12 @@ fun translateToDir(sources: List<String>, outDir: String, libraries: List<String
             if (!isOutDirExists) {
                 isOutDirExists = fs.existsSync(outDir) || mkDirs(outDir)
             }
-            fs.writeFileSync(outFilePath, it.stringify(packagePartPrefix = null, topLevel = true, additionalImports = imports, suppressedDiagnostics = suppressedDiagnostics))
+            fs.writeFileSync(outFilePath, it.stringify(packagePartPrefix = basePackage, topLevel = true, additionalImports = imports, suppressedDiagnostics = suppressedDiagnostics))
         }
     }
 }
 
-data class CliArguments(val sources: List<String>, val outDir: String, val libraries: List<String>)
+data class CliArguments(val sources: List<String>, val outDir: String, val basePackage: String?, val libraries: List<String>)
 
 private fun printUsage(program: String) {
     console.log("""
@@ -162,6 +164,7 @@ fun parseArguments(): CliArguments? {
     val other = mutableListOf<String>()
 
     var destination: String? = null
+    var basePackage: String? = null
 
     while (it.hasNext()) {
         val arg = it.next()
@@ -182,6 +185,16 @@ fun parseArguments(): CliArguments? {
             "-l" -> {
                 console.error("'-l' not supported yet")
                 return null
+            }
+            // TODO add to "usage"
+            "-p" -> {
+                val p = it.readArg()
+                if (p == null) {
+                    console.error("$arg should be followed by base package fq-name")
+                    return null
+                }
+
+                basePackage = p
             }
             "-v", "-version" -> {
                 printVersion()
@@ -231,16 +244,16 @@ fun parseArguments(): CliArguments? {
         return null
     }
 
-    return CliArguments(sources, destination ?: ".", emptyList())
+    return CliArguments(sources, destination ?: ".", basePackage, emptyList())
 }
 
 fun main(args: Array<String>) {
     // do nothing when it loaded as library
     if (module.parent != null) return
 
-    val (sources, destination, libraries) = parseArguments() ?: return
+    val (sources, destination, basePackage, libraries) = parseArguments() ?: return
 
-    translateToDir(sources, destination, libraries)
+    translateToDir(sources, destination, basePackage, libraries)
 
     if (trackUnsupportedKinds) {
         reportUnsupportedKinds()
