@@ -16,11 +16,11 @@ external interface K
 package namespaceImportMultiple.lib1.lib2
 
 external interface J {
-    var y: namespaceImportMultiple.lib1.I
+    var y: lib1.I
 }
 
 // ------------------------------------------------------------------------------------------
 @file:JsQualifier("lib1.lib2.lib3")
 package namespaceImportMultiple.lib1.lib2.lib3
 
-external fun foo(x: namespaceImportMultiple.lib1.lib2.J, y: namespaceImportMultiple.lib1.I, z: namespaceImportMultiple.lib1.lib3.K, v: namespaceImportMultiple.lib1.lib3.K): Unit = definedExternally
+external fun foo(x: lib1.lib2.J, y: lib1.I, z: lib1.lib3.K, v: lib1.lib3.K): Unit = definedExternally

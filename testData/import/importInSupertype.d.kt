@@ -7,4 +7,4 @@ external interface I
 @file:JsQualifier("main")
 package importInSupertype.main
 
-external interface J : importInSupertype.lib.I
+external interface J : lib.I

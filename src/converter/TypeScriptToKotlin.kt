@@ -16,6 +16,7 @@
 
 package ts2kt
 
+import converter.mapType
 import ts2kt.kotlin.ast.*
 import ts2kt.utils.assert
 import ts2kt.utils.cast
@@ -43,6 +44,7 @@ internal val COMPARE_BY_NAME = { a: KtNamed, b: KtNamed -> a.name == b.name }
 internal val IS_NATIVE_ANNOTATION = { a: KtAnnotation -> a.name == NATIVE }
 
 class TypeScriptToKotlin(
+        private val typeChecker: TypeChecker,
         declarations: MutableList<KtMember>,
         override val defaultAnnotations: List<KtAnnotation>,
         val requiredModifier: SyntaxKind? = SyntaxKind.DeclareKeyword,
@@ -90,7 +92,7 @@ class TypeScriptToKotlin(
         val declarations = node.declarationList.declarations.arr
         for (d in declarations) {
             val name = d.declarationName!!.unescapedText
-            val varType = d.type?.toKotlinType(typeMapper) ?: KtType(ANY)
+            val varType = d.type?.let { typeMapper.mapType(it) } ?: KtType(ANY)
             addVariable(name, varType, additionalAnnotations = additionalAnnotations)
         }
     }
@@ -180,20 +182,28 @@ class TypeScriptToKotlin(
         val name = getName(rightNode)
         qualifiedName += name
 
-        val bodyNode = body.unsafeCast<Node>()
-        val tr = createConverter(
-                packageName = qualifiedName.joinToString("."),
-                typeMapper = typeMapper,
-                additionalAnnotations = additionalAnnotations,
+        val newQualifier = this.qualifier + qualifiedName
+        val innerDeclarations = mutableListOf<KtMember>()
+        val innerTypeMapper = ObjectTypeToKotlinTypeMapperImpl(
+                declarations = innerDeclarations,
+                defaultAnnotations = additionalAnnotations,
+                typeChecker = typeChecker,
+                currentPackage = newQualifier.joinToString(".")
+        )
+        val tr = TypeScriptToKotlin(
+                declarations = innerDeclarations,
+                typeChecker = typeChecker,
+                typeMapper = innerTypeMapper,
+                defaultAnnotations = additionalAnnotations,
                 moduleName = name,
                 isOwnDeclaration = isOwnDeclaration,
                 isOverride = isOverride,
                 isOverrideProperty = isOverrideProperty,
-                qualifier = this.qualifier + qualifiedName,
-                requiredModifier = SyntaxKind.ExportKeyword,
-                body = bodyNode
+                qualifier = newQualifier,
+                requiredModifier = SyntaxKind.ExportKeyword
         )
-        tr.visitList(bodyNode)
+
+        tr.visitList(body.unsafeCast<Node>())
 
         val isExternalModule = rightNode.declarationName!!.kind === SyntaxKind.StringLiteral
 

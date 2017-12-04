@@ -1,3 +1,8 @@
+interface Map<K, V> {
+}
+interface List<T> {
+}
+
 type Values<V> = List<V>;
 type ListOrMultiMap<K,V> = List<V> | Map<K,Values<V>>;
 

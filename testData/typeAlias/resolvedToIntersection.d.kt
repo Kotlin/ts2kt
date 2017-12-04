@@ -1,4 +1,4 @@
 package resolvedToIntersection
 
 external open class C
-external fun <T> foo(p: T): Unit = definedExternally
+external fun <T> foo(p: T /* T & C */): Unit = definedExternally

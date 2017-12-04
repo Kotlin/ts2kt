@@ -9,4 +9,4 @@ external interface I {
 @file:JsQualifier("lib2")
 package namespaceImportForward.lib2
 
-external fun foo(): namespaceImportForward.lib1.I = definedExternally
+external fun foo(): lib1.I = definedExternally

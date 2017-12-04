@@ -14,7 +14,7 @@ external enum class __E {
     __A,
     __B
 }
-external fun <__T> foo(__a: __T, _b: __M.__N.__C): Unit = definedExternally
+external fun <___T> foo(__a: ___T, _b: __M.__N.__C): Unit = definedExternally
 
 // ------------------------------------------------------------------------------------------
 @file:JsQualifier("atpl")

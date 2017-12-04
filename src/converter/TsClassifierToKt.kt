@@ -1,5 +1,7 @@
 package ts2kt
 
+import converter.mapType
+import converter.mapTypeToUnion
 import ts2kt.kotlin.ast.*
 import ts2kt.utils.assert
 import ts2kt.utils.reportUnsupportedNode
@@ -17,7 +19,7 @@ abstract class TsClassifierToKt(
     var parents = arrayListOf<KtHeritageType>()
 
     override fun visitHeritageClause(node: HeritageClause) {
-        val types = node.types?.arr?.map { id -> KtHeritageType(id.toKotlinType(typeMapper).stringify()) } ?: listOf()
+        val types = node.types?.arr?.map { id -> KtHeritageType(typeMapper.mapType(id).stringify()) } ?: listOf()
         parents.addAll(types)
     }
 
@@ -30,9 +32,9 @@ abstract class TsClassifierToKt(
         // TODO type params?
         node.parameters.toKotlinParamsOverloads(typeMapper).forEach { params ->
             val propTypeUnion = if (isGetter) {
-                KtTypeUnion(node.type?.toKotlinType(typeMapper) ?: KtType(ANY))
+                KtTypeUnion(node.type?.let { typeMapper.mapType(it) } ?: KtType(ANY))
             } else {
-                node.type?.toKotlinTypeUnion(typeMapper) ?: KtTypeUnion(KtType(ANY))
+                node.type?.let { typeMapper.mapTypeToUnion(it) } ?: KtTypeUnion(KtType(ANY))
             }
             propTypeUnion.possibleTypes.forEach { propType ->
                 val callSignature: KtCallSignature
@@ -84,7 +86,7 @@ abstract class TsClassifierToKt(
         val declarationName = node.propertyName!!
 
         val name = declarationName.asString() ?: return
-        val varType = node.type?.toKotlinType(typeMapper) ?: KtType(ANY)
+        val varType = node.type?.let { typeMapper.mapType(it) } ?: KtType(ANY)
 
         val isOverride = isOverrideProperty(node)
 

@@ -18,6 +18,7 @@ package ts2kt
 
 import node.__dirname
 import node.fs
+import ts2kt.kotlin.ast.KtMember
 import ts2kt.kotlin.ast.KtPackagePart
 import ts2kt.kotlin.ast.isNotAnnotatedAsFake
 import ts2kt.utils.cast
@@ -143,7 +144,7 @@ fun translate(srcPath: String, basePackageName: String): List<KtPackagePart> {
 //        if (other == null) return true
 
         // other is Any?
-        if (hasFlag(other.flags, TypeFlags.Any)) return true
+        if (TypeFlags.Any in other.flags) return true
 
         // this as Any
 //        if (this == null) return false
@@ -210,10 +211,19 @@ fun translate(srcPath: String, basePackageName: String): List<KtPackagePart> {
     // TODO drop hack for reset temp class indexer for each file
     ObjectTypeToKotlinTypeMapperImpl.reset()
 
-    val typeScriptToKotlin = createConverter(
-            packageName = basePackageName,
-            typeMapper = null,
-            additionalAnnotations = DEFAULT_ANNOTATION,
+    val typeChecker = languageService.getProgram().getTypeChecker()
+    val declarations = mutableListOf<KtMember>()
+    val typeMapper = ObjectTypeToKotlinTypeMapperImpl(
+            typeChecker = typeChecker,
+            defaultAnnotations = DEFAULT_ANNOTATION,
+            declarations = declarations,
+            currentPackage = ""
+    )
+    val typeScriptToKotlin = TypeScriptToKotlin(
+            declarations = declarations,
+            typeChecker = typeChecker,
+            typeMapper = typeMapper,
+            defaultAnnotations = DEFAULT_ANNOTATION,
             moduleName = null,
             isOwnDeclaration = {
                 val definitions = languageService.getDefinitionAtPosition(normalizeSrcPath, it.end)
@@ -222,8 +232,7 @@ fun translate(srcPath: String, basePackageName: String): List<KtPackagePart> {
             isOverride = ::isOverride,
             isOverrideProperty = ::isOverrideProperty,
             qualifier = listOf(),
-            requiredModifier = SyntaxKind.DeclareKeyword,
-            body = fileNode
+            requiredModifier = SyntaxKind.DeclareKeyword
     )
 
     // TODO fix

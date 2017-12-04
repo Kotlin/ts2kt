@@ -1,5 +1,21 @@
 package boom
 
+external interface A
+external interface B
+external interface C
+external interface D
+external interface E
+external interface F
+external interface G
+external interface H
+external interface L
+external interface M
+external interface N
+external interface O
+external interface P
+external interface R
+external interface S
+external interface T
 external fun foo(a: dynamic /* A | B | C | D | E | F | G | H | L | M | N | O | P | R | S | T */, b: Number): Unit = definedExternally
 external fun bar(a: A, b: Number): Unit = definedExternally
 external fun bar(a: B, b: Number): Unit = definedExternally

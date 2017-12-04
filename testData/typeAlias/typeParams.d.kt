@@ -1,5 +1,7 @@
 package typeParams
 
+external interface Map<K, V>
+external interface List<T>
 external var fooMap: Map<String, List<Number>> = definedExternally
 external fun mapKey(a: Map<Number, List<String>>): Unit = definedExternally
 external var fooStringOrMap: dynamic /* String | Map<String, List<Number>> */ = definedExternally

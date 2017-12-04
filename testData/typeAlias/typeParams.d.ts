@@ -1,3 +1,8 @@
+interface Map<K, V> {
+}
+interface List<T> {
+}
+
 type Values<V> = List<V>;
 type MultiMap<K,V> = Map<K,Values<V>>;
 type Headers = MultiMap<String,String>

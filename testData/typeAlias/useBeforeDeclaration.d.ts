@@ -1,3 +1,6 @@
+interface List<T> {
+}
+
 declare var listOfString: Values<string>;
 
 declare function listOfNumberFunction(a: Values<number>);

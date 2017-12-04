@@ -16,26 +16,22 @@
 
 package ts2kt
 
-import converter.NamespaceResolver
 import ts2kt.kotlin.ast.*
 import typescript.identifierName
-import typescriptServices.ts.NodeArray
-import typescriptServices.ts.TypeLiteralNode
-import typescriptServices.ts.TypeParameterDeclaration
+import typescriptServices.ts.*
 
 interface ObjectTypeToKotlinTypeMapper {
     fun getKotlinTypeForObjectType(objectType: TypeLiteralNode): KtType
-    fun resolveUsingAliases(referencedType: KtType): KtTypeUnion
     fun withTypeParameters(typeParameters: NodeArray<TypeParameterDeclaration>?): ObjectTypeToKotlinTypeMapper
-
-    val namespaceAliases: Map<String, String>
+    val currentPackage: String
+    val typeChecker: TypeChecker
 }
 
 data class ObjectTypeToKotlinTypeMapperImpl(
-        val namespaceResolver: NamespaceResolver,
+        override val typeChecker: TypeChecker,
         val defaultAnnotations: List<KtAnnotation>,
         val declarations: MutableList<KtMember>,
-        val typeAliases: List<KtTypeAlias>,
+        override val currentPackage: String,
         val typeParameterDeclarations: List<TypeParameterDeclaration> = listOf()
 ) : ObjectTypeToKotlinTypeMapper {
 
@@ -96,55 +92,6 @@ data class ObjectTypeToKotlinTypeMapperImpl(
 
         cache[typeKey] = traitType
         return traitType
-    }
-
-    override fun resolveUsingAliases(referencedType: KtType): KtTypeUnion {
-        val partiallyResolvedType = referencedType.copy(name = namespaceResolver.resolveNamespace(referencedType.name))
-
-        var matchingTypeAlias = typeAliases.find { it.name == partiallyResolvedType.name }
-        if (matchingTypeAlias != null) {
-            val replacementName = matchingTypeAlias.actualTypeUnionUsingAliasParams.possibleTypes.singleOrNull()?.name
-            if (replacementName == partiallyResolvedType.name) {
-                matchingTypeAlias = null
-            }
-        }
-        if (matchingTypeAlias != null) {
-            val resolvedTypeUnion = replaceTypeParamsWithTypeArgs(partiallyResolvedType, matchingTypeAlias, typeAliases)
-            return resolvedTypeUnion.flatMap { if (partiallyResolvedType.name != it.name) resolveUsingAliases(it) else KtTypeUnion(it) }
-        } else if (partiallyResolvedType.typeArgs.isNotEmpty()) {
-            return KtTypeUnion(partiallyResolvedType.copy(typeArgs = partiallyResolvedType.typeArgs.map { resolveUsingAliases(it).singleType }))
-        } else {
-            return KtTypeUnion(partiallyResolvedType)
-        }
-    }
-
-    private fun replaceTypeParamsWithTypeArgs(fromType: KtType, matchingTypeAlias: KtTypeAlias, replacements: List<KtTypeAlias>): KtTypeUnion {
-        val toTypeWithUnresolvedArgs = matchingTypeAlias.actualTypeUnionUsingAliasParams
-        val boundTypeAliases: List<KtTypeAlias> = getReplacementsForTypeParams(fromType, matchingTypeAlias)
-        return toTypeWithUnresolvedArgs.flatMap { resolveTypeArgs(it, replacements + boundTypeAliases) }
-    }
-
-    override val namespaceAliases: Map<String, String>
-        get() = namespaceResolver.aliases
-
-    private fun KtTypeUnion.flatMap(function: (KtType) -> KtTypeUnion): KtTypeUnion = KtTypeUnion(possibleTypes.flatMap { function(it).possibleTypes })
-
-    private fun resolveTypeArgs(type: KtType, replacements: List<KtTypeAlias>): KtTypeUnion {
-        val aliasMapper = copy(typeAliases = replacements)
-        val mappedTypes = aliasMapper.resolveUsingAliases(type).possibleTypes
-        return KtTypeUnion(mappedTypes.map { mappedType ->
-            if (mappedType.typeArgs.isNotEmpty()) {
-                mappedType.copy(typeArgs = mappedType.typeArgs.map { aliasMapper.resolveUsingAliases(it).singleType })
-            } else {
-                mappedType
-            }
-        })
-    }
-
-    private fun getReplacementsForTypeParams(fromType: KtType, matchingTypeAlias: KtTypeAlias): List<KtTypeAlias> {
-        return matchingTypeAlias.typeParams?.zip(fromType.typeArgs)?.map {
-            KtTypeAlias(it.first.name, actualTypeUsingAliasParams = it.second)
-        } ?: emptyList()
     }
 
     override fun withTypeParameters(typeParameters: NodeArray<TypeParameterDeclaration>?): ObjectTypeToKotlinTypeMapper {

@@ -16,6 +16,8 @@
 
 package ts2kt
 
+import converter.mapType
+import converter.mapTypeToUnion
 import ts2kt.kotlin.ast.*
 import ts2kt.utils.*
 import typescript.ClassOrInterfaceDeclaration
@@ -58,12 +60,12 @@ val ParameterDeclaration.isVararg: Boolean get() = dotDotDotToken != null
 
 fun ParameterDeclaration.toKotlinParam(typeMapper: ObjectTypeToKotlinTypeMapper): KtFunParam {
     val nodeType: TypeNode? = getNodeTypeConsideringVararg()
-    return toKotlinParam(nodeType, nodeType?.toKotlinType(typeMapper) ?: KtType(ANY))
+    return toKotlinParam(nodeType, nodeType?.let { typeMapper.mapType(it) } ?: KtType(ANY))
 }
 
 fun ParameterDeclaration.toKotlinParamOverloads(typeMapper: ObjectTypeToKotlinTypeMapper): List<KtFunParam> {
     val nodeType: TypeNode? = getNodeTypeConsideringVararg()
-    val unionType = nodeType?.toKotlinTypeUnion(typeMapper) ?: KtTypeUnion(KtType(ANY))
+    val unionType = nodeType?.let { typeMapper.mapTypeToUnion(it) } ?: KtTypeUnion(KtType(ANY))
 
     if (unionType.possibleTypes.size > OVERLOAD_GEN_THRESHOLD_FOR_TYPE_COUNT_ON_ONE_PARAMETER) {
         return listOf(toKotlinParam(KtType(DYNAMIC, comment = unionType.stringify())))
@@ -91,7 +93,7 @@ private fun ParameterDeclaration.toKotlinParam(type: KtType): KtFunParam {
             else -> reportUnsupportedNode(it)
         }
     }
-    val isVar = hasFlag(flags, NodeFlags.AccessibilityModifier)
+    val isVar = NodeFlags.AccessibilityModifier in flags
 
     val isOptional = questionToken != null
     return KtFunParam(name,
@@ -161,8 +163,8 @@ fun NodeArray<TypeParameterDeclaration>.toKotlinTypeParams(typeMapper: ObjectTyp
         arr.map { it.toKotlinTypeParam(typeMapper) }
 
 fun TypeParameterDeclaration.toKotlinTypeParam(typeMapper: ObjectTypeToKotlinTypeMapper): KtTypeParam {
-    val type = identifierName.cast<TypeNode>().toKotlinType(typeMapper)
-    val upperBound = constraint?.toKotlinType(typeMapper)
+    val type = typeMapper.mapType(this)
+    val upperBound = constraint?.let { typeMapper.mapType(it) }
     return KtTypeParam(type.name, upperBound)
 }
 
@@ -180,27 +182,27 @@ fun SignatureDeclaration.toKotlinCallSignature(typeMapper: ObjectTypeToKotlinTyp
 
 fun SignatureDeclaration.toKotlinCallSignature(typeMapper: ObjectTypeToKotlinTypeMapper, params: List<KtFunParam>): KtCallSignature {
     val typeParams = typeParameters?.toKotlinTypeParams(typeMapper)
-    val returnType = type?.toKotlinType(typeMapper) ?: KtType(UNIT)
+    val returnType = type?.let { typeMapper.mapType(it) } ?: KtType(UNIT)
 
     return KtCallSignature(params, typeParams, KtTypeAnnotation(returnType))
 }
 
 fun ArrayTypeNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
-    val typeArg = elementType.toKotlinType(typeMapper)
+    val typeArg = typeMapper.mapType(elementType)
     return KtType(ARRAY, listOf(typeArg))
 }
 
 //TODO: do we need LambdaType???
-private fun FunctionOrConstructorTypeNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
+fun FunctionOrConstructorTypeNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
     val params = parameters.toKotlinParams(typeMapper)
-    val returnType = type?.toKotlinType(typeMapper) ?: KtType(ANY)
+    val returnType = type?.let { typeMapper.mapType(it) } ?: KtType(ANY)
     return createFunctionType(params, returnType)
 }
 
 //TODO: do we need LambdaType???
 private fun FunctionOrConstructorTypeNode.toKotlinTypeUnion(typeMapper: ObjectTypeToKotlinTypeMapper): KtTypeUnion {
     return KtTypeUnion(parameters.toKotlinParamsOverloads(typeMapper).map {
-        createFunctionType(it, type?.toKotlinType(typeMapper) ?: KtType(ANY))
+        createFunctionType(it, type?.let { typeMapper.mapType(it) } ?: KtType(ANY))
     })
 }
 
@@ -269,7 +271,7 @@ fun EntityName.toKotlinTypeName(): String {
 }
 
 fun TypeReferenceNode.toKotlinTypeUnion(typeMapper: ObjectTypeToKotlinTypeMapper): KtTypeUnion {
-    return typeMapper.resolveUsingAliases(toKotlinTypeIgnoringTypeAliases(typeMapper))
+    return KtTypeUnion(toKotlinTypeIgnoringTypeAliases(typeMapper))
 }
 
 private fun TypeReferenceNode.toKotlinTypeIgnoringTypeAliases(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
@@ -281,15 +283,14 @@ private fun TypeReferenceNode.toKotlinTypeIgnoringTypeAliases(typeMapper: Object
         "Function" -> KtType(name, listOf(KtType("*")))
         "Object" -> KtType(ANY)
 
-        else -> KtType(name, typeArguments?.arr?.map { it.toKotlinType(typeMapper) } ?: emptyList())
+        else -> KtType(name, typeArguments?.arr?.map { typeMapper.mapType(it) } ?: emptyList())
     }
 }
 
 fun ExpressionWithTypeArguments.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
     val name = expression.stringifyQualifiedName()
 
-    val type = KtType(name ?: "???", typeArguments?.arr?.map { it.toKotlinType(typeMapper) } ?: emptyList())
-    return typeMapper.resolveUsingAliases(type).singleType
+    return KtType(name ?: "???", typeArguments?.arr?.map { typeMapper.mapType(it) } ?: emptyList())
 }
 
 private fun PropertyAccessExpression.stringify(): String {
@@ -311,7 +312,7 @@ private fun Node.stringifyQualifiedName() = when (kind as Any) {
 }
 
 fun UnionTypeNode.toKotlinTypeUnion(typeMapper: ObjectTypeToKotlinTypeMapper): KtTypeUnion {
-    val possibleTypes = types.arr.flatMap { it.toKotlinTypeUnion(typeMapper).possibleTypes }.distinct()
+    val possibleTypes = types.arr.flatMap { typeMapper.mapTypeToUnion(it).possibleTypes }.distinct()
 
     // TODO unify KtTypeUnion and KtType and implement it better
     if (possibleTypes.size == 2) {
@@ -329,7 +330,7 @@ fun UnionTypeNode.toKotlinTypeUnion(typeMapper: ObjectTypeToKotlinTypeMapper): K
 }
 
 fun IntersectionTypeNode.toKotlinTypeUnion(typeMapper: ObjectTypeToKotlinTypeMapper): KtTypeUnion {
-    val kotlinTypeUnions = types.arr.map { it.toKotlinTypeUnion(typeMapper) }
+    val kotlinTypeUnions = types.arr.map { typeMapper.mapTypeToUnion(it) }
     val commentWithExpectedType = kotlinTypeUnions.join(" & ", stringify = KtTypeUnion::stringify)
     // just take the first one for now since Kotlin doesn't support intersection types.
     return kotlinTypeUnions[0].mapLast { it.copy(comment = commentWithExpectedType) }
@@ -434,4 +435,4 @@ fun Node.location(): String {
 }
 
 @Suppress("NOTHING_TO_INLINE")
-inline fun <E : Enum<E>> hasFlag(flags: Enum<E>, flag: E): Boolean = flags.unsafeCast<Int>() and flag.unsafeCast<Int>() != 0
+inline operator fun <E : Enum<E>> E.contains(flag: E): Boolean = unsafeCast<Int>() and flag.unsafeCast<Int>() != 0

@@ -1,7 +1,7 @@
 @file:JsQualifier("TypeScript.Syntax")
 package overrideMethodOfParentOfParent.TypeScript.Syntax
 
-external open class EmptySyntaxList : ISyntaxList {
+external open class EmptySyntaxList : TypeScript.ISyntaxList {
     override fun kind(): SyntaxKind = definedExternally
 }
 

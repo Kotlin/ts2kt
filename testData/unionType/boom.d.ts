@@ -1,3 +1,36 @@
+declare interface A {
+}
+declare interface B {
+}
+declare interface C {
+}
+declare interface D {
+}
+declare interface E {
+}
+declare interface F {
+}
+declare interface G {
+}
+declare interface H {
+}
+declare interface L {
+}
+declare interface M {
+}
+declare interface N {
+}
+declare interface O {
+}
+declare interface P {
+}
+declare interface R {
+}
+declare interface S {
+}
+declare interface T {
+}
+
 type T2 = A | B
 type T5 = A | B | C | D | E
 type T7 = A | B | C | D | E | F | G
