@@ -58,12 +58,14 @@ private fun ObjectTypeToKotlinTypeMapper.mapTypeToUnion(type: Type, declaration:
                 TypeFlags.Null in flags -> KtTypeUnion(KtType(NOTHING, isNullable = true))
 
         TypeFlags.StringLiteral in flags -> {
-            KtTypeUnion(KtType(STRING, comment = type.unsafeCast<LiteralType>().text))
+            KtTypeUnion(KtType(STRING, comment = "\"" + type.unsafeCast<LiteralType>().text + "\""))
         }
+        // TODO: add test if it's allowed
         TypeFlags.NumberLiteral in flags -> {
             KtTypeUnion(KtType(NUMBER, comment = type.unsafeCast<LiteralType>().text))
         }
-        TypeFlags.NumberLiteral in flags -> {
+        // TODO: add test if it's allowed
+        TypeFlags.BooleanLiteral in flags -> {
             KtTypeUnion(KtType(BOOLEAN, comment = type.unsafeCast<LiteralType>().text))
         }
 
