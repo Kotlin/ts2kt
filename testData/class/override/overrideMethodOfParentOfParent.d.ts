@@ -1,4 +1,5 @@
 declare module TypeScript.Syntax {
+    // TODO: generate right refrence to ISyntaxList
     class EmptySyntaxList implements ISyntaxList {
         public kind(): SyntaxKind;
     }
