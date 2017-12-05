@@ -26,7 +26,7 @@ fun ObjectTypeToKotlinTypeMapper.mapTypeToUnion(type: Node): KtTypeUnion {
     }
 }
 
-fun ObjectTypeToKotlinTypeMapper.mapType(type: Type, declaration: Node?): KtType =
+private fun ObjectTypeToKotlinTypeMapper.mapType(type: Type, declaration: Node?): KtType =
         mapTypeToUnion(type, declaration).singleType
 
 private fun ObjectTypeToKotlinTypeMapper.mapTypeToUnion(type: Type, declaration: Node?): KtTypeUnion {
@@ -74,7 +74,7 @@ private fun ObjectTypeToKotlinTypeMapper.mapTypeToUnion(type: Type, declaration:
 
         TypeFlags.Reference in flags -> KtTypeUnion(mapTypeReference(type.unsafeCast<TypeReference>(), declaration))
 
-        TypeFlags.TypeParameter in flags -> KtTypeUnion(KtType(type.getSymbol().name))
+        TypeFlags.TypeParameter in flags -> KtTypeUnion(KtType(unescapeIdentifier(type.getSymbol().name)))
 
         TypeFlags.ObjectType in flags ||
                 TypeFlags.Enum in flags -> KtTypeUnion(mapObjectType(type.unsafeCast<ObjectType>()))
