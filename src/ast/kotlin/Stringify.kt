@@ -3,6 +3,7 @@ package ts2kt.kotlin.ast
 import ts2kt.DYNAMIC
 import ts2kt.NATIVE_ANNOTATION
 import ts2kt.escapeIfNeed
+import ts2kt.sanitize
 
 
 val NO_IMPL = "definedExternally"
@@ -240,7 +241,7 @@ class Stringify(
         val packageNameParts = (packagePartPrefix?.let(::listOf) ?: emptyList()) + packagePart.fqName
 
         if (packageNameParts.isNotEmpty()) {
-            out.println("package " + packageNameParts.joinToString(".", transform = String::escapeIfNeed))
+            out.println("package " + packageNameParts.joinToString(".", transform = { it.sanitize().escapeIfNeed() }))
             out.println()
         }
 
@@ -362,7 +363,7 @@ class Stringify(
     }
 
     override fun visitHeritageType(heritageType: KtHeritageType) {
-        out.print(heritageType.escapedName)
+        out.print(heritageType.name)
     }
 
     override fun visitArgument(argument: KtArgument) {

@@ -48,12 +48,40 @@ private const val OVERLOAD_GEN_THRESHOLD_FOR_TYPE_COUNT_ON_ONE_PARAMETER = 10
 private const val OVERLOAD_GEN_THRESHOLD_FOR_TOTAL_COUNT = 10
 
 fun String.escapeIfNeed(): String {
-    return if (this in SHOULD_BE_ESCAPED || this.contains("$")) {
+    return if (isNotEmpty() && (this in SHOULD_BE_ESCAPED || !isIdentifier())) {
         "`$this`"
     }
     else {
         this
     }
+}
+
+private fun String.isIdentifier(): Boolean {
+    if (this in SHOULD_BE_ESCAPED) return false
+    if (!this[0].isIdentifierStart()) return false
+    return this.drop(1).all { it.isIdentifierPart() }
+}
+
+private fun Char.isIdentifierStart() = when (this) {
+    '_', '*',
+    in 'a'..'z',
+    in 'A'..'Z' -> true
+    else -> false
+}
+
+private fun Char.isIdentifierPart() = isIdentifierStart() || when (this) {
+    '.',
+    in '0'..'9' -> true
+    else -> false
+}
+
+fun String.sanitize(): String {
+    val sb = StringBuilder()
+    sb.append(if (!this[0].isIdentifierStart()) '_' else this[0])
+    for (c in this.drop(1)) {
+        sb.append(if (!c.isIdentifierPart()) '_' else c)
+    }
+    return sb.toString()
 }
 
 val ParameterDeclaration.isVararg: Boolean get() = dotDotDotToken != null
