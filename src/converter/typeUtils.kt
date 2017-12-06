@@ -2,6 +2,7 @@ package converter
 
 import ts2kt.*
 import ts2kt.kotlin.ast.*
+import typescript.ClassOrInterfaceDeclaration
 import typescriptServices.ts.*
 import kotlin.collections.Map
 
@@ -154,7 +155,7 @@ private fun ObjectTypeToKotlinTypeMapper.mapTypeReference(type: TypeReference, d
 }
 
 private fun ObjectTypeToKotlinTypeMapper.mapObjectType(type: ObjectType): KtType {
-    val fqn = typeChecker.getFullyQualifiedName(type.getSymbol())
+    val fqn = buildFqn(type.getSymbol())
     if (fqn == "Function") return KtType("Function", typeArgs = listOf(KtType("*")))
     return KtType(when (fqn) {
         "Object" -> ANY
@@ -169,6 +170,47 @@ private fun ObjectTypeToKotlinTypeMapper.mapObjectType(type: ObjectType): KtType
             }
         }
     })
+}
+
+private fun ObjectTypeToKotlinTypeMapper.buildFqn(symbol: Symbol): String {
+    val declaration = symbol.declarations?.singleOrNull()
+    return declaration?.let { buildFqn(it) } ?: typeChecker.getFullyQualifiedName(symbol).escapeIfNeed()
+}
+
+private fun ObjectTypeToKotlinTypeMapper.buildFqn(declaration: Node): String? {
+    val parent = declaration.getParentDeclaration()
+    val parentSymbol = parent?.let { typeChecker.getSymbolAtLocation(it) }
+    val parentName = when {
+        parentSymbol != null -> buildFqn(parentSymbol) + "."
+        parent != null -> buildFqn(parent) + "."
+        else -> ""
+    }
+    when (declaration.kind as Any) {
+        SyntaxKind.InterfaceDeclaration,
+        SyntaxKind.ClassDeclaration -> {
+            return parentName + declaration.unsafeCast<ClassOrInterfaceDeclaration>().name!!.unescapedText.escapeIfNeed()
+        }
+        SyntaxKind.ModuleDeclaration -> {
+            val nameExpr = declaration.unsafeCast<ModuleDeclaration>().name.unsafeCast<Node>()
+            val name = when (nameExpr.kind as Any) {
+                SyntaxKind.StringLiteral -> nameExpr.unsafeCast<StringLiteral>().text.replace('/', '.')
+                SyntaxKind.Identifier -> nameExpr.unsafeCast<Identifier>().unescapedText
+                else -> "UNKNOWN"
+            }
+            return parentName + name.sanitize().escapeIfNeed()
+        }
+    }
+    return null
+}
+
+private fun Node.getParentDeclaration(): Declaration? = parent?.getEnclosingDeclaration()
+
+private fun Node.getEnclosingDeclaration(): Declaration? = when (kind as Any) {
+    SyntaxKind.ModuleBlock -> parent.unsafeCast<Declaration>().getEnclosingDeclaration()
+    SyntaxKind.ClassDeclaration,
+    SyntaxKind.InterfaceDeclaration,
+    SyntaxKind.ModuleDeclaration -> unsafeCast<Declaration>()
+    else -> null
 }
 
 private fun ObjectTypeToKotlinTypeMapper.mapAnonymousType(type: Type): KtType {
