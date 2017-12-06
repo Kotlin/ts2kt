@@ -1,10 +1,9 @@
 package converter
 
 import ts2kt.*
-import ts2kt.kotlin.ast.KtType
-import ts2kt.kotlin.ast.KtTypeUnion
-import ts2kt.kotlin.ast.stringify
+import ts2kt.kotlin.ast.*
 import typescriptServices.ts.*
+import kotlin.collections.Map
 
 fun ObjectTypeToKotlinTypeMapper.mapType(type: Node): KtType {
     val resolvedType: Type? = typeChecker.getTypeAtLocation(type)
@@ -143,6 +142,14 @@ private fun ObjectTypeToKotlinTypeMapper.mapTypeReference(type: TypeReference, d
     val mappedArgs = typeArgsWithDeclarations.map { (argType, arg) ->
         mapType(argType, arg)
     }
+
+    if (TypeFlags.Tuple in type.target.flags) {
+        return KtType(
+                name = DYNAMIC,
+                comment = "JsTuple<" + mappedArgs.joinToString(", ") { it.stringify() } + ">"
+        )
+    }
+
     return mapObjectType(type.target).copy(typeArgs = mappedArgs.toList())
 }
 
@@ -154,7 +161,7 @@ private fun ObjectTypeToKotlinTypeMapper.mapObjectType(type: ObjectType): KtType
         else -> {
             if (currentPackage.isNotEmpty() && fqn.startsWith(currentPackage + ".") &&
                     fqn.indexOf('.', currentPackage.length + 1) < 0
-                    ) {
+            ) {
                 fqn.substring(currentPackage.length + 1)
             }
             else {
@@ -166,9 +173,52 @@ private fun ObjectTypeToKotlinTypeMapper.mapObjectType(type: ObjectType): KtType
 
 private fun ObjectTypeToKotlinTypeMapper.mapAnonymousType(type: Type): KtType {
     val decl = type.getSymbol().getDeclarations().singleOrNull() ?: return KtType(ANY, isNullable = true)
-    return when (decl.kind as Any) {
-        SyntaxKind.FunctionType -> decl.unsafeCast<FunctionTypeNode>().toKotlinType(this)
-        SyntaxKind.TypeLiteral -> getKotlinTypeForObjectType(decl.unsafeCast<TypeLiteralNode>())
+
+    val parent = decl.parent
+    val (mapper, substitution) = if (parent?.kind == SyntaxKind.TypeAliasDeclaration) {
+        val typeParameters = parent.unsafeCast<TypeAliasDeclaration>().typeParameters
+        val substitution = typeParameters?.arr.orEmpty()
+                .map { it.name.text }
+                .zip(type.aliasTypeArguments.orEmpty().map { mapType(it, null) })
+                .toMap()
+        Pair(withTypeParameters(typeParameters), substitution)
+    }
+    else {
+        Pair(this, emptyMap())
+    }
+
+    val kotlinType = when (decl.kind as Any) {
+        SyntaxKind.FunctionType -> decl.unsafeCast<FunctionTypeNode>().toKotlinType(mapper)
+        SyntaxKind.TypeLiteral -> mapper.getKotlinTypeForObjectType(decl.unsafeCast<TypeLiteralNode>())
         else -> KtType(ANY, isNullable = true)
     }
+
+    return if (substitution.isNotEmpty()) kotlinType.replaceTypeParameters(substitution) else kotlinType
 }
+
+fun KtType.replaceTypeParameters(substitution: kotlin.collections.Map<String, KtType>): KtType =
+        if (typeArgs.isEmpty() && callSignature == null) {
+            substitution[name] ?: this
+        }
+        else {
+            copy(
+                    typeArgs = typeArgs.map { it.replaceTypeParameters(substitution) },
+                    callSignature = callSignature?.replaceTypeParameters(substitution)
+            )
+        }
+
+private fun KtCallSignature.replaceTypeParameters(substitution: Map<String, KtType>): KtCallSignature =
+        copy(
+                params = params.map { it.replaceTypeParameters(substitution) },
+                returnType = returnType.replaceTypeParameters(substitution)
+        )
+
+private fun KtFunParam.replaceTypeParameters(substitution: Map<String, KtType>): KtFunParam =
+        copy(
+                type = type.replaceTypeParameters(substitution)
+        )
+
+private fun KtTypeAnnotation.replaceTypeParameters(substitution: Map<String, KtType>): KtTypeAnnotation =
+        copy(
+                type = type.replaceTypeParameters(substitution)
+        )

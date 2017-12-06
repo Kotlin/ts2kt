@@ -92,7 +92,7 @@ abstract class TsClassifierToKt(
 
         getTranslator(node).addVariable(
                 name,
-                type = varType.copy(isNullable = varType.isNullable || isNullable(node), isLambda = isLambda(node)),
+                type = varType.copy(isNullable = varType.isNullable || isNullable(node)),
                 isOverride = isOverride,
                 needsNoImpl = needsNoImpl(node)
         )

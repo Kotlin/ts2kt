@@ -76,11 +76,8 @@ fun ParameterDeclaration.toKotlinParamOverloads(typeMapper: ObjectTypeToKotlinTy
     }
 }
 
-private fun ParameterDeclaration.toKotlinParam(nodeType: TypeNode?, typeWithoutFlags: KtType): KtFunParam {
-    val isNullable = questionToken != null || typeWithoutFlags.isNullable
-    val isLambda = nodeType?.kind === SyntaxKind.FunctionType
-    return toKotlinParam(typeWithoutFlags.copy(isNullable = isNullable, isLambda = isLambda))
-}
+private fun ParameterDeclaration.toKotlinParam(nodeType: TypeNode?, typeWithoutFlags: KtType): KtFunParam =
+        toKotlinParam(typeWithoutFlags.copy(isNullable = questionToken != null || typeWithoutFlags.isNullable))
 
 private fun ParameterDeclaration.toKotlinParam(type: KtType): KtFunParam {
     val name = declarationName!!.unescapedText

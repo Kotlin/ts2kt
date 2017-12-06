@@ -329,18 +329,23 @@ class Stringify(
 
     override fun visitType(type: KtType) {
         with(type) {
-            if (isLambda && isNullable) {
-                out.print("(")
+            val callSignature = type.callSignature
+            if (callSignature != null) {
+                if (isNullable) out.print("(")
+
+                val params = callSignature.params.joinToString(", ") {
+                    it.name + it.type.stringify() + (it.defaultValue?.let { " /*= $it*/" } ?: "")
+                }
+                val typeAsString = "($params) -> ${callSignature.returnType.type.stringify()}"
+                out.print(typeAsString)
+
+                if (isNullable) out.print(")")
             }
+            else {
+                out.print(if (!isLambda) escapedName else name)
 
-            out.print(escapedName)
-
-            typeArgs.acceptForEach(this@Stringify, ", ", startWithIfNotEmpty = "<", endWithIfNotEmpty = ">")
-
-            if (isLambda && isNullable) {
-                out.print(")")
+                typeArgs.acceptForEach(this@Stringify, ", ", startWithIfNotEmpty = "<", endWithIfNotEmpty = ">")
             }
-
 
             if (isNullable && name != DYNAMIC) {
                 out.print("?")

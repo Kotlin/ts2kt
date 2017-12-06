@@ -202,12 +202,14 @@ data class KtType(
         val typeArgs: List<KtType> = emptyList(),
         val comment: String? = null,
         val isNullable: Boolean = false,
-        val isLambda: Boolean = false
+        val callSignature: KtCallSignature? = null
 ) : KtNamed, AbstractKtNode() {
 
     override fun accept(visitor: KtVisitor) {
         visitor.visitType(this)
     }
+
+    val isLambda: Boolean get() = callSignature != null
 
     // TODO make extension function
     fun isUnit() = escapedName == UNIT && !isNullable && !isLambda
@@ -218,13 +220,6 @@ data class KtTypeParam(override var name: String, val upperBound: KtType? = null
         visitor.visitTypeParam(this)
     }
 
-}
-
-/** A Kotlin representation as in: typealias name<typeParams> = actualTypeUnionUsingAliasParams */
-data class KtTypeAlias(val name: String, val typeParams: List<KtTypeParam>? = null, val actualTypeUnionUsingAliasParams: KtTypeUnion)
-
-fun KtTypeAlias(name: String, typeParams: List<KtTypeParam>? = null, actualTypeUsingAliasParams: KtType): KtTypeAlias {
-    return KtTypeAlias(name, typeParams, KtTypeUnion(actualTypeUsingAliasParams))
 }
 
 data class KtTypeAnnotation(var type: KtType, val isVararg: Boolean = false) : AbstractKtNode() {
