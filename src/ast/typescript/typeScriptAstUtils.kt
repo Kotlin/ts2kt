@@ -48,7 +48,7 @@ private const val OVERLOAD_GEN_THRESHOLD_FOR_TYPE_COUNT_ON_ONE_PARAMETER = 10
 private const val OVERLOAD_GEN_THRESHOLD_FOR_TOTAL_COUNT = 10
 
 fun String.escapeIfNeed(): String {
-    return if (isNotEmpty() && (this in SHOULD_BE_ESCAPED || !isIdentifier())) {
+    return if (isNotEmpty() && this != "*" && !isIdentifier()) {
         "`$this`"
     }
     else {
@@ -63,7 +63,7 @@ private fun String.isIdentifier(): Boolean {
 }
 
 private fun Char.isIdentifierStart() = when (this) {
-    '_', '*',
+    '_',
     in 'a'..'z',
     in 'A'..'Z' -> true
     else -> false
