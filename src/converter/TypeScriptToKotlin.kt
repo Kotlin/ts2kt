@@ -180,7 +180,7 @@ class TypeScriptToKotlin(
         }
 
         val name = getName(rightNode)
-        qualifiedName += name
+        qualifiedName += name.split('/')
 
         val newQualifier = this.qualifier + qualifiedName
         val innerDeclarations = mutableListOf<KtMember>()
