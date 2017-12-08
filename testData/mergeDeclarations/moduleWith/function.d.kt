@@ -7,3 +7,10 @@ external interface Fiber_ {
 }
 @JsModule("fibers")
 external fun Fiber(fn: Function<*>): Fiber_ = definedExternally
+
+// ------------------------------------------------------------------------------------------
+@file:JsModule("fibers")
+package function.fibers.Fiber
+
+external var current: Fiber = definedExternally
+external fun yield(value: Any? = definedExternally /* null */): Any = definedExternally

@@ -28,12 +28,13 @@ open class TsInterfaceToKt(
     override fun needsNoImpl(node: MethodDeclaration) = false
     override fun TsClassifierToKt.addFunction(name: String, isOverride: Boolean, needsNoImpl: Boolean, node: MethodDeclaration) {
         val isOptional = node.questionToken != null
+        val symbol = typeMapper.typeChecker.getSymbolAtLocation(node)
         if (isOptional) {
             val call = node.toKotlinCallSignature(typeMapper)
-            addVariable(name, type = createFunctionType(call.params, call.returnType.type).copy(isNullable = true), typeParams = call.typeParams, isVar = false, needsNoImpl = true, isOverride = isOverride)
+            addVariable(symbol, name, type = createFunctionType(call.params, call.returnType.type).copy(isNullable = true), typeParams = call.typeParams, isVar = false, needsNoImpl = true, isOverride = isOverride)
         } else {
             node.toKotlinCallSignatureOverloads(typeMapper).forEach { call ->
-                addFunction(name, call, needsNoImpl = false, isOverride = isOverride)
+                addFunction(symbol, name, call, needsNoImpl = false, isOverride = isOverride)
             }
         }
 
@@ -51,7 +52,7 @@ open class TsInterfaceToKt(
 
     override fun visitSignatureDeclaration(node: SignatureDeclaration) {
         node.toKotlinCallSignatureOverloads(typeMapper).forEach { callSignature ->
-            addFunction(INVOKE, callSignature, needsNoImpl = false, additionalAnnotations = listOf(NATIVE_INVOKE_ANNOTATION), isOperator = true)
+            addFunction(null, INVOKE, callSignature, needsNoImpl = false, additionalAnnotations = listOf(NATIVE_INVOKE_ANNOTATION), isOperator = true)
         }
     }
 

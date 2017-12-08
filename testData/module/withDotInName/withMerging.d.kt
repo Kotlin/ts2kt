@@ -1,12 +1,9 @@
-@file:JsQualifier("Foo.Bar.Baz")
-package withMerging.Foo.Bar.Baz
+@file:JsQualifier("Foo")
+package withMerging.Foo
 
-external var variableFooBarBaz: Number = definedExternally
-external fun funcFooBarBaz(): Unit = definedExternally
-external open class AFooBarBaz
-external var anotherVariableFooBarBaz: Number = definedExternally
-external fun anotherFuncFooBarBaz(): Unit = definedExternally
-external open class AnotherAFooBarBaz
+external var variableFoo: Number = definedExternally
+external fun funcFoo(): Unit = definedExternally
+external open class AFoo
 
 // ------------------------------------------------------------------------------------------
 @file:JsQualifier("Foo.Bar")
@@ -17,9 +14,12 @@ external fun funcFooBar(): Unit = definedExternally
 external open class AFooBar
 
 // ------------------------------------------------------------------------------------------
-@file:JsQualifier("Foo")
-package withMerging.Foo
+@file:JsQualifier("Foo.Bar.Baz")
+package withMerging.Foo.Bar.Baz
 
-external var variableFoo: Number = definedExternally
-external fun funcFoo(): Unit = definedExternally
-external open class AFoo
+external var variableFooBarBaz: Number = definedExternally
+external fun funcFooBarBaz(): Unit = definedExternally
+external open class AFooBarBaz
+external var anotherVariableFooBarBaz: Number = definedExternally
+external fun anotherFuncFooBarBaz(): Unit = definedExternally
+external open class AnotherAFooBarBaz
