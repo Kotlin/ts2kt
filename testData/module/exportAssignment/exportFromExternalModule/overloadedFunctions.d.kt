@@ -8,6 +8,10 @@ external interface Options {
     var entries: Array<String>? get() = definedExternally; set(value) = definedExternally
     var noParse: Array<String>? get() = definedExternally; set(value) = definedExternally
 }
+
+// ------------------------------------------------------------------------------------------
+package overloadedFunctions.browserify
+
 @JsModule("browserify")
 external fun browserify(): BrowserifyObject = definedExternally
 @JsModule("browserify")

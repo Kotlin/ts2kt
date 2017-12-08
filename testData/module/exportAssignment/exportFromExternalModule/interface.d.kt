@@ -1,4 +1,4 @@
-package `interface`
+package `interface`.Boo
 
 @JsModule("Boo")
 external interface IBaz {

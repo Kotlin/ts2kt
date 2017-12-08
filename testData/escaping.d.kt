@@ -16,7 +16,7 @@ external open class `is`<`interface`> {
 }
 
 // ------------------------------------------------------------------------------------------
-@file:JsQualifier("This")
+@file:JsModule("This")
 package escaping.`This`
 
 external var `$foo`: Boolean = definedExternally

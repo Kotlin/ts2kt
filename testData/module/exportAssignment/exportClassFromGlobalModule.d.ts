@@ -1,5 +1,5 @@
 // based on atom.d.ts
-class SampleView extends _atom.ScrollView {
+declare class SampleView extends _atom.ScrollView {
     foo: string
 }
 

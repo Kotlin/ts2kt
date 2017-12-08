@@ -5,6 +5,7 @@ import ts2kt.utils.assert
 import ts2kt.utils.join
 import typescriptServices.ts.MethodDeclaration
 import typescriptServices.ts.PropertyDeclaration
+import typescriptServices.ts.Symbol
 
 class TsInterfaceToKtExtensions(
         typeMapper: ObjectTypeToKotlinTypeMapper,
@@ -52,21 +53,21 @@ class TsInterfaceToKtExtensions(
         }
     }
 
-    override fun addVariable(name: String, type: KtType, extendsType: String?, typeParams: List<KtTypeParam>?, isVar: Boolean, needsNoImpl: Boolean, additionalAnnotations: List<KtAnnotation>, isOverride: Boolean) {
+    override fun addVariable(symbol: Symbol?, name: String, type: KtType, extendsType: String?, typeParams: List<KtTypeParam>?, isVar: Boolean, needsNoImpl: Boolean, additionalAnnotations: List<KtAnnotation>, isOverride: Boolean) {
         val typeParamsWithoutClashes = this.typeParams.fixIfClashWith(typeParams)
         val actualExtendsType = if (typeParamsWithoutClashes === this.typeParams) cachedExtendsType else getExtendsType(typeParamsWithoutClashes)
         val annotations = additionalAnnotations.withNativeAnnotation()
 
-        super.addVariable(name, type, actualExtendsType, typeParamsWithoutClashes merge typeParams, isVar,
+        super.addVariable(symbol, name, type, actualExtendsType, typeParamsWithoutClashes merge typeParams, isVar,
                 needsNoImpl = true, additionalAnnotations = annotations, isOverride = isOverride)
     }
 
-    override fun addFunction(name: String, callSignature: KtCallSignature, extendsType: String?, needsNoImpl: Boolean, additionalAnnotations: List<KtAnnotation>, isOverride: Boolean, isOperator: Boolean) {
+    override fun addFunction(symbol: Symbol?, name: String, callSignature: KtCallSignature, extendsType: String?, needsNoImpl: Boolean, additionalAnnotations: List<KtAnnotation>, isOverride: Boolean, isOperator: Boolean) {
         val typeParamsWithoutClashes = this.typeParams.fixIfClashWith(callSignature.typeParams)
         val actualExtendsType = if (typeParamsWithoutClashes === this.typeParams) cachedExtendsType else getExtendsType(typeParamsWithoutClashes)
         val annotations = additionalAnnotations.withNativeAnnotation()
 
-        super.addFunction(name, KtCallSignature(callSignature.params, typeParamsWithoutClashes merge callSignature.typeParams, callSignature.returnType), actualExtendsType, true, annotations, isOverride, isOperator)
+        super.addFunction(symbol, name, KtCallSignature(callSignature.params, typeParamsWithoutClashes merge callSignature.typeParams, callSignature.returnType), actualExtendsType, true, annotations, isOverride, isOperator)
     }
 
 }
