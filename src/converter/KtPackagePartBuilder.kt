@@ -18,6 +18,7 @@ class KtPackagePartBuilder(
     val annotations: MutableList<KtAnnotation> = mutableListOf()
     var module: String? = null
     var exportedSymbol: Symbol? = null
+    var isExportDefault: Boolean = false
     val nestedPackages: MutableList<KtPackagePartBuilder> = mutableListOf()
 
     fun build(): KtPackagePart {

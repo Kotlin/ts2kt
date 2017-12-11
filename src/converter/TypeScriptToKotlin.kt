@@ -20,7 +20,6 @@ import converter.ConverterContext
 import converter.KtPackagePartBuilder
 import converter.mapType
 import ts2kt.kotlin.ast.*
-import ts2kt.utils.assert
 import ts2kt.utils.cast
 import ts2kt.utils.reportUnsupportedNode
 import typescript.declarationName
@@ -93,6 +92,7 @@ class TypeScriptToKotlin(
         node.toKotlinCallSignatureOverloads(typeMapper).forEach { callSignature ->
             addFunction(symbol, name, callSignature, additionalAnnotations = additionalAnnotations)
         }
+        exportDeclarationIfNecessary(node, symbol)
     }
 
     override fun visitInterfaceDeclaration(node: InterfaceDeclaration) {
@@ -109,6 +109,7 @@ class TypeScriptToKotlin(
             translator.visitInterfaceDeclaration(node)
             val symbol = node.name?.let { typeChecker.getSymbolResolvingAliases(it) }
             addDeclaration(symbol, translator.createClassifier())
+            exportDeclarationIfNecessary(node, symbol)
         }
     }
 
@@ -122,6 +123,14 @@ class TypeScriptToKotlin(
         if (result != null) {
             val symbol = node.name?.let { typeChecker.getSymbolResolvingAliases(it) }
             addDeclaration(symbol, result)
+            exportDeclarationIfNecessary(node, symbol)
+        }
+    }
+
+    private fun exportDeclarationIfNecessary(node: Node, symbol: Symbol?) {
+        if (symbol != null && node.modifiers?.arr?.any { it.kind == SyntaxKind.DefaultKeyword } == true) {
+            currentPackagePartBuilder.exportedSymbol = symbol
+            currentPackagePartBuilder.isExportDefault = true
         }
     }
 
@@ -210,5 +219,8 @@ class TypeScriptToKotlin(
 
     override fun visitExportAssignment(node: ExportAssignment) {
         currentPackagePartBuilder.exportedSymbol = typeChecker.getSymbolResolvingAliases(node.expression)
+        if (node.isExportEquals != true) {
+            currentPackagePartBuilder.isExportDefault = true
+        }
     }
 }
