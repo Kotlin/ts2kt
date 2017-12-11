@@ -101,8 +101,6 @@ private fun mergeClassAndInterface(klass: KtClassifier, iface: KtClassifier): Kt
 }
 
 private fun mergeClassifierAndVariable(a: KtClassifier, b: KtVariable): KtMember? {
-    if (a.members.isEmpty()) return b
-
     // TODO is it right?
     assert(a.getClassObject() == null, "Unxpected `class object` when merge Classifier(kind=${a.kind}) and Variable(${b.stringify()})")
 
@@ -110,7 +108,7 @@ private fun mergeClassifierAndVariable(a: KtClassifier, b: KtVariable): KtMember
         val newTrait = KtClassifier(KtClassKind.INTERFACE, a.name, a.paramsOfConstructors, a.typeParams, a.parents, a.members, a.annotations, hasOpenModifier = false)
 
         val varTypeName = b.type.type.stringify()
-        val delegation = listOf(KtHeritageType("${varTypeName} by ${NO_IMPL}: ${varTypeName}"))
+        val delegation = listOf(KtHeritageType("$varTypeName by $NO_IMPL"))
 
         // TODO drop hacks
         val classObject = KtClassifier(KtClassKind.COMPANION_OBJECT, "", listOf(), listOf(), delegation, listOf(), listOf(), hasOpenModifier = false)

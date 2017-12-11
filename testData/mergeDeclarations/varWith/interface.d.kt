@@ -9,7 +9,7 @@ external interface KeyBinding {
     fun getKeyboardHandler(): Any
     fun onCommandKey(e: Any, hashId: Any, keyCode: Any)
     fun onTextInput(text: Any)
-    companion object : Foo by definedExternally: Foo {
+    companion object : Foo by definedExternally {
     }
 }
 external interface Foo {
