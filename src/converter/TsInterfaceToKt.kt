@@ -28,7 +28,7 @@ open class TsInterfaceToKt(
     override fun needsNoImpl(node: MethodDeclaration) = false
     override fun TsClassifierToKt.addFunction(name: String, isOverride: Boolean, needsNoImpl: Boolean, node: MethodDeclaration) {
         val isOptional = node.questionToken != null
-        val symbol = typeMapper.typeChecker.getSymbolAtLocation(node)
+        val symbol = typeMapper.typeChecker.getSymbolResolvingAliases(node)
         if (isOptional) {
             val call = node.toKotlinCallSignature(typeMapper)
             addVariable(symbol, name, type = createFunctionType(call.params, call.returnType.type).copy(isNullable = true), typeParams = call.typeParams, isVar = false, needsNoImpl = true, isOverride = isOverride)

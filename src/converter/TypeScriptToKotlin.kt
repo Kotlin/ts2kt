@@ -79,7 +79,7 @@ class TypeScriptToKotlin(
         for (d in declarations) {
             val name = d.declarationName!!.unescapedText
             val varType = d.type?.let { typeMapper.mapType(it) } ?: KtType(ANY)
-            val symbol = typeChecker.getSymbolAtLocation(d.name.unsafeCast<Node>())
+            val symbol = typeChecker.getSymbolResolvingAliases(d.name.unsafeCast<Node>())
             addVariable(symbol, name, varType, additionalAnnotations = additionalAnnotations)
         }
     }
@@ -89,7 +89,7 @@ class TypeScriptToKotlin(
 
 //      TODO  visitList(node.modifiers)
         val name = node.propertyName!!.unescapedText
-        val symbol = node.name?.let { typeChecker.getSymbolAtLocation(it) }
+        val symbol = node.name?.let { typeChecker.getSymbolResolvingAliases(it) }
         node.toKotlinCallSignatureOverloads(typeMapper).forEach { callSignature ->
             addFunction(symbol, name, callSignature, additionalAnnotations = additionalAnnotations)
         }
@@ -107,7 +107,7 @@ class TypeScriptToKotlin(
         else {
             val translator = TsInterfaceToKt(typeMapper, annotations = defaultAnnotations, isOverride = isOverride, isOverrideProperty = isOverrideProperty)
             translator.visitInterfaceDeclaration(node)
-            val symbol = node.name?.let { typeChecker.getSymbolAtLocation(it) }
+            val symbol = node.name?.let { typeChecker.getSymbolResolvingAliases(it) }
             addDeclaration(symbol, translator.createClassifier())
         }
     }
@@ -120,7 +120,7 @@ class TypeScriptToKotlin(
 
         val result = translator.createClassifier()
         if (result != null) {
-            val symbol = node.name?.let { typeChecker.getSymbolAtLocation(it) }
+            val symbol = node.name?.let { typeChecker.getSymbolResolvingAliases(it) }
             addDeclaration(symbol, result)
         }
     }
@@ -139,7 +139,7 @@ class TypeScriptToKotlin(
                 KtClassifier(KtClassKind.ENUM, node.identifierName.unescapedText, listOf(), listOf(), listOf(),
                         entries, listOf(), hasOpenModifier = false)
 
-        val symbol = node.name?.let { typeChecker.getSymbolAtLocation(it) }
+        val symbol = node.name?.let { typeChecker.getSymbolResolvingAliases(it) }
         addDeclaration(symbol, enumClass)
     }
 
@@ -163,7 +163,7 @@ class TypeScriptToKotlin(
 
         val newQualifier = this.qualifier + ownName
 
-        val packageSymbol: Symbol? = typeChecker.getSymbolAtLocation(node.name.unsafeCast<Node>())
+        val packageSymbol: Symbol? = typeChecker.getSymbolResolvingAliases(node.name.unsafeCast<Node>())
         fun createPackagePart() = KtPackagePartBuilder(packageSymbol, currentPackagePartBuilder, ownName).also {
             currentPackagePartBuilder.nestedPackages += it
             context.packageParts += it
@@ -209,6 +209,6 @@ class TypeScriptToKotlin(
     }
 
     override fun visitExportAssignment(node: ExportAssignment) {
-        currentPackagePartBuilder.exportedSymbol = typeChecker.getSymbolAtLocation(node.expression)
+        currentPackagePartBuilder.exportedSymbol = typeChecker.getSymbolResolvingAliases(node.expression)
     }
 }
