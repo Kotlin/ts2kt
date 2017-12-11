@@ -16,9 +16,11 @@
 
 package ts2kt
 
+import converter.ConverterContext
+import converter.KtPackagePartBuilder
+import converter.build
 import node.__dirname
 import node.fs
-import ts2kt.kotlin.ast.KtMember
 import ts2kt.kotlin.ast.KtPackagePart
 import ts2kt.kotlin.ast.isNotAnnotatedAsFake
 import ts2kt.utils.cast
@@ -212,19 +214,23 @@ fun translate(srcPath: String, basePackageName: String): List<KtPackagePart> {
     ObjectTypeToKotlinTypeMapperImpl.reset()
 
     val typeChecker = languageService.getProgram().getTypeChecker()
-    val declarations = mutableListOf<KtMember>()
+    val rootBuilder = KtPackagePartBuilder(null, null, "")
+    val context = ConverterContext()
+    context.packageParts += rootBuilder
+
     val typeMapper = ObjectTypeToKotlinTypeMapperImpl(
             typeChecker = typeChecker,
             defaultAnnotations = DEFAULT_ANNOTATION,
-            declarations = declarations,
+            declarations = rootBuilder.members,
             currentPackage = ""
     )
     val typeScriptToKotlin = TypeScriptToKotlin(
-            declarations = declarations,
+            context = context,
+            currentPackagePartBuilder = rootBuilder,
+            declarations = rootBuilder.members,
             typeChecker = typeChecker,
             typeMapper = typeMapper,
             defaultAnnotations = DEFAULT_ANNOTATION,
-            moduleName = null,
             isOwnDeclaration = {
                 val definitions = languageService.getDefinitionAtPosition(normalizeSrcPath, it.end)
                 definitions.all { it.fileName == normalizeSrcPath }
@@ -239,8 +245,5 @@ fun translate(srcPath: String, basePackageName: String): List<KtPackagePart> {
     // note we have side effect here
     typeScriptToKotlin.visitList(fileNode)
 
-    val packageParts = typeScriptToKotlin.packageParts
-    val mergedPackageParts = packageParts.merge().withMissedOverloads().filter { it.members.any(isNotAnnotatedAsFake) }
-
-    return mergedPackageParts
+    return context.build().merge().withMissedOverloads().filter { it.members.any(isNotAnnotatedAsFake) }
 }

@@ -1,4 +1,4 @@
-@file:JsQualifier("Boo")
+@file:JsModule("Boo")
 package exportedByDefault.Boo
 
 external fun foo(): String = definedExternally

@@ -179,7 +179,7 @@ private fun ObjectTypeToKotlinTypeMapper.buildFqn(symbol: Symbol): String {
 
 private fun ObjectTypeToKotlinTypeMapper.buildFqn(declaration: Node): String? {
     val parent = declaration.getParentDeclaration()
-    val parentSymbol = parent?.let { typeChecker.getSymbolAtLocation(it) }
+    val parentSymbol = parent?.let { typeChecker.getSymbolResolvingAliases(it) }
     val parentName = when {
         parentSymbol != null -> buildFqn(parentSymbol) + "."
         parent != null -> buildFqn(parent) + "."

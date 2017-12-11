@@ -17,7 +17,7 @@ external enum class __E {
 external fun <__T> foo(__a: __T, _b: __M.__N.__C): Unit = definedExternally
 
 // ------------------------------------------------------------------------------------------
-@file:JsQualifier("atpl")
+@file:JsModule("atpl")
 package tscEscaping.atpl
 
 external var __foo: Any = definedExternally

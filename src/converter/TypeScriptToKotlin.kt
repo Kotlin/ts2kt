@@ -16,6 +16,8 @@
 
 package ts2kt
 
+import converter.ConverterContext
+import converter.KtPackagePartBuilder
 import converter.mapType
 import ts2kt.kotlin.ast.*
 import ts2kt.utils.assert
@@ -26,8 +28,6 @@ import typescript.identifierName
 import typescript.propertyName
 import typescriptServices.ts.*
 
-private val JS_MODULE = "JsModule"
-private val JS_QUALIFIER = "JsQualifier"
 private val NATIVE = "native"
 
 val NATIVE_ANNOTATION = KtAnnotation(NATIVE)
@@ -44,35 +44,21 @@ internal val COMPARE_BY_NAME = { a: KtNamed, b: KtNamed -> a.name == b.name }
 internal val IS_NATIVE_ANNOTATION = { a: KtAnnotation -> a.name == NATIVE }
 
 class TypeScriptToKotlin(
+        private val context: ConverterContext,
+        private val currentPackagePartBuilder: KtPackagePartBuilder,
         private val typeChecker: TypeChecker,
         declarations: MutableList<KtMember>,
         override val defaultAnnotations: List<KtAnnotation>,
         val requiredModifier: SyntaxKind? = SyntaxKind.DeclareKeyword,
-        val moduleName: String? = null,
         val typeMapper: ObjectTypeToKotlinTypeMapper,
         override val isInterface: Boolean = false,
         val isOwnDeclaration: (Node) -> Boolean = { true },
         val isOverride: (MethodDeclaration) -> Boolean,
         val isOverrideProperty: (PropertyDeclaration) -> Boolean,
         private val qualifier: List<String> = listOf()
-) : TypeScriptToKotlinBase(declarations) {
-
-    fun packagePartAnnotations(): List<KtAnnotation> {
-        if (qualifier.isEmpty()) return defaultAnnotations
-        return defaultAnnotations + KtAnnotation(JS_QUALIFIER, listOf(KtArgument(qualifier.joinToString(".", "\"", "\""))))
-    }
-
-    private val _packageParts = mutableListOf(KtPackagePart(qualifier, declarations, packagePartAnnotations()))
-
-    val packageParts: List<KtPackagePart>
-        get() {
-            assert(exportedByAssignment.isEmpty(), "exportedByAssignment should be empty, but it contains: ${exportedByAssignment.keys.toString()}")
-            return _packageParts
-        }
+) : TypeScriptToKotlinBase(declarations, context.declarations) {
 
     override val hasMembersOpenModifier = false
-
-    val exportedByAssignment = hashMapOf<String, KtAnnotation>()
 
     fun getAdditionalAnnotations(node: Node): List<KtAnnotation> {
         val isShouldSkip = requiredModifier === SyntaxKind.DeclareKeyword && !(node.modifiers?.arr?.any { it.kind === requiredModifier } ?: false )
@@ -93,7 +79,8 @@ class TypeScriptToKotlin(
         for (d in declarations) {
             val name = d.declarationName!!.unescapedText
             val varType = d.type?.let { typeMapper.mapType(it) } ?: KtType(ANY)
-            addVariable(name, varType, additionalAnnotations = additionalAnnotations)
+            val symbol = typeChecker.getSymbolResolvingAliases(d.name.unsafeCast<Node>())
+            addVariable(symbol, name, varType, additionalAnnotations = additionalAnnotations)
         }
     }
 
@@ -102,8 +89,9 @@ class TypeScriptToKotlin(
 
 //      TODO  visitList(node.modifiers)
         val name = node.propertyName!!.unescapedText
+        val symbol = node.name?.let { typeChecker.getSymbolResolvingAliases(it) }
         node.toKotlinCallSignatureOverloads(typeMapper).forEach { callSignature ->
-            addFunction(name, callSignature, additionalAnnotations = additionalAnnotations)
+            addFunction(symbol, name, callSignature, additionalAnnotations = additionalAnnotations)
         }
     }
 
@@ -119,7 +107,8 @@ class TypeScriptToKotlin(
         else {
             val translator = TsInterfaceToKt(typeMapper, annotations = defaultAnnotations, isOverride = isOverride, isOverrideProperty = isOverrideProperty)
             translator.visitInterfaceDeclaration(node)
-            declarations.add(translator.createClassifier())
+            val symbol = node.name?.let { typeChecker.getSymbolResolvingAliases(it) }
+            addDeclaration(symbol, translator.createClassifier())
         }
     }
 
@@ -131,7 +120,8 @@ class TypeScriptToKotlin(
 
         val result = translator.createClassifier()
         if (result != null) {
-            declarations.add(result)
+            val symbol = node.name?.let { typeChecker.getSymbolResolvingAliases(it) }
+            addDeclaration(symbol, result)
         }
     }
 
@@ -149,7 +139,8 @@ class TypeScriptToKotlin(
                 KtClassifier(KtClassKind.ENUM, node.identifierName.unescapedText, listOf(), listOf(), listOf(),
                         entries, listOf(), hasOpenModifier = false)
 
-        declarations.add(enumClass)
+        val symbol = node.name?.let { typeChecker.getSymbolResolvingAliases(it) }
+        addDeclaration(symbol, enumClass)
     }
 
     override fun visitModuleDeclaration(node: ModuleDeclaration) {
@@ -157,8 +148,8 @@ class TypeScriptToKotlin(
 
         fun getName(node: ModuleDeclaration): String {
             return when(node.declarationName!!.kind as Any) {
-                SyntaxKind.Identifier,
-                SyntaxKind.StringLiteral -> node.declarationName!!.unescapedText
+                SyntaxKind.Identifier -> node.declarationName!!.unescapedText
+                SyntaxKind.StringLiteral -> node.declarationName!!.unescapedText.replace('/', '.')
 
                 else -> {
                     reportUnsupportedNode(node.declarationName!!)
@@ -167,35 +158,41 @@ class TypeScriptToKotlin(
             }
         }
 
-        var rightNode = node
-        var body = node.body
-        val qualifiedName = arrayListOf<String>()
-        while (body.kind !== SyntaxKind.ModuleBlock) {
-            assert(body.kind === SyntaxKind.ModuleDeclaration, "Expected that it is ModuleDeclaration, but ${body.kind.str}")
+        val body = node.body.unsafeCast<Node>()
+        val ownName = getName(node)
 
-            qualifiedName += getName(rightNode)
+        val newQualifier = this.qualifier + ownName
 
-            rightNode = body
-            body = body.body
+        val packageSymbol: Symbol? = typeChecker.getSymbolResolvingAliases(node.name.unsafeCast<Node>())
+        fun createPackagePart() = KtPackagePartBuilder(packageSymbol, currentPackagePartBuilder, ownName).also {
+            currentPackagePartBuilder.nestedPackages += it
+            context.packageParts += it
         }
 
-        val name = getName(rightNode)
-        qualifiedName += name.split('/')
+        val innerPackagePartBuilder = if (packageSymbol != null) {
+            context.packagePartsBySymbol.getOrPut(packageSymbol, ::createPackagePart)
+        }
+        else {
+            createPackagePart()
+        }
 
-        val newQualifier = this.qualifier + qualifiedName
-        val innerDeclarations = mutableListOf<KtMember>()
+        if (node.name.unsafeCast<Node>().kind == SyntaxKind.StringLiteral) {
+            innerPackagePartBuilder.module = node.name.unsafeCast<StringLiteral>().text
+        }
+
         val innerTypeMapper = ObjectTypeToKotlinTypeMapperImpl(
-                declarations = innerDeclarations,
+                declarations = innerPackagePartBuilder.members,
                 defaultAnnotations = additionalAnnotations,
                 typeChecker = typeChecker,
                 currentPackage = newQualifier.joinToString(".")
         )
         val tr = TypeScriptToKotlin(
-                declarations = innerDeclarations,
+                currentPackagePartBuilder = innerPackagePartBuilder,
+                context = context,
+                declarations = innerPackagePartBuilder.members,
                 typeChecker = typeChecker,
                 typeMapper = innerTypeMapper,
                 defaultAnnotations = additionalAnnotations,
-                moduleName = name,
                 isOwnDeclaration = isOwnDeclaration,
                 isOverride = isOverride,
                 isOverrideProperty = isOverrideProperty,
@@ -203,111 +200,15 @@ class TypeScriptToKotlin(
                 requiredModifier = SyntaxKind.ExportKeyword
         )
 
-        tr.visitList(body.unsafeCast<Node>())
-
-        val isExternalModule = rightNode.declarationName!!.kind === SyntaxKind.StringLiteral
-
-        if (isExternalModule && tr.exportedByAssignment.isEmpty()) {
-            val areAllFakeOrInterface = tr.declarations.all {
-                it.annotations.any { it == FAKE_ANNOTATION } ||
-                (it is KtClassifier && it.kind === KtClassKind.INTERFACE && it.annotations.all { it.name != JS_MODULE })
-            }
-            val areAllPartOfThisModule = { tr.declarations.all { it.annotations.any { it.name == JS_MODULE && it.getFirstParamAsString() == name } } }
-
-            if (areAllFakeOrInterface) {
-                // unfake all
-                for (d in tr.declarations) {
-                    d.annotations = d.annotations.filter { it != FAKE_ANNOTATION }
-                }
-            }
-            else if (areAllPartOfThisModule()) {
-                // TODO: is it right?
-                if (tr.declarations.size == 1 && tr.declarations[0] is KtVariable) {
-                    val d = tr.declarations[0]
-                    d.annotations.firstOrNull { it.name == JS_MODULE }?.getFirstParamAsString()?.let( {
-                        d.name = it
-                    })
-                }
-
-                this.declarations.addAll(tr.declarations)
-                return
-            }
+        if (body.kind == SyntaxKind.ModuleDeclaration) {
+            tr.visitModuleDeclaration(body.unsafeCast<ModuleDeclaration>())
         }
-
-        _packageParts += tr._packageParts
-
-        exportedByAssignment.putAll(tr.exportedByAssignment)
+        else {
+            tr.visitList(body)
+        }
     }
 
     override fun visitExportAssignment(node: ExportAssignment) {
-        // TODO is it right?
-        val exportIdentifier =
-                node.identifierName ?:
-                        run {
-                            if (node.expression.kind == SyntaxKind.Identifier)
-                                @Suppress("UNCHECKED_CAST_TO_NATIVE_INTERFACE")
-                                node.expression as Identifier
-                            else
-                                reportUnsupportedNode(node)
-                        } ?: return
-
-        val exportName = exportIdentifier.unescapedText
-        exportedByAssignment[exportName] =
-                KtAnnotation(JS_MODULE, listOf(KtArgument("\"${moduleName ?: exportName}\"")))
-    }
-
-    override fun visitList(node: Node) {
-        super.visitList(node)
-        // TODO: Is it good place for call finish?
-        finish()
-    }
-
-    fun finish() {
-        fixExportAssignments()
-    }
-
-    fun fixExportAssignments() {
-        if (exportedByAssignment.isEmpty()) return
-
-        val found = hashSetOf<String>()
-
-        fun process(annotated: KtAnnotated, declarationName: String) {
-            val annotation = exportedByAssignment[declarationName] ?: return
-
-            val annotationParamString = annotation.getFirstParamAsString()
-
-            val t = arrayListOf<KtAnnotation>()
-            for (a in annotated.annotations) {
-                if (a == FAKE_ANNOTATION) continue
-
-                if (a.name == JS_MODULE) {
-                    if (declarationName == annotationParamString) return
-
-                    continue
-                }
-
-                t.add(a)
-            }
-
-            t.add(annotation)
-            annotated.annotations = t
-
-            if (annotated is KtVariable) {
-                annotated.isVar = false
-            }
-
-            found.add(declarationName)
-        }
-
-        declarations
-                .forEach { process(it, it.name) }
-
-        _packageParts
-                .filter { it.fqName.isNotEmpty() && it.fqName.dropLast(1) == qualifier }
-                .forEach { process(it, it.fqName.last()) }
-
-        for (key in found) {
-            exportedByAssignment.remove(key)
-        }
+        currentPackagePartBuilder.exportedSymbol = typeChecker.getSymbolResolvingAliases(node.expression)
     }
 }

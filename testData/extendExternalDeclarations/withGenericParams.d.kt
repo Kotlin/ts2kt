@@ -6,7 +6,7 @@ external fun <T0, T, B> Promise<T0>.foo(a: Any, b: B): T = definedExternally
 external var <T> Promise<T>.bar: Array<T> get() = definedExternally; set(value) = definedExternally
 
 // ------------------------------------------------------------------------------------------
-@file:JsQualifier("ref-array")
+@file:JsModule("ref-array")
 package withGenericParams.ref_array
 
 external interface ArrayType<T> {

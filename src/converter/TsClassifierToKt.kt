@@ -13,7 +13,7 @@ abstract class TsClassifierToKt(
         val typeMapper: ObjectTypeToKotlinTypeMapper,
         val isOverride: (MethodDeclaration) -> Boolean,
         val isOverrideProperty: (PropertyDeclaration) -> Boolean
-) : TypeScriptToKotlinBase(mutableListOf()) {
+) : TypeScriptToKotlinBase(mutableListOf(), mutableMapOf()) {
     abstract val needsNoImpl: Boolean
 
     var parents = arrayListOf<KtHeritageType>()
@@ -52,7 +52,7 @@ abstract class TsClassifierToKt(
                     annotation = NATIVE_SETTER_ANNOTATION
                 }
 
-                addFunction(accessorName, callSignature, needsNoImpl = needsNoImpl, additionalAnnotations = listOf(annotation), isOperator = true)
+                addFunction(null, accessorName, callSignature, needsNoImpl = needsNoImpl, additionalAnnotations = listOf(annotation), isOperator = true)
             }
         }
     }
@@ -90,7 +90,9 @@ abstract class TsClassifierToKt(
 
         val isOverride = isOverrideProperty(node)
 
+        val symbol = typeMapper.typeChecker.getSymbolResolvingAliases(node)
         getTranslator(node).addVariable(
+                symbol,
                 name,
                 type = varType.copy(isNullable = varType.isNullable || isNullable(node)),
                 isOverride = isOverride,
@@ -99,8 +101,9 @@ abstract class TsClassifierToKt(
     }
 
     open fun TsClassifierToKt.addFunction(name: String, isOverride: Boolean, needsNoImpl: Boolean, node: MethodDeclaration) {
+        val symbol = typeMapper.typeChecker.getSymbolResolvingAliases(node)
         node.toKotlinCallSignatureOverloads(typeMapper).forEach { callSignature ->
-            addFunction(name, callSignature, isOverride = isOverride, needsNoImpl = needsNoImpl(node))
+            addFunction(symbol, name, callSignature, isOverride = isOverride, needsNoImpl = needsNoImpl(node))
         }
 
         assert(node.body == null, "An function in declarations file should not have body, function '${this.name}.$name'")
