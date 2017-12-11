@@ -90,7 +90,7 @@ abstract class TsClassifierToKt(
 
         val isOverride = isOverrideProperty(node)
 
-        val symbol = typeMapper.typeChecker.getSymbolAtLocation(node)
+        val symbol = typeMapper.typeChecker.getSymbolResolvingAliases(node)
         getTranslator(node).addVariable(
                 symbol,
                 name,
@@ -101,7 +101,7 @@ abstract class TsClassifierToKt(
     }
 
     open fun TsClassifierToKt.addFunction(name: String, isOverride: Boolean, needsNoImpl: Boolean, node: MethodDeclaration) {
-        val symbol = typeMapper.typeChecker.getSymbolAtLocation(node)
+        val symbol = typeMapper.typeChecker.getSymbolResolvingAliases(node)
         node.toKotlinCallSignatureOverloads(typeMapper).forEach { callSignature ->
             addFunction(symbol, name, callSignature, isOverride = isOverride, needsNoImpl = needsNoImpl(node))
         }
