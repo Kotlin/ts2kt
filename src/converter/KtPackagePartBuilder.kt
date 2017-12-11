@@ -1,5 +1,6 @@
 package converter
 
+import ts2kt.JS_MODULE
 import ts2kt.JS_QUALIFIER
 import ts2kt.kotlin.ast.KtAnnotation
 import ts2kt.kotlin.ast.KtArgument
@@ -19,28 +20,20 @@ class KtPackagePartBuilder(
     var exportedSymbol: Symbol? = null
     val nestedPackages: MutableList<KtPackagePartBuilder> = mutableListOf()
 
-    fun build(declarations: MutableMap<Symbol, MutableList<KtMember>>): KtPackagePart {
+    fun build(): KtPackagePart {
         val allAnnotations = annotations.toMutableList()
-        val packageAnnotations = mutableListOf<KtAnnotation>()
 
-        getEnclosingModule()?.let {
-            allAnnotations += moduleAnnotation(it)
-        }
-        val qualifier = buildQualifier()
-        if (qualifier.isNotEmpty()) {
-            allAnnotations += KtAnnotation(JS_QUALIFIER, listOf(KtArgument("\"$qualifier\"")))
-        }
-
-        val exportedDeclarations = exportedSymbol?.let { declarations[it] }
-        if (exportedDeclarations != null) {
-            for (exportedDeclaration in exportedDeclarations) {
-                exportedDeclaration.annotations += allAnnotations
+        if (members.none { it.annotations.any { it.name == JS_MODULE } }) {
+            getEnclosingModule()?.let {
+                allAnnotations += moduleAnnotation(it)
+            }
+            val qualifier = buildQualifier()
+            if (qualifier.isNotEmpty()) {
+                allAnnotations += KtAnnotation(JS_QUALIFIER, listOf(KtArgument("\"$qualifier\"")))
             }
         }
-        else {
-            packageAnnotations += allAnnotations
-        }
-        return KtPackagePart(buildFqName(), members, packageAnnotations)
+
+        return KtPackagePart(buildFqName(), members, allAnnotations)
     }
 
     private fun getEnclosingModule(): String? = generateSequence(this) { it.parent }

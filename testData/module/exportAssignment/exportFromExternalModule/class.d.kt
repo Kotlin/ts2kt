@@ -1,4 +1,4 @@
-package `class`
+package `class`.Boo
 
 @JsModule("Boo")
 external open class Klass {

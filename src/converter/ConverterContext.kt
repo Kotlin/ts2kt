@@ -15,7 +15,7 @@ class ConverterContext {
 
 fun ConverterContext.build(): List<KtPackagePart> {
     processExportedDeclarations()
-    return packageParts.map { it.build(declarations) }.filter { it.members.isNotEmpty() }
+    return packageParts.map { it.build() }.filter { it.members.isNotEmpty() }
 }
 
 private fun ConverterContext.processExportedDeclarations() {
@@ -33,17 +33,10 @@ private fun ConverterContext.processExportedDeclarations() {
 
         val exportedDeclarations = builder.exportedSymbol?.let { declarations[it] }
         if (exportedDeclarations != null) {
-            builder.exportedSymbol = null
-
             val module = builder.module
             if (module != null) {
                 for (exportedDeclaration in exportedDeclarations) {
                     val currentOwner = declarationToModule[exportedDeclaration]
-                    val parentPackage = builder.parent
-                    if (currentOwner != null && parentPackage != null && exportedDeclaration in currentOwner.members) {
-                        currentOwner.members -= exportedDeclaration
-                        parentPackage.members += exportedDeclaration
-                    }
 
                     exportedDeclaration.annotations += moduleAnnotation(module)
 

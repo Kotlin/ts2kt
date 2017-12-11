@@ -5,6 +5,10 @@ external interface Fiber_ {
     var run: (param: Any? /*= null*/) -> Any
     var throwInto: (ex: Any) -> Any
 }
+
+// ------------------------------------------------------------------------------------------
+package function.fibers
+
 @JsModule("fibers")
 external fun Fiber(fn: Function<*>): Fiber_ = definedExternally
 

@@ -1,4 +1,4 @@
-package classWhenItContainsClass
+package classWhenItContainsClass.ws
 
 @JsModule("ws")
 external open class WebSocket(address: String) : events.EventEmitter {
