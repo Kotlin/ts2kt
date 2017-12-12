@@ -1,6 +1,6 @@
 package genericViaTypeAlias
 
-external interface `T$0`<T> {
+external interface A<T> {
     var x: T
 }
-external var foo: `T$0`<String> = definedExternally
+external var foo: A<String> = definedExternally

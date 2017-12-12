@@ -67,6 +67,17 @@ class TypeScriptToKotlin(
     }
 
     override fun visitTypeAliasDeclaration(node: TypeAliasDeclaration) {
+        if (node.type.kind != SyntaxKind.TypeLiteral) return
+
+        val translator = TsInterfaceToKt(
+                annotations = defaultAnnotations, typeMapper = typeMapper,
+                isOverride = NOT_OVERRIDE, isOverrideProperty = NOT_OVERRIDE
+        )
+        forEachChild(translator, node.type.unsafeCast<TypeLiteralNode>())
+        translator.name = node.name?.unescapedText
+        translator.typeParams = node.typeParameters?.toKotlinTypeParams(typeMapper)
+
+        addDeclaration(typeChecker.getSymbolAtLocation(node), translator.createClassifier())
     }
 
     override fun visitVariableStatement(node: VariableStatement) {

@@ -72,7 +72,7 @@ private fun ObjectTypeToKotlinTypeMapper.mapTypeToUnion(type: Type, declaration:
         TypeFlags.Union in flags -> mapUnionType(type.unsafeCast<UnionType>())
         TypeFlags.Intersection in flags -> mapIntersectionType(type.unsafeCast<IntersectionType>())
 
-        TypeFlags.Anonymous in flags -> KtTypeUnion(mapAnonymousType(type))
+        TypeFlags.Anonymous in flags -> KtTypeUnion(mapAnonymousType(type, declaration))
 
         TypeFlags.Reference in flags -> KtTypeUnion(mapTypeReference(type.unsafeCast<TypeReference>(), declaration))
 
@@ -119,6 +119,21 @@ private fun ObjectTypeToKotlinTypeMapper.mapIntersectionType(type: IntersectionT
 }
 
 private fun ObjectTypeToKotlinTypeMapper.mapTypeReference(type: TypeReference, declaration: Node?): KtType {
+    val mappedArgs = mapTypeArguments(type.typeArguments, declaration)
+
+    if (TypeFlags.Tuple in type.target.flags) {
+        return KtType(
+                name = DYNAMIC,
+                comment = "JsTuple<" + mappedArgs.joinToString(", ") { it.stringify() } + ">"
+        )
+    }
+
+    return mapObjectType(type.target).copy(typeArgs = mappedArgs.toList())
+}
+
+private fun ObjectTypeToKotlinTypeMapper.mapTypeArguments(
+        typeArguments: Array<Type>?, declaration: Node?
+): Sequence<KtType> {
     val argumentDeclarations = if (declaration != null) {
         when (declaration.kind as Any) {
             SyntaxKind.TypeReference -> {
@@ -138,20 +153,11 @@ private fun ObjectTypeToKotlinTypeMapper.mapTypeReference(type: TypeReference, d
         emptySequence()
     }
 
-    val typeArgsWithDeclarations = type.typeArguments.orEmpty().asSequence()
+    val typeArgsWithDeclarations = typeArguments.orEmpty().asSequence()
             .zip(argumentDeclarations + generateSequence { 0 }.map { null })
-    val mappedArgs = typeArgsWithDeclarations.map { (argType, arg) ->
+    return typeArgsWithDeclarations.map { (argType, arg) ->
         mapType(argType, arg)
     }
-
-    if (TypeFlags.Tuple in type.target.flags) {
-        return KtType(
-                name = DYNAMIC,
-                comment = "JsTuple<" + mappedArgs.joinToString(", ") { it.stringify() } + ">"
-        )
-    }
-
-    return mapObjectType(type.target).copy(typeArgs = mappedArgs.toList())
 }
 
 private fun ObjectTypeToKotlinTypeMapper.mapObjectType(type: ObjectType): KtType {
@@ -213,10 +219,17 @@ private fun Node.getEnclosingDeclaration(): Declaration? = when (kind as Any) {
     else -> null
 }
 
-private fun ObjectTypeToKotlinTypeMapper.mapAnonymousType(type: Type): KtType {
-    val decl = type.getSymbol().getDeclarations().singleOrNull() ?: return KtType(ANY, isNullable = true)
+private fun ObjectTypeToKotlinTypeMapper.mapAnonymousType(type: Type, declaration: Node?): KtType {
+    val resolvedDeclaration = type.getSymbol().getDeclarations().singleOrNull() ?: return KtType(ANY, isNullable = true)
 
-    val parent = decl.parent
+    if (resolvedDeclaration.kind == SyntaxKind.TypeLiteral) {
+        type.aliasSymbol?.let { aliasSymbol ->
+            val typeArguments = mapTypeArguments(type.aliasTypeArguments, declaration).toList()
+            return KtType(buildFqn(aliasSymbol), typeArguments)
+        }
+    }
+
+    val parent = resolvedDeclaration.parent
     val (mapper, substitution) = if (parent?.kind == SyntaxKind.TypeAliasDeclaration) {
         val typeParameters = parent.unsafeCast<TypeAliasDeclaration>().typeParameters
         val substitution = typeParameters?.arr.orEmpty()
@@ -229,9 +242,9 @@ private fun ObjectTypeToKotlinTypeMapper.mapAnonymousType(type: Type): KtType {
         Pair(this, emptyMap())
     }
 
-    val kotlinType = when (decl.kind as Any) {
-        SyntaxKind.FunctionType -> decl.unsafeCast<FunctionTypeNode>().toKotlinType(mapper)
-        SyntaxKind.TypeLiteral -> mapper.getKotlinTypeForObjectType(decl.unsafeCast<TypeLiteralNode>())
+    val kotlinType = when (resolvedDeclaration.kind as Any) {
+        SyntaxKind.FunctionType -> resolvedDeclaration.unsafeCast<FunctionTypeNode>().toKotlinType(mapper)
+        SyntaxKind.TypeLiteral -> mapper.getKotlinTypeForObjectType(resolvedDeclaration.unsafeCast<TypeLiteralNode>())
         else -> KtType(ANY, isNullable = true)
     }
 
