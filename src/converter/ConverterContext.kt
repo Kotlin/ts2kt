@@ -2,6 +2,7 @@ package converter
 
 import ts2kt.*
 import ts2kt.kotlin.ast.*
+import ts2kt.mergeClassesAndPackages
 import ts2kt.moduleAnnotation
 import ts2kt.sanitize
 import typescriptServices.ts.Symbol
@@ -14,6 +15,7 @@ class ConverterContext {
 
 fun ConverterContext.build(): List<KtPackagePart> {
     processExportedDeclarations()
+    packageParts.forEach { it.mergeClassesAndPackages() }
     return packageParts.map { it.build() }.filter { it.members.isNotEmpty() }
 }
 

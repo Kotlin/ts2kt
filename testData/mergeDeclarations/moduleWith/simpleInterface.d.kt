@@ -2,11 +2,8 @@ package simpleInterface
 
 external interface Foo {
     fun bar(): Number
+    companion object {
+        fun baz(a: Any): Unit = definedExternally
+        fun bar(): Number = definedExternally
+    }
 }
-
-// ------------------------------------------------------------------------------------------
-@file:JsQualifier("Foo")
-package simpleInterface.Foo
-
-external fun baz(a: Any): Unit = definedExternally
-external fun bar(): Number = definedExternally

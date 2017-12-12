@@ -1,5 +1,6 @@
 package ts2kt
 
+import converter.KtPackagePartBuilder
 import ts2kt.kotlin.ast.*
 import ts2kt.utils.assert
 import ts2kt.utils.merge
@@ -173,4 +174,35 @@ private fun KtClassifier.addMembersFrom(another: KtClassifier) {
 
 private fun KtClassifier.addMember(member: KtMember) {
     (members as MutableList).add(member)
+}
+
+fun KtPackagePartBuilder.mergeClassesAndPackages() {
+    val classesByName = members.filterIsInstance<KtClassifier>()
+            .filter { it.kind == KtClassKind.CLASS || it.kind == KtClassKind.INTERFACE }
+            .associateBy { it.name }
+
+    for (nestedPackage in nestedPackages) {
+        if (nestedPackage.nestedPackages.isNotEmpty()) continue
+
+        val classToMerge = classesByName[nestedPackage.ownName] ?: continue
+        var companion = classToMerge.members
+                .filterIsInstance<KtClassifier>()
+                .singleOrNull { it.kind == KtClassKind.COMPANION_OBJECT }
+        val companionFound = companion != null
+        if (companion == null) {
+            companion = KtClassifier(
+                    KtClassKind.COMPANION_OBJECT, "", emptyList(), null, emptyList(),
+                    emptyList(), emptyList(), false)
+        }
+
+        val (classifiers, nonClassifiers) = nestedPackage.members.partition { it is KtClassifier }
+        companion.members = companion.members + nonClassifiers
+        classToMerge.members = classToMerge.members + classifiers
+
+        if (!companionFound && companion.members.isNotEmpty()) {
+            classToMerge.members += companion
+        }
+
+        nestedPackage.members.clear()
+    }
 }

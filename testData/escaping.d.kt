@@ -9,18 +9,15 @@ external interface `This` {
     var `typealias`: Number
     var `typeof`: Number
     fun `in`(`object`: Foo)
+    companion object {
+        var `$foo`: Boolean = definedExternally
+        fun `bar$`(`ba$z`: Number): Unit = definedExternally
+    }
 }
 external open class `is`<`interface`> {
     open var `as`: Number = definedExternally
     open fun `package`(a: Any): Boolean = definedExternally
 }
-
-// ------------------------------------------------------------------------------------------
-@file:JsModule("This")
-package escaping.`This`
-
-external var `$foo`: Boolean = definedExternally
-external fun `bar$`(`ba$z`: Number): Unit = definedExternally
 
 // ------------------------------------------------------------------------------------------
 @file:JsQualifier("when")

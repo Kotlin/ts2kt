@@ -5,11 +5,6 @@ external open class Foo {
     companion object {
         var variable: String = definedExternally
         fun bar(): Unit = definedExternally
+        fun baz(a: Any): Unit = definedExternally
     }
 }
-
-// ------------------------------------------------------------------------------------------
-@file:JsQualifier("Foo")
-package classWithStaticMembers.Foo
-
-external fun baz(a: Any): Unit = definedExternally
