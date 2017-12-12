@@ -13,8 +13,7 @@ external interface `T$1` {
     var done: Boolean
 }
 external fun returnsObjectType(): `T$1` = definedExternally
-external interface `T$2` {
-    fun bar(a: Any): Number
-    fun baz(a: Any, b: Any, c: String): Boolean
+external object foo {
+    fun bar(a: Any): Number = definedExternally
+    fun baz(a: Any, b: Any, c: String): Boolean = definedExternally
 }
-external var foo: `T$2` = definedExternally

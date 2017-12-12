@@ -469,3 +469,7 @@ fun TypeChecker.getSymbolResolvingAliases(location: Node): Symbol? {
     }
     return symbol
 }
+
+
+fun List<KtNode>.toStringKey(): String =
+        map { it.stringify().replace("(\\(|,\\s*)\\w+: ".toRegex(), "$1") }.sorted().joinToString("")

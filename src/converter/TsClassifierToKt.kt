@@ -117,6 +117,13 @@ abstract class TsClassifierToKt(
         getTranslator(node).addFunction(name, isOverride, needsNoImpl, node)
     }
 
+
+    override fun visitSignatureDeclaration(node: SignatureDeclaration) {
+        node.toKotlinCallSignatureOverloads(typeMapper).forEach { callSignature ->
+            addFunction(null, INVOKE, callSignature, needsNoImpl = false, additionalAnnotations = listOf(NATIVE_INVOKE_ANNOTATION), isOperator = true)
+        }
+    }
+
     private fun PropertyName.asString() = when (kind as Any) {
         SyntaxKind.Identifier -> {
             unescapedText

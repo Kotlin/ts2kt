@@ -3,11 +3,11 @@ package `var`
 external interface `T$0` {
     var bar: Number
 }
-external interface `T$1` {
-    fun bar(a: Any): Number
-    var baz: Any
-    var boo: String
-    var show: (overrideChecks: Boolean) -> Unit
+external object foo {
+    fun bar(a: Any): Number = definedExternally
+    var baz: Any = definedExternally
+    var boo: String = definedExternally
+    var show: (overrideChecks: Boolean) -> Unit = definedExternally
     @nativeInvoke
     operator fun invoke(foo: `T$0`): Any
     @nativeGetter
@@ -15,4 +15,3 @@ external interface `T$1` {
     @nativeSetter
     operator fun set(s: String, value: Any)
 }
-external var foo: `T$1` = definedExternally

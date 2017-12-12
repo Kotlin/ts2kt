@@ -1,6 +1,7 @@
 package emptyObjectTypeAsAny
 
-external var foo: Any = definedExternally
+external object foo {
+}
 external interface Foo {
     var boo: Any
 }

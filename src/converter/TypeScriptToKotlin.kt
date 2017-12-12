@@ -77,10 +77,36 @@ class TypeScriptToKotlin(
         val declarations = node.declarationList.declarations.arr
         for (d in declarations) {
             val name = d.declarationName!!.unescapedText
-            val varType = d.type?.let { typeMapper.mapType(it) } ?: KtType(ANY)
             val symbol = typeChecker.getSymbolResolvingAliases(d.name.unsafeCast<Node>())
+
+            if (d.type?.kind == SyntaxKind.TypeLiteral) {
+                val asObject = tryTranslateTypeLiteralAsObject(d, name, additionalAnnotations)
+                if (asObject != null) {
+                    addDeclaration(symbol, asObject)
+                    return
+                }
+            }
+            val varType = d.type?.let { typeMapper.mapType(it) } ?: KtType(ANY)
             addVariable(symbol, name, varType, additionalAnnotations = additionalAnnotations)
         }
+    }
+
+    private fun tryTranslateTypeLiteralAsObject(
+            d: VariableDeclaration, name: String,
+            additionalAnnotations: List<KtAnnotation>
+    ): KtClassifier? {
+        val translator = TsClassToKt(
+                typeMapper, kind = KtClassKind.OBJECT,
+                annotations = defaultAnnotations + additionalAnnotations,
+                isOverride = isOverride, isOverrideProperty = isOverrideProperty,
+                hasMembersOpenModifier = false, needsNoImpl = false)
+        val typeLiteral = d.type.unsafeCast<TypeLiteralNode>()
+        forEachChild(translator, typeLiteral)
+
+        if (translator.declarations.toStringKey() == ObjectTypeToKotlinTypeMapperImpl.jsonTypeKey) return null
+
+        translator.name = name
+        return translator.createClassifier()!!
     }
 
     override fun visitFunctionDeclaration(node: FunctionDeclaration) {

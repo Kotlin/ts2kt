@@ -1,4 +1,4 @@
-declare var foo: {
+declare function foo(): {
     bar(a): number;
     baz;
     boo: string;
@@ -6,7 +6,7 @@ declare var foo: {
     [s: string]: any;
 };
 
-declare var bar: {
+declare function bar(): {
     bar(a): number;
     baz;
     boo: string;
@@ -14,7 +14,7 @@ declare var bar: {
     [s: string]: any;
 };
 
-declare var baz: {
+declare function baz(): {
     bar(a): number;
     baz;
     boo: string;

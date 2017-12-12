@@ -32,7 +32,8 @@ data class ObjectTypeToKotlinTypeMapperImpl(
         val defaultAnnotations: List<KtAnnotation>,
         val declarations: MutableList<KtMember>,
         override val currentPackage: String,
-        val typeParameterDeclarations: List<TypeParameterDeclaration> = listOf()
+        val typeParameterDeclarations: List<TypeParameterDeclaration> = listOf(),
+        val cache: MutableMap<String, KtType> = hashMapOf()
 ) : ObjectTypeToKotlinTypeMapper {
 
     companion object {
@@ -41,13 +42,6 @@ data class ObjectTypeToKotlinTypeMapperImpl(
         fun reset() {
             n = 0
         }
-    }
-
-    val cache = HashMap<String, KtType>()
-
-    init {
-        // TODO better declaration for known classes
-        cache[""] = KtType("Any")
 
         val jsonTypeKey = """
                 @nativeGetter
@@ -56,7 +50,11 @@ data class ObjectTypeToKotlinTypeMapperImpl(
                 operator fun set(String, Any)
 
                 """.trimIndent()
+    }
 
+    init {
+        // TODO better declaration for known classes
+        cache[""] = KtType("Any")
         cache[jsonTypeKey] = KtType("Json")
     }
 
@@ -97,7 +95,4 @@ data class ObjectTypeToKotlinTypeMapperImpl(
     override fun withTypeParameters(typeParameters: NodeArray<TypeParameterDeclaration>?): ObjectTypeToKotlinTypeMapper {
         return copy(typeParameterDeclarations = typeParameterDeclarations.toList() + (typeParameters?.arr ?: arrayOf()))
     }
-
-    fun List<KtNode>.toStringKey(): String =
-            map { it.stringify().replace("(\\(|,\\s*)\\w+: ".toRegex(), "$1") }.sorted().joinToString("")
 }

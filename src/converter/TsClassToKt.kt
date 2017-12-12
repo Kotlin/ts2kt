@@ -6,10 +6,7 @@ import ts2kt.kotlin.ast.KtFunParam
 import ts2kt.kotlin.ast.KtTypeParam
 import ts2kt.utils.assert
 import typescript.identifierName
-import typescriptServices.ts.ClassDeclaration
-import typescriptServices.ts.ConstructorDeclaration
-import typescriptServices.ts.MethodDeclaration
-import typescriptServices.ts.PropertyDeclaration
+import typescriptServices.ts.*
 
 class TsClassToKt(
         typeMapper: ObjectTypeToKotlinTypeMapper,
@@ -17,10 +14,9 @@ class TsClassToKt(
         val annotations: List<KtAnnotation> = DEFAULT_ANNOTATION,
         isOverride: (MethodDeclaration) -> Boolean,
         isOverrideProperty: (PropertyDeclaration) -> Boolean,
-        override val hasMembersOpenModifier: Boolean = true
+        override val hasMembersOpenModifier: Boolean = true,
+        override val needsNoImpl: Boolean = true
 ) : TsClassifierToKt(typeMapper, isOverride, isOverrideProperty) {
-
-    override val needsNoImpl = true
 
     override val isInterface = false
 
