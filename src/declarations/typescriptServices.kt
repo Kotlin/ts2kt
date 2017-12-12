@@ -1192,7 +1192,7 @@ external interface TypeChecker {
     fun getReturnTypeOfSignature(signature: Signature): Type
     fun getNonNullableType(type: Type): Type
     fun getSymbolsInScope(location: Node, meaning: SymbolFlags): Array<Symbol>
-    fun getSymbolAtLocation(node: Node): Symbol
+    fun getSymbolAtLocation(node: Node): Symbol?
     fun getSymbolsOfParameterPropertyDeclaration(parameter: ParameterDeclaration, parameterName: String): Array<Symbol>
     fun getShorthandAssignmentValueSymbol(location: Node): Symbol
     fun getExportSpecifierLocalTargetSymbol(location: ExportSpecifier): Symbol

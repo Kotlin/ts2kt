@@ -462,10 +462,9 @@ fun Node.location(): String {
 @Suppress("NOTHING_TO_INLINE")
 inline operator fun <E : Enum<E>> E.contains(flag: E): Boolean = unsafeCast<Int>() and flag.unsafeCast<Int>() != 0
 
-fun TypeChecker.getSymbolResolvingAliases(location: Node): Symbol {
+fun TypeChecker.getSymbolResolvingAliases(location: Node): Symbol? {
     var symbol = getSymbolAtLocation(location)
-    if (js("symbol == null").unsafeCast<Boolean>()) return symbol
-    while (SymbolFlags.Alias in symbol.flags) {
+    while (symbol != null && SymbolFlags.Alias in symbol.flags) {
         symbol = getAliasedSymbol(symbol)
     }
     return symbol
