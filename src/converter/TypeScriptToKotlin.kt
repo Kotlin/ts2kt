@@ -114,6 +114,8 @@ class TypeScriptToKotlin(
         val typeLiteral = d.type.unsafeCast<TypeLiteralNode>()
         forEachChild(translator, typeLiteral)
 
+        // TODO should we add more heuristics?
+        // E.g. shouldn't we avoid generating object when an anonymous type is used more than one place?
         if (translator.declarations.toStringKey() == ObjectTypeToKotlinTypeMapperImpl.jsonTypeKey) return null
 
         translator.name = name
