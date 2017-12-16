@@ -21,7 +21,10 @@ fun TsClassToKt.createClassifier(): KtClassifier? {
 
 val JS_MODULE = "JsModule"
 val JS_QUALIFIER = "JsQualifier"
-val JS_NAME = "JsName"
+private val JS_NAME = "JsName"
 
 fun moduleAnnotation(moduleName: String): KtAnnotation =
         KtAnnotation(JS_MODULE, listOf(KtArgument("\"$moduleName\"")))
+
+fun jsNameAnnotation(name: String): KtAnnotation =
+        KtAnnotation(JS_NAME, listOf(KtArgument("\"$name\"")))

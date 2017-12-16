@@ -1,7 +1,8 @@
 package converter
 
-import ts2kt.*
-import ts2kt.kotlin.ast.*
+import ts2kt.kotlin.ast.KtMember
+import ts2kt.kotlin.ast.KtPackagePart
+import ts2kt.kotlin.ast.KtVariable
 import ts2kt.mergeClassesAndPackages
 import ts2kt.moduleAnnotation
 import ts2kt.sanitize
@@ -40,9 +41,6 @@ private fun ConverterContext.processExportedDeclarations() {
                     val currentOwner = declarationToModule[exportedDeclaration]
 
                     exportedDeclaration.annotations += moduleAnnotation(module)
-                    if (builder.isExportDefault) {
-                        exportedDeclaration.annotations += KtAnnotation(JS_NAME, listOf(KtArgument("\"default\"")))
-                    }
 
                     if (exportedDeclaration is KtVariable) {
                         exportedDeclaration.isVar = false

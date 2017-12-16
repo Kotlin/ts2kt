@@ -129,7 +129,7 @@ class TypeScriptToKotlin(
         node.toKotlinCallSignatureOverloads(typeMapper).forEach { callSignature ->
             addFunction(symbol, name, callSignature, additionalAnnotations = additionalAnnotations)
         }
-        exportDeclarationIfNecessary(node, symbol)
+        processDefaultExport(node, symbol)
     }
 
     override fun visitInterfaceDeclaration(node: InterfaceDeclaration) {
@@ -146,7 +146,7 @@ class TypeScriptToKotlin(
             translator.visitInterfaceDeclaration(node)
             val symbol = node.name?.let { typeChecker.getSymbolResolvingAliases(it) }
             addDeclaration(symbol, translator.createClassifier())
-            exportDeclarationIfNecessary(node, symbol)
+            processDefaultExport(node, symbol)
         }
     }
 
@@ -160,15 +160,20 @@ class TypeScriptToKotlin(
         if (result != null) {
             val symbol = node.name?.let { typeChecker.getSymbolResolvingAliases(it) }
             addDeclaration(symbol, result)
-            exportDeclarationIfNecessary(node, symbol)
+            processDefaultExport(node, symbol)
         }
     }
 
-    private fun exportDeclarationIfNecessary(node: Node, symbol: Symbol?) {
-        if (symbol != null && node.modifiers?.arr?.any { it.kind == SyntaxKind.DefaultKeyword } == true) {
-            currentPackagePartBuilder.exportedSymbol = symbol
-            currentPackagePartBuilder.isExportDefault = true
+    private fun processDefaultExport(node: Node, symbol: Symbol?) {
+        if (node.modifiers?.arr?.any { it.kind == SyntaxKind.DefaultKeyword } == true) {
+            addJsNameAnnotation(symbol, "default")
         }
+    }
+
+    private fun addJsNameAnnotation(symbol: Symbol?, name: String) {
+        if (symbol == null) return
+
+        declarationsBySymbol[symbol]?.forEach { it.annotations += jsNameAnnotation(name) }
     }
 
     override fun visitEnumDeclaration(node: EnumDeclaration) {
@@ -255,9 +260,12 @@ class TypeScriptToKotlin(
     }
 
     override fun visitExportAssignment(node: ExportAssignment) {
-        currentPackagePartBuilder.exportedSymbol = typeChecker.getSymbolResolvingAliases(node.expression)
-        if (node.isExportEquals != true) {
-            currentPackagePartBuilder.isExportDefault = true
+        val symbol = typeChecker.getSymbolResolvingAliases(node.expression)
+        if (node.isExportEquals == true) {
+            currentPackagePartBuilder.exportedSymbol = symbol
+        }
+        else if(symbol?.declarations?.none { it.modifiers?.flags?.contains(NodeFlags.Export) == true } == true) {
+            addJsNameAnnotation(symbol, "default")
         }
     }
 }

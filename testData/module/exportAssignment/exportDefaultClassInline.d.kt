@@ -1,5 +1,6 @@
+@file:JsModule("foo")
 package exportDefaultClassInline.foo
 
-@JsModule("foo")
+external fun baz(): Unit = definedExternally
 @JsName("default")
 external open class C
