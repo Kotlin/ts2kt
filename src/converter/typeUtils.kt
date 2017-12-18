@@ -41,7 +41,12 @@ private fun ObjectTypeToKotlinTypeMapper.mapTypeToUnion(type: Type, declaration:
         return resultingDeclaration.unsafeCast<UnionTypeNode>().toKotlinTypeUnion(this)
     }
 
-    return when {
+    if (type in typesInMappingProcess)
+        return KtTypeUnion(KtType(DYNAMIC))
+
+    typesInMappingProcess += type
+
+    val mappedType = when {
         TypeFlags.ThisType in flags -> {
             val possibleTypes = mapTypeToUnion(type.unsafeCast<TypeParameter>().constraint, null).possibleTypes
                     .map { it.copy(comment = "this") }
@@ -83,6 +88,10 @@ private fun ObjectTypeToKotlinTypeMapper.mapTypeToUnion(type: Type, declaration:
 
         else -> KtTypeUnion(KtType(ANY, isNullable = true))
     }
+
+    typesInMappingProcess -= type
+
+    return mappedType
 }
 
 private fun ObjectTypeToKotlinTypeMapper.mapUnionType(type: UnionOrIntersectionType): KtTypeUnion {
