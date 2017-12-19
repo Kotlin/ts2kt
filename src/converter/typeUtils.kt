@@ -2,6 +2,8 @@ package converter
 
 import ts2kt.*
 import ts2kt.kotlin.ast.*
+import ts2kt.utils.DiagnosticLevel
+import ts2kt.utils.report
 import typescript.ClassOrInterfaceDeclaration
 import typescriptServices.ts.*
 import kotlin.collections.Map
@@ -41,8 +43,13 @@ private fun ObjectTypeToKotlinTypeMapper.mapTypeToUnion(type: Type, declaration:
         return resultingDeclaration.unsafeCast<UnionTypeNode>().toKotlinTypeUnion(this)
     }
 
-    if (type in typesInMappingProcess)
+    if (type in typesInMappingProcess) {
+        report(
+                "Recursion is detected when resolve type: \"${type.symbol?.name}\" for the declaration at ${declaration?.location()}",
+                maxLevelToShow = DiagnosticLevel.WARNING_WITH_STACKTRACE
+        )
         return KtTypeUnion(KtType(DYNAMIC))
+    }
 
     typesInMappingProcess += type
 

@@ -18,20 +18,24 @@ internal enum class DiagnosticLevel {
 
 internal var diagnosticLevel: DiagnosticLevel = DiagnosticLevel.DEFAULT
 
-fun report(message: String): String? = when (diagnosticLevel) {
-    DiagnosticLevel.EXCEPTION ->
-        throw IllegalStateException(message)
-    DiagnosticLevel.WARNING_WITH_STACKTRACE -> {
-        console.warn("ts2kt: " + message)
-        console.warn("Stacktrace:" + Exception().asDynamic().stack)
-        message
+internal fun report(message: String, maxLevelToShow: DiagnosticLevel? = null): String? {
+    if (maxLevelToShow != null && diagnosticLevel > maxLevelToShow) return null
+
+    return when (diagnosticLevel) {
+        DiagnosticLevel.EXCEPTION ->
+            throw IllegalStateException(message)
+        DiagnosticLevel.WARNING_WITH_STACKTRACE -> {
+            console.warn("ts2kt: " + message)
+            console.warn("Stacktrace:" + Exception().asDynamic().stack)
+            message
+        }
+        DiagnosticLevel.WARNING -> {
+            console.warn("ts2kt: " + message)
+            message
+        }
+        DiagnosticLevel.QUIET ->
+            null
     }
-    DiagnosticLevel.WARNING -> {
-        console.warn("ts2kt: " + message)
-        message
-    }
-    DiagnosticLevel.QUIET ->
-        null
 }
 
 fun assert(condition: Boolean, message: String) {
