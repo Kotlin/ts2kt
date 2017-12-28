@@ -177,12 +177,7 @@ class TypeScriptToKotlin(
 
     override fun visitEnumDeclaration(node: EnumDeclaration) {
         val entries = node.members.arr.map { entry ->
-            KtEnumEntry((entry.declarationName as Identifier).unescapedText, entry.initializer?.let {
-                when (it.kind as Any) {
-                    SyntaxKind.NumericLiteral -> (it.cast<LiteralExpression>()).text
-                    else -> reportUnsupportedNode(it)
-                }
-            })
+            KtEnumEntry((entry.declarationName as Identifier).unescapedText, entry.initializer?.getText())
         }
 
         val enumClass =
