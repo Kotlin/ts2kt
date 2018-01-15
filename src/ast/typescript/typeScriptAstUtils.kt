@@ -247,6 +247,7 @@ fun TypeNode.toKotlinTypeUnion(typeMapper: ObjectTypeToKotlinTypeMapper): KtType
 fun TypeNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
     return when (this.kind as Any) {
         SyntaxKind.AnyKeyword -> KtType(ANY)
+        SyntaxKind.ObjectKeyword -> KtType(ANY)
         SyntaxKind.NumberKeyword -> KtType(NUMBER)
         SyntaxKind.StringKeyword -> KtType(STRING)
         SyntaxKind.BooleanKeyword -> KtType(BOOLEAN)
