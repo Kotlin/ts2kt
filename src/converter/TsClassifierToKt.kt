@@ -122,17 +122,4 @@ abstract class TsClassifierToKt(
             addFunction(null, INVOKE, callSignature, needsNoImpl = false, additionalAnnotations = listOf(NATIVE_INVOKE_ANNOTATION), isOperator = true)
         }
     }
-
-    private fun PropertyName.asString() = when (kind as Any) {
-        SyntaxKind.Identifier -> {
-            (this as Identifier).unescapedText
-        }
-        SyntaxKind.NumericLiteral -> {
-            (this.cast<LiteralExpression>()).text
-        }
-        else -> {
-            reportUnsupportedNode(this)
-            null
-        }
-    }
 }

@@ -110,7 +110,7 @@ fun translate(srcPath: String, basePackageName: String): List<KtPackagePart> {
 
         val typechecker = languageService.getProgram().getTypeChecker()
 
-        val nodeName = (node.declarationName as Identifier).unescapedText
+        val nodeName = node.declarationName?.asString()!!
 
         val visited = hashSetOf<Type>()
 

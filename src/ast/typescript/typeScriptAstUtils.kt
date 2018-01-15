@@ -104,7 +104,7 @@ private fun ParameterDeclaration.toKotlinParam(nodeType: TypeNode?, typeWithoutF
         toKotlinParam(typeWithoutFlags.copy(isNullable = questionToken != null || typeWithoutFlags.isNullable))
 
 private fun ParameterDeclaration.toKotlinParam(type: KtType): KtFunParam {
-    val name = (declarationName as Identifier).unescapedText
+    val name = declarationName?.asString()!!
     val defaultValue = initializer?.let {
         when (it.kind as Any) {
         // TODO

@@ -84,7 +84,7 @@ class TypeScriptToKotlin(
 //      TODO  test many declarations
         val declarations = node.declarationList.declarations.arr
         for (d in declarations) {
-            val name = (d.declarationName as Identifier)!!.unescapedText
+            val name = d.declarationName?.asString()!!
             val symbol = typeChecker.getSymbolResolvingAliases(d.name.unsafeCast<Node>())
 
             if (d.type?.kind == SyntaxKind.TypeLiteral) {
@@ -123,7 +123,7 @@ class TypeScriptToKotlin(
         val additionalAnnotations = getAdditionalAnnotations(node)
 
 //      TODO  visitList(node.modifiers)
-        val name = (node.propertyName as Identifier)!!.unescapedText
+        val name = node.propertyName?.asString()!!
         val symbol = node.name?.let { typeChecker.getSymbolResolvingAliases(it) }
         node.toKotlinCallSignatureOverloads(typeMapper).forEach { callSignature ->
             addFunction(symbol, name, callSignature, additionalAnnotations = additionalAnnotations)
@@ -177,7 +177,7 @@ class TypeScriptToKotlin(
 
     override fun visitEnumDeclaration(node: EnumDeclaration) {
         val entries = node.members.arr.map { entry ->
-            KtEnumEntry((entry.declarationName as Identifier).unescapedText, entry.initializer?.getText())
+            KtEnumEntry(entry.declarationName.asString()!!, entry.initializer?.getText())
         }
 
         val enumClass =
@@ -192,12 +192,13 @@ class TypeScriptToKotlin(
         val additionalAnnotations = getAdditionalAnnotations(node)
 
         fun getName(node: ModuleDeclaration): String {
-            return when(node.declarationName!!.kind as Any) {
-                SyntaxKind.Identifier -> (node.declarationName as Identifier)!!.unescapedText
-                SyntaxKind.StringLiteral -> (node.declarationName as Identifier)!!.unescapedText.replace('/', '.')
+            val declarationName = node.declarationName!!
+            return when(declarationName.kind as Any) {
+                SyntaxKind.Identifier -> (node.declarationName as Identifier).unescapedText
+                SyntaxKind.StringLiteral -> (node.declarationName as Identifier).unescapedText.replace('/', '.')
 
                 else -> {
-                    reportUnsupportedNode(node.declarationName!!)
+                    reportUnsupportedNode(declarationName)
                     "???"
                 }
             }

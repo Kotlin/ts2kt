@@ -1,6 +1,9 @@
 package ts2kt
 
 import ts2kt.kotlin.ast.*
+import ts2kt.utils.cast
+import ts2kt.utils.reportUnsupportedNode
+import typescriptServices.ts.*
 
 fun TsInterfaceToKt.createClassifier() =
         KtClassifier(KtClassKind.INTERFACE, name!!, listOf(), typeParams, parents, declarations, annotations, hasOpenModifier = false)
@@ -28,3 +31,27 @@ fun moduleAnnotation(moduleName: String): KtAnnotation =
 
 fun jsNameAnnotation(name: String): KtAnnotation =
         KtAnnotation(JS_NAME, listOf(KtArgument("\"$name\"")))
+
+fun PropertyName.asString() = when (kind) {
+    SyntaxKind.Identifier -> {
+        this.cast<Identifier>().unescapedText
+    }
+    SyntaxKind.NumericLiteral -> {
+        (this.cast<LiteralExpression>()).text
+    }
+    else -> {
+        reportUnsupportedNode(this)
+        null
+    }
+}
+
+fun DeclarationName.asString() = when (kind) {
+    SyntaxKind.Identifier -> {
+        this.cast<Identifier>().unescapedText
+    }
+    else -> {
+        reportUnsupportedNode(this)
+        null
+    }
+}
+
