@@ -5,7 +5,7 @@ interface List<T> {
 
 type Values<V> = List<V>;
 type MultiMap<K,V> = Map<K,Values<V>>;
-type Headers = MultiMap<String,String>
+type MyHeaders = MultiMap<String,String>
 type Ref<T> = string | ((instance: T) => any);
 
 declare var fooMap: MultiMap<string,number>;
@@ -20,11 +20,11 @@ declare var listOfStringOrNumber: string | List<string | number>;
 
 declare function listOfNumberOrString(a: List<number | String>);
 
-declare var headers: Headers;
+declare var headers: MyHeaders;
 
-declare function getHeaders(): Headers;
+declare function getHeaders(): MyHeaders;
 
-declare function addHeaders(headers: Headers);
+declare function addHeaders(headers: MyHeaders);
 
 declare var someRef: Ref<number>;
 
