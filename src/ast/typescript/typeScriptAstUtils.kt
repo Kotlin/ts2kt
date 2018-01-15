@@ -35,7 +35,7 @@ val NOTHING_TYPE = KtType(NOTHING, isNullable = true)
 
 val SHOULD_BE_ESCAPED =
         setOf("as", "break", "class", "continue", "do", "else", "false", "for", "fun", "if",
-              "in", "interface", "is", "null", "object", "package", "return", "super", "this", "This", "throw",
+              "in", "interface", "is", "null", "object", "package", "return", "super", "this", "throw",
               "true", "try", "typealias", "typeof", "val", "var", "when", "while")
 
 val NOT_OVERRIDE: (Node) -> Boolean = { false }

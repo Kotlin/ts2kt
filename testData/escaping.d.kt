@@ -4,7 +4,7 @@ external var `val`: Any = definedExternally
 external var `$foo`: Boolean = definedExternally
 external fun `bar$`(`ba$z`: Number): Unit = definedExternally
 external fun `fun`(): Unit = definedExternally
-external interface `This` {
+external interface This {
     var `when`: String
     var `typealias`: Number
     var `typeof`: Number
