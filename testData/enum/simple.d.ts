@@ -1,4 +1,4 @@
-enum SomeEnum {
+declare enum SomeEnum {
     Foo,
     Bar,
     $,
