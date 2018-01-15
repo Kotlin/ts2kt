@@ -1,6 +1,6 @@
 {
   "name": "ts2kt",
-  "version": "0.0.20",
+  "version": "0.1.0",
   "description": "Converter of TypeScript definition files to Kotlin declarations",
   "author": "JetBrains s.r.o.",
   "homepage": "https://github.com/Kotlin/ts2kt",
