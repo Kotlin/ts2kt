@@ -182,7 +182,7 @@ class TypeScriptToKotlin(
         val entries = node.members.arr.map { entry ->
             KtEnumEntry(entry.declarationName.unescapedText, entry.initializer?.let {
                 when (it.kind as Any) {
-                    SyntaxKind.FirstLiteralToken -> (it.cast<LiteralExpression>()).text
+                    SyntaxKind.NumericLiteral -> (it.cast<LiteralExpression>()).text
                     else -> reportUnsupportedNode(it)
                 }
             })

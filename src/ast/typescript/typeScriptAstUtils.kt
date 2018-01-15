@@ -112,7 +112,7 @@ private fun ParameterDeclaration.toKotlinParam(type: KtType): KtFunParam {
     val defaultValue = initializer?.let {
         when (it.kind as Any) {
         // TODO
-            SyntaxKind.FirstLiteralToken -> (it.cast<LiteralExpression>()).text
+            SyntaxKind.NumericLiteral -> (it.cast<LiteralExpression>()).text
             SyntaxKind.StringLiteral -> "\"" + (it.cast<LiteralExpression>()).text + "\""
 
             else -> reportUnsupportedNode(it)
