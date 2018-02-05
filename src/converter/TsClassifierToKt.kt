@@ -122,4 +122,8 @@ abstract class TsClassifierToKt(
             addFunction(null, INVOKE, callSignature, needsNoImpl = false, additionalAnnotations = listOf(NATIVE_INVOKE_ANNOTATION), isOperator = true)
         }
     }
+
+    override fun visitConstructSignatureDeclaration(node: ConstructorDeclaration) {
+        // TODO: support
+    }
 }
