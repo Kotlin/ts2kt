@@ -21,6 +21,7 @@ external open class `is`<`interface`> {
     open fun `package`(a: Any): Boolean = definedExternally
 }
 external fun <T, U> When(value: `when`.Promise<T>, transform: (`val`: T) -> U): `fun`.Promise<U> = definedExternally
+external var `_`: `__`.`___` = definedExternally
 
 // ------------------------------------------------------------------------------------------
 @file:JsQualifier("when")
@@ -29,3 +30,10 @@ package escaping.`when`
 external var `$`: Boolean = definedExternally
 external fun `package`(`as`: bar.string.`interface`, b: `$boo`.`typealias`): `$tring` = definedExternally
 external interface Promise<T>
+
+// ------------------------------------------------------------------------------------------
+@file:JsQualifier("__")
+package escaping.`__`
+
+external interface `___`
+external interface _OK_

@@ -32,5 +32,12 @@ declare namespace when {
     interface Promise<T> {}
 }
 
-// val var is as interface package object when typealias fun in This
-// contains any of: $ \s
+declare var _: __.___;
+
+declare namespace __ {
+    interface ___ {
+    }
+
+    interface _OK_ {
+    }
+}

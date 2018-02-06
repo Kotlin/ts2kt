@@ -1,5 +1,5 @@
 @file:JsQualifier("_")
-package interfaces._
+package interfaces.`_`
 
 external interface LoDashStatic {
     fun chain(value: Number): LoDashWrapper<Number>

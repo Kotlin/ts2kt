@@ -55,6 +55,7 @@ fun String.escapeIfNeed(): String {
 private fun String.isIdentifier(): Boolean {
     if (isEmpty()) return false
     if (this in SHOULD_BE_ESCAPED) return false
+    if (this.all { it == '_' }) return false
     if (!this[0].isIdentifierStart()) return false
     return this.drop(1).all { it.isIdentifierPart() }
 }
