@@ -20,16 +20,15 @@ import converter.ConverterContext
 import converter.KtPackagePartBuilder
 import converter.mapType
 import ts2kt.kotlin.ast.*
-import ts2kt.utils.cast
 import ts2kt.utils.reportUnsupportedNode
 import typescriptServices.ts.*
 
-private val NATIVE = "native"
+private val NATIVE = KtName("native")
 
 val NATIVE_ANNOTATION = KtAnnotation(NATIVE)
-internal val NATIVE_GETTER_ANNOTATION = KtAnnotation("nativeGetter")
-internal val NATIVE_SETTER_ANNOTATION = KtAnnotation("nativeSetter")
-internal val NATIVE_INVOKE_ANNOTATION = KtAnnotation("nativeInvoke")
+internal val NATIVE_GETTER_ANNOTATION = KtAnnotation(KtName("nativeGetter"))
+internal val NATIVE_SETTER_ANNOTATION = KtAnnotation(KtName("nativeSetter"))
+internal val NATIVE_INVOKE_ANNOTATION = KtAnnotation(KtName("nativeInvoke"))
 internal val DEFAULT_ANNOTATION = listOf(NATIVE_ANNOTATION)
 internal val NO_ANNOTATIONS = emptyList<KtAnnotation>()
 internal val INVOKE = "invoke"
@@ -177,11 +176,11 @@ class TypeScriptToKotlin(
 
     override fun visitEnumDeclaration(node: EnumDeclaration) {
         val entries = node.members.arr.map { entry ->
-            KtEnumEntry(entry.declarationName.asString()!!, entry.initializer?.getText())
+            KtEnumEntry(KtName(entry.declarationName.asString()!!), entry.initializer?.getText())
         }
 
         val enumClass =
-                KtClassifier(KtClassKind.ENUM, node.identifierName.unescapedText, listOf(), listOf(), listOf(),
+                KtClassifier(KtClassKind.ENUM, KtName(node.identifierName.unescapedText), listOf(), listOf(), listOf(),
                         entries, listOf(), hasOpenModifier = false)
 
         val symbol = node.name?.let { typeChecker.getSymbolResolvingAliases(it) }

@@ -68,7 +68,7 @@ class Stringify(
     }
 
     private fun printAnnotation(annotation: KtAnnotation) {
-        out.print(annotation.escapedName)
+        out.print(annotation.name.asString())
         annotation.parameters.acceptForEach(this, delimiter = ", ", startWithIfNotEmpty = "(", endWithIfNotEmpty = ")")
     }
 
@@ -86,11 +86,12 @@ class Stringify(
 
             out.print(kind.keyword)
 
-            if (name.isNotEmpty()) {
-                out.print(" ")
+            val nameToPrint = name.asString()
+
+            if (nameToPrint.isNotEmpty()) {
+                out.print(" $nameToPrint")
             }
 
-            out.print(escapedName)
             typeParams?.acceptForEach(this@Stringify, ", ", startWithIfNotEmpty = "<", endWithIfNotEmpty = ">")
 
             if (paramsOfConstructors.size == 1) {
@@ -156,7 +157,7 @@ class Stringify(
                 out.print(".")
             }
 
-            out.print(escapedName)
+            out.print(name.asString())
 
             callSignature.printToOut(withTypeParams = false, printUnitReturnType = needsNoImpl, printDefaultValues = !isOverride)
 
@@ -192,7 +193,7 @@ class Stringify(
                 out.print(".")
             }
 
-            out.print(name.escapeIfNeed())
+            out.print(name.asString())
 
             type.printToOut(printUnitType = !needsNoImpl)
 
@@ -263,7 +264,7 @@ class Stringify(
             out.print(VARARG + " ")
         }
 
-        out.print(escapedName)
+        out.print(name.asString())
 
         type.printToOut(printUnitType = true)
 
@@ -304,12 +305,12 @@ class Stringify(
     }
 
     override fun visitEnumEntry(enumEntry: KtEnumEntry) {
-        out.printWithIndent(enumEntry.escapedName)
+        out.printWithIndent(enumEntry.name.asString())
         enumEntry.value?.let { out.print(" /* = $it */") }
     }
 
     override fun visitTypeParam(typeParam: KtTypeParam) {
-        out.print(typeParam.escapedName)
+        out.print(typeParam.name.asString())
         typeParam.upperBound?.let {
             out.print(" : ")
             it.accept(this)
@@ -335,7 +336,7 @@ class Stringify(
                 if (isNullable) out.print("(")
 
                 val params = callSignature.params.joinToString(", ") {
-                    it.name + it.type.stringify() + (it.defaultValue?.let { " /*= $it*/" } ?: "")
+                    it.name.asString() + it.type.stringify() + (it.defaultValue?.let { " /*= $it*/" } ?: "")
                 }
                 val typeAsString = "($params) -> ${callSignature.returnType.type.stringify()}"
                 out.print(typeAsString)
@@ -343,12 +344,12 @@ class Stringify(
                 if (isNullable) out.print(")")
             }
             else {
-                out.print(if (!isLambda) escapedName else name)
+                out.print(qualifiedName.asString())
 
                 typeArgs.acceptForEach(this@Stringify, ", ", startWithIfNotEmpty = "<", endWithIfNotEmpty = ">")
             }
 
-            if (isNullable && name != DYNAMIC) {
+            if (isNullable && qualifiedName != DYNAMIC) {
                 out.print("?")
             }
 
@@ -363,7 +364,10 @@ class Stringify(
     }
 
     override fun visitHeritageType(heritageType: KtHeritageType) {
-        out.print(heritageType.name)
+        visitType(heritageType.type)
+        heritageType.byExpression?.let {
+            out.print(" by $it")
+        }
     }
 
     override fun visitArgument(argument: KtArgument) {

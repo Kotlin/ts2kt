@@ -12,16 +12,20 @@ external interface This {
     companion object {
         var `$foo`: Boolean = definedExternally
         fun `bar$`(`ba$z`: Number): Unit = definedExternally
+        var aaa: `when`.`interface` = definedExternally
+        var bbb: `when`.`$foo` = definedExternally
     }
 }
 external open class `is`<`interface`> {
     open var `as`: Number = definedExternally
     open fun `package`(a: Any): Boolean = definedExternally
 }
+external fun <T, U> When(value: `when`.Promise<T>, transform: (`val`: T) -> U): `fun`.Promise<U> = definedExternally
 
 // ------------------------------------------------------------------------------------------
 @file:JsQualifier("when")
 package escaping.`when`
 
 external var `$`: Boolean = definedExternally
-external fun `package`(`as`: Number): `$tring` = definedExternally
+external fun `package`(`as`: bar.string.`interface`, b: `$boo`.`typealias`): `$tring` = definedExternally
+external interface Promise<T>

@@ -17,11 +17,19 @@ declare class is<interface> {
 declare module "This" {
     export var $foo: boolean;
     export function bar$(ba$z: number);
+    var aaa: when.interface;
+    var bbb: when.$foo;
 }
 
 declare module when {
     export var $: boolean;
-    export function package(as: number): $tring;
+    export function package(as: bar.string.interface, b: $boo.typealias): $tring;
+}
+
+declare function When<T, U>(value: when.Promise<T>, transform: (val: T) => U): fun.Promise<U>;
+
+declare namespace when {
+    interface Promise<T> {}
 }
 
 // val var is as interface package object when typealias fun in This

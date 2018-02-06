@@ -12,6 +12,7 @@ import typescriptServices.ts.Symbol
 class KtPackagePartBuilder(
         val id: Symbol?,
         var parent: KtPackagePartBuilder?,
+        // TODO should it be KtQualifiedName?
         val ownName: String
 ) {
     val members: MutableList<KtMember> = mutableListOf()

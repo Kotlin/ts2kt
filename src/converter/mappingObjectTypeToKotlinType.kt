@@ -57,8 +57,8 @@ data class ObjectTypeToKotlinTypeMapperImpl(
 
     init {
         // TODO better declaration for known classes
-        cache[""] = KtType("Any")
-        cache[jsonTypeKey] = KtType("Json")
+        cache[""] = KtType(KtQualifiedName("Any"))
+        cache[jsonTypeKey] = KtType(KtQualifiedName("Json"))
     }
 
     override fun getKotlinTypeForObjectType(objectType: TypeLiteralNode): KtType {
@@ -74,20 +74,20 @@ data class ObjectTypeToKotlinTypeMapperImpl(
         val usedTypeParams = translator.declarations.flatMap {
             when (it) {
                 is KtVariable ->
-                    listOf(it.type.type.name)
+                    listOf(it.type.type.qualifiedName)
                 is KtFunction ->
-                    it.callSignature.params.map { it.type.type.name } + it.callSignature.returnType.type.name
+                    it.callSignature.params.map { it.type.type.qualifiedName } + it.callSignature.returnType.type.qualifiedName
                 else ->
                     emptyList()
             }
         }.distinct()
-        val typeParams = typeParameterDeclarations.filter { usedTypeParams.contains(it.identifierName.text) }
-                .map { KtTypeParam(it.identifierName.text) }
+        val typeParamNames = typeParameterDeclarations.filter { usedTypeParams.contains(KtQualifiedName(it.identifierName.text)) }
+                .map { it.identifierName.text }
 
         val traitName = "T$${n++}"
-        val traitType = KtType(traitName, typeParams.map { KtType(it.name) })
+        val traitType = KtType(KtQualifiedName(traitName), typeParamNames.map { KtType(KtQualifiedName(it)) })
         translator.name = traitName
-        translator.typeParams = typeParams
+        translator.typeParams = typeParamNames.map { KtTypeParam(KtName(it)) }
 
         declarations.add(translator.createClassifier())
 

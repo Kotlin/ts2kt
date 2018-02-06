@@ -83,7 +83,7 @@ private fun ObjectTypeToKotlinTypeMapper.mapTypeToUnion(type: Type, declaration:
         TypeFlags.Union in flags -> mapUnionType(type.unsafeCast<UnionType>())
         TypeFlags.Intersection in flags -> mapIntersectionType(type.unsafeCast<IntersectionType>())
 
-        TypeFlags.TypeParameter in flags -> KtTypeUnion(KtType(unescapeIdentifier(type.getSymbol()!!.name)))
+        TypeFlags.TypeParameter in flags -> KtTypeUnion(KtType(KtQualifiedName(unescapeIdentifier(type.getSymbol()!!.name))))
 
         TypeFlags.Object in flags -> {
             val objectFlags = (type as ObjectType).objectFlags
@@ -144,7 +144,7 @@ private fun ObjectTypeToKotlinTypeMapper.mapTypeReference(type: TypeReference, d
 
     if (ObjectFlags.Tuple in type.target.objectFlags) {
         return KtType(
-                name = DYNAMIC,
+                qualifiedName = DYNAMIC,
                 comment = "JsTuple<" + mappedArgs.joinToString(", ") { it.stringify() } + ">"
         )
     }
@@ -157,7 +157,7 @@ private fun ObjectTypeToKotlinTypeMapper.mapInterfaceType(type: InterfaceType, d
 
     val mappedType = mapObjectType(type)
 
-    if (mappedType.name == "Function") return mappedType
+    if (mappedType.qualifiedName == KtQualifiedName("Function")) return mappedType
 
     return mappedType.copy(typeArgs = mappedArgs.toList())
 }
@@ -198,14 +198,15 @@ private fun ObjectTypeToKotlinTypeMapper.mapTypeArguments(
 // TODO: is it correct name???
 private fun ObjectTypeToKotlinTypeMapper.mapObjectType(type: Type): KtType {
     val fqn = buildFqn(type.getSymbol()!!)
-    if (fqn == "Function") return KtType("Function", typeArgs = listOf(KtType("*")))
+    if (fqn == KtQualifiedName("Function")) return KtType(KtQualifiedName("Function"), typeArgs = listOf(starType()))
     return KtType(when (fqn) {
-        "Object" -> ANY
+        KtQualifiedName("Object") -> ANY
         else -> {
-            if (currentPackage.isNotEmpty() && fqn.startsWith(currentPackage + ".") &&
-                    fqn.indexOf('.', currentPackage.length + 1) < 0
+            // TODO currentPackage should be KtName too
+            if (currentPackage.isNotEmpty() && fqn.asString().startsWith(currentPackage + ".") &&
+                    fqn.asString().indexOf('.', currentPackage.length + 1) < 0
             ) {
-                fqn.substring(currentPackage.length + 1)
+                fqn.asString().substring(currentPackage.length + 1).split(".").fold<String, KtQualifiedName?>(null) { p, s -> KtQualifiedName(s, p) }!!
             }
             else {
                 fqn
@@ -214,34 +215,35 @@ private fun ObjectTypeToKotlinTypeMapper.mapObjectType(type: Type): KtType {
     })
 }
 
-private fun ObjectTypeToKotlinTypeMapper.buildFqn(symbol: Symbol): String {
+private fun ObjectTypeToKotlinTypeMapper.buildFqn(symbol: Symbol): KtQualifiedName {
     // TODO: make something better for the case when we have more than one declaration for this symbol.
     // For example see how it work for testData/typeAlias/typeParams.d.ts after renaming `MyHeaders` to `Headers`
     val declaration = symbol.declarations?.singleOrNull()
-    return declaration?.let { buildFqn(it) } ?: typeChecker.getFullyQualifiedName(symbol).escapeIfNeed()
+    return declaration?.let { buildFqn(it) } ?: KtQualifiedName(typeChecker.getFullyQualifiedName(symbol))
 }
 
-private fun ObjectTypeToKotlinTypeMapper.buildFqn(declaration: Node): String? {
+private fun ObjectTypeToKotlinTypeMapper.buildFqn(declaration: Node): KtQualifiedName? {
     val parent = declaration.getParentDeclaration()
     val parentSymbol = parent?.let { typeChecker.getSymbolResolvingAliases(it) }
     val parentName = when {
-        parentSymbol != null -> buildFqn(parentSymbol) + "."
-        parent != null -> buildFqn(parent) + "."
-        else -> ""
+        parentSymbol != null -> buildFqn(parentSymbol)
+        parent != null -> buildFqn(parent)
+        else -> null
     }
     when (declaration.kind as Any) {
         SyntaxKind.InterfaceDeclaration,
         SyntaxKind.ClassDeclaration -> {
-            return parentName + declaration.unsafeCast<ClassOrInterfaceDeclaration>().identifierName!!.unescapedText.escapeIfNeed()
+            return KtQualifiedName(declaration.unsafeCast<ClassOrInterfaceDeclaration>().identifierName!!.unescapedText, parentName)
         }
         SyntaxKind.ModuleDeclaration -> {
             val nameExpr = declaration.unsafeCast<ModuleDeclaration>().name.unsafeCast<Node>()
             val name = when (nameExpr.kind as Any) {
+                /// TODO is it right to replace "/" with "."? If so, should we generate KtQulifiedName?
                 SyntaxKind.StringLiteral -> nameExpr.unsafeCast<StringLiteral>().text.replace('/', '.')
                 SyntaxKind.Identifier -> nameExpr.unsafeCast<Identifier>().unescapedText
                 else -> "UNKNOWN"
             }
-            return parentName + name.sanitize().escapeIfNeed()
+            return KtQualifiedName(name.sanitize(), parentName)
         }
     }
     return null
@@ -295,7 +297,7 @@ private fun ObjectTypeToKotlinTypeMapper.mapAnonymousType(type: Type, declaratio
 
 fun KtType.replaceTypeParameters(substitution: kotlin.collections.Map<String, KtType>): KtType =
         if (typeArgs.isEmpty() && callSignature == null) {
-            substitution[name] ?: this
+            substitution[qualifiedName.asString()] ?: this
         }
         else {
             copy(

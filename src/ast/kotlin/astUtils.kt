@@ -1,8 +1,5 @@
 package ts2kt.kotlin.ast
 
-import ts2kt.escapeIfNeed
-import ts2kt.utils.join
-
 
 // TODO: review usages
 fun KtNode.stringify() = stringify(null, false)
@@ -23,12 +20,9 @@ fun KtClassifier.hasModuleAnnotation() = annotations.any { it.name == MODULE }
 fun KtClassifier.getClassObject(): KtClassifier? =
         this.members.firstOrNull { it is KtClassifier && it.kind === KtClassKind.COMPANION_OBJECT } as? KtClassifier
 
-val KtNamed.escapedName: String
-    get() = name.escapeIfNeed()
-
 fun createFunctionType(parameters: List<KtFunParam>, returnType: KtType, isNullable: Boolean = false): KtType {
     return KtType(
-            "Function",
+            KtQualifiedName("Function"),
             callSignature = KtCallSignature(parameters, null, KtTypeAnnotation(returnType)),
             isNullable = isNullable
     )

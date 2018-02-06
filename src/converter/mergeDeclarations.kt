@@ -108,11 +108,10 @@ private fun mergeClassifierAndVariable(a: KtClassifier, b: KtVariable): KtMember
     if (a.kind === KtClassKind.INTERFACE || a.isModule()) {
         val newTrait = KtClassifier(KtClassKind.INTERFACE, a.name, a.paramsOfConstructors, a.typeParams, a.parents, a.members, a.annotations, hasOpenModifier = false)
 
-        val varTypeName = b.type.type.stringify()
-        val delegation = listOf(KtHeritageType("$varTypeName by $NO_IMPL"))
+        val delegation = listOf(KtHeritageType(b.type.type, byExpression = NO_IMPL))
 
         // TODO drop hacks
-        val classObject = KtClassifier(KtClassKind.COMPANION_OBJECT, "", listOf(), listOf(), delegation, listOf(), listOf(), hasOpenModifier = false)
+        val classObject = KtClassifier(KtClassKind.COMPANION_OBJECT, KtName.NO_NAME, listOf(), listOf(), delegation, listOf(), listOf(), hasOpenModifier = false)
 
         newTrait.addMember(classObject)
 
@@ -148,7 +147,7 @@ private fun mergeClassAndObject(a: KtClassifier, b: KtClassifier): KtClassifier 
 
     if (classObject == null) {
         // TODO drop hack
-        a.addMember(KtClassifier(KtClassKind.COMPANION_OBJECT, "", listOf(), listOf(), listOf(), b.members, NO_ANNOTATIONS, hasOpenModifier = false))
+        a.addMember(KtClassifier(KtClassKind.COMPANION_OBJECT, KtName.NO_NAME, listOf(), listOf(), listOf(), b.members, NO_ANNOTATIONS, hasOpenModifier = false))
     }
     else {
         // TODO drop hack
@@ -184,14 +183,14 @@ fun KtPackagePartBuilder.mergeClassesAndPackages() {
     for (nestedPackage in nestedPackages) {
         if (nestedPackage.nestedPackages.isNotEmpty()) continue
 
-        val classToMerge = classesByName[nestedPackage.ownName] ?: continue
+        val classToMerge = classesByName[KtName(nestedPackage.ownName)] ?: continue
         var companion = classToMerge.members
                 .filterIsInstance<KtClassifier>()
                 .singleOrNull { it.kind == KtClassKind.COMPANION_OBJECT }
         val companionFound = companion != null
         if (companion == null) {
             companion = KtClassifier(
-                    KtClassKind.COMPANION_OBJECT, "", emptyList(), null, emptyList(),
+                    KtClassKind.COMPANION_OBJECT, KtName.NO_NAME, emptyList(), null, emptyList(),
                     emptyList(), emptyList(), false)
         }
 

@@ -22,14 +22,14 @@ import ts2kt.kotlin.ast.*
 import ts2kt.utils.*
 import typescriptServices.ts.*
 
-val ANY = "Any"
-val NOTHING = "Nothing"
-val NUMBER = "Number"
-val STRING = "String"
-val BOOLEAN = "Boolean"
-val UNIT = "Unit"
-val DYNAMIC = "dynamic"
-val ARRAY = "Array"
+val ANY = KtQualifiedName("Any")
+val NOTHING = KtQualifiedName("Nothing")
+val NUMBER = KtQualifiedName("Number")
+val STRING = KtQualifiedName("String")
+val BOOLEAN = KtQualifiedName("Boolean")
+val UNIT = KtQualifiedName("Unit")
+val DYNAMIC = KtQualifiedName("dynamic")
+val ARRAY = KtQualifiedName("Array")
 
 val NOTHING_TYPE = KtType(NOTHING, isNullable = true)
 
@@ -53,6 +53,7 @@ fun String.escapeIfNeed(): String {
 }
 
 private fun String.isIdentifier(): Boolean {
+    if (isEmpty()) return false
     if (this in SHOULD_BE_ESCAPED) return false
     if (!this[0].isIdentifierStart()) return false
     return this.drop(1).all { it.isIdentifierPart() }
@@ -117,7 +118,7 @@ private fun ParameterDeclaration.toKotlinParam(type: KtType): KtFunParam {
     val isVar = ModifierFlags.AccessibilityModifier in getCombinedModifierFlags(this)
 
     val isOptional = questionToken != null
-    return KtFunParam(name,
+    return KtFunParam(KtName(name),
             KtTypeAnnotation(type, isVararg = isVararg),
             if (defaultValue == null && isOptional) "null" else defaultValue,
             isVar)
@@ -186,7 +187,10 @@ fun NodeArray<TypeParameterDeclaration>.toKotlinTypeParams(typeMapper: ObjectTyp
 fun TypeParameterDeclaration.toKotlinTypeParam(typeMapper: ObjectTypeToKotlinTypeMapper): KtTypeParam {
     val type = typeMapper.mapType(this)
     val upperBound = constraint?.let { typeMapper.mapType(it) }
-    return KtTypeParam(type.name, upperBound)
+
+    assert(type.qualifiedName.qualifier == null, "type.qualifiedName.qualifier expected to be null, but ${type.qualifiedName.qualifier}")
+
+    return KtTypeParam(type.qualifiedName.name, upperBound)
 }
 
 fun SignatureDeclaration.toKotlinCallSignatureOverloads(typeMapper: ObjectTypeToKotlinTypeMapper): List<KtCallSignature> {
@@ -262,7 +266,7 @@ fun TypeNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
         SyntaxKind.TypeReference -> (this.cast<TypeReferenceNode>()).toKotlinTypeUnion(typeMapper).singleType
         SyntaxKind.ExpressionWithTypeArguments -> (this.cast<ExpressionWithTypeArguments>()).toKotlinType(typeMapper)
 
-        SyntaxKind.Identifier -> KtType((this.cast<Identifier>()).unescapedText)
+        SyntaxKind.Identifier -> KtType(KtQualifiedName((this.cast<Identifier>()).unescapedText))
         SyntaxKind.TypeLiteral -> (this.cast<TypeLiteralNode>()).toKotlinType(typeMapper)
 
         SyntaxKind.UnionType -> (this.cast<UnionTypeNode>()).toKotlinTypeUnion(typeMapper).singleType
@@ -283,12 +287,12 @@ fun TypeNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
     }
 }
 
-fun EntityName.toKotlinTypeName(): String {
+fun EntityName.toKotlinTypeName(): KtQualifiedName {
     return when (kind as Any) {
         SyntaxKind.Identifier ->
-            (this as Identifier).unescapedText
+            KtQualifiedName((this as Identifier).unescapedText)
         else ->
-            (this as QualifiedName).left.toKotlinTypeName() + "." + this.right.unescapedText
+            KtQualifiedName((this as QualifiedName).right.unescapedText, this.left.toKotlinTypeName())
     }
 }
 
@@ -302,8 +306,8 @@ private fun TypeReferenceNode.toKotlinTypeIgnoringTypeAliases(typeMapper: Object
 
     return when (name) {
         // TODO: HACKS
-        "Function" -> KtType(name, listOf(KtType("*")))
-        "Object" -> KtType(ANY)
+        KtQualifiedName("Function") -> KtType(name, listOf(starType()))
+        KtQualifiedName("Object") -> KtType(ANY)
 
         else -> KtType(name, typeArguments?.arr?.map { typeMapper.mapType(it) } ?: emptyList())
     }
@@ -312,23 +316,23 @@ private fun TypeReferenceNode.toKotlinTypeIgnoringTypeAliases(typeMapper: Object
 fun ExpressionWithTypeArguments.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
     val name = expression.stringifyQualifiedName()
 
-    return KtType(name ?: "???", typeArguments?.arr?.map { typeMapper.mapType(it) } ?: emptyList())
+    return KtType(name ?: KtQualifiedName("???"), typeArguments?.arr?.map { typeMapper.mapType(it) } ?: emptyList())
 }
 
-private fun PropertyAccessExpression.stringify(): String {
+private fun PropertyAccessExpression.toKtQualifiedName(): KtQualifiedName {
     val identifier = identifierName.unescapedText
 
-    val qualifier = expression?.stringifyQualifiedName() ?: return identifier
+    val qualifier = expression?.stringifyQualifiedName()
 
-    return qualifier + "." + identifier
+    return KtQualifiedName(identifier, qualifier)
 }
 
 private fun Node.stringifyQualifiedName() = when (kind as Any) {
     SyntaxKind.Identifier ->
-        (this.cast<Identifier>()).unescapedText
+        KtQualifiedName((this.cast<Identifier>()).unescapedText)
 
     SyntaxKind.PropertyAccessExpression ->
-        (this.cast<PropertyAccessExpression>()).stringify()
+        (this.cast<PropertyAccessExpression>()).toKtQualifiedName()
 
     else -> reportUnsupportedNode(this)
 }
@@ -386,7 +390,7 @@ fun TypePredicateNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): Kt
 fun ClassOrInterfaceDeclaration.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
     val name = identifierName!!.unescapedText
 
-    return KtType(name, typeParameters?.arr?.map { KtType(it.identifierName.unescapedText) } ?: emptyList())
+    return KtType(KtQualifiedName(name), typeParameters?.arr?.map { KtType(KtQualifiedName(it.identifierName.unescapedText)) } ?: emptyList())
 }
 
 fun forEachChild(visitor: Visitor, node: Node) {

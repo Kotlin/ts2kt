@@ -4,8 +4,6 @@ import converter.mapType
 import converter.mapTypeToUnion
 import ts2kt.kotlin.ast.*
 import ts2kt.utils.assert
-import ts2kt.utils.cast
-import ts2kt.utils.reportUnsupportedNode
 import typescriptServices.ts.*
 
 abstract class TsClassifierToKt(
@@ -18,7 +16,7 @@ abstract class TsClassifierToKt(
     var parents = arrayListOf<KtHeritageType>()
 
     override fun visitHeritageClause(node: HeritageClause) {
-        val types = node.types?.arr?.map { id -> KtHeritageType(typeMapper.mapType(id).stringify()) } ?: listOf()
+        val types = node.types?.arr?.map { id -> KtHeritageType(typeMapper.mapType(id)) } ?: listOf()
         parents.addAll(types)
     }
 
@@ -46,7 +44,7 @@ abstract class TsClassifierToKt(
                     annotation = NATIVE_GETTER_ANNOTATION
                 }
                 else {
-                    callSignature = KtCallSignature(listOf(params[0], KtFunParam("value", KtTypeAnnotation(propType))), listOf(), KtTypeAnnotation(KtType(UNIT)))
+                    callSignature = KtCallSignature(listOf(params[0], KtFunParam(KtName("value"), KtTypeAnnotation(propType))), listOf(), KtTypeAnnotation(KtType(UNIT)))
                     accessorName = SET
                     annotation = NATIVE_SETTER_ANNOTATION
                 }

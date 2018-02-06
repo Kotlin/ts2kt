@@ -18,9 +18,10 @@ package ts2kt.kotlin.ast
 
 import ts2kt.DYNAMIC
 import ts2kt.UNIT
+import ts2kt.escapeIfNeed
 
-val MODULE = "module"
-private val FAKE = "fake"
+val MODULE = KtName("module")
+private val FAKE = KtName("fake")
 
 val FAKE_ANNOTATION = KtAnnotation(FAKE)
 val DEFAULT_FAKE_ANNOTATION = listOf(FAKE_ANNOTATION)
@@ -62,9 +63,24 @@ class KtPackagePart(
     }
 }
 
+data class KtName(val value: String) {
+    fun asString(): String = value.escapeIfNeed()
+
+    companion object {
+        val NO_NAME = KtName("")
+    }
+}
+
+data class KtQualifiedName(val name: KtName, val qualifier: KtQualifiedName? = null) {
+
+    constructor(name: String, qualifier: KtQualifiedName? = null) : this(KtName(name), qualifier)
+
+    fun asString(): String = (qualifier?.let { it.asString() + "." } ?: "") + name.asString()
+}
+
 interface KtNamed {
     // TODO: make it immutable
-    var name: String
+    var name: KtName
 }
 
 interface KtAnnotated {
@@ -75,14 +91,13 @@ interface KtAnnotated {
 interface KtMember : KtNode, KtNamed, KtAnnotated
 
 // TODO should be Named?
-// TODO should we escape name here?
-data class KtArgument(val value: Any/* TODO Any ??? */, val name: String? = null) : AbstractKtNode() {
+data class KtArgument(val value: Any/* TODO Any ??? */, val name: KtName? = null) : AbstractKtNode() {
     override fun accept(visitor: KtVisitor) {
         visitor.visitArgument(this)
     }
 }
 
-data class KtAnnotation(override var name: String, val parameters: List<KtArgument> = listOf()) : KtNamed, AbstractKtNode() {
+data class KtAnnotation(override var name: KtName, val parameters: List<KtArgument> = listOf()) : KtNamed, AbstractKtNode() {
     override fun accept(visitor: KtVisitor) {
         visitor.visitAnnotation(this)
     }
@@ -98,7 +113,7 @@ enum class KtClassKind(val keyword: String, val bracesAlwaysRequired: Boolean = 
 
 data class KtClassifier(
         val kind: KtClassKind,
-        override var name: String,
+        override var name: KtName,
         val paramsOfConstructors: List<List<KtFunParam>>,
         val typeParams: List<KtTypeParam>?,
         val parents: List<KtHeritageType>,
@@ -112,7 +127,7 @@ data class KtClassifier(
 }
 
 data class KtFunParam(
-        override var name: String,
+        override var name: KtName,
         val type: KtTypeAnnotation,
         val defaultValue: Any? = null,
         val isVar: Boolean = false
@@ -133,7 +148,7 @@ data class KtCallSignature(
 }
 
 data class KtFunction(
-        override var name: String,
+        override var name: KtName,
         val callSignature: KtCallSignature,
         val extendsType: KtHeritageType? = null,
         override var annotations: List<KtAnnotation> = emptyList(),
@@ -148,7 +163,7 @@ data class KtFunction(
 }
 
 data class KtVariable(
-        override var name: String,
+        override var name: KtName,
         var type: KtTypeAnnotation,
         val extendsType: KtHeritageType? = null,
         override var annotations: List<KtAnnotation>,
@@ -164,7 +179,7 @@ data class KtVariable(
     }
 }
 
-data class KtEnumEntry(override var name: String, val value: String? = null) : KtMember, AbstractKtNode() {
+data class KtEnumEntry(override var name: KtName, val value: String? = null) : KtMember, AbstractKtNode() {
     override var annotations = listOf<KtAnnotation>()
 
     override fun accept(visitor: KtVisitor) {
@@ -172,7 +187,7 @@ data class KtEnumEntry(override var name: String, val value: String? = null) : K
     }
 }
 
-data class KtHeritageType(override var name: String) : KtNamed, AbstractKtNode() {
+data class KtHeritageType(var type: KtType, val byExpression: String? = null) : AbstractKtNode() {
     override fun accept(visitor: KtVisitor) {
         visitor.visitHeritageType(this)
     }
@@ -193,17 +208,17 @@ data class KtTypeUnion(val possibleTypes: List<KtType>) : AbstractKtNode() {
 
 /**
  * A reference to a type such as String or Map<String,List<T>> such as for a variable, function param or return type.
- * @param name the name of the type such as String or Map
+ * @param qualifiedName the name of the type such as String or Map
  * @param typeArgs the type params such as [String, List<T>], defaulting to empty
  * @param comment a comment about the type, currently used to document intersection types, defaulting to null.
  */
 data class KtType(
-        override var name: String,
+        var qualifiedName: KtQualifiedName,
         val typeArgs: List<KtType> = emptyList(),
         val comment: String? = null,
         val isNullable: Boolean = false,
         val callSignature: KtCallSignature? = null
-) : KtNamed, AbstractKtNode() {
+) : AbstractKtNode() {
 
     override fun accept(visitor: KtVisitor) {
         visitor.visitType(this)
@@ -212,10 +227,12 @@ data class KtType(
     val isLambda: Boolean get() = callSignature != null
 
     // TODO make extension function
-    fun isUnit() = escapedName == UNIT && !isNullable && !isLambda
+    fun isUnit() = qualifiedName == UNIT && !isNullable && !isLambda
 }
 
-data class KtTypeParam(override var name: String, val upperBound: KtType? = null) : KtNamed, AbstractKtNode() {
+fun starType() = KtType(KtQualifiedName("*"))
+
+data class KtTypeParam(override var name: KtName, val upperBound: KtType? = null) : KtNamed, AbstractKtNode() {
     override fun accept(visitor: KtVisitor) {
         visitor.visitTypeParam(this)
     }

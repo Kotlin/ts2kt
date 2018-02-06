@@ -1,8 +1,6 @@
 package converter
 
-import ts2kt.kotlin.ast.KtMember
-import ts2kt.kotlin.ast.KtPackagePart
-import ts2kt.kotlin.ast.KtVariable
+import ts2kt.kotlin.ast.*
 import ts2kt.mergeClassesAndPackages
 import ts2kt.moduleAnnotation
 import ts2kt.sanitize
@@ -46,7 +44,7 @@ private fun ConverterContext.processExportedDeclarations() {
                         exportedDeclaration.isVar = false
 
                         if (currentOwner == builder) {
-                            exportedDeclaration.name = module.sanitize()
+                            exportedDeclaration.name = KtName(module.sanitize())
                         }
                     }
                 }
