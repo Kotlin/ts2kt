@@ -401,9 +401,18 @@ fun forEachChild(visitor: Visitor, node: Node) {
     })
 }
 
-fun visitNode(visitor: Visitor, node: Node?): Unit {
+fun visitNode(visitor: Visitor, node: Node?) {
     if (node == null) return
 
+    try {
+        visitNodeImpl(visitor, node)
+    }
+    catch (e: dynamic) {
+        reportUnsupportedNode(node)
+    }
+}
+
+private fun visitNodeImpl(visitor: Visitor, node: Node) {
     when (node.kind as Any) {
         SyntaxKind.ModuleDeclaration -> visitor.visitModuleDeclaration(node.asDynamic())
 
