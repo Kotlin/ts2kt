@@ -49,6 +49,11 @@ fun DeclarationName.asString() = when (kind) {
     SyntaxKind.Identifier -> {
         this.cast<Identifier>().unescapedText
     }
+    SyntaxKind.ObjectBindingPattern -> {
+        // TODO find better solution
+        // TODO: could we use it as fallback?
+        this.parent.asDynamic().symbol.escapedName.unsafeCast<String>()
+    }
     else -> {
         reportUnsupportedNode(this)
         null
