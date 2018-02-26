@@ -54,7 +54,7 @@ private val host = FileSystemBasedLSH(mapOf(), "")
 private val documentRegistry = createDocumentRegistry()
 private val languageService = createLanguageService(host, documentRegistry)
 
-fun translate(srcPath: String, basePackageName: String): List<KtPackagePart> {
+fun translate(srcPath: String, basePackageName: String, declareModifierIsOptional: Boolean = false): List<KtPackagePart> {
     val normalizeSrcPath = normalizePath(srcPath)
 
     val file2scriptSnapshot = hashMapOf(LIB_D_TS_WITH_SNAPSHOT, normalizeSrcPath to getScriptSnapshotFromFile(normalizeSrcPath))
@@ -236,7 +236,7 @@ fun translate(srcPath: String, basePackageName: String): List<KtPackagePart> {
             isOverride = ::isOverride,
             isOverrideProperty = ::isOverrideProperty,
             qualifier = listOf(),
-            requiredModifier = SyntaxKind.DeclareKeyword
+            requiredModifier = if (declareModifierIsOptional) null else SyntaxKind.DeclareKeyword
     )
 
     // TODO fix

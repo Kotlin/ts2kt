@@ -67,13 +67,18 @@ private fun mkDirs(dirs: String): Boolean {
 }
 
 // TODO share more code between [translateToDir] and [translateToFile]
-fun translateToDir(sources: List<String>, outDir: String, basePackage: String? = null, libraries: List<String> = emptyList()) {
+fun translateToDir(
+        sources: List<String>,
+        outDir: String, basePackage: String? = null,
+        libraries: List<String> = emptyList(),
+        declareModifierIsOptional: Boolean = false
+) {
     var isOutDirExists = false
 
     for (src in sources) {
         console.log("Converting $src")
         val baseSrcName = path.basename(src, TYPESCRIPT_DEFINITION_FILE_EXT)
-        val packageParts = translate(src, basePackage ?: "")
+        val packageParts = translate(src, basePackage ?: "", declareModifierIsOptional)
 
         if (packageParts.isEmpty()) {
             console.log("Nothing was converted")
@@ -120,7 +125,13 @@ fun translateToDir(sources: List<String>, outDir: String, basePackage: String? =
     }
 }
 
-data class CliArguments(val sources: List<String>, val outDir: String, val basePackage: String?, val libraries: List<String>)
+data class CliArguments(
+        val sources: List<String>,
+        val outDir: String,
+        val basePackage: String?,
+        val libraries: List<String>,
+        val declareModifierIsOptional: Boolean
+)
 
 private fun printUsage(program: String) {
     console.log("""
@@ -167,6 +178,7 @@ fun parseArguments(): CliArguments? {
 
     var destination: String? = null
     var basePackage: String? = null
+    var declareModifierIsOptional = false
 
     while (it.hasNext()) {
         val arg = it.next()
@@ -206,6 +218,7 @@ fun parseArguments(): CliArguments? {
                 console.log("""
                             Usage: $program <options> <d.ts files>
                             where possible options include:
+                                -Xdeclare-is-optional       Treat declare keyword for top level declarations as optional
                                 -Xdiagnostic-level <level>  How report diagnostics, ${DiagnosticLevel.DEFAULT} by default,
                                         where level can be any of {${DiagnosticLevel.values().joinToString()}}
                                 -Xtrack-unsupported-kinds   Enable tracking unsupported node kinds and print statistic at the finish
@@ -223,6 +236,9 @@ fun parseArguments(): CliArguments? {
             }
             "-Xtrack-unsupported-kinds" -> {
                 trackUnsupportedKinds = true
+            }
+            "-Xdeclare-is-optional" -> {
+                declareModifierIsOptional = true
             }
             else -> {
                 other += arg
@@ -246,16 +262,16 @@ fun parseArguments(): CliArguments? {
         return null
     }
 
-    return CliArguments(sources, destination ?: ".", basePackage, emptyList())
+    return CliArguments(sources, destination ?: ".", basePackage, emptyList(), declareModifierIsOptional)
 }
 
 fun main(args: Array<String>) {
     // do nothing when it loaded as library
     if (module.parent != null) return
 
-    val (sources, destination, basePackage, libraries) = parseArguments() ?: return
+    val (sources, destination, basePackage, libraries, declareModifierIsOptional) = parseArguments() ?: return
 
-    translateToDir(sources, destination, basePackage, libraries)
+    translateToDir(sources, destination, basePackage, libraries, declareModifierIsOptional)
 
     if (trackUnsupportedKinds) {
         reportUnsupportedKinds()
