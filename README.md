@@ -50,7 +50,11 @@ Where possible options include:<br/>
 
 4. setup path to node interpreter in IDEA (Languages & Frameworks | Node.js and NPM)
 
-5. Convert the tool to Javascript.  One way is to open the project in IntelliJ and build the project (e.g. Ctrl+Shift+F9).
+5. Convert the tool to Javascript (and run the unit tests)
+
+```shell
+./gradlew build
+```
 
 6. (optional) Run the unit tests
 
