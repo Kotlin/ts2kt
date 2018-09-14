@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ts2kt.iml" filepath="$PROJECT_DIR$/ts2kt.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ts2kt_main.iml" filepath="$PROJECT_DIR$/.idea/modules/ts2kt_main.iml" group="ts2kt" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ts2kt_test.iml" filepath="$PROJECT_DIR$/.idea/modules/ts2kt_test.iml" group="ts2kt" />
     </modules>
   </component>
 </project>
