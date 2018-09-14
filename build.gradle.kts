@@ -6,7 +6,7 @@ import com.moowork.gradle.node.task.NodeTask
 
 buildscript {
     var kotlinVer: String by extra
-    kotlinVer = "1.2.40"
+    kotlinVer = "1.2.70"
     repositories {
         mavenCentral()
     }
@@ -25,7 +25,7 @@ buildscript {
 group = "com.github.kotlin.ts2kt"
 version = "1.0-SNAPSHOT"
 var kotlinVer: String by extra
-kotlinVer = "1.2.40"
+kotlinVer = "1.2.70"
 
 repositories {
     mavenLocal()
