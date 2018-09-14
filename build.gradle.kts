@@ -90,7 +90,7 @@ tasks {
         }
         into("$projectDir/node_modules")
     }
-    val npmModules = arrayOf("jest")
+    val npmModules = arrayOf("jest", "fs", "path", "process", "typescript")
     val installTestNpmModules = task<NpmTask>("installTestNpmModules") {
         setNpmCommand("install", *npmModules)
     }
