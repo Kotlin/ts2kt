@@ -1,9 +1,0 @@
-<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="convert typescriptServices.d.ts" type="NodeJSConfigurationType" factoryName="Node.js" singleton="false" path-to-node="project" path-to-js-file="out/production/ts2kt/ts2kt.js" application-parameters="node_modules/typescript/lib/typescriptServices.d.ts -d tmp/typescriptServices" working-dir="$PROJECT_DIR$">
-    <RunnerSettings RunnerId="Basic" />
-    <RunnerSettings RunnerId="debuggableProgram" />
-    <ConfigurationWrapper RunnerId="Basic" />
-    <ConfigurationWrapper RunnerId="debuggableProgram" />
-    <method />
-  </configuration>
-</component>

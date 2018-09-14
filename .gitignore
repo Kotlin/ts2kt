@@ -1,6 +1,8 @@
+build/
 out/
-.idea/workspace.xml
-.idea/shelf
+.gradle/
+.idea/
+*.iml
 .DS_Store
 *.out
 tmp/
