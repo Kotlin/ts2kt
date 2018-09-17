@@ -56,7 +56,7 @@ class TypeScriptToKotlin(
     override val hasMembersOpenModifier = false
 
     fun getAdditionalAnnotations(node: Node): List<KtAnnotation> {
-        val isShouldSkip = requiredModifier === SyntaxKind.DeclareKeyword && !(node.modifiers?.arr?.any { it.kind === requiredModifier } ?: false )
+        val isShouldSkip = requiredModifier === SyntaxKind.DeclareKeyword && !(node.modifiers?.arr?.any { it.kind === requiredModifier || it.kind === SyntaxKind.ExportKeyword } ?: false )
         if (isShouldSkip) return DEFAULT_FAKE_ANNOTATION
 
         return NO_ANNOTATIONS
