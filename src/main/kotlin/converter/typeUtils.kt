@@ -115,10 +115,30 @@ private fun ObjectTypeToKotlinTypeMapper.mapUnionType(type: UnionOrIntersectionT
 
     val mappedTypes = notNullTypes.map { mapType(it, null) }
     return KtTypeUnion(when {
-        !nullable -> mappedTypes.distinct()
+        !nullable -> mappedTypes.mergeToPreventCompilationConflicts()
         notNullTypes.size == 1 -> mappedTypes.map { it.copy(isNullable = true) }
         else -> (mappedTypes + KtType(NOTHING, isNullable = true)).distinct()
     })
+}
+
+/**
+ * Normalize to a KtType such that equals will be true if the KotlinJS compiler would consider them
+ * conflicting if both were the only parameter to identically named functions.
+ */
+private fun KtType.normalizeToDetectCompilationConflicts(): KtType {
+    return copy(comment = null, typeArgs = typeArgs.map { it.normalizeToDetectCompilationConflicts() })
+}
+
+/**
+ * Handle the case where a function is overloaded with the same Kotlin parameter types by merging them.
+ * Comments are not taken into account for the comparison, but are preserved by concatenation using "|" since a "union".
+ * This is especially useful for Typescript string literal unions.
+ */
+private fun List<KtType>.mergeToPreventCompilationConflicts(): List<KtType> {
+    return groupBy { it.normalizeToDetectCompilationConflicts() }.map { entry ->
+        val comments = entry.value.mapNotNull { it.comment }
+        entry.key.copy(comment = if (comments.isEmpty()) null else comments.joinToString(" | "))
+    }
 }
 
 private inline val UnionOrIntersectionType.containsUndefined: Boolean
