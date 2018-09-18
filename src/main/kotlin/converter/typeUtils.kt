@@ -219,7 +219,11 @@ private fun ObjectTypeToKotlinTypeMapper.buildFqn(symbol: Symbol): KtQualifiedNa
     // TODO: make something better for the case when we have more than one declaration for this symbol.
     // For example see how it work for testData/typeAlias/typeParams.d.ts after renaming `MyHeaders` to `Headers`
     val declaration = symbol.declarations?.singleOrNull()
-    return declaration?.let { buildFqn(it) } ?: KtQualifiedName(typeChecker.getFullyQualifiedName(symbol))
+    return declaration?.let { buildFqn(it) } ?: KtQualifiedName(symbolToString(symbol))
+}
+
+private fun ObjectTypeToKotlinTypeMapper.symbolToString(symbol: Symbol): String {
+    return enclosingDeclaration?.let { typeChecker.symbolToString(symbol, it) } ?: typeChecker.symbolToString(symbol)
 }
 
 private fun ObjectTypeToKotlinTypeMapper.buildFqn(declaration: Node): KtQualifiedName? {

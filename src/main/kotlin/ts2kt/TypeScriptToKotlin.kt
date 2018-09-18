@@ -229,7 +229,8 @@ class TypeScriptToKotlin(
                 declarations = innerPackagePartBuilder.members,
                 defaultAnnotations = additionalAnnotations,
                 typeChecker = typeChecker,
-                currentPackage = newQualifier.joinToString(".")
+                currentPackage = newQualifier.joinToString("."),
+                enclosingDeclaration = node
         )
         val tr = TypeScriptToKotlin(
                 currentPackagePartBuilder = innerPackagePartBuilder,
