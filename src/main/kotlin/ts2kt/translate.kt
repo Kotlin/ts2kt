@@ -162,10 +162,11 @@ fun translate(srcPath: String, basePackageName: String, declareModifierIsOptiona
         // no need to check the return type.  If they are incompatible, It will be a Kotlin compilation error.
 
         for (i in candidate.parameters.indices) {
-            val candidateType = getTypeOfSymbol(candidate.parameters[i])
-            val otherType = getTypeOfSymbol(other.parameters[i])
+            // Convert to a String in order to handle generic types
+            val candidateTypeString = typeToString(getTypeOfSymbol(candidate.parameters[i]))
+            val otherTypeString = typeToString(getTypeOfSymbol(other.parameters[i]))
 
-            if (candidateType != otherType) return false
+            if (candidateTypeString != otherTypeString) return false
         }
 
         return true
