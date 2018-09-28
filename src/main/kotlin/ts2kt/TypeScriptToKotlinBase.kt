@@ -16,21 +16,23 @@ abstract class TypeScriptToKotlinBase(
 
     open val defaultAnnotations: List<KtAnnotation> = listOf()
 
-    open fun addVariable(symbol: Symbol?, name: String, type: KtType, extendsType: KtType? = null, typeParams: List<KtTypeParam>? = null, isVar: Boolean = true, isAbstract: Boolean = false, needsNoImpl: Boolean = !isAbstract, additionalAnnotations: List<KtAnnotation> = listOf(), isOverride: Boolean = false) {
+    open fun addVariable(symbol: Symbol?, name: String, type: KtType, extendsType: KtType? = null, typeParams: List<KtTypeParam>? = null, isVar: Boolean = true, isAbstract: Boolean = false, needsNoImpl: Boolean = !isAbstract, additionalAnnotations: List<KtAnnotation> = listOf(), isOverride: Boolean = false, accessModifier: AccessModifier = AccessModifier.PUBLIC) {
         val annotations = defaultAnnotations + additionalAnnotations
-        addDeclaration(symbol, KtVariable(KtName(name), KtTypeAnnotation(type), extendsType?.let { KtHeritageType(it) }, annotations, typeParams, isVar = isVar, needsNoImpl = needsNoImpl, isInInterface = isInterface, isOverride = isOverride, hasOpenModifier = hasMembersOpenModifier && !isAbstract, isAbstract = isAbstract))
+        addDeclaration(symbol, KtVariable(KtName(name), KtTypeAnnotation(type), extendsType?.let { KtHeritageType(it) }, annotations, typeParams, isVar = isVar, needsNoImpl = needsNoImpl, isInInterface = isInterface, isOverride = isOverride, hasOpenModifier = hasMembersOpenModifier && !isAbstract, isAbstract = isAbstract, accessModifier = accessModifier))
     }
 
-    open fun addFunction(symbol: Symbol?, name: String, callSignature: KtCallSignature, extendsType: KtType? = null, needsNoImpl: Boolean = true, additionalAnnotations: List<KtAnnotation> = listOf(), isOverride: Boolean = false, isOperator: Boolean = false, isAbstract: Boolean = false) {
+    open fun addFunction(symbol: Symbol?, name: String, callSignature: KtCallSignature, extendsType: KtType? = null, needsNoImpl: Boolean = true, additionalAnnotations: List<KtAnnotation> = listOf(), isOverride: Boolean = false, isOperator: Boolean = false, isAbstract: Boolean = false, accessModifier: AccessModifier = AccessModifier.PUBLIC) {
         val annotations = defaultAnnotations + additionalAnnotations
-        addDeclaration(symbol, KtFunction(KtName(name), callSignature, extendsType?.let { KtHeritageType(it) }, annotations, needsNoImpl = needsNoImpl, isOverride = isOverride, hasOpenModifier = hasMembersOpenModifier && !isAbstract, isOperator = isOperator, isAbstract = isAbstract))
+        addDeclaration(symbol, KtFunction(KtName(name), callSignature, extendsType?.let { KtHeritageType(it) }, annotations, needsNoImpl = needsNoImpl, isOverride = isOverride, hasOpenModifier = hasMembersOpenModifier && !isAbstract, isOperator = isOperator, isAbstract = isAbstract, accessModifier = accessModifier))
     }
 
     protected fun addDeclaration(symbol: Symbol?, declaration: KtMember) {
-        declarations += declaration
-        if (symbol != null) {
-            val values = declarationsBySymbol.getOrPut(symbol) { mutableListOf() }
-            values += declaration
+        if (declaration.accessModifier.usable) {
+            declarations += declaration
+            if (symbol != null) {
+                val values = declarationsBySymbol.getOrPut(symbol) { mutableListOf() }
+                values += declaration
+            }
         }
     }
 
@@ -40,6 +42,14 @@ abstract class TypeScriptToKotlinBase(
 
     fun isReadonly(node: Node): Boolean {
         return node.modifiers?.arr?.any { it.kind == SyntaxKind.ReadonlyKeyword } == true
+    }
+
+    fun getAccessModifier(node: Node): AccessModifier {
+        return when {
+            node.modifiers?.arr?.any { it.kind == SyntaxKind.ProtectedKeyword } == true -> AccessModifier.PROTECTED
+            node.modifiers?.arr?.any { it.kind == SyntaxKind.PrivateKeyword } == true -> AccessModifier.PRIVATE
+            else -> AccessModifier.PUBLIC
+        }
     }
 
     // TODO

@@ -13,6 +13,7 @@ private val EQ_NO_IMPL = " = $NO_IMPL"
 private val NO_IMPL_PROPERTY_GETTER = " get()" + EQ_NO_IMPL
 private val NO_IMPL_PROPERTY_SETTER = " set(value)" + EQ_NO_IMPL
 private val EXTERNAL = "external"
+private val PROTECTED = "protected"
 private val ABSTRACT = "abstract"
 private val INLINE = "inline"
 private val OPEN = "open"
@@ -142,6 +143,10 @@ class Stringify(
 
             out.printIndent()
 
+            if (accessModifier == AccessModifier.PROTECTED) {
+                out.print("$PROTECTED ")
+            }
+
             if (isAbstract) {
                 out.print("$ABSTRACT ")
             }
@@ -201,6 +206,10 @@ class Stringify(
             annotations.acceptForEach(this@Stringify)
 
             out.printIndent()
+
+            if (accessModifier == AccessModifier.PROTECTED) {
+                out.print("$PROTECTED ")
+            }
 
             if (isAbstract) {
                 out.print("$ABSTRACT ")

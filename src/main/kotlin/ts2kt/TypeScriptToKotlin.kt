@@ -96,7 +96,7 @@ class TypeScriptToKotlin(
                 }
             }
             val varType = d.type?.let { typeMapper.mapType(it) } ?: KtType(ANY)
-            addVariable(symbol, name, varType, additionalAnnotations = additionalAnnotations)
+            addVariable(symbol, name, varType, additionalAnnotations = additionalAnnotations, accessModifier = getAccessModifier(node))
         }
     }
 

@@ -99,14 +99,15 @@ abstract class TsClassifierToKt(
                 isOverride = isOverride,
                 isVar = !isReadonly(node),
                 isAbstract = isAbstract(node),
-                needsNoImpl = needsNoImpl(node)
+                needsNoImpl = needsNoImpl(node),
+                accessModifier = getAccessModifier(node)
         )
     }
 
     open fun TsClassifierToKt.addFunction(name: String, isOverride: Boolean, needsNoImpl: Boolean, node: MethodDeclaration) {
         val symbol = typeMapper.typeChecker.getSymbolResolvingAliases(node)
         node.toKotlinCallSignatureOverloads(typeMapper).forEach { callSignature ->
-            addFunction(symbol, name, callSignature, isOverride = isOverride, needsNoImpl = needsNoImpl(node), isAbstract = isAbstract(node))
+            addFunction(symbol, name, callSignature, isOverride = isOverride, needsNoImpl = needsNoImpl(node), isAbstract = isAbstract(node), accessModifier = getAccessModifier(node))
         }
 
         assert(node.body == null, "An function in declarations file should not have body, function '${this.name}.$name'")
@@ -123,7 +124,7 @@ abstract class TsClassifierToKt(
 
     override fun visitSignatureDeclaration(node: SignatureDeclaration) {
         node.toKotlinCallSignatureOverloads(typeMapper).forEach { callSignature ->
-            addFunction(null, INVOKE, callSignature, needsNoImpl = false, additionalAnnotations = listOf(NATIVE_INVOKE_ANNOTATION), isOperator = true)
+            addFunction(null, INVOKE, callSignature, needsNoImpl = false, additionalAnnotations = listOf(NATIVE_INVOKE_ANNOTATION), isOperator = true, accessModifier = getAccessModifier(node))
         }
     }
 

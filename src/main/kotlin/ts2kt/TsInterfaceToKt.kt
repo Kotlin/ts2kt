@@ -30,12 +30,13 @@ open class TsInterfaceToKt(
     override fun TsClassifierToKt.addFunction(name: String, isOverride: Boolean, needsNoImpl: Boolean, node: MethodDeclaration) {
         val isOptional = node.questionToken != null
         val symbol = typeMapper.typeChecker.getSymbolResolvingAliases(node)
+        val accessModifier = getAccessModifier(node)
         if (isOptional) {
             val call = node.toKotlinCallSignature(typeMapper)
-            addVariable(symbol, name, type = createFunctionType(call.params, call.returnType.type).copy(isNullable = true), typeParams = call.typeParams, isVar = false, needsNoImpl = true, isOverride = isOverride)
+            addVariable(symbol, name, type = createFunctionType(call.params, call.returnType.type).copy(isNullable = true), typeParams = call.typeParams, isVar = false, needsNoImpl = true, isOverride = isOverride, accessModifier = accessModifier)
         } else {
             node.toKotlinCallSignatureOverloads(typeMapper).forEach { call ->
-                addFunction(symbol, name, call, needsNoImpl = false, isOverride = isOverride)
+                addFunction(symbol, name, call, needsNoImpl = false, isOverride = isOverride, accessModifier = accessModifier)
             }
         }
 
