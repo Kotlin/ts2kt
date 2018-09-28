@@ -15,7 +15,8 @@ class TsClassToKt(
         isOverride: (MethodDeclaration) -> Boolean,
         isOverrideProperty: (PropertyDeclaration) -> Boolean,
         override val hasMembersOpenModifier: Boolean = true,
-        override val needsNoImpl: Boolean = true
+        override val needsNoImpl: Boolean = true,
+        override val isAbstract: Boolean = false
 ) : TsClassifierToKt(typeMapper, isOverride, isOverrideProperty) {
 
     override val isInterface = false

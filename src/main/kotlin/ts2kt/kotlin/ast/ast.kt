@@ -123,7 +123,8 @@ data class KtClassifier(
         val parents: List<KtHeritageType>,
         override var members: List<KtMember>,
         override var annotations: List<KtAnnotation>,
-        val hasOpenModifier: Boolean
+        val hasOpenModifier: Boolean,
+        val isAbstract: Boolean
 ) : KtMember, AbstractKtNode(), KtWithMembers {
     override fun accept(visitor: KtVisitor) {
         visitor.visitClassifier(this)
@@ -159,7 +160,8 @@ data class KtFunction(
         val needsNoImpl: Boolean = true,
         val isOverride: Boolean = false,
         val hasOpenModifier: Boolean = false,
-        val isOperator: Boolean = false
+        val isOperator: Boolean = false,
+        val isAbstract: Boolean = false
 ) : KtMember, KtExtensionAware, AbstractKtNode() {
     override fun accept(visitor: KtVisitor) {
         visitor.visitFunction(this)

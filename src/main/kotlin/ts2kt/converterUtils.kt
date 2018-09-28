@@ -6,7 +6,7 @@ import ts2kt.utils.reportUnsupportedNode
 import typescriptServices.ts.*
 
 fun TsInterfaceToKt.createClassifier() =
-        KtClassifier(KtClassKind.INTERFACE, KtName(name!!), listOf(), typeParams, parents, declarations, annotations, hasOpenModifier = false)
+        KtClassifier(KtClassKind.INTERFACE, KtName(name!!), listOf(), typeParams, parents, declarations, annotations, hasOpenModifier = false, isAbstract = false)
 
 fun TsClassToKt.createClassifier(): KtClassifier? {
     if (name == null) return null
@@ -19,7 +19,7 @@ fun TsClassToKt.createClassifier(): KtClassifier? {
                 }
             } ?: declarations
 
-    return KtClassifier(kind, KtName(name!!), paramsOfConstructors, typeParams, parents, members, annotations, hasOpenModifier = kind === ts2kt.kotlin.ast.KtClassKind.CLASS)
+    return KtClassifier(kind, KtName(name!!), paramsOfConstructors, typeParams, parents, members, annotations, hasOpenModifier = kind === ts2kt.kotlin.ast.KtClassKind.CLASS && !isAbstract, isAbstract = isAbstract)
 }
 
 val JS_MODULE = KtName("JsModule")

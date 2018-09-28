@@ -14,6 +14,8 @@ open class TsInterfaceToKt(
 
     override val hasMembersOpenModifier = false
 
+    override val isAbstract = false
+
     override val needsNoImpl = false
 
     override val isInterface: Boolean = true

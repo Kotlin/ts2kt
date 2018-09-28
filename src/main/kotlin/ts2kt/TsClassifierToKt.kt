@@ -81,7 +81,7 @@ abstract class TsClassifierToKt(
     open fun isNullable(node: PropertyDeclaration): Boolean = false
     open fun isLambda(node: PropertyDeclaration): Boolean = false
 
-    open fun needsNoImpl(node: MethodDeclaration): Boolean = true
+    open fun needsNoImpl(node: MethodDeclaration): Boolean = !isAbstract(node)
 
     override fun visitPropertyDeclaration(node: PropertyDeclaration) {
         val declarationName = node.propertyName!!
@@ -104,7 +104,7 @@ abstract class TsClassifierToKt(
     open fun TsClassifierToKt.addFunction(name: String, isOverride: Boolean, needsNoImpl: Boolean, node: MethodDeclaration) {
         val symbol = typeMapper.typeChecker.getSymbolResolvingAliases(node)
         node.toKotlinCallSignatureOverloads(typeMapper).forEach { callSignature ->
-            addFunction(symbol, name, callSignature, isOverride = isOverride, needsNoImpl = needsNoImpl(node))
+            addFunction(symbol, name, callSignature, isOverride = isOverride, needsNoImpl = needsNoImpl(node), isAbstract = isAbstract(node))
         }
 
         assert(node.body == null, "An function in declarations file should not have body, function '${this.name}.$name'")

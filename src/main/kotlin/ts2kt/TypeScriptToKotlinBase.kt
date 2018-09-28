@@ -2,7 +2,9 @@ package ts2kt
 
 import ts2kt.kotlin.ast.*
 import typescriptServices.ts.ImportEqualsDeclaration
+import typescriptServices.ts.Node
 import typescriptServices.ts.Symbol
+import typescriptServices.ts.SyntaxKind
 
 abstract class TypeScriptToKotlinBase(
         val declarations: MutableList<KtMember>,
@@ -10,6 +12,7 @@ abstract class TypeScriptToKotlinBase(
 ) : Visitor {
     abstract val hasMembersOpenModifier: Boolean
     abstract val isInterface: Boolean
+    abstract val isAbstract: Boolean
 
     open val defaultAnnotations: List<KtAnnotation> = listOf()
 
@@ -18,9 +21,9 @@ abstract class TypeScriptToKotlinBase(
         addDeclaration(symbol, KtVariable(KtName(name), KtTypeAnnotation(type), extendsType?.let { KtHeritageType(it) }, annotations, typeParams, isVar = isVar, needsNoImpl = needsNoImpl, isInInterface = isInterface, isOverride = isOverride, hasOpenModifier = hasMembersOpenModifier))
     }
 
-    open fun addFunction(symbol: Symbol?, name: String, callSignature: KtCallSignature, extendsType: KtType? = null, needsNoImpl: Boolean = true, additionalAnnotations: List<KtAnnotation> = listOf(), isOverride: Boolean = false, isOperator: Boolean = false) {
+    open fun addFunction(symbol: Symbol?, name: String, callSignature: KtCallSignature, extendsType: KtType? = null, needsNoImpl: Boolean = true, additionalAnnotations: List<KtAnnotation> = listOf(), isOverride: Boolean = false, isOperator: Boolean = false, isAbstract: Boolean = false) {
         val annotations = defaultAnnotations + additionalAnnotations
-        addDeclaration(symbol, KtFunction(KtName(name), callSignature, extendsType?.let { KtHeritageType(it) }, annotations, needsNoImpl = needsNoImpl, isOverride = isOverride, hasOpenModifier = hasMembersOpenModifier, isOperator = isOperator))
+        addDeclaration(symbol, KtFunction(KtName(name), callSignature, extendsType?.let { KtHeritageType(it) }, annotations, needsNoImpl = needsNoImpl, isOverride = isOverride, hasOpenModifier = hasMembersOpenModifier && !isAbstract, isOperator = isOperator, isAbstract = isAbstract))
     }
 
     protected fun addDeclaration(symbol: Symbol?, declaration: KtMember) {
@@ -29,6 +32,10 @@ abstract class TypeScriptToKotlinBase(
             val values = declarationsBySymbol.getOrPut(symbol) { mutableListOf() }
             values += declaration
         }
+    }
+
+    fun isAbstract(node: Node): Boolean {
+        return node.modifiers?.arr?.any { it.kind == SyntaxKind.AbstractKeyword } == true
     }
 
     // TODO
