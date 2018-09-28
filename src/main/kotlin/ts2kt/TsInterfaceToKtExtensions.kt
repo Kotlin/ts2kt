@@ -57,13 +57,13 @@ class TsInterfaceToKtExtensions(
         super.translateGetterAndSetter(node, extendsType = cachedExtendsType)
     }
 
-    override fun addVariable(symbol: Symbol?, name: String, type: KtType, extendsType: KtType?, typeParams: List<KtTypeParam>?, isVar: Boolean, needsNoImpl: Boolean, additionalAnnotations: List<KtAnnotation>, isOverride: Boolean) {
+    override fun addVariable(symbol: Symbol?, name: String, type: KtType, extendsType: KtType?, typeParams: List<KtTypeParam>?, isVar: Boolean, isAbstract: Boolean, needsNoImpl: Boolean, additionalAnnotations: List<KtAnnotation>, isOverride: Boolean) {
         val typeParamsWithoutClashes = this.typeParams.fixIfClashWith(typeParams)
         val actualExtendsType = if (typeParamsWithoutClashes === this.typeParams) cachedExtendsType else getExtendsType(typeParamsWithoutClashes)
         val annotations = additionalAnnotations.withNativeAnnotation()
 
         super.addVariable(symbol, name, type, actualExtendsType, typeParamsWithoutClashes merge typeParams, isVar,
-                needsNoImpl = true, additionalAnnotations = annotations, isOverride = isOverride)
+                needsNoImpl = !isAbstract, additionalAnnotations = annotations, isOverride = isOverride, isAbstract = isAbstract)
     }
 
     override fun addFunction(symbol: Symbol?, name: String, callSignature: KtCallSignature, extendsType: KtType?, needsNoImpl: Boolean, additionalAnnotations: List<KtAnnotation>, isOverride: Boolean, isOperator: Boolean, isAbstract: Boolean) {

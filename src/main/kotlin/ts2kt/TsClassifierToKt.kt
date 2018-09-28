@@ -77,7 +77,7 @@ abstract class TsClassifierToKt(
         return this
     }
 
-    open fun needsNoImpl(node: PropertyDeclaration): Boolean = true
+    open fun needsNoImpl(node: PropertyDeclaration): Boolean = !isAbstract(node)
     open fun isNullable(node: PropertyDeclaration): Boolean = false
     open fun isLambda(node: PropertyDeclaration): Boolean = false
 
@@ -97,6 +97,8 @@ abstract class TsClassifierToKt(
                 name,
                 type = varType.copy(isNullable = varType.isNullable || isNullable(node)),
                 isOverride = isOverride,
+                isVar = !isReadonly(node),
+                isAbstract = isAbstract(node),
                 needsNoImpl = needsNoImpl(node)
         )
     }

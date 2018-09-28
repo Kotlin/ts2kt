@@ -16,9 +16,9 @@ abstract class TypeScriptToKotlinBase(
 
     open val defaultAnnotations: List<KtAnnotation> = listOf()
 
-    open fun addVariable(symbol: Symbol?, name: String, type: KtType, extendsType: KtType? = null, typeParams: List<KtTypeParam>? = null, isVar: Boolean = true, needsNoImpl: Boolean = true, additionalAnnotations: List<KtAnnotation> = listOf(), isOverride: Boolean = false) {
+    open fun addVariable(symbol: Symbol?, name: String, type: KtType, extendsType: KtType? = null, typeParams: List<KtTypeParam>? = null, isVar: Boolean = true, isAbstract: Boolean = false, needsNoImpl: Boolean = !isAbstract, additionalAnnotations: List<KtAnnotation> = listOf(), isOverride: Boolean = false) {
         val annotations = defaultAnnotations + additionalAnnotations
-        addDeclaration(symbol, KtVariable(KtName(name), KtTypeAnnotation(type), extendsType?.let { KtHeritageType(it) }, annotations, typeParams, isVar = isVar, needsNoImpl = needsNoImpl, isInInterface = isInterface, isOverride = isOverride, hasOpenModifier = hasMembersOpenModifier))
+        addDeclaration(symbol, KtVariable(KtName(name), KtTypeAnnotation(type), extendsType?.let { KtHeritageType(it) }, annotations, typeParams, isVar = isVar, needsNoImpl = needsNoImpl, isInInterface = isInterface, isOverride = isOverride, hasOpenModifier = hasMembersOpenModifier && !isAbstract, isAbstract = isAbstract))
     }
 
     open fun addFunction(symbol: Symbol?, name: String, callSignature: KtCallSignature, extendsType: KtType? = null, needsNoImpl: Boolean = true, additionalAnnotations: List<KtAnnotation> = listOf(), isOverride: Boolean = false, isOperator: Boolean = false, isAbstract: Boolean = false) {
@@ -36,6 +36,10 @@ abstract class TypeScriptToKotlinBase(
 
     fun isAbstract(node: Node): Boolean {
         return node.modifiers?.arr?.any { it.kind == SyntaxKind.AbstractKeyword } == true
+    }
+
+    fun isReadonly(node: Node): Boolean {
+        return node.modifiers?.arr?.any { it.kind == SyntaxKind.ReadonlyKeyword } == true
     }
 
     // TODO

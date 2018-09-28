@@ -175,7 +175,8 @@ data class KtVariable(
         override var annotations: List<KtAnnotation>,
         val typeParams: List<KtTypeParam>?,
         var isVar: Boolean,
-        val needsNoImpl: Boolean = true,
+        val isAbstract: Boolean = false,
+        val needsNoImpl: Boolean = !isAbstract,
         val isInInterface: Boolean,
         val isOverride: Boolean = false,
         val hasOpenModifier: Boolean

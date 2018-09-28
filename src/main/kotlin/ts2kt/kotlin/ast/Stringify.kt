@@ -202,6 +202,10 @@ class Stringify(
 
             out.printIndent()
 
+            if (isAbstract) {
+                out.print("$ABSTRACT ")
+            }
+
             if (variable.extendsType == null) {
                 // TODO remove hack
                 printExternalIfNeed()
