@@ -25,6 +25,7 @@ import typescriptServices.ts.*
 val ANY = KtQualifiedName("Any")
 val NOTHING = KtQualifiedName("Nothing")
 val NUMBER = KtQualifiedName("Number")
+val INT = KtQualifiedName("Int")
 val STRING = KtQualifiedName("String")
 val BOOLEAN = KtQualifiedName("Boolean")
 val UNIT = KtQualifiedName("Unit")
