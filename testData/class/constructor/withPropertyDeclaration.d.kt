@@ -1,4 +1,9 @@
 package withPropertyDeclaration
 
-external open class Foo(open var x: Any)
-external open class Bar(open var n: Number, open var a: Any)
+external open class Foo(x: Any) {
+    open var x: Any = definedExternally
+}
+external open class Bar(n: Number, a: Any) {
+    open var n: Number = definedExternally
+    open var a: Any = definedExternally
+}
