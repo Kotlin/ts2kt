@@ -21,11 +21,15 @@ abstract class TsClassifierToKt(
     }
 
     override fun visitIndexSignature(node: IndexSignatureDeclaration) {
-        translateAccessor(node, isGetter = true)
-        translateAccessor(node, isGetter = false)
+        translateGetterAndSetter(node, extendsType = null)
     }
 
-    private fun translateAccessor(node: IndexSignatureDeclaration, isGetter: Boolean) {
+    protected fun translateGetterAndSetter(node: IndexSignatureDeclaration, extendsType: KtType?) {
+        translateAccessor(node, isGetter = true, extendsType = extendsType)
+        translateAccessor(node, isGetter = false, extendsType = extendsType)
+    }
+
+    private fun translateAccessor(node: IndexSignatureDeclaration, isGetter: Boolean, extendsType: KtType?) {
         // TODO type params?
         node.parameters.toKotlinParamsOverloads(typeMapper).forEach { params ->
             val propTypeUnion = if (isGetter) {
@@ -36,20 +40,20 @@ abstract class TsClassifierToKt(
             propTypeUnion.possibleTypes.forEach { propType ->
                 val callSignature: KtCallSignature
                 val accessorName: String
-                val annotation: KtAnnotation
+                val annotation: KtAnnotation?
                 if (isGetter) {
                     // per Kotlin, all @nativeGetter's must be nullable
                     callSignature = KtCallSignature(params, listOf(), KtTypeAnnotation(propType.copy(isNullable = true)))
                     accessorName = GET
-                    annotation = NATIVE_GETTER_ANNOTATION
+                    annotation = if (extendsType == null) NATIVE_GETTER_ANNOTATION else null
                 }
                 else {
                     callSignature = KtCallSignature(listOf(params[0], KtFunParam(KtName("value"), KtTypeAnnotation(propType))), listOf(), KtTypeAnnotation(KtType(UNIT)))
                     accessorName = SET
-                    annotation = NATIVE_SETTER_ANNOTATION
+                    annotation = if (extendsType == null) NATIVE_SETTER_ANNOTATION else null
                 }
 
-                addFunction(null, accessorName, callSignature, needsNoImpl = needsNoImpl, additionalAnnotations = listOf(annotation), isOperator = true)
+                addFunction(null, accessorName, callSignature, needsNoImpl = needsNoImpl, additionalAnnotations = listOf(annotation).filterNotNull(), isOperator = true)
             }
         }
     }
