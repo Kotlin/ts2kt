@@ -2,10 +2,7 @@ package converter
 
 import ts2kt.JS_MODULE
 import ts2kt.JS_QUALIFIER
-import ts2kt.kotlin.ast.KtAnnotation
-import ts2kt.kotlin.ast.KtArgument
-import ts2kt.kotlin.ast.KtMember
-import ts2kt.kotlin.ast.KtPackagePart
+import ts2kt.kotlin.ast.*
 import ts2kt.moduleAnnotation
 import typescriptServices.ts.Symbol
 
@@ -24,7 +21,7 @@ class KtPackagePartBuilder(
     fun build(): KtPackagePart {
         val allAnnotations = annotations.toMutableList()
 
-        if (members.none { it.annotations.any { it.name == JS_MODULE } }) {
+        if (members.none { it.annotations.any { it.name == JS_MODULE } } && members.all { it !is KtExtensionAware || it.extendsType == null }) {
             getEnclosingModule()?.let {
                 allAnnotations += moduleAnnotation(it)
             }

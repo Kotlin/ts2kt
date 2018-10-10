@@ -1,4 +1,3 @@
-@file:JsQualifier("Q")
 package withGenericParams.Q
 
 inline fun <T, B> Promise<T>.foo(b: B): T { return this.asDynamic().foo(b) }
