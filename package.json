@@ -1,10 +1,16 @@
 {
   "name": "ts2kt",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Converter of TypeScript definition files to Kotlin declarations",
   "author": "JetBrains s.r.o.",
   "homepage": "https://github.com/Kotlin/ts2kt",
   "license": "Apache-2.0",
+  "files": [
+    "build/distrib/**/*.js"
+  ],
+  "scripts": {
+    "prepublish": "gradle clean build"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://git@github.com/Kotlin/ts2kt.git"
@@ -23,13 +29,11 @@
     "node": ">=4.0.0"
   },
   "dependencies": {
+    "kotlin": "^1.3.0",
     "typescript": "2.6.2"
   },
-  "devDependencies": {
-    "nodeunit": "^0.11.3"
-  },
-  "main": "ts2kt.js",
+  "main": "./build/distrib/ts2kt.js",
   "bin": {
-    "ts2kt": "ts2kt.js"
+    "ts2kt": "./build/distrib/ts2kt.js"
   }
 }

@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-var WORKING_DIR = "../out/production/ts2kt/";
-var ts2kt = require(WORKING_DIR + "ts2kt").ts2kt;
+var ts2kt = require('ts2kt').ts2kt;
 var fs = require('fs');
-var assert = require('assert');
+var assert = require('chai').assert;
 
 var TS_EXT = ".ts";
 var KT_EXT = ".kt";
@@ -104,9 +103,9 @@ function collectTestFilesRec(dir, tests, testDataExpectedDir, testConfig, testDa
     }
 
     if (depth === 0) {
-        tests["printReport"] = function (test) {
+        tests["printReport"] = function (done) {
             ts2kt.utils.reportUnsupportedKinds();
-            test.done();
+            done();
         }
     }
 }
@@ -143,17 +142,14 @@ function generateTestFor(srcPath, expectedPath, testConfig) {
         return
     }
 
-    return function(test) {
+    return function(done) {
         var outPath = expectedPath + ".out";
 
         createDirsIfNeed(outPath);
 
-        console.log("\n--------\nsrcPath = " + srcPath +
-                    ", outPath = " + outPath +
-                    ", expectedPath = " + expectedPath +
-                    ", testConfig = " + testConfig.verified + testConfig.other + "\n");
+        console.log(`srcPath = ${srcPath}, outPath = ${outPath}, expectedPath = ${expectedPath}, testConfig = ${testConfig.verified + testConfig.other}`)
 
-        ts2kt.translateToFile_puj7f4$(srcPath, outPath);
+        ts2kt.translateToFile(srcPath, outPath);
 
         var actual = fs.readFileSync(outPath, {encoding: "utf8"});
 
@@ -173,7 +169,7 @@ function generateTestFor(srcPath, expectedPath, testConfig) {
             }
         }
 
-        test.done();
+        done();
     }
 }
 

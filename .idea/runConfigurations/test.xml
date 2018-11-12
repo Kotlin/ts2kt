@@ -1,0 +1,15 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="test" type="mocha-javascript-test-runner" factoryName="Mocha">
+    <node-interpreter>project</node-interpreter>
+    <node-options />
+    <working-directory>$PROJECT_DIR$</working-directory>
+    <pass-parent-env>true</pass-parent-env>
+    <ui>bdd</ui>
+    <extra-mocha-options>--grep &quot;short:&quot;</extra-mocha-options>
+    <test-kind>TEST_FILE</test-kind>
+    <test-file>$PROJECT_DIR$/build/test/test_runner.js</test-file>
+    <method v="2">
+      <option name="RunConfigurationTask" enabled="true" run_configuration_name="gradle tests" run_configuration_type="GradleRunConfiguration" />
+    </method>
+  </configuration>
+</component>
