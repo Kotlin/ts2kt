@@ -142,7 +142,7 @@ function generateTestFor(srcPath, expectedPath, testConfig) {
         return
     }
 
-    return function(done) {
+    return function() {
         var outPath = expectedPath + ".out";
 
         createDirsIfNeed(outPath);
@@ -169,7 +169,6 @@ function generateTestFor(srcPath, expectedPath, testConfig) {
             }
         }
 
-        done();
     }
 }
 
