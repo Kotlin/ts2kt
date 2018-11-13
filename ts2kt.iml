@@ -8,7 +8,6 @@
         </compilerSettings>
         <compilerArguments>
           <option name="sourceMap" value="true" />
-          <option name="sourceMapPrefix" value="" />
           <option name="sourceMapEmbedSources" value="inlining" />
           <option name="moduleKind" value="commonjs" />
           <option name="outputPrefix" value="$MODULE_DIR$/shebang.txt" />

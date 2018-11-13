@@ -30,6 +30,7 @@ private val KOTLIN_FILE_EXT = ".kt"
 
 // Used from tests
 @Suppress("unused")
+@JsName("translateToFile")
 fun translateToFile(srcPath: String, outPath: String) {
     val srcName = path.basename(srcPath, TYPESCRIPT_DEFINITION_FILE_EXT)
     val packageParts = translate(srcPath, srcName)
@@ -157,7 +158,7 @@ fun parseArguments(): CliArguments? {
 
     fun printVersion() {
         val version = try {
-            js("require('./package.json')").version
+            js("require('../../package.json')").version
         }
         catch (e: Throwable) {
             "<unknown>"

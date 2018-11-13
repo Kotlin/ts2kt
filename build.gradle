@@ -1,0 +1,95 @@
+plugins {
+  id("kotlin2js")
+  id "com.moowork.node" version "1.2.0"
+}
+
+repositories {
+  mavenCentral()
+  jcenter()
+}
+
+dependencies {
+  implementation("org.jetbrains.kotlin:kotlin-stdlib-js:$gradle.kotlinVersion")
+}
+
+def testDistribPath = "${project.buildDir}/test"
+def distribPath = "${project.buildDir}/distrib"
+def testNodeModulesPath = "${testDistribPath}/node_modules"
+
+node {
+  download = true
+  version = '11.1.0'
+}
+
+task addTestPackageJson(type: Copy) {
+  from "${projectDir}/test/config/package.test.json"
+  into testDistribPath
+  rename "package.test.json", "package.json"
+}
+
+task installTestNpmDependencies(type: NpmTask) {
+  dependsOn = [
+      nodeSetup,
+      addTestPackageJson,
+  ]
+  args = ['install', '--prefix', testDistribPath]
+}
+
+compileKotlin2Js {
+  kotlinOptions {
+    outputFile = "${distribPath}/ts2kt.js"
+    sourceMap = true
+    freeCompilerArgs += ["-output-prefix", "${projectDir}/shebang.txt"]
+
+    moduleKind = 'commonjs'
+  }
+}
+
+task fetchBuildableDependencies(type: Copy) {
+  from "${distribPath}/ts2kt.js"
+  into testNodeModulesPath
+}
+
+task copyTestFiles(type: Copy) {
+  from "${projectDir}/test"
+  into testDistribPath
+
+  include "**/*.js"
+}
+
+task prepareTestDistrib {
+  dependsOn = [
+      copyTestFiles,
+      fetchBuildableDependencies,
+      installTestNpmDependencies,
+  ]
+}
+
+task runTests(type: NodeTask) {
+  dependsOn = [prepareTestDistrib]
+  script = file("${testDistribPath}/node_modules/mocha/bin/mocha")
+
+  def reporter = project.findProperty('reporter') ?: 'mocha-simple-html-reporter'
+  args = [
+      "--reporter", reporter
+  ]
+
+  if (reporter == 'mocha-simple-html-reporter') {
+    args += ["--reporter-options", "output=${project.buildDir}/report.html"]
+  }
+
+
+  def testsGrep = project.findProperty('testsGrep') ?: 'short:'
+  if (testsGrep != "ALL") {
+    args += ["--grep", testsGrep]
+  }
+
+  args += [
+      "${testDistribPath}/test_runner.js"
+  ]
+}
+
+fetchBuildableDependencies.dependsOn = [compileKotlin2Js]
+test.dependsOn = [
+    runTests
+]

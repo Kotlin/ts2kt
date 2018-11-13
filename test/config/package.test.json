@@ -1,0 +1,16 @@
+{
+  "name": "ts2kt-test",
+  "version": "0.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=4.0.0"
+  },
+  "dependencies": {
+    "kotlin": "1.3.0",
+
+    "chai": "4.2.0",
+    "mocha": "5.2.0",
+    "mocha-simple-html-reporter": "1.1.0",
+    "mocha-teamcity-reporter": "2.5.1"
+  }
+}
