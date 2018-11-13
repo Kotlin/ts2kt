@@ -39,7 +39,6 @@ compileKotlin2Js {
   kotlinOptions {
     outputFile = "${distribPath}/ts2kt.js"
     sourceMap = true
-    suppressWarnings = true
     freeCompilerArgs += ["-output-prefix", "${projectDir}/shebang.txt"]
 
     moduleKind = 'commonjs'
