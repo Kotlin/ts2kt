@@ -42,7 +42,6 @@ compileKotlin2Js {
     freeCompilerArgs += ["-output-prefix", "${projectDir}/shebang.txt"]
 
     moduleKind = 'commonjs'
-    metaInfo = true
   }
 }
 
