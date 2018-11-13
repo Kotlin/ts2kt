@@ -29,6 +29,7 @@ task addTestPackageJson(type: Copy) {
 
 task installTestNpmDependencies(type: NpmTask) {
   dependsOn = [
+      nodeSetup,
       addTestPackageJson,
   ]
   args = ['install', '--prefix', testDistribPath]
