@@ -71,9 +71,13 @@ task runTests(type: NodeTask) {
 
   def reporter = project.findProperty('reporter') ?: 'mocha-simple-html-reporter'
   args = [
-      "--reporter", reporter,
-      "--reporter-options", "output=${project.buildDir}/report.html"
+      "--reporter", reporter
   ]
+
+  if (reporter == 'mocha-simple-html-reporter') {
+    args += ["--reporter-options", "output=${project.buildDir}/report.html"]
+  }
+
 
   def testsGrep = project.findProperty('testsGrep') ?: 'short:'
   if (testsGrep != "ALL") {
