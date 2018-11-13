@@ -10,6 +10,7 @@ repositories {
 
 dependencies {
   implementation("org.jetbrains.kotlin:kotlin-stdlib-js:$gradle.kotlinVersion")
+  implementation(project(":typescript"))
 }
 
 def testDistribPath = "${project.buildDir}/test"
@@ -93,3 +94,30 @@ fetchBuildableDependencies.dependsOn = [compileKotlin2Js]
 test.dependsOn = [
     runTests
 ]
+
+
+subprojects {
+
+  afterEvaluate { project ->
+
+    if (project.plugins.hasPlugin("kotlin2js")) {
+      sourceSets {
+        main.kotlin.srcDirs = ['src']
+      }
+
+      compileKotlin2Js {
+        kotlinOptions.outputFile = "${project.buildDir}/js/${project.name}.js"
+        kotlinOptions.moduleKind = 'commonjs'
+      }
+
+      dependencies {
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-js:$gradle.kotlinVersion")
+      }
+    }
+  }
+
+  repositories {
+    mavenCentral()
+    jcenter()
+  }
+}
