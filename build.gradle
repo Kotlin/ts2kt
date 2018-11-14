@@ -22,9 +22,8 @@ node {
 }
 
 task addTestPackageJson(type: Copy) {
-  from "${projectDir}/test/config/package.test.json"
+  from "${projectDir}/package.json"
   into testDistribPath
-  rename "package.test.json", "package.json"
 }
 
 task installTestNpmDependencies(type: NpmTask) {

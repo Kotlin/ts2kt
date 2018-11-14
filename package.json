@@ -8,9 +8,6 @@
   "files": [
     "build/distrib/**/*.js"
   ],
-  "scripts": {
-    "prepublish": "gradle clean build"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://git@github.com/Kotlin/ts2kt.git"
@@ -31,6 +28,12 @@
   "dependencies": {
     "kotlin": "^1.3.0",
     "typescript": "2.6.2"
+  },
+  "devDependencies": {
+    "chai": "4.2.0",
+    "mocha": "5.2.0",
+    "mocha-simple-html-reporter": "1.1.0",
+    "mocha-teamcity-reporter": "2.5.1"
   },
   "main": "./build/distrib/ts2kt.js",
   "bin": {
