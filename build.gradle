@@ -44,6 +44,8 @@ compileKotlin2Js {
   }
 }
 
+compileKotlin2Js.finalizedBy = ['prepareNpmPackage']
+
 task fetchBuildableDependencies(type: Copy) {
   from "${distribPath}/ts2kt.js"
   into testNodeModulesPath
@@ -88,7 +90,34 @@ task runTests(type: NodeTask) {
   ]
 }
 
+task prepareNpmPackage(type: Copy) {
+  from "package.json", "LICENSE", "npm.template/README.md"
+  into distribPath
+}
+
+task npmVersion(type: NpmTask) {
+  dependsOn = ['prepareNpmPackage']
+
+  def npmVersion = System.getProperty('NPM_VERSION')
+
+  onlyIf {
+    npmVersion
+  }
+
+  args = ["version", '--prefix', distribPath, npmVersion]
+}
+
+task npmPublish(type: NpmTask) {
+  dependsOn = [npmVersion]
+
+  def token = System.getProperty("kotlin.npmjs.auth.token")
+  def registry = "http://registry.npmjs.org/:_authToken=${token}"
+
+  args = ["publish", distribPath, "--registry", "${registry}"]
+}
+
 fetchBuildableDependencies.dependsOn = [compileKotlin2Js]
 test.dependsOn = [
     runTests
 ]
+
