@@ -38,6 +38,7 @@ compileKotlin2Js {
   kotlinOptions {
     outputFile = "${distribPath}/ts2kt.js"
     sourceMap = true
+    metaInfo = false
     freeCompilerArgs += ["-output-prefix", "${projectDir}/shebang.txt"]
 
     moduleKind = 'commonjs'
@@ -88,7 +89,34 @@ task runTests(type: NodeTask) {
   ]
 }
 
+task prepareNpmPackage(type: Copy) {
+  from "package.json", "LICENSE", "npm.template/README.md"
+  into distribPath
+}
+
+task npmVersion(type: NpmTask) {
+  dependsOn = ['prepareNpmPackage']
+
+  def npmVersion = System.getProperty('kotlin.npmjs.ts2kt.version')
+
+  onlyIf {
+    npmVersion
+  }
+
+  args = ["version", '--prefix', distribPath, npmVersion]
+}
+
+task npmPublish(type: NpmTask) {
+  dependsOn = [npmVersion]
+
+  def token = System.getProperty("kotlin.npmjs.auth.token")
+  def registry = "http://registry.npmjs.org/:_authToken=${token}"
+
+  args = ["publish", distribPath, "--registry", "${registry}"]
+}
+
 fetchBuildableDependencies.dependsOn = [compileKotlin2Js]
 test.dependsOn = [
     runTests
 ]
+

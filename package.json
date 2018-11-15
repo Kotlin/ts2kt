@@ -6,7 +6,7 @@
   "homepage": "https://github.com/Kotlin/ts2kt",
   "license": "Apache-2.0",
   "files": [
-    "build/distrib/**/*.js"
+    "*.js"
   ],
   "repository": {
     "type": "git",
@@ -35,8 +35,8 @@
     "mocha-simple-html-reporter": "1.1.0",
     "mocha-teamcity-reporter": "2.5.1"
   },
-  "main": "./build/distrib/ts2kt.js",
+  "main": "./ts2kt.js",
   "bin": {
-    "ts2kt": "./build/distrib/ts2kt.js"
+    "ts2kt": "./ts2kt.js"
   }
 }
