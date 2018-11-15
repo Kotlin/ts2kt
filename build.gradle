@@ -38,13 +38,12 @@ compileKotlin2Js {
   kotlinOptions {
     outputFile = "${distribPath}/ts2kt.js"
     sourceMap = true
+    metaInfo = false
     freeCompilerArgs += ["-output-prefix", "${projectDir}/shebang.txt"]
 
     moduleKind = 'commonjs'
   }
 }
-
-compileKotlin2Js.finalizedBy = ['prepareNpmPackage']
 
 task fetchBuildableDependencies(type: Copy) {
   from "${distribPath}/ts2kt.js"
@@ -98,7 +97,7 @@ task prepareNpmPackage(type: Copy) {
 task npmVersion(type: NpmTask) {
   dependsOn = ['prepareNpmPackage']
 
-  def npmVersion = System.getProperty('NPM_VERSION')
+  def npmVersion = System.getProperty('kotlin.npmjs.ts2kt.version')
 
   onlyIf {
     npmVersion
