@@ -34,7 +34,15 @@ class TsClassToKt(
 
     override fun visitConstructorDeclaration(node: ConstructorDeclaration) {
         val paramsOverloads = node.parameters.toKotlinParamsOverloads(typeMapper)
-        paramsOfConstructors.addAll(paramsOverloads)
+        val nonVarParamOverloads = paramsOverloads.map { params ->
+            params.map { param ->
+                if (param.isVar) {
+                    addVariable(null, param.name.value, param.type.type, isVar = param.isVar)
+                }
+                param.copy(isVar = false)
+            }
+        }
+        paramsOfConstructors.addAll(nonVarParamOverloads)
 
         assert(node.body == null, "A constructor in declarations file should not have body, constructor in '${this.name}")
     }
