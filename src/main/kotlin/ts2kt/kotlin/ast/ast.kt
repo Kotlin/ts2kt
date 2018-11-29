@@ -90,6 +90,10 @@ interface KtAnnotated {
 
 interface KtMember : KtNode, KtNamed, KtAnnotated
 
+interface KtExtensionAware : KtMember {
+    val extendsType: KtHeritageType?
+}
+
 // TODO should be Named?
 data class KtArgument(val value: Any/* TODO Any ??? */, val name: KtName? = null) : AbstractKtNode() {
     override fun accept(visitor: KtVisitor) {
@@ -150,13 +154,13 @@ data class KtCallSignature(
 data class KtFunction(
         override var name: KtName,
         val callSignature: KtCallSignature,
-        val extendsType: KtHeritageType? = null,
+        override val extendsType: KtHeritageType? = null,
         override var annotations: List<KtAnnotation> = emptyList(),
         val needsNoImpl: Boolean = true,
         val isOverride: Boolean = false,
         val hasOpenModifier: Boolean = false,
         val isOperator: Boolean = false
-) : KtMember, AbstractKtNode() {
+) : KtMember, KtExtensionAware, AbstractKtNode() {
     override fun accept(visitor: KtVisitor) {
         visitor.visitFunction(this)
     }
@@ -165,7 +169,7 @@ data class KtFunction(
 data class KtVariable(
         override var name: KtName,
         var type: KtTypeAnnotation,
-        val extendsType: KtHeritageType? = null,
+        override val extendsType: KtHeritageType? = null,
         override var annotations: List<KtAnnotation>,
         val typeParams: List<KtTypeParam>?,
         var isVar: Boolean,
@@ -173,7 +177,7 @@ data class KtVariable(
         val isInInterface: Boolean,
         val isOverride: Boolean = false,
         val hasOpenModifier: Boolean
-) : KtMember, AbstractKtNode() {
+) : KtMember, KtExtensionAware, AbstractKtNode() {
     override fun accept(visitor: KtVisitor) {
         visitor.visitVariable(this)
     }

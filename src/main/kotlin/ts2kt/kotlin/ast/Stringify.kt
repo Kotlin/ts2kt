@@ -2,6 +2,8 @@ package ts2kt.kotlin.ast
 
 import ts2kt.DYNAMIC
 import ts2kt.NATIVE_ANNOTATION
+import ts2kt.NATIVE_INVOKE_ANNOTATION
+import ts2kt.UNIT
 import ts2kt.escapeIfNeed
 import ts2kt.sanitize
 
@@ -11,6 +13,7 @@ private val EQ_NO_IMPL = " = $NO_IMPL"
 private val NO_IMPL_PROPERTY_GETTER = " get()" + EQ_NO_IMPL
 private val NO_IMPL_PROPERTY_SETTER = " set(value)" + EQ_NO_IMPL
 private val EXTERNAL = "external"
+private val INLINE = "inline"
 private val OPEN = "open"
 private val OVERRIDE = "override"
 private val OPERATOR = "operator"
@@ -130,18 +133,24 @@ class Stringify(
 
     override fun visitFunction(function: KtFunction) {
         with(function) {
-            annotations.acceptForEach(this@Stringify)
+            annotations.filter { function.extendsType == null || it != NATIVE_INVOKE_ANNOTATION }.acceptForEach(this@Stringify)
 
             out.printIndent()
 
-            // TODO remove hack
-            printExternalIfNeed()
+            if (function.extendsType == null) {
+                // TODO remove hack
+                printExternalIfNeed()
+            }
 
             if (isOverride) {
                 out.print(OVERRIDE + " ")
             }
             else if (hasOpenModifier) {
                 out.print(OPEN + " ")
+            }
+
+            if (function.extendsType != null) {
+                out.print(INLINE + " ")
             }
 
             if (isOperator) {
@@ -159,9 +168,19 @@ class Stringify(
 
             out.print(name.asString())
 
-            callSignature.printToOut(withTypeParams = false, printUnitReturnType = needsNoImpl, printDefaultValues = !isOverride)
+            callSignature.printToOut(withTypeParams = false, printUnitReturnType = needsNoImpl, printDefaultValues = !isOverride, noImpl = extendsType == null)
 
-            if (needsNoImpl) {
+            if (function.extendsType != null) {
+                out.print(" { " )
+                if (function.callSignature.returnType.type.qualifiedName != UNIT) {
+                    out.print("return ")
+                }
+                out.print("this.asDynamic().")
+                out.print(name.asString())
+                out.print("(")
+                out.print(callSignature.params.map { it.name.asString() }.joinToString(", "))
+                out.print(") }")
+            } else if (needsNoImpl) {
                 out.print(EQ_NO_IMPL)
             }
         }
@@ -174,14 +193,20 @@ class Stringify(
 
             out.printIndent()
 
-            // TODO remove hack
-            printExternalIfNeed()
+            if (variable.extendsType == null) {
+                // TODO remove hack
+                printExternalIfNeed()
+            }
 
             // TODO extract common logic between Variable and Function
             if (isOverride) {
                 out.print(OVERRIDE + " ")
             } else if (hasOpenModifier) {
                 out.print(OPEN + " ")
+            }
+
+            if (variable.extendsType != null) {
+                out.print(INLINE + " ")
             }
 
             out.print((if (isVar) VAR else VAL) + " ")
@@ -197,7 +222,15 @@ class Stringify(
 
             type.printToOut(printUnitType = !needsNoImpl)
 
-            if (needsNoImpl) {
+            if (variable.extendsType != null) {
+                out.print(" get() = this.asDynamic().")
+                out.print(name.asString())
+                if (isVar) {
+                    out.print("; set(value) { this.asDynamic().")
+                    out.print(name.asString())
+                    out.print(" = value }")
+                }
+            } else if (needsNoImpl) {
                 if (isInInterface) {
                     out.print(NO_IMPL_PROPERTY_GETTER)
                     if (isVar) {
@@ -256,7 +289,7 @@ class Stringify(
         packagePart.members.filter(isNotAnnotatedAsFake).acceptForEach(this)
     }
 
-    fun KtFunParam.printToOut(printDefaultValue: Boolean) {
+    fun KtFunParam.printToOut(printDefaultValue: Boolean, noImpl: Boolean = true) {
         if (isVar) {
             out.print("$OPEN $VAR ")
         }
@@ -269,7 +302,11 @@ class Stringify(
         type.printToOut(printUnitType = true)
 
         if (defaultValue != null && printDefaultValue) {
-            out.print(" = $NO_IMPL /* $defaultValue */")
+            if (noImpl) {
+                out.print(" = $NO_IMPL /* $defaultValue */")
+            } else {
+                out.print(" = $defaultValue")
+            }
         }
     }
 
@@ -278,7 +315,7 @@ class Stringify(
     }
 
     override fun visitCallSignature(signature: KtCallSignature) {
-        signature.printToOut(withTypeParams = true, printUnitReturnType = true, printDefaultValues = true)
+        signature.printToOut(withTypeParams = true, printUnitReturnType = true, printDefaultValues = true, noImpl = true)
     }
 
     fun KtCallSignature.printTypeParams(withSpaceAfter: Boolean) {
@@ -289,7 +326,7 @@ class Stringify(
                 endWithIfNotEmpty = ">" + if (withSpaceAfter) " " else "")
     }
 
-    fun KtCallSignature.printToOut(withTypeParams: Boolean, printUnitReturnType: Boolean, printDefaultValues: Boolean) {
+    fun KtCallSignature.printToOut(withTypeParams: Boolean, printUnitReturnType: Boolean, printDefaultValues: Boolean, noImpl: Boolean) {
         if (withTypeParams) {
             printTypeParams(withSpaceAfter = false)
         }
@@ -297,7 +334,7 @@ class Stringify(
         out.print("(")
         params.forEachIndexed { index, funParam ->
             if (index > 0) out.print(", ")
-            funParam.printToOut(printDefaultValues)
+            funParam.printToOut(printDefaultValues, noImpl)
         }
         out.print(")")
 
