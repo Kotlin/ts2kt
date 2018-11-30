@@ -24,6 +24,7 @@ interface ObjectTypeToKotlinTypeMapper {
     fun getKotlinTypeForObjectType(objectType: TypeLiteralNode): KtType
     fun withTypeParameters(typeParameters: NodeArray<TypeParameterDeclaration>?): ObjectTypeToKotlinTypeMapper
     val currentPackage: String
+    val enclosingDeclaration: Node?
     val typeChecker: TypeChecker
     // TODO: support recursive type aliases, see recursiveType.d.ts
     val typesInMappingProcess: MutableSet<Type>
@@ -34,6 +35,7 @@ data class ObjectTypeToKotlinTypeMapperImpl(
         val defaultAnnotations: List<KtAnnotation>,
         val declarations: MutableList<KtMember>,
         override val currentPackage: String,
+        override val enclosingDeclaration: Node? = null,
         val typeParameterDeclarations: List<TypeParameterDeclaration> = listOf(),
         val cache: MutableMap<String, KtType> = hashMapOf()
 ) : ObjectTypeToKotlinTypeMapper {
