@@ -17,7 +17,7 @@
 package ts2kt
 
 import converter.mapType
-import converter.mapTypeToUnion
+import converter.mapToEnhancedType
 import ts2kt.kotlin.ast.*
 import ts2kt.utils.*
 import typescriptServices.ts.*
@@ -91,14 +91,16 @@ fun ParameterDeclaration.toKotlinParam(typeMapper: ObjectTypeToKotlinTypeMapper)
 
 fun ParameterDeclaration.toKotlinParamOverloads(typeMapper: ObjectTypeToKotlinTypeMapper): List<KtFunParam> {
     val nodeType: TypeNode? = getNodeTypeConsideringVararg()
-    val unionType = nodeType?.let { typeMapper.mapTypeToUnion(it) } ?: KtTypeUnion(KtType(ANY))
+    val enhancedType = nodeType?.let { typeMapper.mapToEnhancedType(it) } ?: SingleKtType(KtType(ANY))
 
-    if (unionType.possibleTypes.size > OVERLOAD_GEN_THRESHOLD_FOR_TYPE_COUNT_ON_ONE_PARAMETER) {
-        return listOf(toKotlinParam(KtType(DYNAMIC, comment = unionType.stringify())))
-    }
+    if (enhancedType is KtTypeUnion) {
+        if (enhancedType.possibleTypes.size > OVERLOAD_GEN_THRESHOLD_FOR_TYPE_COUNT_ON_ONE_PARAMETER) {
+            return listOf(toKotlinParam(enhancedType.singleType))
+        }
 
-    return unionType.possibleTypes.map { type ->
-        toKotlinParam(nodeType, type)
+        return enhancedType.possibleTypes.map { type -> toKotlinParam(nodeType, type) }
+    } else {
+        return listOf(toKotlinParam(nodeType, enhancedType.singleType))
     }
 }
 
@@ -169,8 +171,8 @@ private fun NodeArray<ParameterDeclaration>.toKotlinParamsOverloads(typeMapper: 
         var paramOverloads = parameterDeclaration.toKotlinParamOverloads(typeMapper)
 
         if (overloadsOfPriorParams.size * paramOverloads.size > OVERLOAD_GEN_THRESHOLD_FOR_TOTAL_COUNT) {
-            val comment = KtTypeUnion(paramOverloads.map { it.type.type }).stringify()
-            paramOverloads = listOf(parameterDeclaration.toKotlinParam(KtType(DYNAMIC, comment = comment)))
+            val paramEnhancedType = toKtTypeUnionOrSingleKtType(paramOverloads.map { it.type.type })
+            paramOverloads = listOf(parameterDeclaration.toKotlinParam(paramEnhancedType.singleType))
         }
 
         return overloadsOfPriorParams.flatMap { priorParams ->
@@ -187,7 +189,7 @@ fun NodeArray<TypeParameterDeclaration>.toKotlinTypeParams(typeMapper: ObjectTyp
 
 fun TypeParameterDeclaration.toKotlinTypeParam(typeMapper: ObjectTypeToKotlinTypeMapper): KtTypeParam {
     val type = typeMapper.mapType(this)
-    val upperBound = constraint?.let { typeMapper.mapType(it) }
+    val upperBound = constraint?.let { typeMapper.mapToEnhancedType(it) }
 
     assert(type.qualifiedName.qualifier == null, "type.qualifiedName.qualifier expected to be null, but ${type.qualifiedName.qualifier}")
 
@@ -214,7 +216,7 @@ fun SignatureDeclaration.toKotlinCallSignature(typeMapper: ObjectTypeToKotlinTyp
 }
 
 fun ArrayTypeNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
-    val typeArg = typeMapper.mapType(elementType)
+    val typeArg = typeMapper.mapToEnhancedType(elementType)
     return KtType(ARRAY, listOf(typeArg))
 }
 
@@ -226,8 +228,8 @@ fun SignatureDeclaration.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper):
 }
 
 //TODO: do we need LambdaType???
-private fun SignatureDeclaration.toKotlinTypeUnion(typeMapper: ObjectTypeToKotlinTypeMapper): KtTypeUnion {
-    return KtTypeUnion(parameters.toKotlinParamsOverloads(typeMapper).map {
+private fun SignatureDeclaration.toEnhancedType(typeMapper: ObjectTypeToKotlinTypeMapper): EnhancedKtType {
+    return toKtTypeUnionOrSingleKtType(parameters.toKotlinParamsOverloads(typeMapper).map {
         createFunctionType(it, type?.let { typeMapper.mapType(it) } ?: KtType(ANY))
     })
 }
@@ -236,15 +238,15 @@ private fun SignatureDeclaration.toKotlinTypeUnion(typeMapper: ObjectTypeToKotli
 private fun TypeLiteralNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType =
         typeMapper.getKotlinTypeForObjectType(this)
 
-fun TypeNode.toKotlinTypeUnion(typeMapper: ObjectTypeToKotlinTypeMapper): KtTypeUnion {
+fun TypeNode.toEnhancedType(typeMapper: ObjectTypeToKotlinTypeMapper): EnhancedKtType {
     return when (this.kind as Any) {
         SyntaxKind.ConstructorType,
-        SyntaxKind.FunctionType -> (this.cast<SignatureDeclaration>()).toKotlinTypeUnion(typeMapper)
+        SyntaxKind.FunctionType -> (this.cast<SignatureDeclaration>()).toEnhancedType(typeMapper)
 
-        SyntaxKind.TypeReference -> (this.cast<TypeReferenceNode>()).toKotlinTypeUnion(typeMapper)
-        SyntaxKind.UnionType -> (this.cast<UnionTypeNode>()).toKotlinTypeUnion(typeMapper)
-        SyntaxKind.IntersectionType -> (this.cast<IntersectionTypeNode>()).toKotlinTypeUnion(typeMapper)
-        else -> KtTypeUnion(toKotlinType(typeMapper))
+        SyntaxKind.TypeReference -> (this.cast<TypeReferenceNode>()).toEnhancedType(typeMapper)
+        SyntaxKind.UnionType -> (this.cast<UnionTypeNode>()).toEnhancedType(typeMapper)
+        SyntaxKind.IntersectionType -> (this.cast<IntersectionTypeNode>()).toEnhancedType(typeMapper)
+        else -> SingleKtType(toKotlinType(typeMapper))
     }
 }
 
@@ -264,15 +266,15 @@ fun TypeNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
         SyntaxKind.ConstructorType,
         SyntaxKind.FunctionType -> (this.cast<SignatureDeclaration>()).toKotlinType(typeMapper)
 
-        SyntaxKind.TypeReference -> (this.cast<TypeReferenceNode>()).toKotlinTypeUnion(typeMapper).singleType
+        SyntaxKind.TypeReference -> (this.cast<TypeReferenceNode>()).toEnhancedType(typeMapper).singleType
         SyntaxKind.ExpressionWithTypeArguments -> (this.cast<ExpressionWithTypeArguments>()).toKotlinType(typeMapper)
 
         SyntaxKind.Identifier -> KtType(KtQualifiedName((this.cast<Identifier>()).unescapedText))
         SyntaxKind.TypeLiteral -> (this.cast<TypeLiteralNode>()).toKotlinType(typeMapper)
 
-        SyntaxKind.UnionType -> (this.cast<UnionTypeNode>()).toKotlinTypeUnion(typeMapper).singleType
+        SyntaxKind.UnionType -> (this.cast<UnionTypeNode>()).toEnhancedType(typeMapper).singleType
 
-        SyntaxKind.IntersectionType -> (this.cast<IntersectionTypeNode>()).toKotlinTypeUnion(typeMapper).singleType
+        SyntaxKind.IntersectionType -> (this.cast<IntersectionTypeNode>()).toEnhancedType(typeMapper).singleType
 
         SyntaxKind.ParenthesizedType -> (this.cast<ParenthesizedTypeNode>()).type.toKotlinType(typeMapper)
 
@@ -297,8 +299,8 @@ fun EntityName.toKotlinTypeName(): KtQualifiedName {
     }
 }
 
-fun TypeReferenceNode.toKotlinTypeUnion(typeMapper: ObjectTypeToKotlinTypeMapper): KtTypeUnion {
-    return KtTypeUnion(toKotlinTypeIgnoringTypeAliases(typeMapper))
+fun TypeReferenceNode.toEnhancedType(typeMapper: ObjectTypeToKotlinTypeMapper): EnhancedKtType {
+    return SingleKtType(toKotlinTypeIgnoringTypeAliases(typeMapper))
 }
 
 private fun TypeReferenceNode.toKotlinTypeIgnoringTypeAliases(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
@@ -307,17 +309,17 @@ private fun TypeReferenceNode.toKotlinTypeIgnoringTypeAliases(typeMapper: Object
 
     return when (name) {
         // TODO: HACKS
-        KtQualifiedName("Function") -> KtType(name, listOf(starType()))
+        KtQualifiedName("Function") -> KtType(name, listOf(SingleKtType(starType())))
         KtQualifiedName("Object") -> KtType(ANY)
 
-        else -> KtType(name, typeArguments?.arr?.map { typeMapper.mapType(it) } ?: emptyList())
+        else -> KtType(name, typeArguments?.arr?.map { typeMapper.mapToEnhancedType(it) } ?: emptyList())
     }
 }
 
 fun ExpressionWithTypeArguments.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
     val name = expression.stringifyQualifiedName()
 
-    return KtType(name ?: KtQualifiedName("???"), typeArguments?.arr?.map { typeMapper.mapType(it) } ?: emptyList())
+    return KtType(name ?: KtQualifiedName("???"), typeArguments?.arr?.map { typeMapper.mapToEnhancedType(it) } ?: emptyList())
 }
 
 private fun PropertyAccessExpression.toKtQualifiedName(): KtQualifiedName {
@@ -338,32 +340,21 @@ private fun Node.stringifyQualifiedName() = when (kind as Any) {
     else -> reportUnsupportedNode(this)
 }
 
-fun UnionTypeNode.toKotlinTypeUnion(typeMapper: ObjectTypeToKotlinTypeMapper): KtTypeUnion {
-    val possibleTypes = types.arr.flatMap { typeMapper.mapTypeToUnion(it).possibleTypes }.distinct()
-
-    // TODO unify KtTypeUnion and KtType and implement it better
-    if (possibleTypes.size == 2) {
-        val a = possibleTypes[0]
-        val b = possibleTypes[1]
-
-        val t = if (a == NOTHING_TYPE) b else if (b == NOTHING_TYPE) a else null
-
-        t?.let {
-            return KtTypeUnion(listOf(it.copy(isNullable = true)))
-        }
-    }
-
-    return KtTypeUnion(possibleTypes)
+fun UnionTypeNode.toEnhancedType(typeMapper: ObjectTypeToKotlinTypeMapper): EnhancedKtType {
+    return mapUnionType(types.arr.map { typeMapper.mapToEnhancedType(it) })
 }
 
-fun IntersectionTypeNode.toKotlinTypeUnion(typeMapper: ObjectTypeToKotlinTypeMapper): KtTypeUnion {
-    val kotlinTypeUnions = types.arr.map { typeMapper.mapTypeToUnion(it) }
-    val commentWithExpectedType = kotlinTypeUnions.join(" & ", stringify = KtTypeUnion::stringify)
-    // just take the first one for now since Kotlin doesn't support intersection types.
-    return kotlinTypeUnions[0].mapLast { it.copy(comment = commentWithExpectedType) }
+fun mapUnionType(possibleEnhancedTypes: List<EnhancedKtType>): EnhancedKtType {
+    val typesExceptNothing = possibleEnhancedTypes.filter { it.singleType != NOTHING_TYPE }
+    val isNullable = typesExceptNothing.size < possibleEnhancedTypes.size
+    return toKtTypeUnionOrSingleKtType(typesExceptNothing).forceNullable(isNullable)
 }
 
-private fun KtTypeUnion.mapLast(function: (KtType) -> KtType): KtTypeUnion = KtTypeUnion(possibleTypes.dropLast(1) + function(possibleTypes.last()))
+fun IntersectionTypeNode.toEnhancedType(typeMapper: ObjectTypeToKotlinTypeMapper): KtTypeIntersection {
+    return KtTypeIntersection(types.arr.map { typeMapper.mapToEnhancedType(it) })
+}
+
+fun <T> List<T>.mapLast(function: (T) -> T): List<T> = dropLast(1) + function(last())
 
 fun ThisTypeNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
     var parent = parent
@@ -391,7 +382,7 @@ fun TypePredicateNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): Kt
 fun ClassOrInterfaceDeclaration.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
     val name = identifierName!!.unescapedText
 
-    return KtType(KtQualifiedName(name), typeParameters?.arr?.map { KtType(KtQualifiedName(it.identifierName.unescapedText)) } ?: emptyList())
+    return KtType(KtQualifiedName(name), typeParameters?.arr?.map { SingleKtType(KtType(KtQualifiedName(it.identifierName.unescapedText))) } ?: emptyList())
 }
 
 fun forEachChild(visitor: Visitor, node: Node) {

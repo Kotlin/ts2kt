@@ -28,6 +28,7 @@ class Stringify(
         private val topLevel: Boolean,
         private val additionalImports: List<String> = listOf(),
         private val suppressedDiagnostics: List<String> = listOf(),
+        private val allowEnhanced: Boolean = false,
         private val out: Output = Output()
 ) : KtVisitor {
     val result: String
@@ -346,9 +347,11 @@ class Stringify(
         enumEntry.value?.let { out.print(" /* = $it */") }
     }
 
+    private val EnhancedKtType.singleTypeIfNeeded: KtNode get() = if (allowEnhanced) this else singleType
+
     override fun visitTypeParam(typeParam: KtTypeParam) {
         out.print(typeParam.name.asString())
-        typeParam.upperBound?.let {
+        typeParam.upperBound?.singleTypeIfNeeded?.let {
             out.print(" : ")
             it.accept(this)
         }
@@ -383,7 +386,7 @@ class Stringify(
             else {
                 out.print(qualifiedName.asString())
 
-                typeArgs.acceptForEach(this@Stringify, ", ", startWithIfNotEmpty = "<", endWithIfNotEmpty = ">")
+                typeArgs.map { it.singleTypeIfNeeded }.acceptForEach(this@Stringify, ", ", startWithIfNotEmpty = "<", endWithIfNotEmpty = ">")
             }
 
             if (isNullable && qualifiedName != DYNAMIC) {
@@ -395,6 +398,20 @@ class Stringify(
             }
         }
     }
+
+    override fun visitTypeIntersection(typeIntersection: KtTypeIntersection) {
+        if (typeIntersection.requiredTypes.size > 1 && typeIntersection.isNullable) {
+            out.print("(")
+            typeIntersection.requiredTypes.acceptForEach(this, " & ")
+            out.print(")?")
+        } else {
+            typeIntersection.requiredTypes.acceptForEach(this, " & ")
+            if (typeIntersection.isNullable) {
+                out.print("?")
+            }
+        }
+    }
+
 
     override fun visitTypeUnion(typeUnion: KtTypeUnion) {
         typeUnion.possibleTypes.acceptForEach(this, " | ")
@@ -415,5 +432,5 @@ class Stringify(
     }
 
     private fun innerStringifier() =
-            Stringify(packagePartPrefix, /*topLevel = */false, additionalImports, suppressedDiagnostics, out)
+            Stringify(packagePartPrefix, /*topLevel = */false, additionalImports, suppressedDiagnostics, allowEnhanced, out)
 }

@@ -16,7 +16,7 @@ class TsInterfaceToKtExtensions(
 
     val cachedExtendsType by lazy { getExtendsType(typeParams) }
 
-    private fun getExtendsType(typeParams: List<KtTypeParam>?) = KtType(KtQualifiedName(name!!), typeParams?.map { KtType(KtQualifiedName(it.name)) } ?: emptyList())
+    private fun getExtendsType(typeParams: List<KtTypeParam>?) = KtType(KtQualifiedName(name!!), typeParams?.map { SingleKtType(KtType(KtQualifiedName(it.name))) } ?: emptyList())
 
     fun List<KtTypeParam>?.fixIfClashWith(another: List<KtTypeParam>?): List<KtTypeParam>? {
         if (this == null || another == null) return this

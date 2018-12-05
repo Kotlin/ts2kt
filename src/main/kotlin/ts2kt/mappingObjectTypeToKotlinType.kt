@@ -85,7 +85,7 @@ data class ObjectTypeToKotlinTypeMapperImpl(
                 .map { it.identifierName.text }
 
         val traitName = "T$${n++}"
-        val traitType = KtType(KtQualifiedName(traitName), typeParamNames.map { KtType(KtQualifiedName(it)) })
+        val traitType = KtType(KtQualifiedName(traitName), typeParamNames.map { SingleKtType(KtType(KtQualifiedName(it))) })
         translator.name = traitName
         translator.typeParams = typeParamNames.map { KtTypeParam(KtName(it)) }
 

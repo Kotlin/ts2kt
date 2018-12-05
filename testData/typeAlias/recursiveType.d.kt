@@ -6,9 +6,11 @@ external interface Rec {
 }
 external interface `T$0` {
     @nativeGetter
-    operator fun get(key: String): dynamic
+    operator fun get(key: String): dynamic /* dynamic | AnimatedValue */
     @nativeSetter
     operator fun set(key: String, value: dynamic)
+    @nativeSetter
+    operator fun set(key: String, value: AnimatedValue)
 }
 external fun foo(): dynamic /* `T$0` | AnimatedValue */ = definedExternally
 external fun bar(d: `T$0`): Unit = definedExternally

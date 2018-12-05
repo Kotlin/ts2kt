@@ -13,6 +13,7 @@ interface KtVisitor {
     fun visitTypeParam(typeParam: KtTypeParam)
     fun visitTypeAnnotation(typeAnnotation: KtTypeAnnotation)
     fun visitType(type: KtType)
+    fun visitTypeIntersection(typeIntersection: KtTypeIntersection)
     fun visitTypeUnion(typeUnion: KtTypeUnion)
     fun visitHeritageType(heritageType: KtHeritageType)
     fun visitArgument(argument: KtArgument)
