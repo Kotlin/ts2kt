@@ -32,8 +32,12 @@ private fun ObjectTypeToKotlinTypeMapper.mapToEnhancedType(type: Type, declarati
         return resultingDeclaration.unsafeCast<TypeNode>().toEnhancedType(this)
     }
 
-    if (resultingDeclaration?.kind == SyntaxKind.UnionType && TypeFlags.Union !in flags) {
+    if (resultingDeclaration?.kind == SyntaxKind.UnionType) {
         return resultingDeclaration.unsafeCast<UnionTypeNode>().toEnhancedType(this)
+    }
+
+    if (TypeFlags.Union in flags) {
+        return mapUnionType(type.unsafeCast<UnionType>())
     }
 
     if (type in typesInMappingProcess) {
@@ -70,7 +74,6 @@ private fun ObjectTypeToKotlinTypeMapper.mapToEnhancedType(type: Type, declarati
             SingleKtType(KtType(BOOLEAN, comment = type.unsafeCast<LiteralType>().value))
         }
 
-        TypeFlags.Union in flags -> mapUnionType(type.unsafeCast<UnionType>())
         TypeFlags.Intersection in flags -> mapIntersectionType(type.unsafeCast<IntersectionType>())
 
         TypeFlags.TypeParameter in flags -> SingleKtType(KtType(KtQualifiedName(unescapeIdentifier(type.getSymbol()!!.name))))

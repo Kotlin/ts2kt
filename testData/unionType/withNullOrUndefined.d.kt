@@ -3,8 +3,8 @@ package withNullOrUndefined
 external var foo: String? = definedExternally
 external var bar: String? = definedExternally
 external fun bar(a: String?): Foo? = definedExternally
-external fun nullOverload(a: String?): dynamic /* Number? | Foo? */ = definedExternally
-external fun nullOverload(a: Number?): dynamic /* Number? | Foo? */ = definedExternally
+external fun nullOverload(a: String?): dynamic /* Foo? | Number? */ = definedExternally
+external fun nullOverload(a: Number?): dynamic /* Foo? | Number? */ = definedExternally
 external fun baz(a: Foo?, b: Number? = definedExternally /* null */): Any? = definedExternally
 external interface `T$0` {
     @nativeGetter
