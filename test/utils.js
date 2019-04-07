@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 
-var ts2kt = require('ts2kt').ts2kt;
+var ts2ktModule = require('ts2kt');
+
+if (ts2ktModule.hasOwnProperty('ts2kt') && ts2ktModule.ts2kt.hasOwnProperty('utils')) {
+    var ts2kt = ts2ktModule.ts2kt
+    var ts2ktUtils = ts2kt.utils
+} else {
+    // Workaround not-so-fully-qualified exports of IR backend
+    var ts2kt = ts2ktModule
+    var ts2ktUtils = ts2kt
+}
+
 var fs = require('fs');
 var assert = require('chai').assert;
 
@@ -104,7 +114,7 @@ function collectTestFilesRec(dir, tests, testDataExpectedDir, testConfig, testDa
 
     if (depth === 0) {
         tests["printReport"] = function (done) {
-            ts2kt.utils.reportUnsupportedKinds();
+            ts2ktUtils.reportUnsupportedKinds();
             done();
         }
     }
