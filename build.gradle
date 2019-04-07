@@ -4,12 +4,12 @@ plugins {
 }
 
 repositories {
-  mavenCentral()
+  mavenLocal()
   jcenter()
 }
 
 dependencies {
-  implementation("org.jetbrains.kotlin:kotlin-stdlib-js:$gradle.kotlinVersion")
+  implementation("org.jetbrains.kotlin:kotlin-stdlib-js-ir:1.3-SNAPSHOT")
 }
 
 def testDistribPath = "${project.buildDir}/test"
@@ -39,7 +39,7 @@ compileKotlin2Js {
     outputFile = "${distribPath}/ts2kt.js"
     sourceMap = true
     metaInfo = false
-    freeCompilerArgs += ["-output-prefix", "${projectDir}/shebang.txt"]
+    freeCompilerArgs += ["-Xir", "-output-prefix", "${projectDir}/shebang.txt"]
 
     moduleKind = 'commonjs'
   }
