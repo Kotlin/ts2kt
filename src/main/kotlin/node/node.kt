@@ -30,11 +30,18 @@ external object process {
     val argv0: String
 }
 
+external interface Buffer {
+    // Using different name instead so it won't collide with `Any::toString`
+    // `Any::toString` consider Buffers "arrayish" and returns "[...]"
+    @JsName("toString")
+    fun decodeToString(): String
+}
+
 @JsModule("fs")
 external object fs {
     fun argv(index: Int): String
     fun writeFileSync(path: String, text: String): Unit
-    fun readFileSync(path: String): String
+    fun readFileSync(path: String): Buffer
     fun readFileSync(path: String, encodingOptions: EncodingOptions): String
     fun readdirSync(path: String): Array<String>
     fun existsSync(path: String): Boolean

@@ -41,7 +41,7 @@ private fun getScriptSnapshotFromFile(path: String): IScriptSnapshot {
     var scriptSnapshot  = file2scriptSnapshotCache[path]
 
     if (scriptSnapshot == null) {
-        scriptSnapshot = fromString(fs.readFileSync(path).toString())
+        scriptSnapshot = fromString(fs.readFileSync(path).decodeToString())
         file2scriptSnapshotCache[path] = scriptSnapshot
     }
 
