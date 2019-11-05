@@ -115,6 +115,15 @@ task npmPublish(type: NpmTask) {
   args = ["publish", distribPath, "--registry", "${registry}"]
 }
 
+task npmDeprecate(type: NpmTask) {
+  dependsOn = [npmVersion]
+
+  def token = System.getProperty("kotlin.npmjs.auth.token")
+  def registry = "http://registry.npmjs.org/:_authToken=${token}"
+
+  args = ["deprecate", "ts2kt", "ts2kt is deprecated, use dukat instead", "--registry", registry ]
+}
+
 fetchBuildableDependencies.dependsOn = [compileKotlin2Js]
 test.dependsOn = [
     runTests
