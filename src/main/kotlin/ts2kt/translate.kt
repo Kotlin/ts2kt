@@ -86,20 +86,6 @@ fun translate(srcPath: String, basePackageName: String, declareModifierIsOptiona
 //    val fileNode = languageService.getSourceFile(normalizeSrcPath)
     val fileNode = languageService.getProgram().getSourceFile(normalizeSrcPath)
 
-    inline fun isAnyMember(node: MethodDeclaration): Boolean {
-        val params = node.parameters.arr
-
-        return when (node.propertyName?.text) {
-            "equals" ->
-                params.size == 1 && params[0].type?.let { it.kind === SyntaxKind.AnyKeyword } ?: true
-            // TODO check return type ???
-            "hashCode", "toString" ->
-                params.size == 0
-            else ->
-                false
-        }
-    }
-
     /*inline*/ fun isOverrideHelper(
             node: Declaration,
             /*crossinline*/ f: (TypeChecker, Type, String) -> Boolean
@@ -172,8 +158,6 @@ fun translate(srcPath: String, basePackageName: String, declareModifierIsOptiona
     }
 
     fun isOverride(node: MethodDeclaration): Boolean {
-        if (isAnyMember(node)) return true
-
         var nodeSignature: Signature? = null
 
         return isOverrideHelper(node) { typechecker, type, nodeName ->

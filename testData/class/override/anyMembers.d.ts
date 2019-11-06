@@ -6,6 +6,7 @@ declare class ExpectedOverrides {
 
 declare class ExpectedOverrides2 {
     equals(a);
+    toString();
 }
 
 declare class ExpectedNoOverrides {

@@ -1,12 +1,13 @@
 package anyMembers
 
 external open class ExpectedOverrides {
-    override fun equals(a: Any): Unit = definedExternally
-    override fun hashCode(): Number = definedExternally
+    override fun equals(a: Any?): Boolean = definedExternally
+    override fun hashCode(): Int = definedExternally
     override fun toString(): String = definedExternally
 }
 external open class ExpectedOverrides2 {
-    override fun equals(a: Any): Unit = definedExternally
+    override fun equals(a: Any?): Boolean = definedExternally
+    override fun toString(): String = definedExternally
 }
 external open class ExpectedNoOverrides {
     open fun equals(): Unit = definedExternally

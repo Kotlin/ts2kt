@@ -1,12 +1,12 @@
 package anyMembers
 
 external interface ExpectedOverrides {
-    override fun equals(a: Any)
-    override fun hashCode(): Number
+    override fun equals(a: Any?): Boolean
+    override fun hashCode(): Int
     override fun toString(): String
 }
 external interface ExpectedOverrides2 {
-    override fun equals(a: Any)
+    override fun equals(a: Any?): Boolean
 }
 external interface ExpectedNoOverrides {
     fun equals()
