@@ -88,7 +88,9 @@ interface KtAnnotated {
     var annotations: List<KtAnnotation>
 }
 
-interface KtMember : KtNode, KtNamed, KtAnnotated
+interface KtMember : KtNode, KtNamed, KtAnnotated {
+    val accessModifier: AccessModifier
+}
 
 interface KtExtensionAware : KtMember {
     val extendsType: KtHeritageType?
@@ -123,8 +125,12 @@ data class KtClassifier(
         val parents: List<KtHeritageType>,
         override var members: List<KtMember>,
         override var annotations: List<KtAnnotation>,
-        val hasOpenModifier: Boolean
+        val hasOpenModifier: Boolean,
+        val isAbstract: Boolean
 ) : KtMember, AbstractKtNode(), KtWithMembers {
+
+    override val accessModifier: AccessModifier = AccessModifier.PUBLIC
+
     override fun accept(visitor: KtVisitor) {
         visitor.visitClassifier(this)
     }
@@ -159,7 +165,9 @@ data class KtFunction(
         val needsNoImpl: Boolean = true,
         val isOverride: Boolean = false,
         val hasOpenModifier: Boolean = false,
-        val isOperator: Boolean = false
+        val isOperator: Boolean = false,
+        val isAbstract: Boolean = false,
+        override val accessModifier: AccessModifier = AccessModifier.PUBLIC
 ) : KtMember, KtExtensionAware, AbstractKtNode() {
     override fun accept(visitor: KtVisitor) {
         visitor.visitFunction(this)
@@ -173,10 +181,12 @@ data class KtVariable(
         override var annotations: List<KtAnnotation>,
         val typeParams: List<KtTypeParam>?,
         var isVar: Boolean,
-        val needsNoImpl: Boolean = true,
+        val isAbstract: Boolean = false,
+        val needsNoImpl: Boolean = !isAbstract,
         val isInInterface: Boolean,
         val isOverride: Boolean = false,
-        val hasOpenModifier: Boolean
+        val hasOpenModifier: Boolean,
+        override val accessModifier: AccessModifier = AccessModifier.PUBLIC
 ) : KtMember, KtExtensionAware, AbstractKtNode() {
     override fun accept(visitor: KtVisitor) {
         visitor.visitVariable(this)
@@ -184,6 +194,8 @@ data class KtVariable(
 }
 
 data class KtEnumEntry(override var name: KtName, val value: String? = null) : KtMember, AbstractKtNode() {
+    override val accessModifier: AccessModifier = AccessModifier.PUBLIC
+
     override var annotations = listOf<KtAnnotation>()
 
     override fun accept(visitor: KtVisitor) {
@@ -247,4 +259,8 @@ data class KtTypeAnnotation(var type: KtType, val isVararg: Boolean = false) : A
     override fun accept(visitor: KtVisitor) {
         visitor.visitTypeAnnotation(this)
     }
+}
+
+enum class AccessModifier(val usable: Boolean) {
+    PUBLIC(true), PROTECTED(true), INTERNAL(false), PRIVATE(false)
 }

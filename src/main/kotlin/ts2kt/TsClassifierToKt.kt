@@ -77,11 +77,11 @@ abstract class TsClassifierToKt(
         return this
     }
 
-    open fun needsNoImpl(node: PropertyDeclaration): Boolean = true
+    open fun needsNoImpl(node: PropertyDeclaration): Boolean = !isAbstract(node)
     open fun isNullable(node: PropertyDeclaration): Boolean = false
     open fun isLambda(node: PropertyDeclaration): Boolean = false
 
-    open fun needsNoImpl(node: MethodDeclaration): Boolean = true
+    open fun needsNoImpl(node: MethodDeclaration): Boolean = !isAbstract(node)
 
     override fun visitPropertyDeclaration(node: PropertyDeclaration) {
         val declarationName = node.propertyName!!
@@ -97,14 +97,17 @@ abstract class TsClassifierToKt(
                 name,
                 type = varType.copy(isNullable = varType.isNullable || isNullable(node)),
                 isOverride = isOverride,
-                needsNoImpl = needsNoImpl(node)
+                isVar = !isReadonly(node),
+                isAbstract = isAbstract(node),
+                needsNoImpl = needsNoImpl(node),
+                accessModifier = getAccessModifier(node)
         )
     }
 
     open fun TsClassifierToKt.addFunction(name: String, isOverride: Boolean, needsNoImpl: Boolean, node: MethodDeclaration) {
         val symbol = typeMapper.typeChecker.getSymbolResolvingAliases(node)
         node.toKotlinCallSignatureOverloads(typeMapper).forEach { callSignature ->
-            addFunction(symbol, name, callSignature, isOverride = isOverride, needsNoImpl = needsNoImpl(node))
+            addFunction(symbol, name, callSignature, isOverride = isOverride, needsNoImpl = needsNoImpl(node), isAbstract = isAbstract(node), accessModifier = getAccessModifier(node))
         }
 
         assert(node.body == null, "An function in declarations file should not have body, function '${this.name}.$name'")
@@ -121,7 +124,7 @@ abstract class TsClassifierToKt(
 
     override fun visitSignatureDeclaration(node: SignatureDeclaration) {
         node.toKotlinCallSignatureOverloads(typeMapper).forEach { callSignature ->
-            addFunction(null, INVOKE, callSignature, needsNoImpl = false, additionalAnnotations = listOf(NATIVE_INVOKE_ANNOTATION), isOperator = true)
+            addFunction(null, INVOKE, callSignature, needsNoImpl = false, additionalAnnotations = listOf(NATIVE_INVOKE_ANNOTATION), isOperator = true, accessModifier = getAccessModifier(node))
         }
     }
 

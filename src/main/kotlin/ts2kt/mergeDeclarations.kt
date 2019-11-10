@@ -95,7 +95,8 @@ private fun mergeClassAndInterface(klass: KtClassifier, iface: KtClassifier): Kt
                     (klass.parents + iface.parents).distinct(),
                     mutableListOf(),
                     mutableListOf() /*annotations will be merged later*/,
-                    klass.hasOpenModifier /* TODO: should it be open? */
+                    klass.hasOpenModifier /* TODO: should it be open? */,
+                    klass.isAbstract
             )
 
     return mergeClassifierMembers(result, klass, iface)
@@ -106,12 +107,12 @@ private fun mergeClassifierAndVariable(a: KtClassifier, b: KtVariable): KtMember
     assert(a.getClassObject() == null, "Unxpected `class object` when merge Classifier(kind=${a.kind}) and Variable(${b.stringify()})")
 
     if (a.kind === KtClassKind.INTERFACE || a.isModule()) {
-        val newTrait = KtClassifier(KtClassKind.INTERFACE, a.name, a.paramsOfConstructors, a.typeParams, a.parents, a.members, a.annotations, hasOpenModifier = false)
+        val newTrait = KtClassifier(KtClassKind.INTERFACE, a.name, a.paramsOfConstructors, a.typeParams, a.parents, a.members, a.annotations, hasOpenModifier = false, isAbstract = false)
 
         val delegation = listOf(KtHeritageType(b.type.type, byExpression = NO_IMPL))
 
         // TODO drop hacks
-        val classObject = KtClassifier(KtClassKind.COMPANION_OBJECT, KtName.NO_NAME, listOf(), listOf(), delegation, listOf(), listOf(), hasOpenModifier = false)
+        val classObject = KtClassifier(KtClassKind.COMPANION_OBJECT, KtName.NO_NAME, listOf(), listOf(), delegation, listOf(), listOf(), hasOpenModifier = false, isAbstract = false)
 
         newTrait.addMember(classObject)
 
@@ -147,7 +148,7 @@ private fun mergeClassAndObject(a: KtClassifier, b: KtClassifier): KtClassifier 
 
     if (classObject == null) {
         // TODO drop hack
-        a.addMember(KtClassifier(KtClassKind.COMPANION_OBJECT, KtName.NO_NAME, listOf(), listOf(), listOf(), b.members, NO_ANNOTATIONS, hasOpenModifier = false))
+        a.addMember(KtClassifier(KtClassKind.COMPANION_OBJECT, KtName.NO_NAME, listOf(), listOf(), listOf(), b.members, NO_ANNOTATIONS, hasOpenModifier = false, isAbstract = false))
     }
     else {
         // TODO drop hack
@@ -191,7 +192,7 @@ fun KtPackagePartBuilder.mergeClassesAndPackages() {
         if (companion == null) {
             companion = KtClassifier(
                     KtClassKind.COMPANION_OBJECT, KtName.NO_NAME, emptyList(), null, emptyList(),
-                    emptyList(), emptyList(), false)
+                    emptyList(), emptyList(), false, isAbstract = false)
         }
 
         val (classifiers, nonClassifiers) = nestedPackage.members.partition { it is KtClassifier }

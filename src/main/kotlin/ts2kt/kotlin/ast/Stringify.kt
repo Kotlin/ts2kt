@@ -13,6 +13,8 @@ private val EQ_NO_IMPL = " = $NO_IMPL"
 private val NO_IMPL_PROPERTY_GETTER = " get()" + EQ_NO_IMPL
 private val NO_IMPL_PROPERTY_SETTER = " set(value)" + EQ_NO_IMPL
 private val EXTERNAL = "external"
+private val PROTECTED = "protected"
+private val ABSTRACT = "abstract"
 private val INLINE = "inline"
 private val OPEN = "open"
 private val OVERRIDE = "override"
@@ -81,10 +83,14 @@ class Stringify(
 
             out.printIndent()
 
+            if (isAbstract) {
+                out.print("$ABSTRACT ")
+            }
+
             printExternalIfNeed()
 
             if (hasOpenModifier) {
-                out.print(OPEN + " ")
+                out.print("$OPEN ")
             }
 
             out.print(kind.keyword)
@@ -137,6 +143,14 @@ class Stringify(
 
             out.printIndent()
 
+            if (accessModifier == AccessModifier.PROTECTED) {
+                out.print("$PROTECTED ")
+            }
+
+            if (isAbstract) {
+                out.print("$ABSTRACT ")
+            }
+
             if (function.extendsType == null) {
                 // TODO remove hack
                 printExternalIfNeed()
@@ -168,7 +182,7 @@ class Stringify(
 
             out.print(name.asString())
 
-            callSignature.printToOut(withTypeParams = false, printUnitReturnType = needsNoImpl, printDefaultValues = !isOverride, noImpl = extendsType == null)
+            callSignature.printToOut(withTypeParams = false, printUnitReturnType = needsNoImpl || isAbstract, printDefaultValues = !isOverride, noImpl = extendsType == null)
 
             if (function.extendsType != null) {
                 out.print(" { " )
@@ -192,6 +206,14 @@ class Stringify(
             annotations.acceptForEach(this@Stringify)
 
             out.printIndent()
+
+            if (accessModifier == AccessModifier.PROTECTED) {
+                out.print("$PROTECTED ")
+            }
+
+            if (isAbstract) {
+                out.print("$ABSTRACT ")
+            }
 
             if (variable.extendsType == null) {
                 // TODO remove hack

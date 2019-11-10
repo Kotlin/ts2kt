@@ -55,6 +55,8 @@ class TypeScriptToKotlin(
 
     override val hasMembersOpenModifier = false
 
+    override val isAbstract = false
+
     fun getAdditionalAnnotations(node: Node): List<KtAnnotation> {
         val isShouldSkip = requiredModifier === SyntaxKind.DeclareKeyword && !(node.modifiers?.arr?.any { it.kind === requiredModifier || it.kind === SyntaxKind.ExportKeyword } ?: false )
         if (isShouldSkip) return DEFAULT_FAKE_ANNOTATION
@@ -94,7 +96,7 @@ class TypeScriptToKotlin(
                 }
             }
             val varType = d.type?.let { typeMapper.mapType(it) } ?: KtType(ANY)
-            addVariable(symbol, name, varType, additionalAnnotations = additionalAnnotations)
+            addVariable(symbol, name, varType, additionalAnnotations = additionalAnnotations, accessModifier = getAccessModifier(node))
         }
     }
 
@@ -125,7 +127,7 @@ class TypeScriptToKotlin(
         val name = node.propertyName?.asString()!!
         val symbol = node.name?.let { typeChecker.getSymbolResolvingAliases(it) }
         node.toKotlinCallSignatureOverloads(typeMapper).forEach { callSignature ->
-            addFunction(symbol, name, callSignature, additionalAnnotations = additionalAnnotations)
+            addFunction(symbol, name, callSignature, additionalAnnotations = additionalAnnotations, isAbstract = isAbstract(node))
         }
         processDefaultExport(node, symbol)
     }
@@ -151,7 +153,7 @@ class TypeScriptToKotlin(
     override fun visitClassDeclaration(node: ClassDeclaration) {
         val additionalAnnotations = getAdditionalAnnotations(node)
 
-        val translator = TsClassToKt(typeMapper, annotations = defaultAnnotations + additionalAnnotations, isOverride = isOverride, isOverrideProperty = isOverrideProperty)
+        val translator = TsClassToKt(typeMapper, annotations = defaultAnnotations + additionalAnnotations, isOverride = isOverride, isOverrideProperty = isOverrideProperty, isAbstract = isAbstract(node))
         translator.visitClassDeclaration(node)
 
         val result = translator.createClassifier()
@@ -181,7 +183,7 @@ class TypeScriptToKotlin(
 
         val enumClass =
                 KtClassifier(KtClassKind.ENUM, KtName(node.identifierName.unescapedText), listOf(), listOf(), listOf(),
-                        entries, listOf(), hasOpenModifier = false)
+                        entries, listOf(), hasOpenModifier = false, isAbstract = isAbstract(node))
 
         val symbol = node.name?.let { typeChecker.getSymbolResolvingAliases(it) }
         addDeclaration(symbol, enumClass)
