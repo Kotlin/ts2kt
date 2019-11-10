@@ -3,6 +3,8 @@ declare var bar: string | null;
 
 declare function bar(a: string | undefined): Foo | null;
 
+declare function nullOverload(a: string | number | null): Foo | number | null;
+
 declare function baz(a: Foo | null, b?: number | undefined): any | undefined;
 
 declare class Foo {
@@ -26,4 +28,5 @@ interface IBar {
     optionalFoo?: string | null;
     optionalFoo2?: string | undefined;
     optionalFoo3?: string | undefined | null;
+    optionalFoo4?: string | number | null;
 }

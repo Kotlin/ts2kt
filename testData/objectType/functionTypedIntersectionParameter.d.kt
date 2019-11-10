@@ -12,4 +12,5 @@ external interface `T$1`<T> {
 external open class FooTypedUnion {
     open fun <T> baz(p: `T$0`<T>): Unit = definedExternally
     open fun <T> bar(p: `T$1`<T> /* `T$1`<T> & FooPart<T> */): Unit = definedExternally
+    open fun <T> foo(p: `T$1`<T>? /* (`T$1`<T> & FooPart<T>)? */): Unit = definedExternally
 }

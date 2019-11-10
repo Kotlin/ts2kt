@@ -8,38 +8,36 @@ import typescriptServices.ts.*
 import kotlin.collections.Map
 
 fun ObjectTypeToKotlinTypeMapper.mapType(type: Node): KtType {
-    val resolvedType: Type? = typeChecker.getTypeAtLocation(type)
-    return if (resolvedType != null) {
-        mapType(resolvedType, type)
-    }
-    else {
-        (type.unsafeCast<TypeNode>()).toKotlinType(this)
-    }
+    return mapToEnhancedType(type).singleType
 }
 
-fun ObjectTypeToKotlinTypeMapper.mapTypeToUnion(type: Node): KtTypeUnion {
+fun ObjectTypeToKotlinTypeMapper.mapToEnhancedType(type: Node): EnhancedKtType {
     val resolvedType: Type? = typeChecker.getTypeAtLocation(type)
     return if (resolvedType != null) {
-        mapTypeToUnion(resolvedType, type)
+        mapToEnhancedType(resolvedType, type)
     }
     else {
-        (type.unsafeCast<TypeNode>()).toKotlinTypeUnion(this)
+        (type.unsafeCast<TypeNode>()).toEnhancedType(this)
     }
 }
 
 private fun ObjectTypeToKotlinTypeMapper.mapType(type: Type, declaration: Node?): KtType =
-        mapTypeToUnion(type, declaration).singleType
+        mapToEnhancedType(type, declaration).singleType
 
-private fun ObjectTypeToKotlinTypeMapper.mapTypeToUnion(type: Type, declaration: Node?): KtTypeUnion {
+private fun ObjectTypeToKotlinTypeMapper.mapToEnhancedType(type: Type, declaration: Node?): EnhancedKtType {
     val resultingDeclaration = declaration ?: type.symbol?.declarations?.singleOrNull()
 
     val flags = type.getFlags()
     if (resultingDeclaration != null && type.symbol == null && TypeFlags.Any in flags) {
-        return resultingDeclaration.unsafeCast<TypeNode>().toKotlinTypeUnion(this)
+        return resultingDeclaration.unsafeCast<TypeNode>().toEnhancedType(this)
     }
 
-    if (resultingDeclaration?.kind == SyntaxKind.UnionType && TypeFlags.Union !in flags) {
-        return resultingDeclaration.unsafeCast<UnionTypeNode>().toKotlinTypeUnion(this)
+    if (resultingDeclaration?.kind == SyntaxKind.UnionType) {
+        return resultingDeclaration.unsafeCast<UnionTypeNode>().toEnhancedType(this)
+    }
+
+    if (TypeFlags.Union in flags) {
+        return mapUnionType(type.unsafeCast<UnionType>())
     }
 
     if (type in typesInMappingProcess) {
@@ -47,58 +45,53 @@ private fun ObjectTypeToKotlinTypeMapper.mapTypeToUnion(type: Type, declaration:
                 "Recursion is detected when resolve type: \"${type.symbol?.name}\" for the declaration at ${declaration?.location()}",
                 maxLevelToShow = DiagnosticLevel.WARNING_WITH_STACKTRACE
         )
-        return KtTypeUnion(KtType(DYNAMIC))
+        return SingleKtType(KtType(DYNAMIC))
     }
 
     typesInMappingProcess += type
 
     val mappedType = when {
-        declaration?.kind == SyntaxKind.ThisType -> {
-            val possibleTypes = mapTypeToUnion(type.unsafeCast<TypeParameter>().constraint!!, null).possibleTypes
-                    .map { it.copy(comment = "this") }
-            KtTypeUnion(possibleTypes)
-        }
+        declaration?.kind == SyntaxKind.ThisType -> mapToEnhancedType(type.unsafeCast<TypeParameter>().constraint!!, null).withComment("this")
 
-        TypeFlags.Any in flags -> KtTypeUnion(KtType(ANY))
-        TypeFlags.String in flags -> KtTypeUnion(KtType(STRING))
-        TypeFlags.Boolean in flags -> KtTypeUnion(KtType(BOOLEAN))
-        TypeFlags.Number in flags -> KtTypeUnion(KtType(NUMBER))
-        TypeFlags.Void in flags -> KtTypeUnion(KtType(UNIT))
+        TypeFlags.Any in flags -> SingleKtType(KtType(ANY))
+        TypeFlags.String in flags -> SingleKtType(KtType(STRING))
+        TypeFlags.Boolean in flags -> SingleKtType(KtType(BOOLEAN))
+        TypeFlags.Number in flags -> SingleKtType(KtType(NUMBER))
+        TypeFlags.Void in flags -> SingleKtType(KtType(UNIT))
 
         TypeFlags.Undefined in flags ||
-                TypeFlags.Null in flags -> KtTypeUnion(KtType(NOTHING, isNullable = true))
+                TypeFlags.Null in flags -> SingleKtType(KtType(NOTHING, isNullable = true))
 
         TypeFlags.StringLiteral in flags -> {
-            KtTypeUnion(KtType(STRING, comment = "\"" + type.unsafeCast<LiteralType>().value + "\""))
+            SingleKtType(KtType(STRING, comment = "\"" + type.unsafeCast<LiteralType>().value + "\""))
         }
         // TODO: add test if it's allowed
         TypeFlags.NumberLiteral in flags -> {
-            KtTypeUnion(KtType(NUMBER, comment = type.unsafeCast<LiteralType>().value))
+            SingleKtType(KtType(NUMBER, comment = type.unsafeCast<LiteralType>().value))
         }
         // TODO: add test if it's allowed
         TypeFlags.BooleanLiteral in flags -> {
-            KtTypeUnion(KtType(BOOLEAN, comment = type.unsafeCast<LiteralType>().value))
+            SingleKtType(KtType(BOOLEAN, comment = type.unsafeCast<LiteralType>().value))
         }
 
-        TypeFlags.Union in flags -> mapUnionType(type.unsafeCast<UnionType>())
         TypeFlags.Intersection in flags -> mapIntersectionType(type.unsafeCast<IntersectionType>())
 
-        TypeFlags.TypeParameter in flags -> KtTypeUnion(KtType(KtQualifiedName(unescapeIdentifier(type.getSymbol()!!.name))))
+        TypeFlags.TypeParameter in flags -> SingleKtType(KtType(KtQualifiedName(unescapeIdentifier(type.getSymbol()!!.name))))
 
         TypeFlags.Object in flags -> {
             val objectFlags = (type as ObjectType).objectFlags
             when {
-                ObjectFlags.Anonymous in objectFlags -> KtTypeUnion(mapAnonymousType(type, declaration))
-                ObjectFlags.ClassOrInterface in objectFlags -> KtTypeUnion(mapInterfaceType(type.unsafeCast<InterfaceType>(), declaration))
-                ObjectFlags.Reference in objectFlags -> KtTypeUnion(mapTypeReference(type.unsafeCast<TypeReference>(), declaration))
+                ObjectFlags.Anonymous in objectFlags -> SingleKtType(mapAnonymousType(type, declaration))
+                ObjectFlags.ClassOrInterface in objectFlags -> SingleKtType(mapInterfaceType(type.unsafeCast<InterfaceType>(), declaration))
+                ObjectFlags.Reference in objectFlags -> SingleKtType(mapTypeReference(type.unsafeCast<TypeReference>(), declaration))
 
-                else -> KtTypeUnion(KtType(ANY, isNullable = true))
+                else -> SingleKtType(KtType(ANY, isNullable = true))
             }
         }
 
-        TypeFlags.Enum in flags -> KtTypeUnion(mapObjectType(type.unsafeCast<ObjectType>()))
+        TypeFlags.Enum in flags -> SingleKtType(mapObjectType(type.unsafeCast<ObjectType>()))
 
-        else -> KtTypeUnion(KtType(ANY, isNullable = true))
+        else -> SingleKtType(KtType(ANY, isNullable = true))
     }
 
     typesInMappingProcess -= type
@@ -106,19 +99,53 @@ private fun ObjectTypeToKotlinTypeMapper.mapTypeToUnion(type: Type, declaration:
     return mappedType
 }
 
-private fun ObjectTypeToKotlinTypeMapper.mapUnionType(type: UnionOrIntersectionType): KtTypeUnion {
-    val notNullTypes = type.types.filter {
-        TypeFlags.Undefined !in it.getFlags() &&
-                TypeFlags.Null !in it.getFlags()
-    }
-    val nullable = notNullTypes.size != type.types.size || type.containsNull || type.containsUndefined
+private fun ObjectTypeToKotlinTypeMapper.mapUnionType(type: UnionType): EnhancedKtType {
+    val forceNullable = type.containsNull || type.containsUndefined
+    return mapUnionType(type.types.map { mapToEnhancedType(it, null) }).forceNullable(forceNullable)
+}
 
-    val mappedTypes = notNullTypes.map { mapType(it, null) }
-    return KtTypeUnion(when {
-        !nullable -> mappedTypes.distinct()
-        notNullTypes.size == 1 -> mappedTypes.map { it.copy(isNullable = true) }
-        else -> (mappedTypes + KtType(NOTHING, isNullable = true)).distinct()
-    })
+/**
+ * Normalize to a KtTypeUnion such that equals will be true if the KotlinJS compiler would consider them
+ * conflicting if both were the only parameter to identically named functions.
+ */
+private fun EnhancedKtType.normalizeToDetectCompilationConflicts(): EnhancedKtType {
+    return when (this) {
+        is KtTypeUnion -> copy(possibleTypes = possibleTypes.map { it.normalizeToDetectCompilationConflicts() })
+        is KtTypeIntersection -> copy(requiredTypes = requiredTypes.map { it.normalizeToDetectCompilationConflicts() })
+        is SingleKtType -> copy(singleType = singleType.normalizeToDetectCompilationConflicts())
+    }
+}
+
+/**
+ * Normalize to a KtType such that equals will be true if the KotlinJS compiler would consider them
+ * conflicting if both were the only parameter to identically named functions.
+ */
+private fun KtType.normalizeToDetectCompilationConflicts(): KtType {
+    return copy(comment = null, typeArgs = typeArgs.map { it.normalizeToDetectCompilationConflicts() })
+}
+
+/**
+ * Handle the case where a function is overloaded with the same Kotlin parameter types by merging them.
+ * Comments are not taken into account for the comparison, but are preserved by concatenation using "|" since a "union".
+ * This is especially useful for Typescript string literal unions.
+ */
+fun List<EnhancedKtType>.mergeToPreventCompilationConflicts(): List<EnhancedKtType> {
+    return groupBy { it.normalizeToDetectCompilationConflicts() }.map { entry ->
+        val comments = entry.value.mapNotNull { it.comment }
+        entry.key.withComment(comment = if (comments.isEmpty()) null else comments.joinToString(" | "))
+    }
+}
+
+/**
+ * Handle the case where a function is overloaded with the same Kotlin parameter types by merging them.
+ * Comments are not taken into account for the comparison, but are preserved by concatenation using "|" since a "union".
+ * This is especially useful for Typescript string literal unions.
+ */
+fun List<KtType>.mergeToPreventCompilationConflicts(): List<KtType> {
+    return groupBy { it.normalizeToDetectCompilationConflicts() }.map { entry ->
+        val comments = entry.value.mapNotNull { it.comment }
+        entry.key.copy(comment = if (comments.isEmpty()) null else comments.joinToString(" | "))
+    }
 }
 
 private inline val UnionOrIntersectionType.containsUndefined: Boolean
@@ -133,10 +160,8 @@ private inline val UnionOrIntersectionType.containsNull: Boolean
         return jsTypeOf(array.containsNull) == "boolean" && array.containsNull.unsafeCast<Boolean>()
     }
 
-private fun ObjectTypeToKotlinTypeMapper.mapIntersectionType(type: IntersectionType): KtTypeUnion {
-    return KtTypeUnion(mapType(type.types.first(), null).copy(
-            comment = type.types.joinToString(" & ") { mapType(it, null).stringify() }
-    ))
+private fun ObjectTypeToKotlinTypeMapper.mapIntersectionType(type: IntersectionType): EnhancedKtType {
+    return KtTypeIntersection(type.types.map { SingleKtType(mapType(it, null)) })
 }
 
 private fun ObjectTypeToKotlinTypeMapper.mapTypeReference(type: TypeReference, declaration: Node?): KtType {
@@ -164,7 +189,7 @@ private fun ObjectTypeToKotlinTypeMapper.mapInterfaceType(type: InterfaceType, d
 
 private fun ObjectTypeToKotlinTypeMapper.mapTypeArguments(
         typeArguments: Array<Type>?, declaration: Node?
-): Sequence<KtType> {
+): Sequence<EnhancedKtType> {
     val typeArgsFromDeclaration = if (declaration != null) {
         when (declaration.kind as Any) {
             SyntaxKind.ExpressionWithTypeArguments,
@@ -191,14 +216,14 @@ private fun ObjectTypeToKotlinTypeMapper.mapTypeArguments(
                     .asSequence()
                     .zip(typeArgsFromDeclaration + generateSequence { 0 }.map { null })
     return typeArgsWithDeclarations.map { (argType, arg) ->
-        mapType(argType, arg)
+        mapToEnhancedType(argType, arg)
     }
 }
 
 // TODO: is it correct name???
 private fun ObjectTypeToKotlinTypeMapper.mapObjectType(type: Type): KtType {
     val fqn = buildFqn(type.getSymbol()!!)
-    if (fqn == KtQualifiedName("Function")) return KtType(KtQualifiedName("Function"), typeArgs = listOf(starType()))
+    if (fqn == KtQualifiedName("Function")) return KtType(KtQualifiedName("Function"), typeArgs = listOf(SingleKtType(starType())))
     return KtType(when (fqn) {
         KtQualifiedName("Object") -> ANY
         else -> {
@@ -309,6 +334,14 @@ fun KtType.replaceTypeParameters(substitution: kotlin.collections.Map<String, Kt
                     callSignature = callSignature?.replaceTypeParameters(substitution)
             )
         }
+
+fun EnhancedKtType.replaceTypeParameters(substitution: kotlin.collections.Map<String, KtType>): EnhancedKtType {
+    return when (this) {
+        is KtTypeUnion -> this.copy(possibleTypes = this.possibleTypes.map { it.replaceTypeParameters(substitution) })
+        is KtTypeIntersection -> this.copy(requiredTypes = this.requiredTypes.map { it.replaceTypeParameters(substitution) })
+        is SingleKtType -> copy(singleType = singleType.replaceTypeParameters(substitution))
+    }
+}
 
 private fun KtCallSignature.replaceTypeParameters(substitution: Map<String, KtType>): KtCallSignature =
         copy(

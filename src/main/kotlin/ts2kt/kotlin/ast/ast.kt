@@ -16,9 +16,12 @@
 
 package ts2kt.kotlin.ast
 
+import converter.mergeToPreventCompilationConflicts
 import ts2kt.DYNAMIC
 import ts2kt.UNIT
 import ts2kt.escapeIfNeed
+import ts2kt.mapLast
+import ts2kt.utils.assert
 
 val MODULE = KtName("module")
 private val FAKE = KtName("fake")
@@ -197,17 +200,94 @@ data class KtHeritageType(var type: KtType, val byExpression: String? = null) : 
     }
 }
 
-fun KtTypeUnion(vararg possibleTypes: KtType): KtTypeUnion = KtTypeUnion(possibleTypes.toList())
+fun toKtTypeUnionOrSingleKtType(possibleTypes: List<KtType>): EnhancedKtType {
+    return if (possibleTypes.size > 1) KtTypeUnion(possibleTypes) else SingleKtType(possibleTypes.single())
+}
 
-data class KtTypeUnion(val possibleTypes: List<KtType>) : AbstractKtNode() {
+fun toKtTypeUnionOrSingleKtType(possibleTypes: List<EnhancedKtType>): EnhancedKtType {
+    val mergedEnhancedTypes = possibleTypes.mergeToPreventCompilationConflicts()
+    if (mergedEnhancedTypes.size == 1) {
+        return mergedEnhancedTypes.single()
+    }
+    val flattenedPossibleTypes = mergedEnhancedTypes.flatMap { if (it is KtTypeUnion) it.possibleTypes else listOf(it.singleType) }
+    val mergedPossibleTypes = flattenedPossibleTypes.mergeToPreventCompilationConflicts()
+    return if (mergedPossibleTypes.size > 1) KtTypeUnion(mergedPossibleTypes) else mergedEnhancedTypes.first()
+}
+
+sealed class EnhancedKtType : AbstractKtNode() {
+    abstract val singleType: KtType
+    abstract val isNullable: Boolean
+    abstract val toNullable: EnhancedKtType
+    abstract val comment: String?
+
+    abstract fun withComment(comment: String?): EnhancedKtType
+    fun forceNullable(forceNullable: Boolean): EnhancedKtType = if (forceNullable) this.toNullable else this
+}
+
+data class SingleKtType(override val singleType: KtType) : EnhancedKtType() {
+    override fun accept(visitor: KtVisitor) {
+        visitor.visitType(singleType)
+    }
+
+    override val isNullable: Boolean
+        get() = singleType.isNullable
+
+    override val toNullable: EnhancedKtType
+        get() = SingleKtType(singleType.copy(isNullable = true))
+
+    override val comment: String?
+        get() = singleType.comment
+
+    override fun withComment(comment: String?): EnhancedKtType = copy(singleType = singleType.copy(comment = comment))
+}
+
+data class KtTypeIntersection(val requiredTypes: List<EnhancedKtType>, override val isNullable: Boolean = false) : EnhancedKtType() {
+    init {
+        assert(requiredTypes.size > 1, "KtTypeIntersection must have size > 1 (instead of ${requiredTypes.size})")
+    }
+
+    override fun accept(visitor: KtVisitor) {
+        visitor.visitTypeIntersection(this)
+    }
+
+    override val singleType: KtType by lazy {
+        val firstType = requiredTypes.first().singleType
+        firstType.copy(isNullable = firstType.isNullable || isNullable, comment = stringify(allowEnhanced = true))
+    }
+
+    override val toNullable: EnhancedKtType
+        get() = copy(isNullable = true)
+
+    override val comment: String?
+        get() = null
+
+    override fun withComment(comment: String?): EnhancedKtType {
+        return copy(requiredTypes.mapLast { it.withComment(comment) })
+    }
+}
+
+data class KtTypeUnion(val possibleTypes: List<KtType>) : EnhancedKtType() {
+    init {
+        assert(possibleTypes.size > 1, "KtTypeUnion must have size > 1 (instead of ${possibleTypes.size})")
+    }
+
     override fun accept(visitor: KtVisitor) {
         visitor.visitTypeUnion(this)
     }
 
-    val singleType: KtType = if (possibleTypes.size == 1) possibleTypes.single() else {
+    override val singleType: KtType = if (possibleTypes.size == 1) possibleTypes.single() else {
         // TODO should it be `Any`?
-        KtType(DYNAMIC, comment = stringify(), isNullable = possibleTypes.first().isNullable)
+        KtType(DYNAMIC, comment = stringify(allowEnhanced = true), isNullable = isNullable)
     }
+    override val isNullable: Boolean
+        get() = possibleTypes.any { it.isNullable }
+
+    override val toNullable: KtTypeUnion by lazy { copy(possibleTypes = possibleTypes.map { it.copy(isNullable = true) }) }
+
+    override val comment: String?
+        get() = null
+
+    override fun withComment(comment: String?): EnhancedKtType = copy(possibleTypes.mapLast { it.copy(comment = comment) })
 }
 
 /**
@@ -218,7 +298,7 @@ data class KtTypeUnion(val possibleTypes: List<KtType>) : AbstractKtNode() {
  */
 data class KtType(
         var qualifiedName: KtQualifiedName,
-        val typeArgs: List<KtType> = emptyList(),
+        val typeArgs: List<EnhancedKtType> = emptyList(),
         val comment: String? = null,
         val isNullable: Boolean = false,
         val callSignature: KtCallSignature? = null
@@ -236,7 +316,12 @@ data class KtType(
 
 fun starType() = KtType(KtQualifiedName("*"))
 
-data class KtTypeParam(override var name: KtName, val upperBound: KtType? = null) : KtNamed, AbstractKtNode() {
+/**
+ * The upper bound is an EnhancedKtType since TypeScript allows unions of type params and Kotlin should defer
+ * forcing into a single type as late as possible since it may end up in a comment as a union.
+ * @param upperBound an upper bound for a type param.
+ */
+data class KtTypeParam(override var name: KtName, val upperBound: EnhancedKtType? = null) : KtNamed, AbstractKtNode() {
     override fun accept(visitor: KtVisitor) {
         visitor.visitTypeParam(this)
     }

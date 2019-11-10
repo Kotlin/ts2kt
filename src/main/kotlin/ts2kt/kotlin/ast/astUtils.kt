@@ -2,9 +2,13 @@ package ts2kt.kotlin.ast
 
 
 // TODO: review usages
-fun KtNode.stringify() = stringify(null, false)
-fun KtNode.stringify(packagePartPrefix: String?, topLevel: Boolean = true, additionalImports: List<String> = listOf(), suppressedDiagnostics: List<String> = listOf()) =
-        Stringify(packagePartPrefix, topLevel, additionalImports, suppressedDiagnostics).also { this.accept(it) }.result
+fun KtNode.stringify(allowEnhanced: Boolean = false) = stringify(null, false, allowEnhanced = allowEnhanced)
+fun KtNode.stringify(packagePartPrefix: String?,
+                     topLevel: Boolean = true,
+                     additionalImports: List<String> = listOf(),
+                     suppressedDiagnostics: List<String> = listOf(),
+                     allowEnhanced: Boolean = false) =
+        Stringify(packagePartPrefix, topLevel, additionalImports, suppressedDiagnostics, allowEnhanced).also { this.accept(it) }.result
 
 fun KtAnnotation.getFirstParamAsString(): String? {
     if (this.parameters.isEmpty()) return null

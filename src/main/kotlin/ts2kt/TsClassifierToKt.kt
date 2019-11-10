@@ -1,7 +1,7 @@
 package ts2kt
 
 import converter.mapType
-import converter.mapTypeToUnion
+import converter.mapToEnhancedType
 import ts2kt.kotlin.ast.*
 import ts2kt.utils.assert
 import typescriptServices.ts.*
@@ -32,12 +32,17 @@ abstract class TsClassifierToKt(
     private fun translateAccessor(node: IndexSignatureDeclaration, isGetter: Boolean, extendsType: KtType?) {
         // TODO type params?
         node.parameters.toKotlinParamsOverloads(typeMapper).forEach { params ->
-            val propTypeUnion = if (isGetter) {
-                KtTypeUnion(node.type?.let { typeMapper.mapType(it) } ?: KtType(ANY))
+            val propEnhancedType = if (isGetter) {
+                SingleKtType(node.type?.let { typeMapper.mapType(it) } ?: KtType(ANY))
             } else {
-                node.type?.let { typeMapper.mapTypeToUnion(it) } ?: KtTypeUnion(KtType(ANY))
+                node.type?.let { typeMapper.mapToEnhancedType(it) } ?: SingleKtType(KtType(ANY))
             }
-            propTypeUnion.possibleTypes.forEach { propType ->
+            val possibleTypes = if (propEnhancedType is KtTypeUnion) {
+                propEnhancedType.possibleTypes
+            } else {
+                listOf(propEnhancedType.singleType)
+            }
+            possibleTypes.forEach { propType ->
                 val callSignature: KtCallSignature
                 val accessorName: String
                 val annotation: KtAnnotation?
