@@ -266,6 +266,7 @@ fun TypeNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
 
         SyntaxKind.TypeReference -> (this.cast<TypeReferenceNode>()).toKotlinTypeUnion(typeMapper).singleType
         SyntaxKind.ExpressionWithTypeArguments -> (this.cast<ExpressionWithTypeArguments>()).toKotlinType(typeMapper)
+        SyntaxKind.TypeQuery -> (this.cast<TypeQueryNode>()).toKotlinType(typeMapper)
 
         SyntaxKind.Identifier -> KtType(KtQualifiedName((this.cast<Identifier>()).unescapedText))
         SyntaxKind.TypeLiteral -> (this.cast<TypeLiteralNode>()).toKotlinType(typeMapper)
@@ -318,6 +319,10 @@ fun ExpressionWithTypeArguments.toKotlinType(typeMapper: ObjectTypeToKotlinTypeM
     val name = expression.stringifyQualifiedName()
 
     return KtType(name ?: KtQualifiedName("???"), typeArguments?.arr?.map { typeMapper.mapType(it) } ?: emptyList())
+}
+
+fun TypeQueryNode.toKotlinType(typeMapper: ObjectTypeToKotlinTypeMapper): KtType {
+    return KtType(DYNAMIC, comment = "typeof " + this.exprName.unsafeCast<Node>().stringifyQualifiedName()?.asString())
 }
 
 private fun PropertyAccessExpression.toKtQualifiedName(): KtQualifiedName {
